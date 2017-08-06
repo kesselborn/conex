@@ -1,0 +1,40 @@
+{
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+X"
+      }
+    },
+    "new-tab-in-same-group": {
+      "suggested_key": {
+        "default": "Ctrl+Y"
+      }
+    }
+  },
+  "manifest_version": 2,
+  "name": "Taborama",
+  "version": "0.1",
+  "browser_action": {
+    "default_title": "Taborama",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "48": "icon_bw.svg"
+    }
+  },
+  "background": {
+    "scripts": [
+      "taborama.js"
+    ]
+  },
+  "icons": {
+    "48": "icon.svg"
+  },
+  "permissions": [
+    "<all_urls>",
+    "cookies",
+    "storage",
+    "tabs",
+    "unlimitedStorage",
+    "webNavigation"
+  ]
+}
