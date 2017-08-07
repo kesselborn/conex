@@ -5,6 +5,11 @@
         "default": "Ctrl+X"
       }
     },
+    "_execute_page_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y"
+      }
+    },
     "new-tab-in-same-group": {
       "suggested_key": {
         "default": "Ctrl+Y"
@@ -16,10 +21,18 @@
   "version": "0.1",
   "browser_action": {
     "default_title": "Taborama",
-    "default_popup": "popup/popup.html",
+    "default_popup": "browser-action/popup.html",
     "default_icon": {
       "48": "icon_bw.svg"
     }
+  },
+  "page_action": {
+    "browser_style": true,
+    "default_icon": {
+      "19": "to-container_small.png",
+      "38": "to-container.png"
+    },
+    "default_title": "re-open to tab in current group (CTRL+Shift+Y)"
   },
   "background": {
     "scripts": [
@@ -31,6 +44,7 @@
   },
   "permissions": [
     "<all_urls>",
+    "contextualIdentities",
     "cookies",
     "storage",
     "tabs",

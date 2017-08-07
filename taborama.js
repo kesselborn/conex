@@ -2,14 +2,26 @@ let prevDuplicates = -1;
 let imageQuality = 8;
 let defaultThumbnail = "http://eromate.se/images/no-thumbnail.jpg";
 let thumbnailWidth = 200;
+let defaultCookieStoreId = "firefox-default";
+let lastCookieStoreId = defaultCookieStoreId;
 
 let storeScreenshot = function(details) {
-  browser.tabs.get(details.tabId).then(tab => {
+  browser.tabs.get(details.tabId||details).then(tab => {
     if(!tab) {
       console.warning("couldn't find tab for browser.webNavigation.onBeforeNavigate, details: ", details);
       return;
     }
-    let capturing = browser.tabs.captureVisibleTab(null, {format: "png", quality: imageQuality});
+
+    console.log("lastCookieStoreId: "+lastCookieStoreId+" / thisCookieStoreId: "+tab.cookieStoreId);
+    if(tab.cookieStoreId == defaultCookieStoreId && lastCookieStoreId != defaultCookieStoreId) {
+      browser.pageAction.show(Number(tab.id));
+    } else if(tab.cookieStoreId != defaultCookieStoreId && tab.cookieStoreId != lastCookieStoreId) {
+      console.info(`cookieStoreId changed from ${lastCookieStoreId} -> ${tab.cookieStoreId}`);
+      lastCookieStoreId = tab.cookieStoreId;
+      browser.pageAction.hide(Number(tab.id));
+    }
+
+    let capturing = browser.tabs.captureVisibleTab(null, {format: "jpeg", quality: 10});
     capturing.then(function(imageData) {
       let setting = browser.storage.local.set({[tab.url] : {thumbnail: imageData, favicon: tab.favIconUrl}});
       setting.then(
@@ -27,10 +39,14 @@ function getEmptyImageTags() {
   return new Promise((resolve, reject) => {
     browser.tabs.query({}).then(tabs => {
       let tabUrls = tabs.map(tab => tab.url);
-      let imageTags = tabUrls.map(url => "<div class='thumbnail'><img style='max-width: 190px; max-height: 90px' src='" + defaultThumbnail +"'/></div>");
+      let imageTags = tabUrls.map(url => "<li class='thumbnail' style='background:url("+defaultThumbnail +"'/></div>");
       resolve(imageTags.join(""));
     });
   });
+}
+
+function activateTab(tabId) {
+  browser.tabs.update(Number(tabId), {active: true});
 }
 
 function getImageTags() {
@@ -39,7 +55,13 @@ function getImageTags() {
       let tabUrls = tabs.map(tab => tab.url);
       let items = browser.storage.local.get(tabUrls);
       items.then(items => {
-        let imageTags = tabUrls.map(url => "<div class='thumbnail'><img style='max-width: 200px; max-height: 100px; display: inline;' src='" + (items[url] && items[url].thumbnail || defaultThumbnail) +"'/></div>");
+        let imageTags = tabs.map(tab => {
+          if(items[tab.url]) {
+            return "<li data-tab-id="+tab.id+" class='thumbnail' style='background:url("+items[tab.url].thumbnail+")'></li>"
+          } else {
+            return "<li data-tab-id="+tab.id+" class='thumbnail' style='background:url("+defaultThumbnail+")'></li>"
+          }
+        });
         resolve(imageTags.join(""));
       });
     });
@@ -48,7 +70,9 @@ function getImageTags() {
 
 console.log("taborama loaded");
 
-browser.webNavigation.onBeforeNavigate.addListener(storeScreenshot);
+browser.tabs.onActivated.addListener(storeScreenshot);
+browser.tabs.onUpdated.addListener(storeScreenshot);
+
 browser.commands.onCommand.addListener(function(command) {
   if (command == "new-tab-in-same-group") {
     browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT})
@@ -68,5 +92,24 @@ browser.browserAction.onClicked.addListener((tab) => {
   var creating = browser.tabs.create({
     url: "popup/popup.html",
     active: true
+  });
+});
+
+function getCurrentContainer() {
+  return new Promise((resolve, reject) => {
+    browser.contextualIdentities.query({}).then(contexts => {
+      resolve(contexts.find(function(c) { return c.cookieStoreId == lastCookieStoreId; }));
+    });
+  })
+}
+
+browser.pageAction.onClicked.addListener(tab => {
+  getCurrentContainer().then(context => {
+    browser.tabs.create({
+      active: true,
+      cookieStoreId: context.cookieStoreId,
+      url: tab.url
+    });
+    browser.tabs.remove(tab.id);
   });
 });
