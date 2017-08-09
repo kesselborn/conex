@@ -1,18 +1,66 @@
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
 <html>
   <head>
     <style>
-      .thumbnail { 
-        vertical-align: middle; 
-        display: inline-block; 
-        width: 200px; 
-        height: 100px; 
-        text-align: center; 
-        margin:10px; 
-        background-size: contain !important;
-        background-repeat: space !important;
-        background-position: center !important;
+      .thumbnail:hover {
+        background-color: rgb(232,232,232);
         cursor:pointer;
-      };
+      }
+      .thumbnail {
+        background-color: rgb(252,252,252);
+        border-bottom: 1px solid rgb(237,237,237);
+        font-family: Sans-Serif;
+        font-size: smaller;
+        font-weight: lighter;
+        list-style-type: none;
+        padding:10px; 
+        padding-bottom: 10px;
+        width: 500px;
+      }
+
+      .thumbnail div {
+        display: flex;
+        align-items: center;
+      }
+
+      .image {
+        align-items: end !important;
+        border: 1px solid rgb(192,192,192);
+      }
+
+      .tab-url {
+        color: rgb(152,152,152); 
+      }
+
+      .thumbnail div.image { 
+        background-repeat: space !important;
+        background-size: cover !important;
+        height: 42px; 
+        text-align: center; 
+        vertical-align: middle; 
+        width: 56px; 
+        margin-right: 10px;
+      }
+
+      .thumbnail div.image img { 
+        width: 20px;
+      }
+
+      .thumbnail div.text { 
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 400px;
+        overflow: hidden;
+        display:block;
+      }
+
+      .thumbnail div.text div {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        width: 400px;
+        display: block !important;
+      }
     </style>
   </head>
   <body>

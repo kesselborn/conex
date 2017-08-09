@@ -35,16 +35,6 @@ let storeScreenshot = function(details) {
   });
 };
 
-function getEmptyImageTags() {
-  return new Promise((resolve, reject) => {
-    browser.tabs.query({}).then(tabs => {
-      let tabUrls = tabs.map(tab => tab.url);
-      let imageTags = tabUrls.map(url => "<li class='thumbnail' style='background:url("+defaultThumbnail +"'/></div>");
-      resolve(imageTags.join(""));
-    });
-  });
-}
-
 function activateTab(tabId) {
   browser.tabs.update(Number(tabId), {active: true});
 }
@@ -56,11 +46,12 @@ function getImageTags() {
       let items = browser.storage.local.get(tabUrls);
       items.then(items => {
         let imageTags = tabs.map(tab => {
+          let backroundImg = defaultThumbnail;
           if(items[tab.url]) {
-            return "<li data-tab-id="+tab.id+" class='thumbnail' style='background:url("+items[tab.url].thumbnail+")'></li>"
-          } else {
-            return "<li data-tab-id="+tab.id+" class='thumbnail' style='background:url("+defaultThumbnail+")'></li>"
+            backroundImg = items[tab.url].thumbnail;
           }
+          let url = tab.url.replace("http://", "").replace("https://", "");
+          return "<li data-tab-id="+tab.id+" class='thumbnail'><div><div class='image' style='background:url("+backroundImg+")'><img src='"+tab.favIconUrl+"'></div><div class='text'><div class='tab-title'>"+tab.title+"</div><div class='tab-url'>"+url+"</div></div></div></li>"
         });
         resolve(imageTags.join(""));
       });
