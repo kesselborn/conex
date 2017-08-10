@@ -51,8 +51,10 @@ function getImageTags() {
             backroundImg = items[tab.url].thumbnail;
           }
           let url = tab.url.replace("http://", "").replace("https://", "");
-          return "<li data-tab-id="+tab.id+" class='thumbnail'><div><div class='image' style='background:url("+backroundImg+")'><img src='"+tab.favIconUrl+"'></div><div class='text'><div class='tab-title'>"+tab.title+"</div><div class='tab-url'>"+url+"</div></div></div></li>"
+          let searchTerm = tab.title+" "+url;
+          return "<li tabindex='1' data-search-terms='"+searchTerm.toLowerCase()+"' data-tab-id="+tab.id+" class='thumbnail'><div><div class='image' style='background:url("+backroundImg+")'><img src='"+tab.favIconUrl+"'></div><div class='text'><div class='tab-title'>"+tab.title+"</div><div class='tab-url'>"+url+"</div></div></div></li>"
         });
+        imageTags.unshift("<li tabindex='1' class='section'><div><span class='circle-blue'>&nbsp;</span><span>privat</span><span>(19 tabs)</span></div></li>");
         resolve(imageTags.join(""));
       });
     });

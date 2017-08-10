@@ -2,7 +2,7 @@
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
-        "default": "Ctrl+X"
+        "default": "MacCtrl+Space"
       }
     },
     "_execute_page_action": {
@@ -23,14 +23,14 @@
     "default_title": "Taborama",
     "default_popup": "browser-action/popup.html",
     "default_icon": {
-      "48": "icon_bw.svg"
+      "48": "icon_bw.png"
     }
   },
   "page_action": {
     "browser_style": true,
     "default_icon": {
-      "19": "to-container_small.png",
-      "38": "to-container.png"
+      "19": "green-page-action-icon_small.png",
+      "38": "green-page-action-icon.png"
     },
     "default_title": "re-open to tab in current group (CTRL+Shift+Y)"
   },
@@ -40,12 +40,13 @@
     ]
   },
   "icons": {
-    "48": "icon.svg"
+    "48": "icon_bw.png"
   },
   "permissions": [
     "<all_urls>",
     "contextualIdentities",
     "cookies",
+    "history",
     "storage",
     "tabs",
     "unlimitedStorage",

@@ -3,7 +3,40 @@
 <html>
   <head>
     <style>
-      .thumbnail:hover {
+      body, ul {
+        margin: 0;
+        padding: 0;
+      }
+
+      .circle-blue {
+        border-radius:50%;
+        background-color: blue;
+        min-width: 1em;
+        min-height: 1em;
+        margin-right: 1em;
+        display: inline-block;
+      }
+
+      .section:hover, .section:focus {
+        background-color: rgb(220,220,222);
+        cursor:pointer;
+      }
+      .section {
+        background-color: rgb(235,235,236);
+        border-bottom: 1px solid rgb(237,237,237);
+        font-family: Sans-Serif;
+        font-size: smaller;
+        font-weight: lighter;
+        list-style-type: none;
+        padding:10px;
+        padding-bottom: 10px;
+        width: 500px;
+        height: 2em;
+        display: flex;
+        align-items: center;
+      }
+
+      .thumbnail:focus, .thumbnail:hover {
         background-color: rgb(232,232,232);
         cursor:pointer;
       }
@@ -14,7 +47,7 @@
         font-size: smaller;
         font-weight: lighter;
         list-style-type: none;
-        padding:10px; 
+        padding:10px;
         padding-bottom: 10px;
         width: 500px;
       }
@@ -30,24 +63,24 @@
       }
 
       .tab-url {
-        color: rgb(152,152,152); 
+        color: rgb(152,152,152);
       }
 
-      .thumbnail div.image { 
+      .thumbnail div.image {
         background-repeat: space !important;
         background-size: cover !important;
-        height: 42px; 
-        text-align: center; 
-        vertical-align: middle; 
-        width: 56px; 
+        height: 42px;
+        text-align: center;
+        vertical-align: middle;
+        width: 56px;
         margin-right: 10px;
       }
 
-      .thumbnail div.image img { 
+      .thumbnail div.image img {
         width: 20px;
       }
 
-      .thumbnail div.text { 
+      .thumbnail div.text {
         text-overflow: ellipsis;
         white-space: nowrap;
         max-width: 400px;
@@ -64,6 +97,11 @@
     </style>
   </head>
   <body>
+    <form>
+      <input tabindex='1' id='search' type='text' autocomplete="off"></input>
+    </form>
+    <ul id='list'></ul>
+    <ul id='history'></ul>
     <script type="text/javascript" src="popup.js"></script>
   </body>
 </html>
