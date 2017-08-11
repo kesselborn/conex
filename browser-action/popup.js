@@ -76,8 +76,6 @@ setTimeout(function(){
         let ul = $1('#'+tabGroup);
         elements[tabGroup].forEach(function(element) {
           element.addEventListener("click", function() {
-            console.log('12', element);
-            console.log('12', element.dataset.tabId);
             bg.activateTab(element.dataset.tabId);
             window.close();
           });
@@ -97,10 +95,9 @@ setTimeout(function(){
             return searchTerms.indexOf(searchTerm.toLowerCase()) >= 0
           });
           element.style.display = matchesSearchTerms ? "" : "none";
-          console.log('set display to', element.style.display, 'for', element);
         }
       });
-    
+
       Array.from($('#tabgroups ul')).forEach(ul => {
         ul.querySelector('li.section').tabIndex = -1; // section should not be selectable when we have search results
 
@@ -112,11 +109,11 @@ setTimeout(function(){
         }
       });
     } else {
-      Array($('#tabgroups ul')).forEach(ul => {
+      Array.from($('#tabgroups ul')).forEach(ul => {
         ul.style.display = "";
         ul.querySelector('li.section').tabIndex = 1;
       });
-      Array($('#tabgroups li.thumbnail')).forEach(li => li.style.display = "none" )
+      Array.from($('#tabgroups li.thumbnail')).forEach(li => li.style.display = "none" )
     }
   });
   }, e => console.error(e));
