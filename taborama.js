@@ -14,7 +14,7 @@ var $e = function(name, attributes, children) {
       e.appendChild(document.createTextNode(attributes[key]));
       continue;
     }
-    e.setAttribute(key.replace('_', '-'), attributes[key]);
+    e.setAttribute(key.replace(/_/g, '-'), attributes[key]);
   }
 
   for(let i in children) {
@@ -103,10 +103,11 @@ browser.pageAction.onClicked.addListener(tab => {
 function createThumbnailElement(tab, backroundImg) {
   let url = tab.url.replace("http://", "").replace("https://", "");
   let searchTerm = tab.title+" "+url;
-  let thumbnail = $e('li', {tabindex: 1, data_search_terms: searchTerm.toLowerCase(), data_tab_id: tab.id, class: 'thumbnail'} ,[
+  let thumbnail = $e('li', {tabindex: 1, data_search_terms: searchTerm.toLowerCase(), data_tab_id: tab.id, class: 'thumbnail', style: 'display:none'} ,[
       $e('div', {}, [
-        $e('div', {class: 'image', style: `background:url('${backroundImg}')`}),
-        $e('img', {src: tab.favIconUrl})
+        $e('div', {class: 'image', style: `background:url('${backroundImg}')`}, [
+          (backroundImg == tab.favIconUrl || !tab.favIconUrl) ? $e('span') : $e('img', {src: tab.favIconUrl})
+        ]),
       ]),
       $e('div', {class: 'text'}, [
         $e('div', {class: 'tab-title', content: tab.title}),
