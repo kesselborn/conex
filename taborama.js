@@ -59,18 +59,23 @@ console.log("taborama loaded");
 browser.tabs.onActivated.addListener(storeScreenshot);
 browser.tabs.onUpdated.addListener(storeScreenshot);
 
+function newTabInCurrentContainerGroup(url) {
+  browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT})
+    .then(tabs => browser.tabs.get(tabs[0].id), error => console.error(error))
+    .then(tab => {
+      console.info(tab);
+      browser.tabs.create({
+        cookieStoreId: tab.cookieStoreId,
+        url: url
+      }, error => {
+        console.error(error);
+      });
+    }, error => console.error(error));
+}
+
 browser.commands.onCommand.addListener(function(command) {
   if (command == "new-tab-in-same-group") {
-    browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT})
-      .then(tabs => browser.tabs.get(tabs[0].id), error => console.error(error))
-      .then(tab => {
-        console.info(tab);
-        browser.tabs.create({
-          cookieStoreId: tab.cookieStoreId
-        }, error => {
-          console.error(error);
-        });
-      }, error => console.error(error));
+    newTabInCurrentContainerGroup();
   }
 });
 
@@ -108,11 +113,11 @@ function createThumbnailElement(tab, backroundImg) {
         $e('div', {class: 'image', style: `background:url('${backroundImg}')`}, [
           (backroundImg == tab.favIconUrl || !tab.favIconUrl) ? $e('span') : $e('img', {src: tab.favIconUrl})
         ]),
+        $e('div', {class: 'text'}, [
+          $e('div', {class: 'tab-title', content: tab.title}),
+          $e('div', {class: 'tab-url', content: url})
+        ])
       ]),
-      $e('div', {class: 'text'}, [
-        $e('div', {class: 'tab-title', content: tab.title}),
-        $e('div', {class: 'tab-url', content: url})
-      ])
   ]);
   return thumbnail;
 }
