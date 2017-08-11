@@ -54,72 +54,29 @@ function renderTabGroups() {
 						])
 						);
 			}
-		});
+		}, e => console.error(e));
 		resolve({});
 	});
 }
 
-function getTabsByGroup() {
-	return new Promise((resolve, _) => {
-		let elements = new Map();
-		browser.tabs.query({}).then(tabs => {
-			let tabUrls = tabs.map(tab => tab.url);
-			let items = browser.storage.local.get(tabUrls);
-			items.then(items => {
-				tabs.forEach(function(tab) {
-          let backroundImg = tab.favIconUrl;
-					if(items[tab.url]) {
-            backroundImg = items[tab.url].thumbnail;
-						let url = tab.url.replace("http://", "").replace("https://", "");
-						let searchTerm = tab.title+" "+url;
-						let thumbnail = $e('li', {tabindex: 1, data_search_terms: searchTerm.toLowerCase(), data_tab_id: tab.id, class: 'thumbnail'} ,[
-							$e('div', {}, [
-								$e('div', {class: 'image', style: `background:url('${backroundImg}')`}),
-								$e('img', {src: tab.favIconUrl})
-							]),
-							$e('div', {class: 'text'}, [
-								$e('div', {class: 'tab-title', content: tab.title}),
-								$e('div', {class: 'tab-url', content: url})
-							])
-						]);
-
-						if(elements[tab.cookieStoreId]) {
-							elements[tab.cookieStoreId].push(thumbnail);
-						} else {
-							elements[tab.cookieStoreId] = [thumbnail];
-						}
-					}
-				});
-			});
-		});
-		console.log(elements);
-		resolve(elements);
-	});
-}
-
+let tabs = bg.getTabsByGroup();
 let tabGroups = renderTabGroups();
-let tabs = getTabsByGroup();
 
-tabGroups.then(_ => {
-	console.log("tab groups loaded");
-	document.addEventListener("load", function(event) {
-	console.log("tab groups loaded");
-		tabs.then(elements => {
-			console.log('yy');
-			console.log(document.querySelectorAll('body'));
-			console.log(document.querySelector('#tabgroups'));
-			console.log($1('#tabgroups').querySelectorAll('ul'));
-			$('#tabgroups ul').forEach(function(ul) {
-				console.log(ul);
-				console.log(ul.id);
-				elements[key].forEach(function(element) {
-					console.log(element);
-				});
-			});
-			//ul.appendChild(elements[key][i]);
-		});
-	});
-});
+
+setTimeout(function(){
+  tabGroups.then(_ => {
+    tabs.then(elements => {
+      for(tabGroup in elements) {
+        console.log('37', tabGroup);
+        let ul = $1('#'+tabGroup);
+        console.log('34', ul);
+        elements[tabGroup].forEach(function(element) {
+          ul.appendChild(element);
+        });
+      }
+    });
+  }, e => console.error(e));
+},100);
 
 //bg.getImageTags().then(src => {
 //  document.getElementById('list').innerHTML = src;
@@ -157,6 +114,6 @@ tabGroups.then(_ => {
 //         .sort(function(a,b) { return b.visitCount - a.visitCount; })
 //         .map(x => `<li tabindex='1' class='thumbnail'><div><div class='text'><div class='tab-title'>${x.title}</div><div class='tab-url'>${x.url}</div></div></div></li>`);
 //       document.getElementById('history').innerHTML = historyTags.join("");
-//    });
+//    }, e => console.error(e));
 //  });
-//});
+//}, e => console.error(e));
