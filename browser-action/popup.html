@@ -8,14 +8,22 @@
         padding: 0;
       }
 
-      .circle-blue {
+      .circle {
         border-radius:50%;
-        background-color: blue;
         min-width: 1em;
         min-height: 1em;
         margin-right: 1em;
         display: inline-block;
       }
+
+      .circle-blue { background-color: rgb(55,173,255); }
+      .circle-turquoise { background-color: rgb(0,199,154); }
+      .circle-green { background-color: rgb(81,205,0); }
+      .circle-yellow { background-color: rgb(255,203,0); }
+      .circle-orange { background-color: rgb(255,159,0); }
+      .circle-red { background-color: rgb(255,97,61); }
+      .circle-pink { background-color: rgb(255,75,218); }
+      .circle-purple { background-color: rgb(175,81,245); }
 
       .section:hover, .section:focus {
         background-color: rgb(220,220,222);
@@ -23,7 +31,7 @@
       }
       .section {
         background-color: rgb(235,235,236);
-        border-bottom: 1px solid rgb(237,237,237);
+        border-bottom: 1px solid rgb(208,208,208);
         font-family: Sans-Serif;
         font-size: smaller;
         font-weight: lighter;
@@ -100,8 +108,7 @@
     <form>
       <input tabindex='1' id='search' type='text' autocomplete="off"></input>
     </form>
-    <ul id='list'></ul>
-    <ul id='history'></ul>
+    <div id='tabgroups'></div>
     <script type="text/javascript" src="popup.js"></script>
   </body>
 </html>
