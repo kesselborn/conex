@@ -9,7 +9,7 @@ let $e = function(name, attributes, children) {
       e.appendChild(document.createTextNode(attributes[key]));
       continue;
     }
-    e.setAttribute(key.replace('_', '-'), attributes[key]);
+    e.setAttribute(key.replace(/_/g, '-'), attributes[key]);
   }
 
   for(let i in children) {
@@ -27,6 +27,10 @@ function keyHandling(event) {
         bg.activateTab(tabId);
       } else if(url = document.activeElement.dataset.url) {
         bg.newTabInCurrentContainerGroup(url);
+      } else if(cookieStoreId = document.activeElement.dataset.cookieStore) {
+        browser.tabs.create({cookieStoreId: cookieStoreId})
+      } else {
+        console.error('unhandled active element:', document.activeElement);
       }
       window.close();
     } catch(e){};
@@ -45,7 +49,7 @@ document.body.addEventListener("keypress", keyHandling);
 
 function sectionElement(id, color, name) {
   return $e('ul', {id: id},[
-      $e('li', {tabindex: 1, class: 'section'}, [
+      $e('li', {tabindex: 1, class: 'section', data_cookie_store: id}, [
         $e('div', {}, [
           $e('span', {class: 'circle circle-'+color, content: ' '}),
           $e('span', {content: name}),
@@ -126,11 +130,12 @@ setTimeout(function(){
           }
         });
 
+        document.getElementById('history').innerHTML = "";
         let historyUl = document.getElementById('history');
-        historyUl.innerHTML = "";
         let historySection = sectionElement('', 'none', 'history');
         historySection.tabIndex = -1;
         historyUl.appendChild(historySection);
+        console.log('34', historyUl);
         var searching = browser.history.search({
           text: event.target.value,
           startTime: 0
