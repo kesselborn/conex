@@ -60,6 +60,17 @@
         width: 500px;
       }
 
+      form input {
+        background-color: rgb(252,252,252);
+        border: 1px solid rgb(252,252,252);
+        font-family: Sans-Serif;
+        font-size: large;
+        font-weight: lighter;
+        padding-top: 10px;
+        margin:10px 0px 0px 10px;
+        width: 500px;
+      }
+
       .thumbnail div {
         display: flex;
         align-items: center;
@@ -106,7 +117,7 @@
   </head>
   <body>
     <form>
-      <input tabindex='1' id='search' type='text' autocomplete="off"></input>
+      <input tabindex='1' id='search' type='search' autocomplete="off" placeholder="search for title or url"></input>
     </form>
     <div id='tabgroups'></div>
     <div><ul id='history'></ul></div>

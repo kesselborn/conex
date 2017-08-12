@@ -39,7 +39,7 @@ function keyHandling(event) {
   } else if(document.activeElement != searchElement) {
     $1('#search').focus();
     $1('#search').value = "";
-    if(event.key.match(/[A-Za-z0-1-_\/:]/)) {
+    if(event.key.length == 1) {
       $1('#search').value = event.key;
     }
   }
@@ -47,9 +47,9 @@ function keyHandling(event) {
 
 document.body.addEventListener("keypress", keyHandling);
 
-function sectionElement(id, color, name) {
+function sectionElement(id, color, name, tabindex) {
   return $e('ul', {id: id},[
-      $e('li', {tabindex: 1, class: 'section', data_cookie_store: id}, [
+      $e('li', {tabindex: tabindex || 1, class: 'section', data_cookie_store: id}, [
         $e('div', {}, [
           $e('span', {class: 'circle circle-'+color, content: ' '}),
           $e('span', {content: name}),
@@ -132,10 +132,8 @@ setTimeout(function(){
 
         document.getElementById('history').innerHTML = "";
         let historyUl = document.getElementById('history');
-        let historySection = sectionElement('', 'none', 'history');
-        historySection.tabIndex = -1;
+        let historySection = sectionElement('', 'none', 'history', -1);
         historyUl.appendChild(historySection);
-        console.log('34', historyUl);
         var searching = browser.history.search({
           text: event.target.value,
           startTime: 0
@@ -157,25 +155,3 @@ setTimeout(function(){
   }, e => console.error(e));
 },200);
 
-//bg.getImageTags().then(src => {
-//  setTimeout(() => {
-//      document.getElementById('search').focus();
-//  }, 100);
-//
-//  document.querySelector('#search').addEventListener("keyup", function(event) {
-//    if(event.key != "ArrowUp" && event.key != "ArrowDown") {
-//      currentSelection = document.querySelector('.selected');
-//      currentSelection && currentSelection.classList.remove('selected');
-//    }
-//    Array.from(document.querySelectorAll('.thumbnail')).forEach(function(element) {
-//      let searchTerms = element.dataset.searchTerms;
-//      if(searchTerms) {
-//        let matchesSearchTerms = event.target.value.split(" ").every(function(searchTerm) {
-//          return searchTerms.indexOf(searchTerm.toLowerCase()) >= 0
-//        });
-//        element.style.display = matchesSearchTerms ? "block" : "none";
-//      }
-//    });
-//
-//  });
-//}, e => console.error(e));
