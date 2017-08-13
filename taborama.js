@@ -2,8 +2,8 @@ let prevDuplicates = -1;
 let imageQuality = 8;
 let defaultThumbnail = "http://eromate.se/images/no-thumbnail.jpg";
 let thumbnailWidth = 200;
-let defaultCookieStoreId = "firefox-default";
-let lastCookieStoreId = defaultCookieStoreId;
+var defaultCookieStoreId = "firefox-default";
+var lastCookieStoreId = defaultCookieStoreId;
 
 var $ = function(s){ return document.querySelectorAll(s); };
 var $1 = function(s){ return document.querySelector(s); };
@@ -32,13 +32,13 @@ let storeScreenshot = function(details) {
       return;
     }
 
-    console.log("lastCookieStoreId: "+lastCookieStoreId+" / thisCookieStoreId: "+tab.cookieStoreId);
-    if(tab.cookieStoreId == defaultCookieStoreId && lastCookieStoreId != defaultCookieStoreId && tab.url.indexOf("about:") != 0 ) {
+    if(tab.url.indexOf("about:") != 0 ) {
       browser.pageAction.show(Number(tab.id));
-    } else if(tab.cookieStoreId != defaultCookieStoreId && tab.cookieStoreId != lastCookieStoreId) {
+    }
+
+    if(tab.cookieStoreId != defaultCookieStoreId && tab.cookieStoreId != lastCookieStoreId) {
       console.info(`cookieStoreId changed from ${lastCookieStoreId} -> ${tab.cookieStoreId}`);
       lastCookieStoreId = tab.cookieStoreId;
-      browser.pageAction.hide(Number(tab.id));
     }
 
     let capturing = browser.tabs.captureVisibleTab(null, {format: "jpeg", quality: 10});
@@ -92,6 +92,20 @@ function getCurrentContainer() {
       resolve(contexts.find(function(c) { return c.cookieStoreId == lastCookieStoreId; }));
     }, error => console.error(error));
   })
+}
+
+function openInDifferentContainer(cookieStoreId) {
+  browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT})
+    .then(tabs => browser.tabs.get(tabs[0].id), error => console.error(error))
+    .then(tab => {
+      browser.tabs.create({
+        active: true,
+        cookieStoreId: cookieStoreId,
+        url: tab.url
+      });
+      browser.tabs.remove(tab.id);
+    }, error => console.error(error)
+    );
 }
 
 browser.pageAction.onClicked.addListener(tab => {

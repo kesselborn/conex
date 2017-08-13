@@ -1,23 +1,5 @@
-var bg = browser.extension.getBackgroundPage();
-
-let $ = function(s){ return document.querySelectorAll(s); };
-let $1 = function(s){ return document.querySelector(s); };
-let $e = function(name, attributes, children) {
-  let e = document.createElement(name);
-  for(let key in attributes) {
-    if(key == 'content') {
-      e.appendChild(document.createTextNode(attributes[key]));
-      continue;
-    }
-    e.setAttribute(key.replace(/_/g, '-'), attributes[key]);
-  }
-
-  for(let i in children) {
-    e.appendChild(children[i]);
-  }
-
-  return e;
-};
+let tabs = bg.getTabsByGroup();
+let tabGroups = renderTabGroups();
 
 function keyHandling(event) {
   let searchElement = $1('#search');
@@ -47,46 +29,6 @@ function keyHandling(event) {
 
 document.body.addEventListener("keypress", keyHandling);
 
-function sectionElement(id, color, name, tabindex) {
-  return $e('ul', {id: id},[
-      $e('li', {tabindex: tabindex || 1, class: 'section', data_cookie_store: id}, [
-        $e('div', {}, [
-          $e('span', {class: 'circle circle-'+color, content: ' '}),
-          $e('span', {content: name}),
-        ])
-      ])
-  ]);
-}
-
-function makeHistoryItem(searchItem) {
-  element = $e('li', {tabindex: 1, class: 'thumbnail', data_title: searchItem.title.toLowerCase(), data_url: searchItem.url.toLowerCase()}, [
-      $e('div', {}, [
-        $e('div', {class: 'text'}, [
-          $e('div', {class: 'tab-title', content: searchItem.title}),
-          $e('div', {class: 'tab-url', content: searchItem.url.replace('http://','').replace('https://','')})
-        ])
-      ])
-  ]);
-  element.addEventListener('click', _ => bg.newTabInCurrentContainerGroup(searchItem.url));
-
-  return element;
-}
-
-function renderTabGroups() {
-  return new Promise((resolve, _) => {
-    let getContexts = browser.contextualIdentities.query({});
-    getContexts.then(contexts => {
-      for(let i in contexts) {
-        $1('#tabgroups').appendChild(sectionElement(contexts[i].cookieStoreId, contexts[i].color, contexts[i].name));
-      }
-      $1('#tabgroups').appendChild(sectionElement('firefox-default', 'none', 'default'));
-    }, e => console.error(e));
-    resolve({});
-  });
-}
-
-let tabs = bg.getTabsByGroup();
-let tabGroups = renderTabGroups();
 
 setTimeout(function(){
   document.getElementById('search').focus();
@@ -109,7 +51,7 @@ setTimeout(function(){
     document.querySelector('#search').addEventListener("keyup", function(event) {
       if(event.target.value != "") {
         Array.from(document.querySelectorAll('.thumbnail')).forEach(function(element) {
-          let searchTerms = element.dataset.title + element.dataset.url;
+          let searchTerms = element.dataset.title + element.dataset.url.replace('http://','').replace('https://');
           if(searchTerms) {
             let matchesSearchTerms = event.target.value.split(" ").every(searchTerm => {
               return searchTerms.indexOf(searchTerm.toLowerCase()) >= 0
@@ -144,7 +86,7 @@ setTimeout(function(){
             console.log(tabLinks);
             let historyTags = result
               .sort((a,b) => b.visitCount - a.visitCount)
-              .filter(e => ! tabLinks.includes(e.url.toLowerCase().replace('http://', '').replace('https://', '')))
+              .filter(e => ! tabLinks.includes(e.url.toLowerCase()))
               .forEach(searchResult => historyUl.appendChild(makeHistoryItem(searchResult)));
           }, e => console.error(e));
         } else if(event.target.value.length <= 1) {
