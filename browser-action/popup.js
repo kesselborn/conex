@@ -59,7 +59,7 @@ function sectionElement(id, color, name, tabindex) {
 }
 
 function makeHistoryItem(searchItem) {
-  element = $e('li', {tabindex: 1, class: 'thumbnail', data_url: searchItem.url}, [
+  element = $e('li', {tabindex: 1, class: 'thumbnail', data_title: searchItem.title.toLowerCase(), data_url: searchItem.url.toLowerCase()}, [
       $e('div', {}, [
         $e('div', {class: 'text'}, [
           $e('div', {class: 'tab-title', content: searchItem.title}),
@@ -88,7 +88,6 @@ function renderTabGroups() {
 let tabs = bg.getTabsByGroup();
 let tabGroups = renderTabGroups();
 
-
 setTimeout(function(){
   document.getElementById('search').focus();
   tabGroups.then(_ => {
@@ -110,7 +109,7 @@ setTimeout(function(){
     document.querySelector('#search').addEventListener("keyup", function(event) {
       if(event.target.value != "") {
         Array.from(document.querySelectorAll('.thumbnail')).forEach(function(element) {
-          let searchTerms = element.dataset.searchTerms;
+          let searchTerms = element.dataset.title + element.dataset.url;
           if(searchTerms) {
             let matchesSearchTerms = event.target.value.split(" ").every(searchTerm => {
               return searchTerms.indexOf(searchTerm.toLowerCase()) >= 0
@@ -130,19 +129,30 @@ setTimeout(function(){
           }
         });
 
-        document.getElementById('history').innerHTML = "";
-        let historyUl = document.getElementById('history');
-        let historySection = sectionElement('', 'none', 'history', -1);
-        historyUl.appendChild(historySection);
-        var searching = browser.history.search({
-          text: event.target.value,
-          startTime: 0
-        }).then(result => {
-          let historyTags = result
-            .sort(function(a,b) { return b.visitCount - a.visitCount; })
-            .slice(0,10)
-            .forEach(searchResult => historyUl.appendChild(makeHistoryItem(searchResult)));
-        }, e => console.error(e));
+        // search history for search strings that are longer than one letter
+        if(event.target.value.length > 1 && $('#history ul li').length == 0) {
+          console.log("fetching history");
+          document.getElementById('history').innerHTML = "";
+          let historyUl = document.getElementById('history');
+          let historySection = sectionElement('', 'none', 'history', -1);
+          historyUl.appendChild(historySection);
+          var searching = browser.history.search({
+            text: event.target.value,
+            startTime: 0
+          }).then(result => {
+            let tabLinks = Array.from($('#tabgroups li')).map(t => t.dataset.url);
+            console.log(tabLinks);
+            let historyTags = result
+              .sort((a,b) => b.visitCount - a.visitCount)
+              .filter(e => ! tabLinks.includes(e.url.toLowerCase().replace('http://', '').replace('https://', '')))
+              .forEach(searchResult => historyUl.appendChild(makeHistoryItem(searchResult)));
+          }, e => console.error(e));
+        } else if(event.target.value.length <= 1) {
+          console.log("deleting history");
+          document.getElementById('history').innerHTML = "";
+        } else {
+          console.log("using cached history");
+        }
       } else {
         document.getElementById('history').innerHTML = "";
         Array.from($('#tabgroups ul')).forEach(ul => {

@@ -23,14 +23,14 @@
     "default_title": "Taborama",
     "default_popup": "browser-action/popup.html",
     "default_icon": {
-      "48": "icon_bw.png"
+      "48": "icons/icon_bw.png"
     }
   },
   "page_action": {
     "browser_style": true,
     "default_icon": {
-      "19": "green-page-action-icon_small.png",
-      "38": "green-page-action-icon.png"
+      "19": "icons/green-page-action-icon_small.png",
+      "38": "icons/green-page-action-icon.png"
     },
     "default_title": "re-open to tab in current group (CTRL+Shift+Y)"
   },
@@ -40,7 +40,7 @@
     ]
   },
   "icons": {
-    "48": "icon_bw.png"
+    "48": "icons/icon_bw.png"
   },
   "permissions": [
     "<all_urls>",

@@ -108,7 +108,7 @@ browser.pageAction.onClicked.addListener(tab => {
 function createThumbnailElement(tab, backroundImg) {
   let url = tab.url.replace("http://", "").replace("https://", "");
   let searchTerm = tab.title+" "+url;
-  let thumbnail = $e('li', {tabindex: 1, data_search_terms: searchTerm.toLowerCase(), data_tab_id: tab.id, class: 'thumbnail', style: 'display:none'} ,[
+  let thumbnail = $e('li', {tabindex: 1, data_title: tab.title.toLowerCase(), data_url: url.toLowerCase(), data_tab_id: tab.id, class: 'thumbnail', style: 'display:none'} ,[
       $e('div', {}, [
         $e('div', {class: 'image', style: `background:url('${backroundImg}')`}, [
           (backroundImg == tab.favIconUrl || !tab.favIconUrl) ? $e('span') : $e('img', {src: tab.favIconUrl})
