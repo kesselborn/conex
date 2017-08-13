@@ -139,7 +139,7 @@ function createThumbnailElement(tab, backroundImg) {
 function getTabsByGroup() {
   return new Promise((resolve, _) => {
     let elements = new Map();
-    browser.tabs.query({active: false}).then(tabs => {
+    browser.tabs.query({}).then(tabs => {
       let tabUrls = tabs.map(tab => tab.url);
       let items = browser.storage.local.get(tabUrls);
       items.then(items => {

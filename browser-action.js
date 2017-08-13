@@ -29,7 +29,6 @@ function keyHandling(event) {
 
 document.body.addEventListener("keypress", keyHandling);
 
-
 setTimeout(function(){
   document.getElementById('search').focus();
   tabGroups.then(_ => {
