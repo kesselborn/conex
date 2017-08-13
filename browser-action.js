@@ -82,10 +82,11 @@ setTimeout(function(){
             startTime: 0
           }).then(result => {
             let tabLinks = Array.from($('#tabgroups li')).map(t => t.dataset.url);
-            console.log(tabLinks);
+            console.log('1', tabLinks);
+            console.log('2', result.map(e => e.url));
             let historyTags = result
               .sort((a,b) => b.visitCount - a.visitCount)
-              .filter(e => ! tabLinks.includes(e.url.toLowerCase()))
+              .filter(e => ! tabLinks.includes(e.url.replace('http://','').replace('https://','').toLowerCase()))
               .forEach(searchResult => historyUl.appendChild(makeHistoryItem(searchResult)));
           }, e => console.error(e));
         } else if(event.target.value.length <= 1) {

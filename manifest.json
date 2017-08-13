@@ -29,12 +29,11 @@
   "page_action": {
     "browser_style": true,
     "default_popup": "page-action.html",
-    "default_title": "Re-open tab in other group",
     "default_icon": {
       "19": "icons/icon_19.png",
       "38": "icons/icon_38.png"
     },
-    "default_title": "re-open to tab in current group (CTRL+Shift+Y)"
+    "default_title": "re-open to tab in other group (CTRL+Shift+Y)"
   },
   "background": {
     "scripts": [
