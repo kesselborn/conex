@@ -1,4 +1,14 @@
 {
+  "manifest_version": 2,
+  "name": "Taborama",
+  "version": "0.1.1",
+  "browser_action": {
+    "default_title": "Taborama",
+    "default_popup": "browser-action.html",
+    "default_icon": {
+      "48": "icons/icon_48.png"
+    }
+  },
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
@@ -16,15 +26,8 @@
       }
     }
   },
-  "manifest_version": 2,
-  "name": "Taborama",
-  "version": "0.1",
-  "browser_action": {
-    "default_title": "Taborama",
-    "default_popup": "browser-action.html",
-    "default_icon": {
-      "48": "icons/icon_48.png"
-    }
+  "options_ui": {
+    "page": "options_ui.html"
   },
   "page_action": {
     "browser_style": true,
