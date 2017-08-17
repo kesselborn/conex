@@ -103,5 +103,5 @@ setTimeout(function(){
       }
     });
   }, e => console.error(e));
-},200);
+},400);
 

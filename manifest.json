@@ -1,12 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Taborama",
-  "version": "0.0.3",
-  "applications": {
-    "gecko": {
-      "id": "{ec9d70ea-0229-49c0-bbf7-0df9bbccde35}"
-    }
-  },
+  "version": "0.0.5",
   "browser_action": {
     "default_title": "Taborama",
     "default_popup": "browser-action.html",
@@ -58,7 +53,6 @@
     "history",
     "storage",
     "tabs",
-    "unlimitedStorage",
     "webNavigation"
   ]
 }
