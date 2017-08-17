@@ -40,7 +40,8 @@
   },
   "background": {
     "scripts": [
-      "taborama.js"
+      "helper.js",
+      "background.js"
     ]
   },
   "icons": {
