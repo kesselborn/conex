@@ -30,8 +30,7 @@ const $e = function(name, attributes, children) {
   return e;
 };
 
-
-function createTabGroupElement(id, color, name, tabindex) {
+function createTabGroupHeaderElement(id, color, name, tabindex) {
   const elment =
     $e('ul', {id: id},[
         $e('li', {tabindex: tabindex || 1, class: 'section', data_cookie_store: id}, [
@@ -47,7 +46,7 @@ function createTabGroupElement(id, color, name, tabindex) {
 
 function createHistoryElement(historyItem) {
   const element =
-    $e('li', {tabindex: 1, class: 'thumbnail', data_title: historyItem.title.toLowerCase(), data_url: historyItem.url.toLowerCase()}, [
+    $e('li', {tabindex: 1, class: 'tab', data_title: historyItem.title.toLowerCase(), data_url: historyItem.url.toLowerCase()}, [
         $e('div', {}, [
           $e('div', {class: 'text'}, [
             $e('div', {class: 'tab-title', content: historyItem.title}),
@@ -65,7 +64,7 @@ function createTabElement(tab, backroundImg) {
   const searchTerm = "${tab.title} ${url}";
 
   const element =
-    $e('li', {tabindex: 1, data_title: tab.title.toLowerCase(), data_url: url.toLowerCase(), data_tab_id: tab.id, class: 'thumbnail', style: 'display:none'} ,[
+    $e('li', {tabindex: 1, data_title: tab.title.toLowerCase(), data_url: url.toLowerCase(), data_tab_id: tab.id, class: 'tab', style: 'display:none'} ,[
         $e('div', {}, [
           $e('div', {class: 'image', style: `background:url('${backroundImg}')`}, [
             (backroundImg == tab.favIconUrl || !tab.favIconUrl) ? $e('span') : $e('img', {src: tab.favIconUrl})

@@ -33,7 +33,7 @@ function openInDifferentContainer(cookieStoreId) {
 
 function getTabsByGroup() {
   return new Promise((resolve, reject) => {
-    const groupsTabsMap = new Map();
+    const groupsTabsMap = {};
 
     browser.tabs.query({}).then(tabs => {
       const tabUrls = tabs.map(tab => tab.url);
@@ -47,11 +47,11 @@ function getTabsByGroup() {
 
           const thumbnailElement = createTabElement(tab, backroundImg);
 
-          if(groupsTabsMap[tab.cookieStoreId]) {
-            groupsTabsMap[tab.cookieStoreId].push(thumbnailElement);
-          } else {
-            groupsTabsMap[tab.cookieStoreId] = [thumbnailElement];
+          if(!groupsTabsMap[tab.cookieStoreId]) {
+            groupsTabsMap[tab.cookieStoreId] = [];
           }
+
+          groupsTabsMap[tab.cookieStoreId].push(thumbnailElement);
         }
       }, e => reject(e));
       resolve(groupsTabsMap);
@@ -69,7 +69,7 @@ const showHidePageAction = function(activeInfo) {
   })
 };
 
-const updateCookieStoreId = function(activeInfo) {
+const updateLastCookieStoreId = function(activeInfo) {
   browser.tabs.get(activeInfo.tabId).then(tab => {
     if(tab.cookieStoreId != defaultCookieStoreId && tab.cookieStoreId != lastCookieStoreId) {
       console.log(`cookieStoreId changed from ${lastCookieStoreId} -> ${tab.cookieStoreId}`);
@@ -103,7 +103,7 @@ browser.commands.onCommand.addListener(function(command) {
 
 browser.tabs.onActivated.addListener(function(activeInfo) { storeScreenshot(activeInfo.tabId) });
 browser.tabs.onActivated.addListener(showHidePageAction);
-browser.tabs.onActivated.addListener(updateCookieStoreId);
+browser.tabs.onActivated.addListener(updateLastCookieStoreId);
 
 browser.tabs.onUpdated.addListener(storeScreenshot);
 

@@ -42,14 +42,14 @@ const insertTabElements = function(tabGroups) {
   }
 };
 
-const resetSearch = function() {
+const resetPopup = function() {
   document.getElementById('history').innerHTML = '';
   for(ul of $('#tabgroups ul')) {
     ul.style.display = '';
     ul.querySelector('li.section').tabIndex = 1;
   }
 
-  for(li of $('#tabgroups li.thumbnail')) {
+  for(li of $('#tabgroups li.tab')) {
     li.style.display = 'none';
   }
 };
@@ -58,13 +58,13 @@ const fillHistorySection = function(searchQuery) {
   const historyUl = $1('#history');
 
   historyUl.innerHTML = '';
-  historyUl.appendChild(createTabGroupElement('', 'none', 'history', -1));
+  historyUl.appendChild(createTabGroupHeaderElement('', 'none', 'history', -1));
 
   browser.history.search({
     text: searchQuery,
     startTime: 0
   }).then(result => {
-    const tabLinks = Array.from($('.thumbnail')).map(t => t.dataset.url.toLowerCase());
+    const tabLinks = Array.from($('.tab')).map(t => t.dataset.url.toLowerCase());
 
     result
       .sort((a,b) => b.visitCount - a.visitCount)
@@ -74,10 +74,11 @@ const fillHistorySection = function(searchQuery) {
 };
 
 const showHideTabEntries = function(searchQuery) {
-  for(element of $('.thumbnail')) {
+  for(element of $('.tab')) {
     const text = (element.dataset.title + element.dataset.url.replace('http://','').replace('https://')).toLowerCase();
+
     if(text) {
-      // if the search query consists of multiple work, we search for a match of any of the words
+      // if the search query consists of multiple words, check if ALL words match -- regardless of the order
       const match = searchQuery.split(' ').every(q => {
         return text.indexOf(q) >= 0
       });
@@ -86,12 +87,12 @@ const showHideTabEntries = function(searchQuery) {
   }
 };
 
-const showHideGroupEntries = function(searchQuery) {
+const showHideTabGroupHeader = function(searchQuery) {
   for(ul of $('#tabgroups ul')) {
     ul.querySelector('li.section').tabIndex = -1; // section should not be selectable when we have search results
 
     // hide sections that don't have tabs that match the search
-    if(Array.from(ul.querySelectorAll('li.thumbnail')).filter(li => li.style.display != 'none') == 0) {
+    if(Array.from(ul.querySelectorAll('li.tab')).filter(li => li.style.display != 'none') == 0) {
       ul.style.display = 'none';
     } else {
       ul.style.display = '';
@@ -102,11 +103,11 @@ const showHideGroupEntries = function(searchQuery) {
 const onSearchChange = function(event) {
   const searchQuery = event.target.value.toLowerCase();
   if(searchQuery == '') {
-    return resetSearch();
+    return resetPopup();
   }
 
   showHideTabEntries(searchQuery);
-  showHideGroupEntries(searchQuery);
+  showHideTabGroupHeader(searchQuery);
 
   if(searchQuery.length > 1 && $('#history ul li').length == 0) {
     console.log('fetching history');
