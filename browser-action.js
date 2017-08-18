@@ -29,7 +29,7 @@ const keyHandling = function(event) {
 
 document.body.addEventListener('keypress', keyHandling);
 
-const addTabGroupSections = function(tabGroups) {
+const insertTabElements = function(tabGroups) {
   for(tabGroup in tabGroups) {
     let ul = $1(`#${tabGroup}`);
     for(const element of tabGroups[tabGroup]) {
@@ -120,7 +120,7 @@ const onSearchChange = function(event) {
 setTimeout(function(){
   document.getElementById('search').focus();
   tabGroupRendering.then(() => {
-    groupsTabsMapCreating.then(addTabGroupSections);
+    groupsTabsMapCreating.then(insertTabElements);
     document.querySelector('#search').addEventListener('keyup', onSearchChange);
   }, e => console.error(e));
 },400);
