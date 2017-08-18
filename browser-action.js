@@ -58,7 +58,7 @@ const fillHistorySection = function(searchQuery) {
   const historyUl = $1('#history');
 
   historyUl.innerHTML = '';
-  historyUl.appendChild(sectionElement('', 'none', 'history', -1));
+  historyUl.appendChild(createTabGroupElement('', 'none', 'history', -1));
 
   browser.history.search({
     text: searchQuery,
@@ -69,7 +69,7 @@ const fillHistorySection = function(searchQuery) {
     result
       .sort((a,b) => b.visitCount - a.visitCount)
       .filter(e => ! tabLinks.includes(e.url.replace('http://','').replace('https://','').toLowerCase()))
-      .forEach(searchResult => historyUl.appendChild(makeHistoryItem(searchResult)));
+      .forEach(searchResult => historyUl.appendChild(createHistoryElement(searchResult)));
   }, e => console.error(e));
 };
 

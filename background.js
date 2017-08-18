@@ -45,7 +45,7 @@ function getTabsByGroup() {
             backroundImg = cachedThumbnails[tab.url].thumbnail;
           }
 
-          const thumbnailElement = createThumbnailElement(tab, backroundImg);
+          const thumbnailElement = createTabElement(tab, backroundImg);
 
           if(groupsTabsMap[tab.cookieStoreId]) {
             groupsTabsMap[tab.cookieStoreId].push(thumbnailElement);
@@ -91,24 +91,6 @@ const storeScreenshot = function(tabId) {
             e  => console.error(e));
 
   }, error => console.error(error));
-};
-
-
-const createThumbnailElement = function(tab, backroundImg) {
-  const url = tab.url.replace('http://', '').replace('https://', '');
-  const searchTerm = "${tab.title} ${url}";
-
-  return $e('li', {tabindex: 1, data_title: tab.title.toLowerCase(), data_url: url.toLowerCase(), data_tab_id: tab.id, class: 'thumbnail', style: 'display:none'} ,[
-           $e('div', {}, [
-             $e('div', {class: 'image', style: `background:url('${backroundImg}')`}, [
-               (backroundImg == tab.favIconUrl || !tab.favIconUrl) ? $e('span') : $e('img', {src: tab.favIconUrl})
-             ]),
-             $e('div', {class: 'text'}, [
-               $e('div', {class: 'tab-title', content: tab.title}),
-               $e('div', {class: 'tab-url', content: url})
-             ])
-           ]),
-         ]);
 };
 
 
