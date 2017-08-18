@@ -1,12 +1,22 @@
 body, ul {
   margin: 0;
   padding: 0;
+  font-family: Sans-Serif;
 }
 
-h2 {
+#pageaction h2 {
+  width: 200px;
   padding: 0.5em 0 0 0;
+  font-size: small;
   text-align: center !important;
-  width: 500px;
+}
+
+#pageaction li.section {
+  width: 200px;
+}
+
+#pageaction li.thumbnail {
+  width: 200px;
 }
 
 .circle {
@@ -17,54 +27,18 @@ h2 {
   display: inline-block;
 }
 
-.circle-blue { background-color: rgb(55,173,255); }
+.circle-blue      { background-color: rgb(55,173,255); }
 .circle-turquoise { background-color: rgb(0,199,154); }
-.circle-green { background-color: rgb(81,205,0); }
-.circle-yellow { background-color: rgb(255,203,0); }
-.circle-orange { background-color: rgb(255,159,0); }
-.circle-red { background-color: rgb(255,97,61); }
-.circle-pink { background-color: rgb(255,75,218); }
-.circle-purple { background-color: rgb(175,81,245); }
-
-.section:hover, .section:focus {
-  background-color: rgb(220,220,222);
-  cursor:pointer;
-}
-.section {
-  background-color: rgb(235,235,236);
-  border-bottom: 1px solid rgb(208,208,208);
-  font-family: Sans-Serif;
-  font-size: smaller;
-  font-weight: lighter;
-  list-style-type: none;
-  padding:10px;
-  padding-bottom: 10px;
-  width: 500px;
-  height: 2em;
-  display: flex;
-  align-items: center;
-}
-
-.thumbnail:focus, .thumbnail:hover {
-  background-color: rgb(232,232,232);
-  cursor:pointer;
-}
-.thumbnail {
-  background-color: rgb(252,252,252);
-  border-bottom: 1px solid rgb(237,237,237);
-  font-family: Sans-Serif;
-  font-size: smaller;
-  font-weight: lighter;
-  list-style-type: none;
-  padding:10px;
-  padding-bottom: 10px;
-  width: 500px;
-}
+.circle-green     { background-color: rgb(81,205,0); }
+.circle-yellow    { background-color: rgb(255,203,0); }
+.circle-orange    { background-color: rgb(255,159,0); }
+.circle-red       { background-color: rgb(255,97,61); }
+.circle-pink      { background-color: rgb(255,75,218); }
+.circle-purple    { background-color: rgb(175,81,245); }
 
 form input {
   background-color: rgb(252,252,252);
   border: 1px solid rgb(252,252,252);
-  font-family: Sans-Serif;
   font-size: large;
   font-weight: lighter;
   padding-top: 10px;
@@ -72,9 +46,70 @@ form input {
   width: 500px;
 }
 
-.thumbnail div {
+.section:hover, .section:focus {
+  background-color: rgb(220,220,222);
+  cursor:pointer;
+}
+
+li {
+  font-size: smaller;
+  font-weight: lighter;
+  list-style-type: none;
+  padding:10px;
+  padding-bottom: 10px;
+  width: 500px;
+}
+
+li.section {
+  background-color: rgb(235,235,236);
+  border-bottom: 1px solid rgb(208,208,208);
+  height: 2em;
   display: flex;
   align-items: center;
+}
+
+li.thumbnail:focus, li.thumbnail:hover {
+  background-color: rgb(232,232,232);
+  cursor:pointer;
+}
+
+li.thumbnail {
+  background-color: rgb(252,252,252);
+  border-bottom: 1px solid rgb(237,237,237);
+}
+
+li.thumbnail div {
+  display: flex;
+  align-items: center;
+}
+
+li.thumbnail div.image {
+  background-repeat: space !important;
+  background-size: cover !important;
+  height: 42px;
+  text-align: center;
+  vertical-align: middle;
+  width: 56px;
+  margin-right: 10px;
+}
+
+li.thumbnail div.image img {
+  width: 20px;
+}
+
+li.thumbnail div.text {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 400px;
+  overflow: hidden;
+  display:block;
+}
+
+li.thumbnail div.text div {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 400px;
+  display: block !important;
 }
 
 .image {
@@ -86,31 +121,3 @@ form input {
   color: rgb(152,152,152);
 }
 
-.thumbnail div.image {
-  background-repeat: space !important;
-  background-size: cover !important;
-  height: 42px;
-  text-align: center;
-  vertical-align: middle;
-  width: 56px;
-  margin-right: 10px;
-}
-
-.thumbnail div.image img {
-  width: 20px;
-}
-
-.thumbnail div.text {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 400px;
-  overflow: hidden;
-  display:block;
-}
-
-.thumbnail div.text div {
-  text-overflow: ellipsis;
-  overflow: hidden;
-  width: 400px;
-  display: block !important;
-}

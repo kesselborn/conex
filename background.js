@@ -5,7 +5,7 @@ let lastCookieStoreId = defaultCookieStoreId;
 //////////////////////////////////// exported functions (es6 import / export stuff is not supported in webextensions)
 function activateTab(tabId) {
   browser.tabs.update(Number(tabId), {active: true});
-};
+}
 
 function newTabInCurrentContainerGroup(url) {
   browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
@@ -34,8 +34,10 @@ function openInDifferentContainer(cookieStoreId) {
 function getTabsByGroup() {
   return new Promise((resolve, reject) => {
     const groupsTabsMap = new Map();
+
     browser.tabs.query({}).then(tabs => {
       const tabUrls = tabs.map(tab => tab.url);
+
       browser.storage.local.get(tabUrls).then(cachedThumbnails => {
         for(const tab of tabs) {
           let backroundImg = tab.favIconUrl;
@@ -43,7 +45,7 @@ function getTabsByGroup() {
             backroundImg = cachedThumbnails[tab.url].thumbnail;
           }
 
-          let thumbnailElement = createThumbnailElement(tab, backroundImg);
+          const thumbnailElement = createThumbnailElement(tab, backroundImg);
 
           if(groupsTabsMap[tab.cookieStoreId]) {
             groupsTabsMap[tab.cookieStoreId].push(thumbnailElement);
@@ -107,7 +109,7 @@ const createThumbnailElement = function(tab, backroundImg) {
              ])
            ]),
          ]);
-}
+};
 
 
 /////////////////////////// setup listeners

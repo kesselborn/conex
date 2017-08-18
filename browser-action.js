@@ -29,7 +29,7 @@ const keyHandling = function(event) {
 
 document.body.addEventListener('keypress', keyHandling);
 
-const addClickListenerToTabs = function(tabGroups) {
+const addTabGroupSections = function(tabGroups) {
   for(tabGroup in tabGroups) {
     let ul = $1(`#${tabGroup}`);
     for(const element of tabGroups[tabGroup]) {
@@ -99,7 +99,6 @@ const showHideGroupEntries = function(searchQuery) {
   }
 };
 
-// TODO: refactor
 const onSearchChange = function(event) {
   const searchQuery = event.target.value.toLowerCase();
   if(searchQuery == '') {
@@ -121,7 +120,7 @@ const onSearchChange = function(event) {
 setTimeout(function(){
   document.getElementById('search').focus();
   tabGroupRendering.then(() => {
-    groupsTabsMapCreating.then(addClickListenerToTabs);
+    groupsTabsMapCreating.then(addTabGroupSections);
     document.querySelector('#search').addEventListener('keyup', onSearchChange);
   }, e => console.error(e));
 },400);
