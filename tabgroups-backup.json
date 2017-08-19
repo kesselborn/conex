@@ -4,7 +4,7 @@
     1
   ],
   "session": {
-    "lastUpdate": 1502992613155,
+    "lastUpdate": 1503096994257,
     "startTime": 1502893033512,
     "recentCrashes": 0
   },
@@ -17,7 +17,7 @@
               "url": "http://www.spiegel.de/",
               "title": "SPIEGEL ONLINE - Aktuelle Nachrichten",
               "charset": "UTF-8",
-              "ID": 4048332509,
+              "ID": 4153305780,
               "persist": true
             }
           ],
@@ -25,7 +25,7 @@
           "hidden": true,
           "attributes": {},
           "extData": {
-            "tabview-tab": "{\"groupID\":1,\"active\":true}"
+            "tabview-tab": "{\"groupID\":1}"
           },
           "index": 1,
           "image": "http://www.spiegel.de/favicon.ico"
@@ -36,7 +36,7 @@
               "url": "https://www.theguardian.com/international",
               "title": "News, sport and opinion from the Guardian's global edition | The Guardian",
               "charset": "UTF-8",
-              "ID": 17,
+              "ID": 4153305802,
               "persist": true
             }
           ],
@@ -55,7 +55,7 @@
               "url": "https://www.heise.de/",
               "title": "heise online - IT-News, Nachrichten und Hintergründe",
               "charset": "UTF-8",
-              "ID": 4048336042,
+              "ID": 4153305811,
               "persist": true
             }
           ],
@@ -74,7 +74,7 @@
               "url": "https://news.google.com/news/?ned=us&hl=en",
               "title": "Google News",
               "charset": "UTF-8",
-              "ID": 39,
+              "ID": 4153305818,
               "persist": true
             }
           ],
@@ -93,7 +93,7 @@
               "url": "http://www.newyorker.com/",
               "title": "The New Yorker",
               "charset": "UTF-8",
-              "ID": 45,
+              "ID": 4153305829,
               "persist": true
             }
           ],
@@ -112,7 +112,7 @@
               "url": "http://www.bbc.com/",
               "title": "BBC - Homepage",
               "charset": "UTF-8",
-              "ID": 48,
+              "ID": 4153305837,
               "persist": true
             }
           ],
@@ -131,7 +131,7 @@
               "url": "http://www.zeit.de/index",
               "title": "ZEIT ONLINE | Nachrichten, Hintergründe und Debatten",
               "charset": "UTF-8",
-              "ID": 65,
+              "ID": 4153305843,
               "persist": true
             }
           ],
@@ -139,7 +139,7 @@
           "hidden": true,
           "attributes": {},
           "extData": {
-            "tabview-tab": "{\"groupID\":1}"
+            "tabview-tab": "{\"groupID\":1,\"active\":true}"
           },
           "index": 1,
           "image": "http://www.zeit.de/favicon.ico"
@@ -150,7 +150,7 @@
               "url": "https://www.theverge.com/",
               "title": "The Verge",
               "charset": "UTF-8",
-              "ID": 134,
+              "ID": 4153305851,
               "persist": true
             }
           ],
@@ -169,7 +169,7 @@
               "url": "https://slashdot.org/",
               "title": "Slashdot: News for nerds, stuff that matters",
               "charset": "UTF-8",
-              "ID": 139,
+              "ID": 4153305863,
               "persist": true
             }
           ],
@@ -177,7 +177,7 @@
           "hidden": true,
           "attributes": {},
           "extData": {
-            "tabview-tab": "{\"groupID\":2}"
+            "tabview-tab": "{\"groupID\":2,\"active\":true}"
           },
           "index": 1,
           "image": "https://slashdot.org/favicon.ico"
@@ -188,7 +188,7 @@
               "url": "https://9to5mac.com/",
               "title": "9to5Mac | Apple News & Mac Rumors Breaking All Day",
               "charset": "UTF-8",
-              "ID": 267,
+              "ID": 4153305875,
               "persist": true
             }
           ],
@@ -207,7 +207,7 @@
               "url": "https://www.reddit.com/r/funny/",
               "title": "funny",
               "charset": "UTF-8",
-              "ID": 348,
+              "ID": 4153305887,
               "persist": true
             }
           ],
@@ -226,7 +226,7 @@
               "url": "https://www.reddit.com/r/firstworldanarchists/",
               "title": "First World Anarchists",
               "charset": "UTF-8",
-              "ID": 383,
+              "ID": 4153305902,
               "persist": true
             }
           ],
@@ -245,7 +245,7 @@
               "url": "https://www.reddit.com/r/firefox/",
               "title": "Firefox",
               "charset": "UTF-8",
-              "ID": 425,
+              "ID": 4153305912,
               "persist": true
             }
           ],
@@ -264,7 +264,7 @@
               "url": "https://advocacy.mozilla.org/en-US/net-neutrality-comments?sample_rate=0.01&snippet_name=6819#utm_source=desktop-snippet&utm_medium=snippet&utm_campaign=net-neutrality",
               "title": "Mozilla Advocacy - Submit your comment to the FCC",
               "charset": "UTF-8",
-              "ID": 597,
+              "ID": 4153305921,
               "persist": true
             }
           ],
@@ -283,7 +283,7 @@
               "url": "https://www.reddit.com/r/firefox/comments/6o4jd7/mozilla_employees_contributors_addon_developers/",
               "title": "Mozilla employees! Contributors! Addon developers! Verify your identity, and receive your custom flair. : firefox",
               "charset": "UTF-8",
-              "ID": 488,
+              "ID": 4153305932,
               "persist": true
             }
           ],
@@ -302,7 +302,7 @@
               "url": "https://www.reddit.com/r/firefox/comments/6u9kwx/tried_firefox_nightly_for_few_weeksamazing/",
               "title": "Tried Firefox Nightly for few Weeks||AMAZING : firefox",
               "charset": "UTF-8",
-              "ID": 497,
+              "ID": 4153305943,
               "persist": true
             }
           ],
@@ -321,7 +321,7 @@
               "url": "https://www.reddit.com/r/firefox/comments/6u9tjb/what_are_your_must_have_addons/",
               "title": "What are your must have addons? : firefox",
               "charset": "UTF-8",
-              "ID": 502,
+              "ID": 4153305954,
               "persist": true
             }
           ],
@@ -340,7 +340,7 @@
               "url": "https://www.reddit.com/r/firefox/comments/6ub8oh/feedbro_feed_reader_now_available_for_firefox/",
               "title": "Feedbro feed reader now available for Firefox (supports new ext API) : firefox",
               "charset": "UTF-8",
-              "ID": 505,
+              "ID": 4153305966,
               "persist": true
             }
           ],
@@ -359,7 +359,7 @@
               "url": "https://addons.mozilla.org/en-US/firefox/addon/feedbroreader/",
               "title": "Feedbro :: Add-ons for Firefox",
               "charset": "UTF-8",
-              "ID": 793,
+              "ID": 4153305976,
               "persist": true
             }
           ],
@@ -378,7 +378,7 @@
               "url": "https://www.reddit.com/r/firefox/comments/6uaia0/is_there_a_way_to_removedisable_this_new_search/",
               "title": "Is there a way to remove/disable this new search feature? : firefox",
               "charset": "UTF-8",
-              "ID": 506,
+              "ID": 4153305987,
               "persist": true
             }
           ],
@@ -397,7 +397,7 @@
               "url": "https://www.reddit.com/r/firefox/comments/6ub30c/holy_fuck_firefox_55_launching_speed_is_dope/",
               "title": "Holy fuck! Firefox 55 launching speed is dope : firefox",
               "charset": "UTF-8",
-              "ID": 517,
+              "ID": 4153305997,
               "persist": true
             }
           ],
@@ -416,7 +416,7 @@
               "url": "https://screenshots.firefox.com/YnyWizx6ulrPZ23e/null",
               "title": "Firefox Nightly on Android",
               "charset": "UTF-8",
-              "ID": 574,
+              "ID": 4153306005,
               "persist": true
             }
           ],
@@ -435,7 +435,7 @@
               "url": "https://news.ycombinator.com/",
               "title": "Hacker News",
               "charset": "UTF-8",
-              "ID": 466,
+              "ID": 4153306014,
               "persist": true
             }
           ],
@@ -454,7 +454,7 @@
               "url": "https://www.nytimes.com/2017/08/17/business/economy/san-francisco-commute.html",
               "title": "A 2:15 Alarm, 2 Trains and a Bus Get Her to Work by 7 A.M. - The New York Times",
               "charset": "UTF-8",
-              "ID": 467,
+              "ID": 4153306020,
               "persist": true
             }
           ],
@@ -473,7 +473,7 @@
               "url": "http://exstreamist.com/72-of-consumers-dont-know-what-net-neutrality-is/",
               "title": "72% of Consumers Don't Know What Net Neutrality Is",
               "charset": "UTF-8",
-              "ID": 470,
+              "ID": 4153306027,
               "persist": true
             }
           ],
@@ -492,7 +492,7 @@
               "url": "https://www.nature.com/articles/s41598-017-06423-5",
               "title": "Dilution of whisky – the molecular perspective | Scientific Reports",
               "charset": "UTF-8",
-              "ID": 548,
+              "ID": 4153306033,
               "persist": true
             }
           ],
@@ -511,7 +511,7 @@
               "url": "http://www.brynosaurus.com/pub/net/p2pnat/",
               "title": "Peer-to-Peer Communication Across Network Address Translators",
               "charset": "UTF-8",
-              "ID": 476,
+              "ID": 4153306039,
               "persist": true
             }
           ],
@@ -530,7 +530,7 @@
               "url": "https://blog.pinboard.in/2013/04/the_matasano_crypto_challenges/",
               "title": "The Matasano Crypto Challenges (Pinboard Blog)",
               "charset": "UTF-8",
-              "ID": 483,
+              "ID": 4153306044,
               "persist": true
             }
           ],
@@ -549,7 +549,7 @@
               "url": "https://www.theatlantic.com/science/archive/2017/08/at-last-a-big-successful-trial-of-probiotics/537093/?single_page=true",
               "title": "At Last, a Big, Successful Trial of Probiotics - The Atlantic",
               "charset": "UTF-8",
-              "ID": 485,
+              "ID": 4153306051,
               "persist": true
             }
           ],
@@ -568,7 +568,7 @@
               "url": "https://www.theguardian.com/australia-news/2017/aug/17/peanut-allergy-cured-in-majority-of-children-in-immunotherapy-trial?CMP=twt_gu",
               "title": "Peanut allergy cured in majority of children in immunotherapy trial | Australia news | The Guardian",
               "charset": "UTF-8",
-              "ID": 477,
+              "ID": 4153306059,
               "persist": true
             }
           ],
@@ -587,7 +587,7 @@
               "url": "http://www.heatonresearch.com/2017/08/17/ds_rosetta_stone.html",
               "title": "Data Science Rosetta Stone: Classification in Python, R, MATLAB, SAS, & Julia | Heaton Research",
               "charset": "UTF-8",
-              "ID": 479,
+              "ID": 4153306066,
               "persist": true
             }
           ],
@@ -606,7 +606,7 @@
               "url": "http://pandoricity.blogspot.de/2017/08/home-computing-for-5month.html",
               "title": "Home computing for $5/month",
               "charset": "UTF-8",
-              "ID": 489,
+              "ID": 4153306072,
               "persist": true
             }
           ],
@@ -625,7 +625,7 @@
               "url": "http://pandoricity.blogspot.de/2017/08/home-computing-for-5month.html",
               "title": "Home computing for $5/month",
               "charset": "UTF-8",
-              "ID": 503,
+              "ID": 4153306080,
               "persist": true
             }
           ],
@@ -644,7 +644,7 @@
               "url": "https://news.ycombinator.com/item?id=15036563",
               "title": "Launch HN: PullRequest (YC S17) – On-Demand Code Review | Hacker News",
               "charset": "UTF-8",
-              "ID": 478,
+              "ID": 4153306086,
               "persist": true
             }
           ],
@@ -663,7 +663,7 @@
               "url": "http://digitalfreepen.com/2017/08/16/elixir-in-depth-notes.html",
               "title": "Elixir in depth - reading and personal notes - Digital Freepen",
               "charset": "UTF-8",
-              "ID": 487,
+              "ID": 4153306091,
               "persist": true
             }
           ],
@@ -682,11 +682,93 @@
               "url": "about:tabgroups#session",
               "title": "Tab Groups Options",
               "charset": "",
-              "ID": 37,
+              "ID": 81,
               "persist": true
             }
           ],
-          "lastAccessed": 1502992613151,
+          "lastAccessed": 1503096906189,
+          "hidden": false,
+          "attributes": {},
+          "extData": {
+            "tabview-tab": "{\"groupID\":3,\"active\":true}"
+          },
+          "index": 1
+        }
+      ],
+      "extData": {
+        "tabview-group": "{\"1\":{\"bounds\":{\"left\":15,\"top\":5,\"width\":810.4050000000001,\"height\":486.91},\"slot\":1,\"userSize\":null,\"stackTabs\":true,\"showThumbs\":true,\"showUrls\":true,\"tileIcons\":true,\"catchOnce\":true,\"catchRules\":\"\",\"title\":\"news\",\"id\":1},\"2\":{\"bounds\":{\"left\":20,\"top\":20,\"width\":250,\"height\":200},\"slot\":2,\"userSize\":null,\"stackTabs\":true,\"showThumbs\":true,\"showUrls\":true,\"tileIcons\":true,\"catchOnce\":true,\"catchRules\":\"\",\"title\":\"tech news\",\"id\":2},\"3\":{\"bounds\":{\"left\":20,\"top\":20,\"width\":250,\"height\":200},\"slot\":3,\"userSize\":null,\"stackTabs\":true,\"showThumbs\":true,\"showUrls\":true,\"tileIcons\":true,\"catchOnce\":true,\"catchRules\":\"\",\"title\":\"reddit\",\"id\":3},\"4\":{\"bounds\":{\"left\":20,\"top\":20,\"width\":250,\"height\":200},\"slot\":4,\"userSize\":null,\"stackTabs\":true,\"showThumbs\":true,\"showUrls\":true,\"tileIcons\":true,\"catchOnce\":true,\"catchRules\":\"\",\"title\":\"hacker news\",\"id\":4}}",
+        "tabview-groups": "{\"nextID\":5,\"activeGroupId\":3,\"activeGroupName\":\"reddit\",\"totalNumber\":4}"
+      }
+    },
+    {
+      "tabs": [
+        {
+          "entries": [
+            {
+              "url": "http://autos24.de/",
+              "title": "autos24.de - Kaufen , Grauchtwagen billig , Auto kaufen, Suche Auto , Gebrauchtwagen gesucht , Auto anzeigen",
+              "charset": "UTF-8",
+              "ID": 1,
+              "persist": true
+            }
+          ],
+          "lastAccessed": 1503096948127,
+          "hidden": true,
+          "attributes": {},
+          "extData": {
+            "tabview-tab": "{\"groupID\":1}"
+          },
+          "index": 1,
+          "image": "http://autos24.de/favicon.ico"
+        },
+        {
+          "entries": [
+            {
+              "url": "about:newtab",
+              "title": "New Tab",
+              "charset": "",
+              "ID": 82,
+              "persist": false
+            }
+          ],
+          "lastAccessed": 1503096950653,
+          "hidden": true,
+          "attributes": {},
+          "extData": {
+            "tabview-tab": "{\"groupID\":2,\"active\":true}"
+          },
+          "index": 1
+        },
+        {
+          "entries": [
+            {
+              "url": "https://www.google.de/search?q=rudi&ie=utf-8&oe=utf-8&client=firefox-b-ab&gfe_rd=cr&ei=e3CXWYPRAdPPXrappcgO",
+              "title": "rudi - Google-Suche",
+              "charset": "UTF-8",
+              "ID": 36,
+              "persist": true
+            }
+          ],
+          "lastAccessed": 1503096964609,
+          "hidden": false,
+          "attributes": {},
+          "extData": {
+            "tabview-tab": "{\"groupID\":3,\"active\":true}"
+          },
+          "index": 1,
+          "image": "https://www.google.de/images/branding/product/ico/googleg_lodp.ico"
+        },
+        {
+          "entries": [
+            {
+              "url": "about:tabgroups#session",
+              "title": "Tab Groups Options",
+              "charset": "",
+              "ID": 86,
+              "persist": true
+            }
+          ],
+          "lastAccessed": 1503096994247,
           "hidden": false,
           "attributes": {},
           "extData": {
@@ -696,8 +778,8 @@
         }
       ],
       "extData": {
-        "tabview-group": "{\"1\":{\"bounds\":{\"left\":15,\"top\":5,\"width\":810.4050000000001,\"height\":486.91},\"slot\":1,\"userSize\":null,\"stackTabs\":true,\"showThumbs\":true,\"showUrls\":true,\"tileIcons\":true,\"catchOnce\":true,\"catchRules\":\"\",\"title\":\"news\",\"id\":1},\"2\":{\"bounds\":{\"left\":20,\"top\":20,\"width\":250,\"height\":200},\"slot\":2,\"userSize\":null,\"stackTabs\":true,\"showThumbs\":true,\"showUrls\":true,\"tileIcons\":true,\"catchOnce\":true,\"catchRules\":\"\",\"title\":\"tech news\",\"id\":2},\"3\":{\"bounds\":{\"left\":20,\"top\":20,\"width\":250,\"height\":200},\"slot\":3,\"userSize\":null,\"stackTabs\":true,\"showThumbs\":true,\"showUrls\":true,\"tileIcons\":true,\"catchOnce\":true,\"catchRules\":\"\",\"title\":\"reddit\",\"id\":3},\"4\":{\"bounds\":{\"left\":20,\"top\":20,\"width\":250,\"height\":200},\"slot\":4,\"userSize\":null,\"stackTabs\":true,\"showThumbs\":true,\"showUrls\":true,\"tileIcons\":true,\"catchOnce\":true,\"catchRules\":\"\",\"title\":\"hacker news\",\"id\":4}}",
-        "tabview-groups": "{\"nextID\":5,\"activeGroupId\":3,\"activeGroupName\":\"reddit\",\"totalNumber\":4}"
+        "tabview-group": "{\"1\":{\"bounds\":{\"left\":15,\"top\":5,\"width\":1077.2050000000002,\"height\":555.611},\"slot\":1,\"userSize\":null,\"stackTabs\":true,\"showThumbs\":true,\"showUrls\":true,\"tileIcons\":true,\"catchOnce\":true,\"catchRules\":\"\",\"title\":\"autos\",\"id\":1},\"2\":{\"bounds\":{\"left\":20,\"top\":20,\"width\":250,\"height\":200},\"slot\":2,\"userSize\":null,\"stackTabs\":true,\"showThumbs\":true,\"showUrls\":true,\"tileIcons\":true,\"catchOnce\":true,\"catchRules\":\"\",\"title\":\"\",\"id\":2},\"3\":{\"bounds\":{\"left\":20,\"top\":20,\"width\":250,\"height\":200},\"slot\":3,\"userSize\":null,\"stackTabs\":true,\"showThumbs\":true,\"showUrls\":true,\"tileIcons\":true,\"catchOnce\":true,\"catchRules\":\"\",\"title\":\"\",\"id\":3}}",
+        "tabview-groups": "{\"nextID\":4,\"activeGroupId\":3,\"activeGroupName\":\"Group 3\",\"totalNumber\":3}"
       }
     }
   ]

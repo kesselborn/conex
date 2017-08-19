@@ -2,9 +2,41 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <style>
+      body {
+        font-size: larger;
+      }
+
+      input[type="file"] {
+        display: none;
+      }
+
+      .custom-file-upload {
+        display: inline;
+        padding: 6px 12px;
+        cursor: pointer;
+        border: solid 1px rgb(229,229,232);
+      }
+
+      .custom-file-upload:hover, .custom-file-upload:focus {
+        background-color: rgb(235,235,235);
+      }
+    </style>
   </head>
   <body>
     <h1>Not much to see here yet</h1>
-    Please enable and configure "Tab containers" in the preferences (about:preferences)
+    <p>Please enable and configure "Tab containers" in the preferences (about:preferences)</p>
+    <h1>Import TabGroups backup file</h1>
+    <p>this is experimental ... tabgroups, windows and all tabs will be recreated, apart from urls starting with 'about://' due to technical limitations. All tabs and windows will be opened rather quickly, so expert your CPU fan to be noisy for a while</p>
+
+    <div>
+    <label class="custom-file-upload">
+       <input id="file-picker" type="file"/>
+       Select TabGroup backup file
+    </label>
+    </div>
+
+    <script type="text/javascript" src="helper.js"></script>
+    <script type="text/javascript" src="options_ui.js"></script>
   </body>
 </html>
