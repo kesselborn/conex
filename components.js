@@ -44,6 +44,26 @@ function createTabGroupHeaderElement(id, color, name, tabindex) {
   return elment;
 }
 
+function createTabElement(tab, backroundImg) {
+  const url = tab.url.replace('http://', '').replace('https://', '');
+  const searchTerm = "${tab.title} ${url}";
+
+  const element =
+    $e('li', {tabindex: 1, class: 'tab', data_title: tab.title.toLowerCase(), data_url: url.toLowerCase(), data_tab_id: tab.id, style: 'display:none'} ,[
+        $e('div', {}, [
+          $e('div', {class: 'image', style: `background:url('${backroundImg}')`}, [
+            (backroundImg == tab.favIconUrl || !tab.favIconUrl) ? $e('span') : $e('img', {src: tab.favIconUrl})
+          ]),
+          $e('div', {class: 'text'}, [
+            $e('div', {class: 'tab-title', content: tab.title}),
+            $e('div', {class: 'tab-url', content: url})
+          ])
+        ]),
+    ]);
+
+  return element;
+}
+
 function createHistoryElement(historyItem) {
   const element =
     $e('li', {tabindex: 1, class: 'tab', data_title: historyItem.title.toLowerCase(), data_url: historyItem.url.toLowerCase()}, [
@@ -59,22 +79,3 @@ function createHistoryElement(historyItem) {
   return element;
 }
 
-function createTabElement(tab, backroundImg) {
-  const url = tab.url.replace('http://', '').replace('https://', '');
-  const searchTerm = "${tab.title} ${url}";
-
-  const element =
-    $e('li', {tabindex: 1, data_title: tab.title.toLowerCase(), data_url: url.toLowerCase(), data_tab_id: tab.id, class: 'tab', style: 'display:none'} ,[
-        $e('div', {}, [
-          $e('div', {class: 'image', style: `background:url('${backroundImg}')`}, [
-            (backroundImg == tab.favIconUrl || !tab.favIconUrl) ? $e('span') : $e('img', {src: tab.favIconUrl})
-          ]),
-          $e('div', {class: 'text'}, [
-            $e('div', {class: 'tab-title', content: tab.title}),
-            $e('div', {class: 'tab-url', content: url})
-          ])
-        ]),
-    ]);
-
-  return element;
-}

@@ -11,7 +11,8 @@ const keyHandling = function(event) {
       } else if(url = document.activeElement.dataset.url) {
         bg.newTabInCurrentContainerGroup(url);
       } else if(cookieStoreId = document.activeElement.dataset.cookieStore) {
-        browser.tabs.create({cookieStoreId: cookieStoreId})
+        expandTabGroup(cookieStoreId);
+        return;
       } else {
         console.error('unhandled active element:', document.activeElement);
       }
@@ -26,6 +27,23 @@ const keyHandling = function(event) {
     }
   }
 };
+
+const expandTabGroup = function(cookieStoreId) {
+  resetPopup();
+  for(const element of $('li.tab')) {
+    element.style.display = 'none';
+  }
+
+  const tabGroup = $1(`ul#${cookieStoreId}`);
+  if(tabGroup.dataset.expanded != "true") {
+    for(const element of $(`ul#${cookieStoreId} li.tab`)) {
+      element.style.display = element.style.display == 'none' ? '' : 'none';
+    }
+    tabGroup.dataset.expanded = true;
+  } else {
+    tabGroup.dataset.expanded = false;
+  }
+}
 
 document.body.addEventListener('keypress', keyHandling);
 
@@ -121,6 +139,9 @@ const onSearchChange = function(event) {
 setTimeout(function(){
   document.getElementById('search').focus();
   tabGroupRendering.then(() => {
+    for(const section of $('.section')) {
+      section.addEventListener('click', function() { expandTabGroup(section.dataset.cookieStore); });
+    }
     groupsTabsMapCreating.then(insertTabElements);
     document.querySelector('#search').addEventListener('keyup', onSearchChange);
   }, e => console.error(e));
