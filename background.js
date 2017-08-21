@@ -60,18 +60,18 @@ function getTabsByGroup() {
 }
 
 function restoreTabGroupsBackup(tabGroups, windows) {
-	createMissingTabGroups(tabGroups).then(identities => {
-		for(const tabs of windows) {
-			browser.windows.create({}).then(w => {
-				for(const tab of tabs) {
-					const cookieStoreId = identities.get(tab.group.toLowerCase());
-					browser.tabs.create({url: tab.url, cookieStoreId: cookieStoreId, windowId: w.id, active: false}).then(() => {
-						console.log(`creating tab ${tab.url} in group ${tab.group} (cookieStoreId: ${cookieStoreId})`);
-					});
-				}
-			}, e => console.error(e));
-		}
-	}, e => console.error(e));
+  createMissingTabGroups(tabGroups).then(identities => {
+    for(const tabs of windows) {
+      browser.windows.create({}).then(w => {
+        for(const tab of tabs) {
+          const cookieStoreId = identities.get(tab.group.toLowerCase());
+          browser.tabs.create({url: tab.url, cookieStoreId: cookieStoreId, windowId: w.id, active: false}).then(() => {
+            console.log(`creating tab ${tab.url} in group ${tab.group} (cookieStoreId: ${cookieStoreId})`);
+          });
+        }
+      }, e => console.error(e));
+    }
+  }, e => console.error(e));
 }
 
 //////////////////////////////////// end of exported functions (again: es6 features not supported yet
@@ -84,16 +84,16 @@ const createMissingTabGroups = function(tabGroups) {
       const nameCookieStoreIdMap = new Map(identities.map(identity => [identity.name.toLowerCase(), identity.cookieStoreId]));
       const promises = [];
 
-			for(const tabGroup of tabGroups) {
-				if(!nameCookieStoreIdMap.get(tabGroup.toLowerCase())) {
-					console.info(`creating tab group ${tabGroup}`);
-					const newIdentity = {name: tabGroup, icon: 'circle', color: colors[Math.floor(Math.random() * (8 - 0)) + 0]};
-					browser.contextualIdentities.create(newIdentity).then(identity => {
-						nameCookieStoreIdMap.set(identity.name.toLowerCase(), identity.cookieStoreId);
-					}, e => reject(e));
-				}
-			}
-			resolve(nameCookieStoreIdMap);
+      for(const tabGroup of tabGroups) {
+        if(!nameCookieStoreIdMap.get(tabGroup.toLowerCase())) {
+          console.info(`creating tab group ${tabGroup}`);
+          const newIdentity = {name: tabGroup, icon: 'circle', color: colors[Math.floor(Math.random() * (8 - 0)) + 0]};
+          browser.contextualIdentities.create(newIdentity).then(identity => {
+            nameCookieStoreIdMap.set(identity.name.toLowerCase(), identity.cookieStoreId);
+          }, e => reject(e));
+        }
+      }
+      resolve(nameCookieStoreIdMap);
     }, e => reject(e) );
   });
 }
@@ -117,17 +117,17 @@ const updateLastCookieStoreId = function(activeInfo) {
 
 const storeScreenshot = function(tabId) {
   browser.tabs.get(tabId).then(tab => {
-		if(tab.url == "about:blank" || tab.url == "about:newtab") {
-			return;
-		}
+    if(tab.url == "about:blank" || tab.url == "about:newtab") {
+      return;
+    }
 
-		browser.tabs.captureVisibleTab(null, {format: 'jpeg', quality: imageQuality}).then(imageData => {
-			browser.storage.local.set({[tab.url] : {thumbnail: imageData, favicon: tab.favIconUrl}})
-				.then(() => console.info('succesfully created thumbnail for', tab.url),
-						e  => console.error(e));
+    browser.tabs.captureVisibleTab(null, {format: 'jpeg', quality: imageQuality}).then(imageData => {
+      browser.storage.local.set({[tab.url] : {thumbnail: imageData, favicon: tab.favIconUrl}})
+        .then(() => console.info('succesfully created thumbnail for', tab.url),
+            e  => console.error(e));
 
-		}, e => console.error(e));
-	}, e => console.error(e));
+    }, e => console.error(e));
+  }, e => console.error(e));
 };
 
 
