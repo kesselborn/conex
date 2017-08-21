@@ -4,7 +4,9 @@ let lastCookieStoreId = defaultCookieStoreId;
 
 //////////////////////////////////// exported functions (es6 import / export stuff is not supported in webextensions)
 function activateTab(tabId) {
-  browser.tabs.update(Number(tabId), {active: true});
+  browser.tabs.update(Number(tabId), {active: true}).then(tab => {
+    browser.windows.update(tab.windowId, {focused: true});
+  });
 }
 
 function newTabInCurrentContainerGroup(url) {
