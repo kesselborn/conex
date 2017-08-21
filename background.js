@@ -98,8 +98,8 @@ const createMissingTabGroups = function(tabGroups) {
   });
 }
 
-const showHidePageAction = function(activeInfo) {
-  browser.tabs.get(activeInfo.tabId).then(tab => {
+const showHidePageAction = function(tabId) {
+  browser.tabs.get(tabId).then(tab => {
     if(tab.url.indexOf('about:') != 0 ) {
       browser.pageAction.show(Number(tab.id));
     }
@@ -139,9 +139,10 @@ browser.commands.onCommand.addListener(function(command) {
 });
 
 browser.tabs.onActivated.addListener(function(activeInfo) { storeScreenshot(activeInfo.tabId) });
-browser.tabs.onActivated.addListener(showHidePageAction);
+browser.tabs.onActivated.addListener(function(activeInfo) { showHidePageAction(activeInfo.tabId)});
 browser.tabs.onActivated.addListener(updateLastCookieStoreId);
 
 browser.tabs.onUpdated.addListener(storeScreenshot);
+browser.tabs.onUpdated.addListener(showHidePageAction);
 
 console.log('taborama loaded');
