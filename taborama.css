@@ -19,12 +19,29 @@ body, ul {
   width: 200px;
 }
 
+#browseraction span.close-button, #browseraction span.tabs-count {
+  float: right;
+}
+
+span.close-button {
+  padding: 3px;
+  font-size: x-large;
+  border-radius:5%;
+  opacity: 0;
+}
+
+li.tab:hover span.close-button, li.tab:focus  span.close-button{
+  background-color: rgb(208,208,208);
+  opacity: 0.7;
+}
+
 .circle {
   border-radius:50%;
   min-width: 1em;
   min-height: 1em;
   margin-right: 1em;
   display: inline-block;
+  float:left;
 }
 
 .circle-blue      { background-color: rgb(55,173,255); }
@@ -53,6 +70,10 @@ li {
   padding:10px;
   padding-bottom: 10px;
   width: 500px;
+}
+
+li.section div {
+  width: 100%;
 }
 
 li.section {
@@ -108,7 +129,7 @@ li.tab div.text {
 li.tab div.text div {
   text-overflow: ellipsis;
   overflow: hidden;
-  width: 400px;
+  width: 380px;
   display: block !important;
 }
 

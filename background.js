@@ -9,6 +9,10 @@ function activateTab(tabId) {
   });
 }
 
+function closeTab(tabId) {
+  browser.tabs.remove(Number(tabId));
+}
+
 function newTabInCurrentContainerGroup(url) {
   browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
     const createProperties = { cookieStoreId: tabs[0].cookieStoreId };

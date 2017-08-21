@@ -34,10 +34,11 @@ function createTabGroupHeaderElement(id, color, name, tabindex) {
   const elment =
     $e('ul', {id: id},[
         $e('li', {tabindex: tabindex || 1, class: 'section', data_cookie_store: id}, [
-          $e('div', {}, [
+          $e('div', {class: 'summary'}, [
             $e('span', {class: `circle circle-${color}`, content: ' '}),
             $e('span', {content: name}),
-          ])
+            $e('span', {content: '(N tabs)', class: 'tabs-count'}),
+          ]),
         ])
     ]);
 
@@ -57,6 +58,9 @@ function createTabElement(tab, backroundImg) {
           $e('div', {class: 'text'}, [
             $e('div', {class: 'tab-title', content: tab.title}),
             $e('div', {class: 'tab-url', content: url})
+          ]),
+          $e('div', {class: 'close'}, [
+            $e('span', {content: '╳', title: 'close this tab', class: 'close-button', data_tab_id: tab.id})
           ])
         ]),
     ]);

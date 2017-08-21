@@ -55,6 +55,13 @@ const insertTabElements = function(tabGroups) {
         bg.activateTab(element.dataset.tabId);
         window.close();
       });
+
+      $1('.close-button', element).addEventListener('click', function(event) {
+        event.stopPropagation();
+        element.remove();
+        bg.closeTab(this.dataset.tabId);
+      });
+
       ul.appendChild(element);
     }
   }

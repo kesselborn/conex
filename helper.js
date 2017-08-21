@@ -1,5 +1,5 @@
 // alias for document.querySelectorAll
-const $ = function(s){ return document.querySelectorAll(s); };
+const $ = function(s, parent){ return (parent || document).querySelectorAll(s); };
 
 // alias for document.querySelector
-const $1 = function(s){ return document.querySelector(s); };
+const $1 = function(s, parent){ return (parent || document).querySelector(s); };
