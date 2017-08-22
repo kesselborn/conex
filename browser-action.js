@@ -58,8 +58,10 @@ const insertTabElements = function(tabGroups) {
 
       $1('.close-button', element).addEventListener('click', function(event) {
         event.stopPropagation();
-        element.remove();
+        element.style.opacity = 0.3;
+        element.tabIndex = -1;
         bg.closeTab(this.dataset.tabId);
+        return false;
       });
 
       ul.appendChild(element);
