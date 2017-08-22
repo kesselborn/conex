@@ -37,7 +37,7 @@ function createTabGroupHeaderElement(id, color, name, tabindex) {
           $e('div', {class: 'summary'}, [
             $e('span', {class: `circle circle-${color}`, content: ' '}),
             $e('span', {content: name}),
-            $e('span', {content: '(N tabs)', class: 'tabs-count'}),
+            $e('span', {content: '', class: 'tabs-count'}),
           ]),
         ])
     ]);

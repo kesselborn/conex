@@ -1,3 +1,4 @@
+const deletedTabOpacity = 0.3;
 const groupsTabsMapCreating = bg.getTabsByGroup();
 const tabGroupRendering = renderTabGroups();
 
@@ -58,16 +59,29 @@ const insertTabElements = function(tabGroups) {
 
       $1('.close-button', element).addEventListener('click', function(event) {
         event.stopPropagation();
-        element.style.opacity = 0.3;
+        element.style.opacity = deletedTabOpacity;
         element.tabIndex = -1;
         bg.closeTab(this.dataset.tabId);
+        updateTabCount();
         return false;
       });
 
       ul.appendChild(element);
     }
   }
+  updateTabCount();
 };
+
+const tabIsDeleted = function(e) {
+  return e.style.opacity == deletedTabOpacity;
+}
+
+const updateTabCount = function() {
+  for(const tabGroup of $('#tabgroups ul')) {
+    const tabCnt = Array.from($('li.tab', tabGroup)).filter(e => !tabIsDeleted(e)).length;
+    $1('.tabs-count', tabGroup).innerHTML = `(${tabCnt} tabs)`;
+  }
+}
 
 const resetPopup = function() {
   document.getElementById('history').innerHTML = '';
