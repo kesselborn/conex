@@ -24,16 +24,24 @@ function newTabInCurrentContainerGroup(url) {
   }, e => console.error(e));
 }
 
-function openInDifferentContainer(cookieStoreId) {
+const openInDifferentContainer = function(cookieStoreId, tab) {
+  const tabProperties = {
+    active: true,
+    cookieStoreId: cookieStoreId,
+    index: tab.index+1
+  };
+  if(tab.url != 'about:newtab') {
+    tabProperties.url = tab.url;
+  }
+
+  browser.tabs.create(tabProperties);
+  browser.tabs.remove(tab.id);
+}
+
+function openActiveTabInDifferentContainer(cookieStoreId) {
   browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT})
     .then(tabs => {
-      browser.tabs.create({
-        active: true,
-        cookieStoreId: cookieStoreId,
-        url: tabs[0].url,
-        index: tabs[0].index+1
-      });
-      browser.tabs.remove(tabs[0].id);
+      openInDifferentContainer(cookieStoreId, tabs[0]);
     }, e=> console.error(e));
 }
 
@@ -138,12 +146,12 @@ const storeScreenshot = function(tabId) {
 
 
 /////////////////////////// setup listeners
-browser.commands.onCommand.addListener(function(command) {
-  if (command == 'new-tab-in-same-group') {
-    newTabInCurrentContainerGroup();
+browser.tabs.onCreated.addListener(function(tab){
+  console.log(89, tab.url, tab.cookieStoreId, lastCookieStoreId);
+  if(tab.url == 'about:newtab' && tab.cookieStoreId == defaultCookieStoreId && lastCookieStoreId != defaultCookieStoreId) {
+    openInDifferentContainer(lastCookieStoreId, tab);
   }
 });
-
 browser.tabs.onActivated.addListener(function(activeInfo) { storeScreenshot(activeInfo.tabId) });
 browser.tabs.onActivated.addListener(function(activeInfo) { showHidePageAction(activeInfo.tabId)});
 browser.tabs.onActivated.addListener(updateLastCookieStoreId);

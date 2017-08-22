@@ -3,7 +3,7 @@ let tabGroups = renderTabGroups();
 const openInDifferentContainer = function(element) {
   try {
     if(cookieStoreId = element.dataset.cookieStore) {
-      bg.openInDifferentContainer(cookieStoreId);
+      bg.openActiveTabInDifferentContainer(cookieStoreId);
     }
     window.close();
   } catch(e){ console.error(e); };

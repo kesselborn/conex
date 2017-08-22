@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Taborama",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "browser_action": {
     "default_title": "Taborama",
     "default_popup": "browser-action.html",
@@ -20,11 +20,6 @@
         "default": "Ctrl+Shift+Y"
       }
     },
-    "new-tab-in-same-group": {
-      "suggested_key": {
-        "default": "Ctrl+Y"
-      }
-    }
   },
   "options_ui": {
     "page": "options_ui.html"
