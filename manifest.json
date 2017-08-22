@@ -19,7 +19,7 @@
       "suggested_key": {
         "default": "Ctrl+Shift+Y"
       }
-    },
+    }
   },
   "options_ui": {
     "page": "options_ui.html"
