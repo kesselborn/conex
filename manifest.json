@@ -7,6 +7,7 @@
   "version": "0.0.19",
   "browser_action": {
     "default_title": "Taborama (CTRL+<space> / CMD+<space>)",
+    "browser_style": true,
     "default_popup": "browser-action.html",
     "default_icon": {
       "48": "icons/icon_48.png"
@@ -30,7 +31,8 @@
     }
   },
   "options_ui": {
-    "page": "options_ui.html"
+    "page": "options_ui.html",
+    "browser_style": true
   },
   "page_action": {
     "browser_style": true,
