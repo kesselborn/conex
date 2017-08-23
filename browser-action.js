@@ -79,7 +79,9 @@ const tabIsDeleted = function(e) {
 const updateTabCount = function() {
   for(const tabGroup of $('#tabgroups ul')) {
     const tabCnt = Array.from($('li.tab', tabGroup)).filter(e => !tabIsDeleted(e)).length;
-    $1('.tabs-count', tabGroup).innerHTML = `(${tabCnt} tabs)`;
+    const tabCntElement = $1('.tabs-count', tabGroup);
+    tabCntElement.removeChild(tabCntElement.firstChild);
+    tabCntElement.appendChild(document.createTextNode(`(${tabCnt} tabs)`));
   }
 }
 
