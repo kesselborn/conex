@@ -24,20 +24,6 @@ function newTabInCurrentContainerGroup(url) {
   }, e => console.error(e));
 }
 
-const openInDifferentContainer = function(cookieStoreId, tab) {
-  const tabProperties = {
-    active: true,
-    cookieStoreId: cookieStoreId,
-    index: tab.index+1
-  };
-  if(tab.url != 'about:newtab') {
-    tabProperties.url = tab.url;
-  }
-
-  browser.tabs.create(tabProperties);
-  browser.tabs.remove(tab.id);
-}
-
 function openActiveTabInDifferentContainer(cookieStoreId) {
   browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT})
     .then(tabs => {
@@ -88,7 +74,26 @@ function restoreTabGroupsBackup(tabGroups, windows) {
   }, e => console.error(e));
 }
 
+function handleDisabledTabGroups() {
+  browser.browserAction.setBadgeText({text: '!'});
+  browser.runtime.openOptionsPage();
+}
+
 //////////////////////////////////// end of exported functions (again: es6 features not supported yet
+const openInDifferentContainer = function(cookieStoreId, tab) {
+  const tabProperties = {
+    active: true,
+    cookieStoreId: cookieStoreId,
+    index: tab.index+1
+  };
+  if(tab.url != 'about:newtab') {
+    tabProperties.url = tab.url;
+  }
+
+  browser.tabs.create(tabProperties);
+  browser.tabs.remove(tab.id);
+}
+
 
 const createMissingTabGroups = function(tabGroups) {
   return new Promise((resolve, reject) => {
@@ -147,7 +152,6 @@ const storeScreenshot = function(tabId) {
 
 /////////////////////////// setup listeners
 browser.tabs.onCreated.addListener(function(tab){
-  console.log(89, tab.url, tab.cookieStoreId, lastCookieStoreId);
   if(tab.url == 'about:newtab' && tab.cookieStoreId == defaultCookieStoreId && lastCookieStoreId != defaultCookieStoreId) {
     openInDifferentContainer(lastCookieStoreId, tab);
   }

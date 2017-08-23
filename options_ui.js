@@ -3,7 +3,7 @@ const bg = browser.extension.getBackgroundPage();
 
 filePicker.addEventListener("change", picker => {
   const file = picker.target.files[0];
-  
+
   const reader  = new FileReader();
   reader.onload = function(r) {
     try {
@@ -41,5 +41,10 @@ filePicker.addEventListener("change", picker => {
 });
 
 
+browser.contextualIdentities.query({}).then(identities => {
+  if(!identities) {
+    document.querySelector("#missing-tab-container-support").style.display = "block";
+  }
+});
 
 
