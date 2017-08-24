@@ -136,8 +136,8 @@ const showHidePageAction = function(tabId) {
           tabId: tabId,
           path: { 19: 'icons/icon_19.png', 38: 'icons/icon_38.png', 48: 'icons/icon_48.png'}
         });
+        browser.pageAction.show(tabId);
       }
-      browser.pageAction.show(tabId);
     } else if(showPageAction["taborama/settings/show-page-action"] == undefined) {
       browser.pageAction.setIcon({
         tabId: tabId,
