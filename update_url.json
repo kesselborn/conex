@@ -1,0 +1,17 @@
+{
+	"addons": {
+		"addon@example.com": {
+			"updates": [
+				{ "version": "0.0.19",
+					"update_link": "https://github.com/kesselborn/taborama/releases/download/v0.0.19/taborama-0.0.19-an.fx.xpi" 
+				},
+				{ "version": "0.0.20",
+					"update_link": "https://github.com/kesselborn/taborama/releases/download/v0.0.20/taborama-0.0.20-an.fx.xpi" 
+				},
+				{ "version": "0.0.21",
+					"update_link": "https://github.com/kesselborn/taborama/releases/download/v0.0.21/taborama-0.0.21-an.fx.xpi" 
+				},
+			]
+		}
+	}
+}
