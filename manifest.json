@@ -4,7 +4,7 @@
   "description": "This is a tabgroup'esque successor for Firefox >= 57 (WebExtensions)",
   "homepage_url": "https://github.com/kesselborn/taborama",
   "name": "Taborama",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "browser_action": {
     "default_title": "Taborama (CTRL+<space> / CMD+<space>)",
     "browser_style": false,
@@ -15,7 +15,7 @@
   },
   "applications": {
     "gecko": {
-      "strict_min_version": "57.0a1"
+      "strict_min_version": "54.0a1"
     }
   },
   "commands": {
@@ -36,10 +36,9 @@
   },
   "page_action": {
     "browser_style": true,
-    "default_popup": "page-action.html",
     "default_icon": {
-      "19": "icons/icon_19.png",
-      "38": "icons/icon_38.png"
+      "19": "icons/icon_error_19.png",
+      "38": "icons/icon_error_38.png"
     },
     "default_title": "re-open to tab in other group (CTRL+Shift+Y)"
   },

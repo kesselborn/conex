@@ -47,4 +47,29 @@ browser.contextualIdentities.query({}).then(identities => {
   }
 });
 
+function showHideTabGroupsMovingDetails() {
+  $1('#show-hide-tab-groups-moving-details-link').remove();
+  $1('#moving-tabs-explanation').style.display = "block";
+  return false;
+}
 
+$1('#show-hide-tab-groups-moving-details-link').addEventListener('click', showHideTabGroupsMovingDetails);
+
+browser.storage.local.get("taborama/settings/show-page-action").then(showPageAction => {
+  if(showPageAction["taborama/settings/show-page-action"] == true) {
+    $1('#move-tab-yes').checked = "checked";
+    $1('#error').style.display = "none";
+  } else if(showPageAction["taborama/settings/show-page-action"] == false) {
+    $1('#move-tab-no').checked = "checked";
+    $1('#error').style.display = "none";
+  }
+});
+
+$1('#move-tab-yes').addEventListener('click', function() {
+  $1('#error').style.display = "none";
+  browser.storage.local.set({"taborama/settings/show-page-action": true});
+});
+$1('#move-tab-no').addEventListener('click', function() {
+  $1('#error').style.display = "none";
+  browser.storage.local.set({"taborama/settings/show-page-action": false});
+});

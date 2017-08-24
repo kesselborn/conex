@@ -74,11 +74,6 @@ function restoreTabGroupsBackup(tabGroups, windows) {
   }, e => console.error(e));
 }
 
-function handleDisabledTabGroups() {
-  browser.browserAction.setBadgeText({text: '!'});
-  browser.runtime.openOptionsPage();
-}
-
 //////////////////////////////////// end of exported functions (again: es6 features not supported yet
 const openInDifferentContainer = function(cookieStoreId, tab) {
   const tabProperties = {
@@ -115,14 +110,44 @@ const createMissingTabGroups = function(tabGroups) {
       resolve(nameCookieStoreIdMap);
     }, e => reject(e) );
   });
+};
+
+const openPageActionPopup = function(tab) {
+  browser.storage.local.get("taborama/settings/show-page-action").then(showPageAction => {
+    if(showPageAction["taborama/settings/show-page-action"]) {
+      browser.pageAction.setPopup({tabId: tab.id, popup: "page-action.html"});
+    } else {
+      browser.runtime.openOptionsPage();
+    }
+  });
 }
 
 const showHidePageAction = function(tabId) {
-  browser.tabs.get(tabId).then(tab => {
-    if(tab.url.indexOf('about:') != 0 ) {
-      browser.pageAction.show(Number(tab.id));
+  const querying = browser.tabs.get(tabId);
+  const setting = browser.storage.local.get("taborama/settings/show-page-action");
+
+  Promise.all([querying, setting]).then(results => {
+    const tab = results[0];
+    const showPageAction = results[1];
+
+    if(showPageAction["taborama/settings/show-page-action"] == true) {
+      if(tab.url.indexOf('about:') != 0 ) {
+        browser.pageAction.setIcon({
+          tabId: tabId,
+          path: { 19: 'icons/icon_19.png', 38: 'icons/icon_38.png', 48: 'icons/icon_48.png'}
+        });
+      }
+      browser.pageAction.show(tabId);
+    } else if(showPageAction["taborama/settings/show-page-action"] == undefined) {
+      browser.pageAction.setIcon({
+        tabId: tabId,
+        path: { 19: 'icons/icon_error_19.png', 38: 'icons/icon_error_38.png', 48: 'icons/icon_error_48.png'}
+      });
+      browser.pageAction.show(tabId);
+    } else {
+      browser.pageAction.hide(tabId);
     }
-  })
+  });
 };
 
 const updateLastCookieStoreId = function(activeInfo) {
@@ -162,5 +187,7 @@ browser.tabs.onActivated.addListener(updateLastCookieStoreId);
 
 browser.tabs.onUpdated.addListener(storeScreenshot);
 browser.tabs.onUpdated.addListener(showHidePageAction);
+
+browser.pageAction.onClicked.addListener(openPageActionPopup)
 
 console.log('taborama loaded');

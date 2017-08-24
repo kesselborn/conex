@@ -36,14 +36,53 @@
       <h1>Please enable "container tabs" in preferences</h1>
       <p>Taborama only works with container tabs enabled.</p>
     </div>
-    <h1>Import TabGroups backup file</h1>
-    <p>this is experimental ... tabgroups, windows and all tabs will be recreated, apart from urls starting with 'about://' due to technical limitations. All tabs and windows will be opened rather quickly, so expert your CPU fan to be noisy for a while</p>
+    <div>
+      <h1>Enable moving tabs between tab-groups</h1>
+      <p>This will allow you to move a tab from one tab-group to another</p>
+      <p><b>Note: if you use the tab-container feature of taborama for privacy reasons, please note that this feature may leak tracking information from one tab-group to another</b> <a id="show-hide-tab-groups-moving-details-link" style="color:blue"> more information &gt;&gt;</a></p>
+    </div>
+    <div style="display:none" id="moving-tabs-explanation">
+      <p>Moving one URL from one container to another has the ability to increase tracking across containers.</p>
+      <h1>Explanation</h1>
+      <p>Essentially you turn containers into a organisational tool rather than a privacy one. If you imagine that when visiting websites you always wear the clothing, containers give you different clothing to wear.  These disguises containers work by clearing what websites know about you, which works really well in stopping adverts from following you around the internet.</p>
+      <p>When you transfer one URL to another container you risk that website knowing about both of your disguises.</p>
+      <p>The URL itself can leak information about your previous container or the website could make the correlation that you have visited it twice with the same browser fingerprint but without the same cookies.</p>
+      <p>Containers don’t currently solve browser fingerprinting which is a technique where websites essentially monitor the hardware and OS that you have (graphics rendering, sound and performance). Containers add ambiguity in that fingerprinting isn’t perfect either. However the more you cross that boundary the bigger the risk you are in for this correlation.</p>
+      <p>URLs themselves also contain parameters like session id’s or google analytic campaigns that could be unique to you. There isn’t any simple way to filter these out without breaking pages also.</p>
+      <h1>Other info</h1>
+      <p>Implementing this would also increase the issues <a href="https://jotter.jonathankingston.co.uk/blog/2017/04/04/containers-assignment/#the-ability-to-csrf-yourself">issue 1</a> and <a href="https://jotter.jonathankingston.co.uk/blog/2017/04/04/containers-assignment/#the-inability-to-grasp-why-containers-are-isolated">issue 3</a> here.</p>
+      <h1>Example risk</h1>
+      <p>Take for example that obscure YouTube video you wanted to look at, it turns out maybe only 5 people visit it a day. It would be clear to YouTube that you crossed a container boundary when you switched the URL over to your personal container to login.</p>
+      <p>Once a website can link the histories for two containers, imagine anything you have done in the previous container potentially known to the website. So if you visited a medical site, financial advise, shopping, adult sites or just something about your child's next school play they might gain access to all of that.</p>
+      <h1>Frequently asked questions</h1>
+      <blockquote>
+        <p>I'm not quite sure why this is so hard to switch containers per navigation then?</p>
+      </blockquote>
+      <p>Because the web has many features which makes this hard like <code>window.opener</code> this would also indeed break OAuth as previously mentioned. If you wanted opener to work across containers it is a privacy issue.</p>
+      <p>The window change requires a lot more security checking etc that will require additional work. <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1323873">Bugzilla change</a>.</p>
+      <p>This enhancement would allow assignment to stay within the same tab and clean history navigations. It doesn't however solve migrating a site from one container to another.</p>
+      <h1>Think we are wrong?</h1>
+      <p>If you think we are wrong about this, we <strong>really</strong> would like to solve this issue without the privacy impact. Please let us know if you think it is possible!</p>
+      <p>You can raise an issue on Github or contact us at <a href="mailto:containers@mozilla.com">containers@mozilla.com</a></p>
+      <hr/>
+    </div>
+    <div>
+      <h3 id="error" style="color:red">Please select one of the two options</h3>
+      <form>
+        <input type="radio" id="move-tab-yes" name="move-tabs" value="yes"> yup -- all I ever wanted is moving tabs between container groups, don't care about privacy<br> <br>
+        <input type="radio" id="move-tab-no" name="move-tabs" value="nope"> nope -- privacy above all ... usability is for losers
+      </form>
+    </div>
+    <div>
+      <h1>Import TabGroups backup file</h1>
+      <p>this is experimental ... tabgroups, windows and all tabs will be recreated, apart from urls starting with 'about://' due to technical limitations. All tabs and windows will be opened rather quickly, so expert your CPU fan to be noisy for a while</p>
+    </div>
 
     <div>
-    <label class="custom-file-upload">
-       <input id="file-picker" type="file"/>
-       Select TabGroup backup file
-    </label>
+      <label class="custom-file-upload">
+        <input id="file-picker" type="file"/>
+        Select TabGroup backup file
+      </label>
     </div>
 
     <script type="text/javascript" src="helper.js"></script>
