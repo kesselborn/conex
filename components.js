@@ -30,12 +30,12 @@ const $e = function(name, attributes, children) {
   return e;
 };
 
-function createTabGroupHeaderElement(id, color, name, tabindex) {
+function createTabGroupHeaderElement(id, color, name, tabindex, icon) {
   const elment =
     $e('ul', {id: id},[
         $e('li', {tabindex: tabindex || 1, class: 'section', data_cookie_store: id}, [
           $e('div', {class: 'summary'}, [
-            $e('span', {class: `circle circle-${color}`, content: ' '}),
+            $e('span', {class: `circle circle-${color}`, content: icon || ' '}),
             $e('span', {content: name}),
             $e('span', {content: '', class: 'tabs-count'}),
           ]),
@@ -82,4 +82,3 @@ function createHistoryElement(historyItem) {
   element.addEventListener('click', () => bg.newTabInCurrentContainerGroup(historyItem.url));
   return element;
 }
-

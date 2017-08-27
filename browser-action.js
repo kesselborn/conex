@@ -97,23 +97,36 @@ const resetPopup = function() {
   }
 };
 
+const renderResults = function(results, parent) {
+  const tabLinks = Array.from($('.tab')).map(t => t.dataset.url.toLowerCase());
+
+  results
+    .sort((a,b) => b.visitCount - a.visitCount)
+    .filter(e => e.url && ! tabLinks.includes(e.url.replace('http://','').replace('https://','').toLowerCase()))
+    .forEach(searchResult => parent.appendChild(createHistoryElement(searchResult)));
+}
+
+const fillBookmarksSection = function(searchQuery) {
+  const bookmarksUl = $1('#bookmarks');
+
+  bookmarksUl.innerHTML = '';
+  bookmarksUl.appendChild(createTabGroupHeaderElement('', 'bookmarks', 'bookmarks', -1, '★ '));
+
+  browser.bookmarks.search({
+    query: searchQuery
+  }).then(results => renderResults(results, bookmarksUl), e => console.error(e));
+};
+
 const fillHistorySection = function(searchQuery) {
   const historyUl = $1('#history');
 
   historyUl.innerHTML = '';
-  historyUl.appendChild(createTabGroupHeaderElement('', 'none', 'history', -1));
+  historyUl.appendChild(createTabGroupHeaderElement('', 'history', 'history', -1));
 
   browser.history.search({
     text: searchQuery,
     startTime: 0
-  }).then(result => {
-    const tabLinks = Array.from($('.tab')).map(t => t.dataset.url.toLowerCase());
-
-    result
-      .sort((a,b) => b.visitCount - a.visitCount)
-      .filter(e => ! tabLinks.includes(e.url.replace('http://','').replace('https://','').toLowerCase()))
-      .forEach(searchResult => historyUl.appendChild(createHistoryElement(searchResult)));
-  }, e => console.error(e));
+  }).then(results => renderResults(results, historyUl), e => console.error(e));
 };
 
 const showHideTabEntries = function(searchQuery) {
@@ -152,12 +165,14 @@ const onSearchChange = function(event) {
   showHideTabEntries(searchQuery);
   showHideTabGroupHeader(searchQuery);
 
-  if(searchQuery.length > 1 && $('#history ul li').length == 0) {
-    console.log('fetching history');
+  if(searchQuery.length > 1) {
+   if($('#history ul li').length == 0) {
     fillHistorySection(searchQuery);
+    fillBookmarksSection(searchQuery);
+   }
   } else if(searchQuery.length <= 1) {
-    console.log('deleting history');
     $1('#history').innerHTML = '';
+    $1('#bookmarks').innerHTML = '';
   }
 };
 

@@ -55,6 +55,7 @@
   },
   "permissions": [
     "<all_urls>",
+    "bookmarks",
     "contextualIdentities",
     "cookies",
     "history",

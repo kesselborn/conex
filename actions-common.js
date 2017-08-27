@@ -4,7 +4,7 @@ const renderTabGroups = function() {
   return new Promise((resolve, reject) => {
     browser.contextualIdentities.query({}).then(identities => {
       browser.browserAction.setBadgeText({text: ''});
-      for(const context of identities.concat({cookieStoreId: 'firefox-default', color: 'none', name: 'default'})) {
+      for(const context of identities.concat({cookieStoreId: 'firefox-default', color: 'default', name: 'default'})) {
         tabGroups.appendChild(createTabGroupHeaderElement(context.cookieStoreId, context.color, context.name));
       }
     }, e => reject(e));
