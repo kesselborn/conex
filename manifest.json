@@ -4,7 +4,7 @@
   "description": "This is a tabgroup'esque successor for Firefox >= 57 (WebExtensions)",
   "homepage_url": "https://github.com/kesselborn/taborama",
   "name": "Taborama",
-  "version": "0.0.27",
+  "version": "0.0.28",
   "browser_action": {
     "default_title": "Taborama (CTRL+<space> / CMD+<space>)",
     "browser_style": false,
@@ -15,7 +15,8 @@
   },
   "applications": {
     "gecko": {
-      "strict_min_version": "57.0a1"
+      "strict_min_version": "57.0a1",
+      "update_url": "https://raw.githubusercontent.com/kesselborn/taborama/master/versions.json"
     }
   },
   "commands": {

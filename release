@@ -30,7 +30,7 @@ git tag v${next_version}
 
 web-ext sign --api-key ${WEB_EXT_API_KEY:?"please set WEB_EXT_API_KEY"} \
              --api-secret ${WEB_EXT_API_SECRET:?"please set WEB_EXT_API_SECRET"} \
-             --ignore-files tags tabgroups-backup.json tabgroups-backup-small.json web-ext-artifacts *.xpi release versions.json || true
+             --ignore-files tags tabgroups-backup.json tabgroups-backup-small.json web-ext-artifacts *.xpi icons/*.afdesign release versions.json || true
 
 { git push --tags && git push; } || true
 
@@ -66,7 +66,7 @@ EOF
 cat<<EOF
 Submit it to listed mozilla:
 
-echo "call: web-ext sign --id '{ec9d70ea-0229-49c0-bbf7-0df9bbccde35}' --api-key ${WEB_EXT_API_KEY:?'please set WEB_EXT_API_KEY'} --api-secret ${WEB_EXT_API_SECRET:?'please set WEB_EXT_API_SECRET'} --ignore-files tags tabgroups-backup.json tabgroups-backup-small.json web-ext-artifacts *.xpi release versions.json"
+echo "call: web-ext sign --id '{ec9d70ea-0229-49c0-bbf7-0df9bbccde35}' --api-key ${WEB_EXT_API_KEY:?'please set WEB_EXT_API_KEY'} --api-secret ${WEB_EXT_API_SECRET:?'please set WEB_EXT_API_SECRET'} --ignore-files tags tabgroups-backup.json tabgroups-backup-small.json web-ext-artifacts *.xpi icons/*.afdesign release versions.json"
 
 Edit https://addons.mozilla.org/en-us/developers/addon/taborama/versions
 
