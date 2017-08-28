@@ -113,8 +113,8 @@ const createMissingTabGroups = function(tabGroups) {
 };
 
 const openPageActionPopup = function(tab) {
-  browser.storage.local.get("taborama/settings/show-page-action").then(showPageAction => {
-    if(showPageAction["taborama/settings/show-page-action"]) {
+  browser.storage.local.get("taborama/settings/tab-moving-allowed").then(showPageAction => {
+    if(showPageAction["taborama/settings/tab-moving-allowed"]) {
       browser.pageAction.show(tabId);
     } else {
       browser.runtime.openOptionsPage();
@@ -124,14 +124,14 @@ const openPageActionPopup = function(tab) {
 
 const showHidePageAction = function(tabId) {
   const querying = browser.tabs.get(tabId);
-  const setting = browser.storage.local.get("taborama/settings/show-page-action");
+  const setting = browser.storage.local.get("taborama/settings/tab-moving-allowed");
 
   Promise.all([querying, setting]).then(results => {
     const tab = results[0];
     const showPageAction = results[1];
 
-    if(showPageAction["taborama/settings/show-page-action"] == true) {
-      if(tab.url.indexOf('about:') != 0 ) {
+    if(showPageAction["taborama/settings/tab-moving-allowed"] == true) {
+      if(!tab.url.startsWith('about:')) {
         browser.pageAction.setIcon({
           tabId: tabId,
           path: { 19: 'icons/icon_19.png', 38: 'icons/icon_38.png', 48: 'icons/icon_48.png'}
@@ -139,7 +139,7 @@ const showHidePageAction = function(tabId) {
         browser.pageAction.setPopup({tabId: tab.id, popup: "page-action.html"});
         browser.pageAction.show(tabId);
       }
-    } else if(showPageAction["taborama/settings/show-page-action"] == undefined) {
+    } else if(showPageAction["taborama/settings/tab-moving-allowed"] == undefined) {
       browser.pageAction.setIcon({
         tabId: tabId,
         path: { 19: 'icons/icon_error_19.png', 38: 'icons/icon_error_38.png', 48: 'icons/icon_error_48.png'}
@@ -175,8 +175,22 @@ const storeScreenshot = function(tabId) {
   }, e => console.error(e));
 };
 
-
 /////////////////////////// setup listeners
+
+browser.webNavigation.onBeforeNavigate.addListener(function(details) {
+  browser.tabs.get(details.tabId).then(tab => {
+    if(lastCookieStoreId != defaultCookieStoreId &&
+       tab.cookieStoreId == defaultCookieStoreId &&
+       !details.url.startsWith('about:')) {
+      browser.storage.local.get("taborama/settings/tab-moving-allowed").then(showPageAction => {
+        if(showPageAction["taborama/settings/tab-moving-allowed"]) {
+          openInDifferentContainer(lastCookieStoreId, {id: tab.id, index: tab.index, url: details.url});
+        }
+      });
+    }
+  });
+});
+
 browser.tabs.onCreated.addListener(function(tab){
   if(tab.url == 'about:newtab' && tab.cookieStoreId == defaultCookieStoreId && lastCookieStoreId != defaultCookieStoreId) {
     openInDifferentContainer(lastCookieStoreId, tab);
