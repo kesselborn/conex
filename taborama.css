@@ -19,7 +19,7 @@ body, ul {
   width: 200px;
 }
 
-#browseraction span.close-button, #browseraction span.tabs-count {
+#browseraction span.bookmark-marker, span.close-button, #browseraction span.tabs-count {
   float: right;
 }
 
@@ -28,6 +28,14 @@ span.close-button {
   font-size: x-large;
   border-radius:5%;
   opacity: 0;
+}
+
+span.bookmark-marker {
+  opacity: 0;
+}
+
+li.is-bookmark span.bookmark-marker {
+  opacity: 1;
 }
 
 li.tab:hover span.close-button, li.tab:focus  span.close-button{

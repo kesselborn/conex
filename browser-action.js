@@ -1,6 +1,7 @@
 const deletedTabOpacity = 0.3;
 const groupsTabsMapCreating = bg.getTabsByGroup();
 const tabGroupRendering = renderTabGroups();
+const bookmarkQuerying = browser.bookmarks.search({});
 
 const keyHandling = function(event) {
   const searchElement = $1('#search');
@@ -86,8 +87,8 @@ const updateTabCount = function() {
 }
 
 const resetPopup = function() {
-  $1('#history ul').remove();
-  $1('#bookmarks ul').remove();
+  { const history = $1('#history ul'); if(history) { history.remove() }}
+  { const bookmarks = $1('#bookmarks ul'); if(bookmarks) { bookmarks.remove(); }}
   for(ul of $('#tabgroups ul')) {
     ul.style.display = '';
     ul.querySelector('li.section').tabIndex = 1;
@@ -181,7 +182,6 @@ const onSearchChange = function(event) {
    }
   } else if(searchQuery.length <= 1) {
     const bookmarks = $1('#bookmarks');
-    console.log(bookmarks);
     if(bookmarks.children.length > 0) { $1('ul', bookmarks).remove(); };
 
     const history = $1('#history');
@@ -195,7 +195,9 @@ setTimeout(function(){
     for(const section of $('.section')) {
       section.addEventListener('click', function() { expandTabGroup(section.dataset.cookieStore); });
     }
-    groupsTabsMapCreating.then(insertTabElements);
+    Promise.all([groupsTabsMapCreating, bookmarkQuerying]).then(results => {
+      insertTabElements(results[0], results[1]);
+    });
     document.querySelector('#search').addEventListener('keyup', onSearchChange);
   }, e => console.error(e));
 },400);

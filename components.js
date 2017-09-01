@@ -45,12 +45,13 @@ function createTabGroupHeaderElement(id, color, name, tabindex, icon) {
   return elment;
 }
 
-function createTabElement(tab, backroundImg) {
+function createTabElement(tab, backroundImg, isBookmarkUrl) {
   const url = tab.url.replace('http://', '').replace('https://', '');
   const searchTerm = "${tab.title} ${url}";
+  const elClass = isBookmarkUrl ? 'tab is-bookmark' : 'tab';
 
   const element =
-    $e('li', {tabindex: 1, class: 'tab', data_title: tab.title.toLowerCase(), data_url: url.toLowerCase(), data_tab_id: tab.id, style: 'display:none'} ,[
+    $e('li', {tabindex: 1, class: elClass, data_title: tab.title.toLowerCase(), data_url: url.toLowerCase(), data_tab_id: tab.id, style: 'display:none'} ,[
         $e('div', {}, [
           $e('div', {class: 'image', style: `background:url('${backroundImg}')`}, [
             (backroundImg == tab.favIconUrl || !tab.favIconUrl) ? $e('span') : $e('img', {src: tab.favIconUrl})
@@ -60,7 +61,8 @@ function createTabElement(tab, backroundImg) {
             $e('div', {class: 'tab-url', content: url})
           ]),
           $e('div', {class: 'close'}, [
-            $e('span', {content: '╳', title: 'close this tab', class: 'close-button', data_tab_id: tab.id})
+            $e('span', {content: '╳', title: 'close this tab', class: 'close-button', data_tab_id: tab.id}),
+            $e('span', {content: '★', title: 'this tab is a bookmark', class: 'bookmark-marker', data_tab_id: tab.id})
           ])
         ]),
     ]);

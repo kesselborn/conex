@@ -35,7 +35,12 @@ function getTabsByGroup() {
   return new Promise((resolve, reject) => {
     const groupsTabsMap = {};
 
-    browser.tabs.query({}).then(tabs => {
+    const bookmarkQuerying = browser.bookmarks.search({});
+    const tabQuerying = browser.tabs.query({});
+
+    Promise.all([bookmarkQuerying, tabQuerying]).then(results => {
+      const bookmarkUrls = results[0].filter(b => b.url != undefined).map(b => b.url.toLowerCase());
+      const tabs = results[1];
       const tabUrls = tabs.map(tab => tab.url);
 
       browser.storage.local.get(tabUrls).then(cachedThumbnails => {
@@ -45,7 +50,7 @@ function getTabsByGroup() {
             backroundImg = cachedThumbnails[tab.url].thumbnail;
           }
 
-          const thumbnailElement = createTabElement(tab, backroundImg);
+          const thumbnailElement = createTabElement(tab, backroundImg, bookmarkUrls.indexOf(tab.url.toLowerCase()) >= 0);
 
           if(!groupsTabsMap[tab.cookieStoreId]) {
             groupsTabsMap[tab.cookieStoreId] = [];
