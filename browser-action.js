@@ -86,7 +86,8 @@ const updateTabCount = function() {
 }
 
 const resetPopup = function() {
-  document.getElementById('history').innerHTML = '';
+  $1('#history ul').remove();
+  $1('#bookmarks ul').remove();
   for(ul of $('#tabgroups ul')) {
     ul.style.display = '';
     ul.querySelector('li.section').tabIndex = 1;
@@ -107,26 +108,34 @@ const renderResults = function(results, parent) {
 }
 
 const fillBookmarksSection = function(searchQuery) {
-  const bookmarksUl = $1('#bookmarks');
+  const bookmarks = $1('#bookmarks');
+  const tabGroupHeader = createTabGroupHeaderElement('', 'bookmarks', 'bookmarks', -1, '★ ');
 
-  bookmarksUl.innerHTML = '';
-  bookmarksUl.appendChild(createTabGroupHeaderElement('', 'bookmarks', 'bookmarks', -1, '★ '));
+  if($1('ul', bookmarks)) {
+    $1('ul', bookmarks).replaceWith(tabGroupHeader);
+  } else {
+    bookmarks.appendChild(tabGroupHeader);
+  }
 
   browser.bookmarks.search({
     query: searchQuery
-  }).then(results => renderResults(results, bookmarksUl), e => console.error(e));
+  }).then(results => renderResults(results, $1('ul', bookmarks)), e => console.error(e));
 };
 
 const fillHistorySection = function(searchQuery) {
-  const historyUl = $1('#history');
+  const history = $1('#history');
+  const tabGroupHeader = createTabGroupHeaderElement('', 'history', 'history', -1);
 
-  historyUl.innerHTML = '';
-  historyUl.appendChild(createTabGroupHeaderElement('', 'history', 'history', -1));
+  if($1('ul', history)) {
+    $1('ul', history).replaceWith(tabGroupHeader);
+  } else {
+    history.appendChild(tabGroupHeader);
+  }
 
   browser.history.search({
     text: searchQuery,
     startTime: 0
-  }).then(results => renderResults(results, historyUl), e => console.error(e));
+  }).then(results => renderResults(results, $1('ul', history)), e => console.error(e));
 };
 
 const showHideTabEntries = function(searchQuery) {
@@ -143,8 +152,8 @@ const showHideTabEntries = function(searchQuery) {
   }
 };
 
-const showHideTabGroupHeader = function(searchQuery) {
-  for(ul of $('#tabgroups ul')) {
+const showHideTabGroupHeader = function() {
+  for(ul of $('ul')) {
     ul.querySelector('li.section').tabIndex = -1; // section should not be selectable when we have search results
 
     // hide sections that don't have tabs that match the search
@@ -163,7 +172,7 @@ const onSearchChange = function(event) {
   }
 
   showHideTabEntries(searchQuery);
-  showHideTabGroupHeader(searchQuery);
+  showHideTabGroupHeader();
 
   if(searchQuery.length > 1) {
    if($('#history ul li').length == 0) {
@@ -171,8 +180,12 @@ const onSearchChange = function(event) {
     fillBookmarksSection(searchQuery);
    }
   } else if(searchQuery.length <= 1) {
-    $1('#history').innerHTML = '';
-    $1('#bookmarks').innerHTML = '';
+    const bookmarks = $1('#bookmarks');
+    console.log(bookmarks);
+    if(bookmarks.children.length > 0) { $1('ul', bookmarks).remove(); };
+
+    const history = $1('#history');
+    if(history.children.length > 0) { $1('ul', history).remove(); };
   }
 };
 
