@@ -15,8 +15,7 @@
   },
   "applications": {
     "gecko": {
-      "strict_min_version": "57.0a1",
-      "update_url": "https://raw.githubusercontent.com/kesselborn/taborama/master/versions.json"
+      "strict_min_version": "57.0a1"
     }
   },
   "commands": {
