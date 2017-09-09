@@ -136,7 +136,7 @@ const showHidePageAction = function(tabId) {
     const showPageAction = results[1];
 
     if(showPageAction["taborama/settings/tab-moving-allowed"] == true) {
-      if(!tab.url.startsWith('about:')) {
+      if(!tab.url.startsWith('about:') && !tab.url.startsWith('moz-extension:')) {
         browser.pageAction.setIcon({
           tabId: tabId,
           path: { 19: 'icons/icon_19.png', 38: 'icons/icon_38.png', 48: 'icons/icon_48.png'}
