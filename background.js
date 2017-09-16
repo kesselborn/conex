@@ -25,6 +25,7 @@ function newTabInCurrentContainer(url) {
 }
 
 function openActiveTabInDifferentContainer(cookieStoreId) {
+  lastCookieStoreId = cookieStoreId;
   browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT})
     .then(tabs => {
       openInDifferentContainer(cookieStoreId, tabs[0]);
@@ -201,6 +202,7 @@ browser.tabs.onCreated.addListener(function(tab){
     openInDifferentContainer(lastCookieStoreId, tab);
   }
 });
+
 browser.tabs.onActivated.addListener(function(activeInfo) { storeScreenshot(activeInfo.tabId) });
 browser.tabs.onActivated.addListener(function(activeInfo) { showHidePageAction(activeInfo.tabId)});
 browser.tabs.onActivated.addListener(updateLastCookieStoreId);
