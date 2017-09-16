@@ -1,4 +1,4 @@
-let tabGroups = renderTabGroups();
+let tabContainers = renderTabContainers();
 
 const openInDifferentContainer = function(element) {
   try {
@@ -17,7 +17,7 @@ const keyHandling = function(event) {
 };
 
 setTimeout(() => {
-  tabGroups.then(() => {
+  tabContainers.then(() => {
     $1('li').focus();
     if(bg.lastCookieStoreId != bg.defaultCookieStoreId) {
       $1('#'+bg.lastCookieStoreId+' li').focus();

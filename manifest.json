@@ -40,7 +40,7 @@
       "19": "icons/icon_error_19.png",
       "38": "icons/icon_error_38.png"
     },
-    "default_title": "re-open to tab in other group (CTRL+Shift+Y)"
+    "default_title": "re-open to tab in other container (CTRL+Shift+Y)"
   },
   "background": {
     "scripts": [

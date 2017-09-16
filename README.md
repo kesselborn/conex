@@ -1,5 +1,5 @@
 # taborama
-**this addon is still experimental and lacks hiding / showing tab groups due to https://bugzilla.mozilla.org/show_bug.cgi?id=1384515**
+**this addon is still experimental and lacks hiding / showing tab containers due to https://bugzilla.mozilla.org/show_bug.cgi?id=1384515**
 
 This webextension is a replacement for the discontinued <b>TabGroups</b> with some differences:
 
@@ -11,8 +11,8 @@ depends on manual reviews by mozilla. Downloads from here will get updates autom
 
 # Functionality
 
-- for now it lacks the big "Manage my TabGroups" overview window
-- a tab group is automatically one tab container -- i.e. tab groups are isolated against each other
+- it lacks the big "Manage my TabGroups" overview window
+- tab containers are handled like groups in the old tab groups addon
 - the quick search containes thumbnail of the results
 - the quick search includes the history
 
@@ -20,9 +20,9 @@ Tab Containers need be enabled in the preferences.
 
 # Permissions:
 
-- <all_urls&gt>: for taking screenshots for the thumbnails during search
-- contextualIdentities: for working with tab groups
-- cookies: for working with tab groups
+- <all_url>: for taking screenshots for the thumbnails during search
+- contextualIdentities: for working with tab containers
+- cookies: for working with tab containers
 - history: for showing history results in quick search
 - storage: for storing thumbnails
 - tabs: for tab handling

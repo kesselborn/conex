@@ -13,7 +13,7 @@ function closeTab(tabId) {
   browser.tabs.remove(Number(tabId));
 }
 
-function newTabInCurrentContainerGroup(url) {
+function newTabInCurrentContainer(url) {
   browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
     const createProperties = { cookieStoreId: tabs[0].cookieStoreId };
     if(url) {
@@ -31,9 +31,9 @@ function openActiveTabInDifferentContainer(cookieStoreId) {
     }, e=> console.error(e));
 }
 
-function getTabsByGroup() {
+function getTabsByContainer() {
   return new Promise((resolve, reject) => {
-    const groupsTabsMap = {};
+    const containersTabsMap = {};
 
     const bookmarkQuerying = browser.bookmarks.search({});
     const tabQuerying = browser.tabs.query({});
@@ -52,26 +52,26 @@ function getTabsByGroup() {
 
           const thumbnailElement = createTabElement(tab, backroundImg, bookmarkUrls.indexOf(tab.url.toLowerCase()) >= 0);
 
-          if(!groupsTabsMap[tab.cookieStoreId]) {
-            groupsTabsMap[tab.cookieStoreId] = [];
+          if(!containersTabsMap[tab.cookieStoreId]) {
+            containersTabsMap[tab.cookieStoreId] = [];
           }
 
-          groupsTabsMap[tab.cookieStoreId].push(thumbnailElement);
+          containersTabsMap[tab.cookieStoreId].push(thumbnailElement);
         }
       }, e => reject(e));
-      resolve(groupsTabsMap);
+      resolve(containersTabsMap);
     }, e => reject(e));
   });
 }
 
-function restoreTabGroupsBackup(tabGroups, windows) {
-  createMissingTabGroups(tabGroups).then(identities => {
+function restoreTabContainersBackup(tabContainers, windows) {
+  createMissingTabContainers(tabContainers).then(identities => {
     for(const tabs of windows) {
       browser.windows.create({}).then(w => {
         for(const tab of tabs) {
-          const cookieStoreId = identities.get(tab.group.toLowerCase());
+          const cookieStoreId = identities.get(tab.container.toLowerCase());
           browser.tabs.create({url: tab.url, cookieStoreId: cookieStoreId, windowId: w.id, active: false}).then(() => {
-            console.log(`creating tab ${tab.url} in group ${tab.group} (cookieStoreId: ${cookieStoreId})`);
+            console.log(`creating tab ${tab.url} in container ${tab.container} (cookieStoreId: ${cookieStoreId})`);
           });
         }
       }, e => console.error(e));
@@ -95,7 +95,7 @@ const openInDifferentContainer = function(cookieStoreId, tab) {
 }
 
 
-const createMissingTabGroups = function(tabGroups) {
+const createMissingTabContainers = function(tabContainers) {
   return new Promise((resolve, reject) => {
     const colors = ["blue", "turquoise", "green", "yellow", "orange", "red", "pink", "purple"];
 
@@ -103,10 +103,10 @@ const createMissingTabGroups = function(tabGroups) {
       const nameCookieStoreIdMap = new Map(identities.map(identity => [identity.name.toLowerCase(), identity.cookieStoreId]));
       const promises = [];
 
-      for(const tabGroup of tabGroups) {
-        if(!nameCookieStoreIdMap.get(tabGroup.toLowerCase())) {
-          console.info(`creating tab group ${tabGroup}`);
-          const newIdentity = {name: tabGroup, icon: 'circle', color: colors[Math.floor(Math.random() * (8 - 0)) + 0]};
+      for(const tabContainer of tabContainers) {
+        if(!nameCookieStoreIdMap.get(tabContainer.toLowerCase())) {
+          console.info(`creating tab container ${tabContainer}`);
+          const newIdentity = {name: tabContainer, icon: 'circle', color: colors[Math.floor(Math.random() * (8 - 0)) + 0]};
           browser.contextualIdentities.create(newIdentity).then(identity => {
             nameCookieStoreIdMap.set(identity.name.toLowerCase(), identity.cookieStoreId);
           }, e => reject(e));

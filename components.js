@@ -30,7 +30,7 @@ const $e = function(name, attributes, children) {
   return e;
 };
 
-function createTabGroupHeaderElement(id, color, name, tabindex, icon) {
+function createTabContainerHeaderElement(id, color, name, tabindex, icon) {
   const elment =
     $e('ul', {id: id},[
         $e('li', {tabindex: tabindex || 1, class: 'section', data_cookie_store: id}, [
@@ -81,6 +81,6 @@ function createHistoryElement(historyItem) {
         ])
     ]);
 
-  element.addEventListener('click', () => bg.newTabInCurrentContainerGroup(historyItem.url));
+  element.addEventListener('click', () => bg.newTabInCurrentContainer(historyItem.url));
   return element;
 }

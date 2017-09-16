@@ -1,6 +1,6 @@
 const deletedTabOpacity = 0.3;
-const groupsTabsMapCreating = bg.getTabsByGroup();
-const tabGroupRendering = renderTabGroups();
+const containersTabsMapCreating = bg.getTabsByContainer();
+const tabContainerRendering = renderTabContainers();
 const bookmarkQuerying = browser.bookmarks.search({});
 
 const keyHandling = function(event) {
@@ -11,9 +11,9 @@ const keyHandling = function(event) {
       if(tabId = document.activeElement.dataset.tabId) {
         bg.activateTab(tabId);
       } else if(url = document.activeElement.dataset.url) {
-        bg.newTabInCurrentContainerGroup(url);
+        bg.newTabInCurrentContainer(url);
       } else if(cookieStoreId = document.activeElement.dataset.cookieStore) {
-        expandTabGroup(cookieStoreId);
+        expandTabContainer(cookieStoreId);
         return;
       } else {
         console.error('unhandled active element:', document.activeElement);
@@ -30,29 +30,29 @@ const keyHandling = function(event) {
   }
 };
 
-const expandTabGroup = function(cookieStoreId) {
+const expandTabContainer = function(cookieStoreId) {
   resetPopup();
   for(const element of $('li.tab')) {
     element.style.display = 'none';
   }
 
-  const tabGroup = $1(`ul#${cookieStoreId}`);
-  if(tabGroup.dataset.expanded != "true") {
+  const tabContainer = $1(`ul#${cookieStoreId}`);
+  if(tabContainer.dataset.expanded != "true") {
     for(const element of $(`ul#${cookieStoreId} li.tab`)) {
       element.style.display = element.style.display == 'none' ? '' : 'none';
     }
-    tabGroup.dataset.expanded = true;
+    tabContainer.dataset.expanded = true;
   } else {
-    tabGroup.dataset.expanded = false;
+    tabContainer.dataset.expanded = false;
   }
 }
 
 document.body.addEventListener('keypress', keyHandling);
 
-const insertTabElements = function(tabGroups) {
-  for(tabGroup in tabGroups) {
-    let ul = $1(`#${tabGroup}`);
-    for(const element of tabGroups[tabGroup]) {
+const insertTabElements = function(tabContainers) {
+  for(tabContainer in tabContainers) {
+    let ul = $1(`#${tabContainer}`);
+    for(const element of tabContainers[tabContainer]) {
       element.addEventListener('click', function() {
         bg.activateTab(element.dataset.tabId);
         window.close();
@@ -78,9 +78,9 @@ const tabIsDeleted = function(e) {
 }
 
 const updateTabCount = function() {
-  for(const tabGroup of $('#tabgroups ul')) {
-    const tabCnt = Array.from($('li.tab', tabGroup)).filter(e => !tabIsDeleted(e)).length;
-    const tabCntElement = $1('.tabs-count', tabGroup);
+  for(const tabContainer of $('#tabcontainers ul')) {
+    const tabCnt = Array.from($('li.tab', tabContainer)).filter(e => !tabIsDeleted(e)).length;
+    const tabCntElement = $1('.tabs-count', tabContainer);
     tabCntElement.removeChild(tabCntElement.firstChild);
     tabCntElement.appendChild(document.createTextNode(`(${tabCnt} tabs)`));
   }
@@ -89,12 +89,12 @@ const updateTabCount = function() {
 const resetPopup = function() {
   { const history = $1('#history ul'); if(history) { history.remove() }}
   { const bookmarks = $1('#bookmarks ul'); if(bookmarks) { bookmarks.remove(); }}
-  for(ul of $('#tabgroups ul')) {
+  for(ul of $('#tabcontainers ul')) {
     ul.style.display = '';
     ul.querySelector('li.section').tabIndex = 1;
   }
 
-  for(li of $('#tabgroups li.tab')) {
+  for(li of $('#tabcontainers li.tab')) {
     li.style.display = 'none';
   }
 };
@@ -110,12 +110,12 @@ const renderResults = function(results, parent) {
 
 const fillBookmarksSection = function(searchQuery) {
   const bookmarks = $1('#bookmarks');
-  const tabGroupHeader = createTabGroupHeaderElement('', 'bookmarks', 'bookmarks', -1, '★ ');
+  const tabContainerHeader = createTabContainerHeaderElement('', 'bookmarks', 'bookmarks', -1, '★ ');
 
   if($1('ul', bookmarks)) {
-    $1('ul', bookmarks).replaceWith(tabGroupHeader);
+    $1('ul', bookmarks).replaceWith(tabContainerHeader);
   } else {
-    bookmarks.appendChild(tabGroupHeader);
+    bookmarks.appendChild(tabContainerHeader);
   }
 
   browser.bookmarks.search({
@@ -125,12 +125,12 @@ const fillBookmarksSection = function(searchQuery) {
 
 const fillHistorySection = function(searchQuery) {
   const history = $1('#history');
-  const tabGroupHeader = createTabGroupHeaderElement('', 'history', 'history', -1);
+  const tabContainerHeader = createTabContainerHeaderElement('', 'history', 'history', -1);
 
   if($1('ul', history)) {
-    $1('ul', history).replaceWith(tabGroupHeader);
+    $1('ul', history).replaceWith(tabContainerHeader);
   } else {
-    history.appendChild(tabGroupHeader);
+    history.appendChild(tabContainerHeader);
   }
 
   browser.history.search({
@@ -153,7 +153,7 @@ const showHideTabEntries = function(searchQuery) {
   }
 };
 
-const showHideTabGroupHeader = function() {
+const showHideTabContainerHeader = function() {
   for(ul of $('ul')) {
     ul.querySelector('li.section').tabIndex = -1; // section should not be selectable when we have search results
 
@@ -173,7 +173,7 @@ const onSearchChange = function(event) {
   }
 
   showHideTabEntries(searchQuery);
-  showHideTabGroupHeader();
+  showHideTabContainerHeader();
 
   if(searchQuery.length > 1) {
    if($('#history ul li').length == 0) {
@@ -191,11 +191,11 @@ const onSearchChange = function(event) {
 
 setTimeout(function(){
   document.getElementById('search').focus();
-  tabGroupRendering.then(() => {
+  tabContainerRendering.then(() => {
     for(const section of $('.section')) {
-      section.addEventListener('click', function() { expandTabGroup(section.dataset.cookieStore); });
+      section.addEventListener('click', function() { expandTabContainer(section.dataset.cookieStore); });
     }
-    Promise.all([groupsTabsMapCreating, bookmarkQuerying]).then(results => {
+    Promise.all([containersTabsMapCreating, bookmarkQuerying]).then(results => {
       insertTabElements(results[0], results[1]);
     });
     document.querySelector('#search').addEventListener('keyup', onSearchChange);
