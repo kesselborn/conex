@@ -189,16 +189,14 @@ const onSearchChange = function(event) {
   }
 };
 
-setTimeout(function(){
-  document.getElementById('search').focus();
-  tabContainerRendering.then(() => {
-    for(const section of $('.section')) {
-      section.addEventListener('click', function() { expandTabContainer(section.dataset.cookieStore); });
-    }
-    Promise.all([containersTabsMapCreating, bookmarkQuerying]).then(results => {
-      insertTabElements(results[0], results[1]);
-    });
-    document.querySelector('#search').addEventListener('keyup', onSearchChange);
-  }, e => console.error(e));
-},400);
+document.getElementById('search').focus();
+tabContainerRendering.then(() => {
+  for(const section of $('.section')) {
+    section.addEventListener('click', function() { expandTabContainer(section.dataset.cookieStore); });
+  }
+  Promise.all([containersTabsMapCreating, bookmarkQuerying]).then(results => {
+    insertTabElements(results[0], results[1]);
+  });
+  document.querySelector('#search').addEventListener('keyup', onSearchChange);
+}, e => console.error(e));
 

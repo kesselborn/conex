@@ -7,8 +7,8 @@ const renderTabContainers = function() {
       for(const context of identities.concat({cookieStoreId: 'firefox-default', color: 'default', name: 'default'})) {
         tabContainers.appendChild(createTabContainerHeaderElement(context.cookieStoreId, context.color, context.name));
       }
+      resolve({});
     }, e => reject(e));
-    resolve({});
   });
 }
 

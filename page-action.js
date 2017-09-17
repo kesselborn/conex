@@ -16,16 +16,14 @@ const keyHandling = function(event) {
   }
 };
 
-setTimeout(() => {
-  tabContainers.then(() => {
-    $1('li').focus();
-    if(bg.lastCookieStoreId != bg.defaultCookieStoreId) {
-      $1('#'+bg.lastCookieStoreId+' li').focus();
-    }
-  });
-  for(const section of $('.section')) {
-    section.addEventListener('click', function() { openInDifferentContainer(section); });
+tabContainers.then(() => {
+  $1('li').focus();
+  if(bg.lastCookieStoreId != bg.defaultCookieStoreId) {
+    $1('#'+bg.lastCookieStoreId+' li').focus();
   }
+});
+for(const section of $('.section')) {
+  section.addEventListener('click', function() { openInDifferentContainer(section); });
+}
 
-  document.body.addEventListener('keypress', keyHandling);
-}, 200);
+document.body.addEventListener('keypress', keyHandling);

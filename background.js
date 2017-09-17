@@ -46,12 +46,13 @@ function getTabsByContainer() {
 
       browser.storage.local.get(tabUrls).then(cachedThumbnails => {
         for(const tab of tabs) {
+          const url = tab.url ? tab.url : "";
           let backroundImg = tab.favIconUrl;
-          if(cachedThumbnails[tab.url]) {
-            backroundImg = cachedThumbnails[tab.url].thumbnail;
+          if(cachedThumbnails[url]) {
+            backroundImg = cachedThumbnails[url].thumbnail;
           }
 
-          const thumbnailElement = createTabElement(tab, backroundImg, bookmarkUrls.indexOf(tab.url.toLowerCase()) >= 0);
+          const thumbnailElement = createTabElement(tab, backroundImg, bookmarkUrls.indexOf(url.toLowerCase()) >= 0);
 
           if(!containersTabsMap[tab.cookieStoreId]) {
             containersTabsMap[tab.cookieStoreId] = [];
@@ -59,8 +60,8 @@ function getTabsByContainer() {
 
           containersTabsMap[tab.cookieStoreId].push(thumbnailElement);
         }
+        resolve(containersTabsMap);
       }, e => reject(e));
-      resolve(containersTabsMap);
     }, e => reject(e));
   });
 }
@@ -177,8 +178,8 @@ const storeScreenshot = function(tabId) {
         .then(() => console.info('succesfully created thumbnail for', tab.url),
             e  => console.error(e));
 
-    }, e => console.error(e));
-  }, e => console.error(e));
+    });
+  });
 };
 
 /////////////////////////// setup listeners
