@@ -45,6 +45,10 @@
         {
           "version": "0.0.31",
           "update_link": "https://github.com/kesselborn/taborama/releases/download/v0.0.31/taborama-0.0.31-an.fx.xpi"
+        },
+        {
+          "version": "0.0.32",
+          "update_link": "https://github.com/kesselborn/taborama/releases/download/v0.0.32/taborama-0.0.32-an.fx.xpi"
         }
       ]
     }
