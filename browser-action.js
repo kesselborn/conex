@@ -189,7 +189,6 @@ const onSearchChange = function(event) {
   }
 };
 
-document.getElementById('search').focus();
 tabContainerRendering.then(() => {
   for(const section of $('.section')) {
     section.addEventListener('click', function() { expandTabContainer(section.dataset.cookieStore); });
@@ -198,5 +197,6 @@ tabContainerRendering.then(() => {
     insertTabElements(results[0], results[1]);
   });
   document.querySelector('#search').addEventListener('keyup', onSearchChange);
+  setTimeout(function(){ document.getElementById('search').focus()}, 200);
 }, e => console.error(e));
 

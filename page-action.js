@@ -22,6 +22,7 @@ tabContainers.then(() => {
     $1('#'+bg.lastCookieStoreId+' li').focus();
   }
 });
+
 for(const section of $('.section')) {
   section.addEventListener('click', function() { openInDifferentContainer(section); });
 }
