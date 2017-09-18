@@ -189,7 +189,7 @@ browser.webNavigation.onBeforeNavigate.addListener(function(details) {
   browser.tabs.get(details.tabId).then(tab => {
     if(lastCookieStoreId != defaultCookieStoreId &&
        tab.cookieStoreId == defaultCookieStoreId &&
-       !details.url.startsWith('about:')) {
+       details.url.startsWith('http')) {
       browser.storage.local.get("taborama/settings/tab-moving-allowed").then(showPageAction => {
         if(showPageAction["taborama/settings/tab-moving-allowed"]) {
           openInDifferentContainer(lastCookieStoreId, {id: tab.id, index: tab.index, url: details.url});
