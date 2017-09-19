@@ -74,7 +74,8 @@ read -p "release to mozilla as well (y/n)?" -n1 answer
 test "${answer}" == "y" || exit 0
 
 # remove github update url from manifest
-cat manifest.json | jq 'del(.applications.gecko.update_url)'
+cat manifest.json | jq 'del(.applications.gecko.update_url)' > next_manifest.json
+mv next_manifest.json > manifest.json
 ################ github release upload end
 
 web-ext sign --id '{ec9d70ea-0229-49c0-bbf7-0df9bbccde35}' --api-key ${WEB_EXT_API_KEY:?'please set WEB_EXT_API_KEY'} --api-secret ${WEB_EXT_API_SECRET:?'please set WEB_EXT_API_SECRET'} --ignore-files tags tabgroups-backup.json tabgroups-backup-small.json web-ext-artifacts *.xpi icons/*.afdesign release versions.json
