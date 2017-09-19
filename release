@@ -63,15 +63,13 @@ Successfully created release -- edit edit release notes at: https://github.com/$
 
 
 EOF
+cat manifest.json | jq 'del(.applications.gecko.update_url)'
 ################ github release upload end
 
-cat<<EOF
-Submit it to listed mozilla:
+web-ext sign --id '{ec9d70ea-0229-49c0-bbf7-0df9bbccde35}' --api-key ${WEB_EXT_API_KEY:?'please set WEB_EXT_API_KEY'} --api-secret ${WEB_EXT_API_SECRET:?'please set WEB_EXT_API_SECRET'} --ignore-files tags tabgroups-backup.json tabgroups-backup-small.json web-ext-artifacts *.xpi icons/*.afdesign release versions.json
 
-echo "call: web-ext sign --id '{ec9d70ea-0229-49c0-bbf7-0df9bbccde35}' --api-key ${WEB_EXT_API_KEY:?'please set WEB_EXT_API_KEY'} --api-secret ${WEB_EXT_API_SECRET:?'please set WEB_EXT_API_SECRET'} --ignore-files tags tabgroups-backup.json tabgroups-backup-small.json web-ext-artifacts *.xpi icons/*.afdesign release versions.json"
+git checkout manifest.json
 
 Edit https://addons.mozilla.org/en-us/developers/addon/taborama/versions
 
 Diff: https://github.com/kesselborn/taborama/compare/v${current_version}...${VERSION}
-
-EOF
