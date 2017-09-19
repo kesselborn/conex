@@ -25,7 +25,9 @@ fi
 echo "${next_version}"
 
 sed -i "" -e "s/: \"${current_version}\"/: \"${next_version}\"/" manifest.json
-git commit -m "Bump to version ${next_version}" manifest.json
+jq ".addons.\"{cad4f60e-e46e-4d66-8c11-e09194d4df7d}\".updates += [{\"version\":\"${next_version}\", \"update_link\": \"https://github.com/kesselborn/taborama/releases/download/v${next_version}/taborama-${next_version}-an.fx.xpi\"}]" versions.json > next_versions.json
+mv next_versions.json versions.json
+git commit -m "Bump to version ${next_version}" manifest.json versions.json
 git tag v${next_version}
 
 web-ext sign --api-key ${WEB_EXT_API_KEY:?"please set WEB_EXT_API_KEY"} \
