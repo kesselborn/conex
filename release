@@ -63,6 +63,10 @@ Successfully created release -- edit edit release notes at: https://github.com/$
 
 
 EOF
+
+read -p "enter to release to mozilla as well (y/n)?" -n1 answer
+test "${answer}" == "y" || exit 0
+
 cat manifest.json | jq 'del(.applications.gecko.update_url)'
 ################ github release upload end
 
