@@ -12,7 +12,6 @@ filePicker.addEventListener("change", picker => {
 
       const windows = [];
       for(const w of json.windows) {
-        console.log(1, w);
         const windowTabContainersJSON = JSON.parse(w.extData['tabview-group']);
         const windowTabContainers = [];
 
