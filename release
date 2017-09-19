@@ -42,7 +42,13 @@ VERSION=v${next_version}
 LOCAL_ASSET=web-ext-artifacts/taborama-${next_version}-an+fx.xpi
 
 repo=$(git remote get-url origin|cut -d: -f2|sed 's/\.git$//g')
-release_body="{\"tag_name\":\"${VERSION}\",\"name\":\"${VERSION}\",\"body\":\"...\",\"draft\":false,\"prerelease\":false}"
+
+release_notes_file=$(mktemp /tmp/release_notes.XXXXXX)
+echo "release notes for github:" > ${release_notes_file}
+vi ${release_notes_file}
+release_notes=$(cat ${release_notes_file} | while read l; do echo -n "$l\\n"; done)
+release_body="{\"tag_name\":\"${VERSION}\",\"name\":\"${VERSION}\",\"body\":\"${release_notes}\",\"draft\":false,\"prerelease\":false}"
+rm -f ${release_notes_file}
 
 response=$(set -x; curl -ifL -H"Accept: application/vnd.github.v3+json" -H"${AUTH}" -XPOST -d "${release_body}" https://api.github.com/repos/${repo}/releases) \
   || { echo "Error: does the release already exist? Check https://github.com/${repo}/releases/tag/${VERSION}"; exit 1; }
