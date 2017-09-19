@@ -32,38 +32,32 @@ function openActiveTabInDifferentContainer(cookieStoreId) {
     }, e=> console.error(e));
 }
 
-function getTabsByContainer() {
-  return new Promise((resolve, reject) => {
-    const containersTabsMap = {};
+async function getTabsByContainer() {
+  const containersTabsMap = {};
 
-    const bookmarkQuerying = browser.bookmarks.search({});
-    const tabQuerying = browser.tabs.query({});
+  const bookmarks = browser.bookmarks.search({});
+  const tabs = browser.tabs.query({});
 
-    Promise.all([bookmarkQuerying, tabQuerying]).then(results => {
-      const bookmarkUrls = results[0].filter(b => b.url != undefined).map(b => b.url.toLowerCase());
-      const tabs = results[1];
-      const tabUrls = tabs.map(tab => tab.url);
+  const bookmarkUrls = (await bookmarks).filter(b => b.url != undefined).map(b => b.url.toLowerCase());
+  const tabUrls = (await tabs).map(tab => tab.url);
+  const cachedThumbnails = browser.storage.local.get(tabUrls);
 
-      browser.storage.local.get(tabUrls).then(cachedThumbnails => {
-        for(const tab of tabs) {
-          const url = tab.url ? tab.url : "";
-          let backroundImg = tab.favIconUrl;
-          if(cachedThumbnails[url]) {
-            backroundImg = cachedThumbnails[url].thumbnail;
-          }
+  for(const tab of await tabs) {
+    const url = tab.url ? tab.url : "";
+    let backroundImg = tab.favIconUrl;
+    if((await cachedThumbnails)[url]) {
+      backroundImg = (await cachedThumbnails)[url].thumbnail;
+    }
 
-          const thumbnailElement = createTabElement(tab, backroundImg, bookmarkUrls.indexOf(url.toLowerCase()) >= 0);
+    const thumbnailElement = createTabElement(tab, backroundImg, bookmarkUrls.indexOf(url.toLowerCase()) >= 0);
 
-          if(!containersTabsMap[tab.cookieStoreId]) {
-            containersTabsMap[tab.cookieStoreId] = [];
-          }
+    if(!containersTabsMap[tab.cookieStoreId]) {
+      containersTabsMap[tab.cookieStoreId] = [];
+    }
 
-          containersTabsMap[tab.cookieStoreId].push(thumbnailElement);
-        }
-        resolve(containersTabsMap);
-      }, e => reject(e));
-    }, e => reject(e));
-  });
+    containersTabsMap[tab.cookieStoreId].push(thumbnailElement);
+  }
+  return containersTabsMap;
 }
 
 function restoreTabContainersBackup(tabContainers, windows) {
@@ -97,26 +91,25 @@ const openInDifferentContainer = function(cookieStoreId, tab) {
 }
 
 
-const createMissingTabContainers = function(tabContainers) {
-  return new Promise((resolve, reject) => {
+const createMissingTabContainers = async function(tabContainers) {
     const colors = ["blue", "turquoise", "green", "yellow", "orange", "red", "pink", "purple"];
 
-    browser.contextualIdentities.query({}).then(identities => {
-      const nameCookieStoreIdMap = new Map(identities.map(identity => [identity.name.toLowerCase(), identity.cookieStoreId]));
-      const promises = [];
+    const identities = await browser.contextualIdentities.query({});
 
-      for(const tabContainer of tabContainers) {
-        if(!nameCookieStoreIdMap.get(tabContainer.toLowerCase())) {
-          console.info(`creating tab container ${tabContainer}`);
-          const newIdentity = {name: tabContainer, icon: 'circle', color: colors[Math.floor(Math.random() * (8 - 0)) + 0]};
-          browser.contextualIdentities.create(newIdentity).then(identity => {
-            nameCookieStoreIdMap.set(identity.name.toLowerCase(), identity.cookieStoreId);
-          }, e => reject(e));
-        }
+    const nameCookieStoreIdMap = new Map(identities.map(identity => [identity.name.toLowerCase(), identity.cookieStoreId]));
+    const promises = [];
+
+    for(const tabContainer of tabContainers) {
+      if(!nameCookieStoreIdMap.get(tabContainer.toLowerCase())) {
+        console.info(`creating tab container ${tabContainer}`);
+        const newIdentity = {name: tabContainer, icon: 'circle', color: colors[Math.floor(Math.random() * (8 - 0)) + 0]};
+        const identity = await browser.contextualIdentities.create(newIdentity);
+
+        nameCookieStoreIdMap.set(identity.name.toLowerCase(), identity.cookieStoreId);
       }
-      resolve(nameCookieStoreIdMap);
-    }, e => reject(e) );
-  });
+    }
+
+    return nameCookieStoreIdMap;
 };
 
 const openPageActionPopup = function(tab) {
@@ -130,16 +123,13 @@ const openPageActionPopup = function(tab) {
 }
 
 const showHidePageAction = function(tabId) {
-  const querying = browser.tabs.get(tabId);
-  const setting = browser.storage.local.get("taborama/settings/tab-moving-allowed");
-
-  Promise.all([querying, setting]).then(results => {
+  Promise.all([browser.tabs.get(tabId), browser.storage.local.get("taborama/settings/tab-moving-allowed")]).then(results => {
     const tab = results[0];
     const showPageAction = results[1];
 
     if(showPageAction["taborama/settings/tab-moving-allowed"] == true) {
       if(tab.url.startsWith('http')) {
-        console.log(`reopening #{tab.url} in current container`);
+        console.log(`reopening ${tab.url} in current container`);
         browser.pageAction.setIcon({
           tabId: tabId,
           path: { 19: 'icons/icon_19.png', 38: 'icons/icon_38.png', 48: 'icons/icon_48.png'}
