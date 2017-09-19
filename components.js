@@ -45,12 +45,12 @@ function createTabContainerHeaderElement(id, color, name, tabindex, icon) {
   return elment;
 }
 
-function createTabElement(tab, backroundImg, isBookmarkUrl) {
+function createTabElement(tab, isBookmarkUrl) {
   if(!tab.id || tab.id == browser.tabs.TAB_ID_NONE) {
     return;
   }
 
-  const url = tab.url ? tab.url.replace('http://', '').replace('https://', '') : '';
+  const url = tab.url ? cleanUrl(tab.url) : '';
   const title = tab.title ? tab.title : '';
   const searchTerm = "${title} ${url}";
   const elClass = isBookmarkUrl ? 'tab is-bookmark' : 'tab';
@@ -58,8 +58,8 @@ function createTabElement(tab, backroundImg, isBookmarkUrl) {
   const element =
     $e('li', {tabindex: 1, class: elClass, data_title: title.toLowerCase(), data_url: url.toLowerCase(), data_tab_id: tab.id, style: 'display:none'} ,[
         $e('div', {}, [
-          $e('div', {class: 'image', style: `background:url('${backroundImg}')`}, [
-            (backroundImg == tab.favIconUrl || !tab.favIconUrl) ? $e('span') : $e('img', {src: tab.favIconUrl})
+          $e('div', {class: 'image', data_bg_set: 'false', style: `background:url('${tab.favIconUrl}')`}, [
+            $e('img', {src: tab.favIconUrl})
           ]),
           $e('div', {class: 'text'}, [
             $e('div', {class: 'tab-title', content: title}),
@@ -81,7 +81,7 @@ function createHistoryElement(historyItem) {
         $e('div', {}, [
           $e('div', {class: 'text'}, [
             $e('div', {class: 'tab-title', content: historyItem.title}),
-            $e('div', {class: 'tab-url', content: historyItem.url.replace('http://','').replace('https://','')})
+            $e('div', {class: 'tab-url', content: cleanUrl(historyItem.url)})
           ])
         ])
     ]);

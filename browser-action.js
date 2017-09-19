@@ -104,7 +104,7 @@ const renderResults = function(results, parent) {
 
   results
     .sort((a,b) => b.visitCount - a.visitCount)
-    .filter(e => e.url && ! tabLinks.includes(e.url.replace('http://','').replace('https://','').toLowerCase()))
+    .filter(e => e.url && ! tabLinks.includes(cleanUrl(e.url)))
     .forEach(searchResult => parent.appendChild(createHistoryElement(searchResult)));
 }
 
@@ -139,15 +139,30 @@ const fillHistorySection = function(searchQuery) {
   }).then(results => renderResults(results, $1('ul', history)), e => console.error(e));
 };
 
+const setBgImage = async function(element, url) {
+  element.dataset.bgSet = 'true';
+  const cachedThumbnails = await browser.storage.local.get(url);
+  if(cachedThumbnails[url] && cachedThumbnails[url].thumbnail) {
+    element.style.background = "url("+cachedThumbnails[url].thumbnail+")";
+  }
+}
+
 const showHideTabEntries = function(searchQuery) {
   for(element of $('.tab')) {
-    const text = (element.dataset.title + element.dataset.url.replace('http://','').replace('https://')).toLowerCase();
+    const text = (element.dataset.title + cleanUrl(element.dataset.url)).toLowerCase();
 
     if(text) {
       // if the search query consists of multiple words, check if ALL words match -- regardless of the order
       const match = searchQuery.split(' ').every(q => {
         return text.indexOf(q) >= 0
       });
+
+      if(match) {
+        const thumbnailElement = $1('.image', element);
+        if(thumbnailElement && thumbnailElement.dataset.bgSet == 'false') {
+          setBgImage(thumbnailElement, element.dataset.url);
+        }
+      }
       element.style.display = match ? '' : 'none';
     }
   }
@@ -189,6 +204,7 @@ const onSearchChange = function(event) {
   }
 };
 
+const startTime = Date.now();
 tabContainerRendering.then(() => {
   for(const section of $('.section')) {
     section.addEventListener('click', function() { expandTabContainer(section.dataset.cookieStore); });
@@ -200,5 +216,6 @@ tabContainerRendering.then(() => {
 
   document.querySelector('#search').addEventListener('keyup', onSearchChange);
   setTimeout(function(){ document.getElementById('search').focus()}, 200);
+  console.log("rendering time: ", Date.now() - startTime);
 }, e => console.error(e));
 

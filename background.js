@@ -39,17 +39,9 @@ async function getTabsByContainer() {
   const tabs = browser.tabs.query({});
 
   const bookmarkUrls = (await bookmarks).filter(b => b.url != undefined).map(b => b.url.toLowerCase());
-  const tabUrls = (await tabs).map(tab => tab.url);
-  const cachedThumbnails = browser.storage.local.get(tabUrls);
-
   for(const tab of await tabs) {
     const url = tab.url ? tab.url : "";
-    let backroundImg = tab.favIconUrl;
-    if((await cachedThumbnails)[url]) {
-      backroundImg = (await cachedThumbnails)[url].thumbnail;
-    }
-
-    const thumbnailElement = createTabElement(tab, backroundImg, bookmarkUrls.indexOf(url.toLowerCase()) >= 0);
+    const thumbnailElement = createTabElement(tab, bookmarkUrls.indexOf(url.toLowerCase()) >= 0);
 
     if(!containersTabsMap[tab.cookieStoreId]) {
       containersTabsMap[tab.cookieStoreId] = [];
@@ -129,7 +121,6 @@ const showHidePageAction = function(tabId) {
 
     if(showPageAction["taborama/settings/tab-moving-allowed"] == true) {
       if(tab.url.startsWith('http')) {
-        console.log(`reopening ${tab.url} in current container`);
         browser.pageAction.setIcon({
           tabId: tabId,
           path: { 19: 'icons/icon_19.png', 38: 'icons/icon_38.png', 48: 'icons/icon_48.png'}
@@ -165,8 +156,8 @@ const storeScreenshot = function(tabId) {
     }
 
     browser.tabs.captureVisibleTab(null, {format: 'jpeg', quality: imageQuality}).then(imageData => {
-      browser.storage.local.set({[tab.url] : {thumbnail: imageData, favicon: tab.favIconUrl}})
-        .then(() => console.info('succesfully created thumbnail for', tab.url),
+      browser.storage.local.set({[cleanUrl(tab.url)] : {thumbnail: imageData, favicon: tab.favIconUrl}})
+        .then(() => console.info('succesfully created thumbnail for', cleanUrl(tab.url)),
             e  => console.error(e));
 
     });
