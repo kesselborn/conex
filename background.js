@@ -1,5 +1,7 @@
 const imageQuality = 8;
 const defaultCookieStoreId = 'firefox-default';
+const tabMovingSettingKey = 'taborama/settings/tab-moving-allowed';
+
 let lastCookieStoreId = defaultCookieStoreId;
 
 //////////////////////////////////// exported functions (es6 import / export stuff is not supported in webextensions)
@@ -105,8 +107,8 @@ const createMissingTabContainers = async function(tabContainers) {
 };
 
 const openPageActionPopup = function(tab) {
-  browser.storage.local.get("taborama/settings/tab-moving-allowed").then(showPageAction => {
-    if(showPageAction["taborama/settings/tab-moving-allowed"]) {
+  browser.storage.local.get(tabMovingSettingKey).then(showPageAction => {
+    if(showPageAction[tabMovingSettingKey]) {
       browser.pageAction.show(tabId);
     } else {
       browser.runtime.openOptionsPage();
@@ -115,11 +117,11 @@ const openPageActionPopup = function(tab) {
 }
 
 const showHidePageAction = function(tabId) {
-  Promise.all([browser.tabs.get(tabId), browser.storage.local.get("taborama/settings/tab-moving-allowed")]).then(results => {
+  Promise.all([browser.tabs.get(tabId), browser.storage.local.get(tabMovingSettingKey)]).then(results => {
     const tab = results[0];
     const showPageAction = results[1];
 
-    if(showPageAction["taborama/settings/tab-moving-allowed"] == true) {
+    if(showPageAction[tabMovingSettingKey] == true) {
       if(tab.url.startsWith('http')) {
         browser.pageAction.setIcon({
           tabId: tabId,
@@ -128,7 +130,7 @@ const showHidePageAction = function(tabId) {
         browser.pageAction.setPopup({tabId: tab.id, popup: "page-action.html"});
         browser.pageAction.show(tabId);
       }
-    } else if(showPageAction["taborama/settings/tab-moving-allowed"] == undefined) {
+    } else if(showPageAction[tabMovingSettingKey] == undefined) {
       browser.pageAction.setIcon({
         tabId: tabId,
         path: { 19: 'icons/icon_error_19.png', 38: 'icons/icon_error_38.png', 48: 'icons/icon_error_48.png'}
@@ -167,8 +169,8 @@ browser.webNavigation.onBeforeNavigate.addListener(details => {
     if(lastCookieStoreId != defaultCookieStoreId &&
        tab.cookieStoreId == defaultCookieStoreId &&
        details.url.startsWith('http')) {
-      browser.storage.local.get("taborama/settings/tab-moving-allowed").then(showPageAction => {
-        if(showPageAction["taborama/settings/tab-moving-allowed"]) {
+      browser.storage.local.get(tabMovingSettingKey).then(showPageAction => {
+        if(showPageAction[tabMovingSettingKey]) {
           openInDifferentContainer(lastCookieStoreId, {id: tab.id, index: tab.index, url: details.url});
         }
       });
