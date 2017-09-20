@@ -58,10 +58,11 @@ browser.storage.local.get("taborama/settings/tab-moving-allowed").then(showPageA
   const on = showPageAction["taborama/settings/tab-moving-allowed"];
   if(on) {
     $1('#move-tab-yes').checked = "checked";
-  } else {
+    $1('#error').style.display = "none";
+  } else if(on == false) {
     $1('#move-tab-no').checked = "checked";
+    $1('#error').style.display = "none";
   }
-  $1('#error').style.display = "none";
 });
 
 $1('#move-tab-yes').addEventListener('click', () => {

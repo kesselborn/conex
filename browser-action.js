@@ -8,19 +8,19 @@ const keyHandling = function(event) {
 
   if(event.key == 'Enter') {
     try {
-      if(tabId == document.activeElement.dataset.tabId) {
+      if(tabId = document.activeElement.dataset.tabId) {
         bg.activateTab(tabId);
-      } else if(url == document.activeElement.dataset.url) {
+      } else if(url = document.activeElement.dataset.url) {
         bg.newTabInCurrentContainer(url);
-      } else if(cookieStoreId == document.activeElement.dataset.cookieStore) {
+      } else if(cookieStoreId = document.activeElement.dataset.cookieStore) {
         expandTabContainer(cookieStoreId);
         return;
       } else {
         console.error('unhandled active element:', document.activeElement);
       }
       window.close();
-    } catch(e){}
-  //} else if(event.key == 'Tab') {
+    } catch(e){};
+  } else if(event.key == 'Tab') {
   } else if(document.activeElement != searchElement) {
     searchElement.focus();
     searchElement.value = '';
