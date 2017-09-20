@@ -64,11 +64,11 @@ browser.storage.local.get("taborama/settings/tab-moving-allowed").then(showPageA
   $1('#error').style.display = "none";
 });
 
-$1('#move-tab-yes').addEventListener('click', function() {
+$1('#move-tab-yes').addEventListener('click', () => {
   $1('#error').style.display = "none";
   browser.storage.local.set({"taborama/settings/tab-moving-allowed": true});
 });
-$1('#move-tab-no').addEventListener('click', function() {
+$1('#move-tab-no').addEventListener('click', () => {
   $1('#error').style.display = "none";
   browser.storage.local.set({"taborama/settings/tab-moving-allowed": false});
 });

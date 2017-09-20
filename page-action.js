@@ -1,4 +1,4 @@
-let tabContainers = renderTabContainers();
+const tabContainers = renderTabContainers();
 
 const openInDifferentContainer = function(element) {
   try {
@@ -24,7 +24,7 @@ tabContainers.then(() => {
 });
 
 for(const section of $('.section')) {
-  section.addEventListener('click', function() { openInDifferentContainer(section); });
+  section.addEventListener('click', () => { openInDifferentContainer(section); });
 }
 
 document.body.addEventListener('keypress', keyHandling);

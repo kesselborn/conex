@@ -166,7 +166,7 @@ const storeScreenshot = function(tabId) {
 
 /////////////////////////// setup listeners
 
-browser.webNavigation.onBeforeNavigate.addListener(function(details) {
+browser.webNavigation.onBeforeNavigate.addListener((details) => {
   browser.tabs.get(details.tabId).then(tab => {
     if(lastCookieStoreId != defaultCookieStoreId &&
        tab.cookieStoreId == defaultCookieStoreId &&
@@ -180,14 +180,14 @@ browser.webNavigation.onBeforeNavigate.addListener(function(details) {
   });
 });
 
-browser.tabs.onCreated.addListener(function(tab){
+browser.tabs.onCreated.addListener((tab) => {
   if(tab.url == 'about:newtab' && tab.cookieStoreId == defaultCookieStoreId && lastCookieStoreId != defaultCookieStoreId) {
     openInDifferentContainer(lastCookieStoreId, tab);
   }
 });
 
-browser.tabs.onActivated.addListener(function(activeInfo) { storeScreenshot(activeInfo.tabId) });
-browser.tabs.onActivated.addListener(function(activeInfo) { showHidePageAction(activeInfo.tabId)});
+browser.tabs.onActivated.addListener((activeInfo) => { storeScreenshot(activeInfo.tabId) });
+browser.tabs.onActivated.addListener((activeInfo) => { showHidePageAction(activeInfo.tabId)});
 browser.tabs.onActivated.addListener(updateLastCookieStoreId);
 
 browser.tabs.onUpdated.addListener(storeScreenshot);
