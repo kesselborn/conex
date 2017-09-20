@@ -55,20 +55,21 @@ function showHideTabContainersMovingDetails() {
 $1('#show-hide-tab-containers-moving-details-link').addEventListener('click', showHideTabContainersMovingDetails);
 
 browser.storage.local.get("taborama/settings/tab-moving-allowed").then(showPageAction => {
-  if(showPageAction["taborama/settings/tab-moving-allowed"] == true) {
+  const on = showPageAction["taborama/settings/tab-moving-allowed"];
+  if(on) {
     $1('#move-tab-yes').checked = "checked";
     $1('#error').style.display = "none";
-  } else if(showPageAction["taborama/settings/tab-moving-allowed"] == false) {
+  } else if(on == false) {
     $1('#move-tab-no').checked = "checked";
     $1('#error').style.display = "none";
   }
 });
 
-$1('#move-tab-yes').addEventListener('click', function() {
+$1('#move-tab-yes').addEventListener('click', () => {
   $1('#error').style.display = "none";
   browser.storage.local.set({"taborama/settings/tab-moving-allowed": true});
 });
-$1('#move-tab-no').addEventListener('click', function() {
+$1('#move-tab-no').addEventListener('click', () => {
   $1('#error').style.display = "none";
   browser.storage.local.set({"taborama/settings/tab-moving-allowed": false});
 });

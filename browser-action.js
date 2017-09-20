@@ -51,9 +51,9 @@ document.body.addEventListener('keypress', keyHandling);
 
 const insertTabElements = function(tabContainers) {
   for(tabContainer in tabContainers) {
-    let ul = $1(`#${tabContainer}`);
+    const ul = $1(`#${tabContainer}`);
     for(const element of tabContainers[tabContainer]) {
-      element.addEventListener('click', function() {
+      element.addEventListener('click', () => {
         bg.activateTab(element.dataset.tabId);
         window.close();
       });
@@ -197,17 +197,17 @@ const onSearchChange = function(event) {
    }
   } else if(searchQuery.length <= 1) {
     const bookmarks = $1('#bookmarks');
-    if(bookmarks.children.length > 0) { $1('ul', bookmarks).remove(); };
+    if(bookmarks.children.length > 0) { $1('ul', bookmarks).remove(); }
 
     const history = $1('#history');
-    if(history.children.length > 0) { $1('ul', history).remove(); };
+    if(history.children.length > 0) { $1('ul', history).remove(); }
   }
 };
 
 const startTime = Date.now();
 tabContainerRendering.then(() => {
   for(const section of $('.section')) {
-    section.addEventListener('click', function() { expandTabContainer(section.dataset.cookieStore); });
+    section.addEventListener('click', () => { expandTabContainer(section.dataset.cookieStore); });
   }
 
   Promise.all([containersTabsMapCreating, bookmarkQuerying]).then(results => {
@@ -215,7 +215,7 @@ tabContainerRendering.then(() => {
   });
 
   document.querySelector('#search').addEventListener('keyup', onSearchChange);
-  setTimeout(function(){ document.getElementById('search').focus()}, 200);
+  setTimeout(() => { document.getElementById('search').focus()}, 200);
   console.log("rendering time: ", Date.now() - startTime);
 }, e => console.error(e));
 

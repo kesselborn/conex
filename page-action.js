@@ -1,4 +1,4 @@
-let tabContainers = renderTabContainers();
+const tabContainers = renderTabContainers();
 
 const openInDifferentContainer = function(element) {
   try {
@@ -6,7 +6,7 @@ const openInDifferentContainer = function(element) {
       bg.openActiveTabInDifferentContainer(cookieStoreId);
     }
     window.close();
-  } catch(e){ console.error(e); };
+  } catch(e){ console.error(e); }
 }
 
 const keyHandling = function(event) {
@@ -24,7 +24,7 @@ tabContainers.then(() => {
 });
 
 for(const section of $('.section')) {
-  section.addEventListener('click', function() { openInDifferentContainer(section); });
+  section.addEventListener('click', () => { openInDifferentContainer(section); });
 }
 
 document.body.addEventListener('keypress', keyHandling);
