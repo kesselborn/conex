@@ -149,24 +149,20 @@ const updateLastCookieStoreId = function(activeInfo) {
   });
 };
 
-const storeScreenshot = function(tabId) {
-  browser.tabs.get(tabId).then(tab => {
-    if(tab.url == "about:blank" || tab.url == "about:newtab") {
-      return;
-    }
-
+const storeScreenshot = function(tabId, changeInfo, tab) {
+  if(changeInfo.status == "complete" && tab.url != "about:blank" && tab.url != "about:newtab") {
     browser.tabs.captureVisibleTab(null, {format: 'jpeg', quality: imageQuality}).then(imageData => {
       browser.storage.local.set({[cleanUrl(tab.url)] : {thumbnail: imageData, favicon: tab.favIconUrl}})
         .then(() => console.info('succesfully created thumbnail for', cleanUrl(tab.url)),
             e  => console.error(e));
 
     });
-  });
+  }
 };
 
 /////////////////////////// setup listeners
 
-browser.webNavigation.onBeforeNavigate.addListener((details) => {
+browser.webNavigation.onBeforeNavigate.addListener(details => {
   browser.tabs.get(details.tabId).then(tab => {
     if(lastCookieStoreId != defaultCookieStoreId &&
        tab.cookieStoreId == defaultCookieStoreId &&
@@ -180,14 +176,14 @@ browser.webNavigation.onBeforeNavigate.addListener((details) => {
   });
 });
 
-browser.tabs.onCreated.addListener((tab) => {
+browser.tabs.onCreated.addListener(tab => {
   if(tab.url == 'about:newtab' && tab.cookieStoreId == defaultCookieStoreId && lastCookieStoreId != defaultCookieStoreId) {
     openInDifferentContainer(lastCookieStoreId, tab);
   }
 });
 
-browser.tabs.onActivated.addListener((activeInfo) => { storeScreenshot(activeInfo.tabId) });
-browser.tabs.onActivated.addListener((activeInfo) => { showHidePageAction(activeInfo.tabId)});
+
+browser.tabs.onActivated.addListener(activeInfo => { showHidePageAction(activeInfo.tabId)});
 browser.tabs.onActivated.addListener(updateLastCookieStoreId);
 
 browser.tabs.onUpdated.addListener(storeScreenshot);
