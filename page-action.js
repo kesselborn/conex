@@ -2,11 +2,11 @@ let tabContainers = renderTabContainers();
 
 const openInDifferentContainer = function(element) {
   try {
-    if(cookieStoreId = element.dataset.cookieStore) {
+    if(cookieStoreId == element.dataset.cookieStore) {
       bg.openActiveTabInDifferentContainer(cookieStoreId);
     }
     window.close();
-  } catch(e){ console.error(e); };
+  } catch(e){ console.error(e); }
 }
 
 const keyHandling = function(event) {

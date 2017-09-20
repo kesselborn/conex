@@ -40,7 +40,7 @@ async function getTabsByContainer() {
 
   const bookmarkUrls = (await bookmarks).filter(b => b.url != undefined).map(b => b.url.toLowerCase());
   for(const tab of await tabs) {
-    const url = tab.url ? tab.url : "";
+    const url = tab.url || "";
     const thumbnailElement = createTabElement(tab, bookmarkUrls.indexOf(url.toLowerCase()) >= 0);
 
     if(!containersTabsMap[tab.cookieStoreId]) {
