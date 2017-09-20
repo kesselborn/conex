@@ -21,10 +21,10 @@ tabContainers.then(() => {
   if(bg.lastCookieStoreId != bg.defaultCookieStoreId) {
     $1('#'+bg.lastCookieStoreId+' li').focus();
   }
-});
 
-for(const section of $('.section')) {
-  section.addEventListener('click', () => { openInDifferentContainer(section); });
-}
+  for(const section of $('.section')) {
+    section.addEventListener('click', () => { openInDifferentContainer(section); });
+  }
+});
 
 document.body.addEventListener('keypress', keyHandling);
