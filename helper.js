@@ -6,4 +6,4 @@ const $1 = function(s, parent){ return (parent || document).querySelector(s); };
 
 const cleanUrl = function(url) {
   return url.replace('http://','').replace('https://','').toLowerCase();
-}
+};

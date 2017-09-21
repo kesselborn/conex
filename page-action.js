@@ -7,7 +7,7 @@ const openInDifferentContainer = function(element) {
     }
     window.close();
   } catch(e){ console.error(e); }
-}
+};
 
 const keyHandling = function(event) {
   if(event.key == 'Enter') {

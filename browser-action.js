@@ -19,8 +19,8 @@ const keyHandling = function(event) {
         console.error('unhandled active element:', document.activeElement);
       }
       window.close();
-    } catch(e){};
-  } else if(event.key == 'Tab') {
+    } catch(e){}
+  } else if(event.key == 'Tab') { // needed to eat the tab event
   } else if(document.activeElement != searchElement) {
     searchElement.focus();
     searchElement.value = '';
@@ -191,10 +191,10 @@ const onSearchChange = function(event) {
   showHideTabContainerHeader();
 
   if(searchQuery.length > 1) {
-   if($('#history ul li').length == 0) {
-    fillHistorySection(searchQuery);
-    fillBookmarksSection(searchQuery);
-   }
+    if($('#history ul li').length == 0) {
+      fillHistorySection(searchQuery);
+      fillBookmarksSection(searchQuery);
+    }
   } else if(searchQuery.length <= 1) {
     const bookmarks = $1('#bookmarks');
     if(bookmarks.children.length > 0) { $1('ul', bookmarks).remove(); }

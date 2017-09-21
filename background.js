@@ -86,24 +86,24 @@ const openInDifferentContainer = function(cookieStoreId, tab) {
 
 
 const createMissingTabContainers = async function(tabContainers) {
-    const colors = ["blue", "turquoise", "green", "yellow", "orange", "red", "pink", "purple"];
+  const colors = ["blue", "turquoise", "green", "yellow", "orange", "red", "pink", "purple"];
 
-    const identities = await browser.contextualIdentities.query({});
+  const identities = await browser.contextualIdentities.query({});
 
-    const nameCookieStoreIdMap = new Map(identities.map(identity => [identity.name.toLowerCase(), identity.cookieStoreId]));
-    const promises = [];
+  const nameCookieStoreIdMap = new Map(identities.map(identity => [identity.name.toLowerCase(), identity.cookieStoreId]));
+  const promises = [];
 
-    for(const tabContainer of tabContainers) {
-      if(!nameCookieStoreIdMap.get(tabContainer.toLowerCase())) {
-        console.info(`creating tab container ${tabContainer}`);
-        const newIdentity = {name: tabContainer, icon: 'circle', color: colors[Math.floor(Math.random() * (8 - 0)) + 0]};
-        const identity = await browser.contextualIdentities.create(newIdentity);
+  for(const tabContainer of tabContainers) {
+    if(!nameCookieStoreIdMap.get(tabContainer.toLowerCase())) {
+      console.info(`creating tab container ${tabContainer}`);
+      const newIdentity = {name: tabContainer, icon: 'circle', color: colors[Math.floor(Math.random() * (8 - 0)) + 0]};
+      const identity = await browser.contextualIdentities.create(newIdentity);
 
-        nameCookieStoreIdMap.set(identity.name.toLowerCase(), identity.cookieStoreId);
-      }
+      nameCookieStoreIdMap.set(identity.name.toLowerCase(), identity.cookieStoreId);
     }
+  }
 
-    return nameCookieStoreIdMap;
+  return nameCookieStoreIdMap;
 };
 
 const openPageActionPopup = function(tab) {
@@ -167,8 +167,8 @@ const storeScreenshot = function(tabId, changeInfo, tab) {
 browser.webNavigation.onBeforeNavigate.addListener(details => {
   browser.tabs.get(details.tabId).then(tab => {
     if(lastCookieStoreId != defaultCookieStoreId &&
-       tab.cookieStoreId == defaultCookieStoreId &&
-       details.url.startsWith('http')) {
+        tab.cookieStoreId == defaultCookieStoreId &&
+        details.url.startsWith('http')) {
       browser.storage.local.get(tabMovingSettingKey).then(showPageAction => {
         if(showPageAction[tabMovingSettingKey]) {
           openInDifferentContainer(lastCookieStoreId, {id: tab.id, index: tab.index, url: details.url});
@@ -193,4 +193,4 @@ browser.tabs.onUpdated.addListener(showHidePageAction);
 
 browser.pageAction.onClicked.addListener(openPageActionPopup)
 
-console.log('taborama loaded');
+  console.log('taborama loaded');

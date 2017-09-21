@@ -52,7 +52,7 @@ function createTabElement(tab, isBookmarkUrl) {
 
   const url = tab.url ? cleanUrl(tab.url) : '';
   const title = tab.title ? tab.title : '';
-  const searchTerm = "${title} ${url}";
+  const searchTerm = '${title} ${url}';
   const elClass = isBookmarkUrl ? 'tab is-bookmark' : 'tab';
 
   const element =

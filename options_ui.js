@@ -1,7 +1,7 @@
 const filePicker = $1('#file-picker');
 const bg = browser.extension.getBackgroundPage();
 
-filePicker.addEventListener("change", picker => {
+filePicker.addEventListener('change', picker => {
   const file = picker.target.files[0];
 
   const reader  = new FileReader();
@@ -17,7 +17,7 @@ filePicker.addEventListener("change", picker => {
 
         for(const key in windowTabContainersJSON) {
           // if group doesn't have a name, give it a stupid dummy name
-          const containerName = windowTabContainersJSON[key].title == "" ? "Container "+tabContainers.length+1 : windowTabContainersJSON[key].title;
+          const containerName = windowTabContainersJSON[key].title == '' ? 'Container '+tabContainers.length+1 : windowTabContainersJSON[key].title;
 
           windowTabContainers.push(containerName);
           tabContainers.push(containerName);
@@ -44,34 +44,34 @@ filePicker.addEventListener("change", picker => {
 
 browser.contextualIdentities.query({}).then(identities => {
   if(!identities) {
-    document.querySelector("#missing-tab-container-support").style.display = "block";
+    document.querySelector('#missing-tab-container-support').style.display = 'block';
   }
 });
 
 function showHideTabContainersMovingDetails() {
   $1('#show-hide-tab-containers-moving-details-link').remove();
-  $1('#moving-tabs-explanation').style.display = "block";
+  $1('#moving-tabs-explanation').style.display = 'block';
   return false;
 }
 
 $1('#show-hide-tab-containers-moving-details-link').addEventListener('click', showHideTabContainersMovingDetails);
 
-browser.storage.local.get("taborama/settings/tab-moving-allowed").then(showPageAction => {
-  const on = showPageAction["taborama/settings/tab-moving-allowed"];
+browser.storage.local.get('taborama/settings/tab-moving-allowed').then(showPageAction => {
+  const on = showPageAction['taborama/settings/tab-moving-allowed'];
   if(on) {
-    $1('#move-tab-yes').checked = "checked";
-    $1('#error').style.display = "none";
+    $1('#move-tab-yes').checked = 'checked';
+    $1('#error').style.display = 'none';
   } else if(on == false) {
-    $1('#move-tab-no').checked = "checked";
-    $1('#error').style.display = "none";
+    $1('#move-tab-no').checked = 'checked';
+    $1('#error').style.display = 'none';
   }
 });
 
 $1('#move-tab-yes').addEventListener('click', () => {
-  $1('#error').style.display = "none";
-  browser.storage.local.set({"taborama/settings/tab-moving-allowed": true});
+  $1('#error').style.display = 'none';
+  browser.storage.local.set({'taborama/settings/tab-moving-allowed': true});
 });
 $1('#move-tab-no').addEventListener('click', () => {
-  $1('#error').style.display = "none";
-  browser.storage.local.set({"taborama/settings/tab-moving-allowed": false});
+  $1('#error').style.display = 'none';
+  browser.storage.local.set({'taborama/settings/tab-moving-allowed': false});
 });
