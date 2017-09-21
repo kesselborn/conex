@@ -39,7 +39,11 @@ const expandTabContainer = function(cookieStoreId) {
   const tabContainer = $1(`ul#${cookieStoreId}`);
   if(tabContainer.dataset.expanded != "true") {
     for(const element of $(`ul#${cookieStoreId} li.tab`)) {
-      element.style.display = element.style.display == 'none' ? '' : 'none';
+      const thumbnailElement = $1('.image', element);
+      if(thumbnailElement && thumbnailElement.dataset.bgSet == 'false') {
+        setBgImage(thumbnailElement, element.dataset.url);
+      }
+      element.style.display = '';
     }
     tabContainer.dataset.expanded = true;
   } else {
@@ -163,7 +167,7 @@ const showHideTabEntries = function(searchQuery) {
           setBgImage(thumbnailElement, element.dataset.url);
         }
       }
-      element.style.display = match ? '' : 'none';
+      element.style.display = '';
     }
   }
 };
