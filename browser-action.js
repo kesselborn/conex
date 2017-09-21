@@ -43,7 +43,7 @@ const expandTabContainer = function(cookieStoreId) {
       if(thumbnailElement && thumbnailElement.dataset.bgSet == 'false') {
         setBgImage(thumbnailElement, element.dataset.url);
       }
-      element.style.display = '';
+      element.style.display = element.style.display == 'none' ? '' : 'none';
     }
     tabContainer.dataset.expanded = true;
   } else {
@@ -167,7 +167,7 @@ const showHideTabEntries = function(searchQuery) {
           setBgImage(thumbnailElement, element.dataset.url);
         }
       }
-      element.style.display = '';
+      element.style.display = match ? '' : 'none';
     }
   }
 };
