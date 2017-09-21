@@ -76,7 +76,7 @@ const openInDifferentContainer = function(cookieStoreId, tab) {
     cookieStoreId: cookieStoreId,
     index: tab.index+1
   };
-  if(tab.url != 'about:newtab') {
+  if(tab.url != 'about:newtab' && tab.url != 'about:blank') {
     tabProperties.url = tab.url;
   }
 
@@ -122,7 +122,7 @@ const showHidePageAction = function(tabId) {
     const showPageAction = results[1];
 
     if(showPageAction[tabMovingSettingKey] == true) {
-      if(tab.url.startsWith('http')) {
+      if(tab.url.startsWith('http') || tab.url.startsWith('about:blank') || tab.url.startsWith('about:newtab')) {
         browser.pageAction.setIcon({
           tabId: tabId,
           path: { 19: 'icons/icon_19.png', 38: 'icons/icon_38.png', 48: 'icons/icon_48.png'}
@@ -152,7 +152,7 @@ const updateLastCookieStoreId = function(activeInfo) {
 };
 
 const storeScreenshot = function(tabId, changeInfo, tab) {
-  if(changeInfo.status == "complete" && tab.url != "about:blank" && tab.url != "about:newtab") {
+  if(changeInfo.status == 'complete' && tab.url != 'about:blank' && tab.url != 'about:newtab') {
     browser.tabs.captureVisibleTab(null, {format: 'jpeg', quality: imageQuality}).then(imageData => {
       browser.storage.local.set({[cleanUrl(tab.url)] : {thumbnail: imageData, favicon: tab.favIconUrl}})
         .then(() => console.info('succesfully created thumbnail for', cleanUrl(tab.url)),
