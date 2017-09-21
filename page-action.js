@@ -2,8 +2,8 @@ const tabContainers = renderTabContainers();
 
 const openInDifferentContainer = function(element) {
   try {
-    if(element.dataset.cookieStorecookieStoreId) {
-      bg.openActiveTabInDifferentContainer(element.dataset.cookieStorecookieStoreId);
+    if(element.dataset.cookieStore) {
+      bg.openActiveTabInDifferentContainer(element.dataset.cookieStore);
     }
     window.close();
   } catch(e){ console.error(e); }
