@@ -73,6 +73,9 @@ EOF
 read -p "release to mozilla as well (y/n)?" -n1 answer
 test "${answer}" == "y" || exit 0
 
+echo "release notes:"
+echo "${release_notes}"
+
 # remove github update url from manifest
 cat manifest.json | jq 'del(.applications.gecko.update_url)' > next_manifest.json
 mv next_manifest.json manifest.json
