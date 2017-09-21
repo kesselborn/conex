@@ -8,12 +8,12 @@ const keyHandling = function(event) {
 
   if(event.key == 'Enter') {
     try {
-      if(tabId = document.activeElement.dataset.tabId) {
-        bg.activateTab(tabId);
-      } else if(url = document.activeElement.dataset.url) {
-        bg.newTabInCurrentContainer(url);
-      } else if(cookieStoreId = document.activeElement.dataset.cookieStore) {
-        expandTabContainer(cookieStoreId);
+      if(document.activeElement.dataset.tabId) {
+        bg.activateTab(document.activeElement.dataset.tabId);
+      } else if(document.activeElement.dataset.url) {
+        bg.newTabInCurrentContainer(document.activeElement.dataset.url);
+      } else if(document.activeElement.dataset.cookieStore) {
+        expandTabContainer(document.activeElement.dataset.cookieStore);
         return;
       } else {
         console.error('unhandled active element:', document.activeElement);
