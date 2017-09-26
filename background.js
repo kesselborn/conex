@@ -1,6 +1,6 @@
 const imageQuality = 8;
 const defaultCookieStoreId = 'firefox-default';
-const tabMovingSettingKey = 'taborama/settings/tab-moving-allowed';
+const tabMovingSettingKey = 'conex/settings/tab-moving-allowed';
 
 let lastCookieStoreId = defaultCookieStoreId;
 
@@ -193,4 +193,4 @@ browser.tabs.onUpdated.addListener(showHidePageAction);
 
 browser.pageAction.onClicked.addListener(openPageActionPopup)
 
-  console.log('taborama loaded');
+  console.log('conex loaded');

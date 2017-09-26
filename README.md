@@ -1,12 +1,12 @@
-# taborama
+# conex
 **this addon is still experimental and lacks hiding / showing tab containers due to https://bugzilla.mozilla.org/show_bug.cgi?id=1384515**
 
 This webextension is a replacement for the discontinued <b>TabGroups</b> with some differences:
 
 # Installation
 
-For now, it's probably best to install it from the [github releases page](https://github.com/kesselborn/taborama/releases),
-as updates are still frequent and the [official addon page](https://addons.mozilla.org/en-us/firefox/addon/taborama/)
+For now, it's probably best to install it from the [github releases page](https://github.com/kesselborn/conex/releases),
+as updates are still frequent and the [official addon page](https://addons.mozilla.org/en-us/firefox/addon/conex/)
 depends on manual reviews by mozilla. Downloads from here will get updates automatically as well.
 
 # Functionality

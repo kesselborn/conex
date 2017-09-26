@@ -2,11 +2,11 @@
   "manifest_version": 2,
   "author": "kesselborn",
   "description": "This is a tabgroup'esque successor for Firefox >= 57 (WebExtensions)",
-  "homepage_url": "https://github.com/kesselborn/taborama",
-  "name": "Taborama",
+  "homepage_url": "https://github.com/kesselborn/conex",
+  "name": "Conex",
   "version": "0.0.44",
   "browser_action": {
-    "default_title": "Taborama (CTRL+<space> / CMD+<space>)",
+    "default_title": "Conex (CTRL+<space> / CMD+<space>)",
     "browser_style": false,
     "default_popup": "browser-action.html",
     "default_icon": {
@@ -16,7 +16,7 @@
   "applications": {
     "gecko": {
       "strict_min_version": "57.0a1",
-      "update_url": "https://raw.githubusercontent.com/kesselborn/taborama/master/versions.json"
+      "update_url": "https://raw.githubusercontent.com/kesselborn/conex/master/versions.json"
     }
   },
   "commands": {
