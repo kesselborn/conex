@@ -59,7 +59,10 @@ function restoreTabContainersBackup(tabContainers, windows) {
     for(const tabs of windows) {
       browser.windows.create({}).then(w => {
         for(const tab of tabs) {
-          const cookieStoreId = identities.get(tab.container.toLowerCase());
+          let cookieStoreId = defaultCookieStoreId;
+          if(tab.container) {
+            cookieStoreId = identities.get(tab.container.toLowerCase());
+          }
           browser.tabs.create({url: tab.url, cookieStoreId: cookieStoreId, windowId: w.id, active: false}).then(() => {
             console.log(`creating tab ${tab.url} in container ${tab.container} (cookieStoreId: ${cookieStoreId})`);
           });

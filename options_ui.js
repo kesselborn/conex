@@ -12,22 +12,26 @@ filePicker.addEventListener('change', picker => {
 
       const windows = [];
       for(const w of json.windows) {
-        const windowTabContainersJSON = JSON.parse(w.extData['tabview-group']);
-        const windowTabContainers = [];
+        const windowTabContainers = {};
+        if(w.extData && w.extData['tabview-group']) {
+          const windowTabContainersJSON = JSON.parse(w.extData['tabview-group']);
 
-        for(const key in windowTabContainersJSON) {
-          // if group doesn't have a name, give it a stupid dummy name
-          const containerName = windowTabContainersJSON[key].title == '' ? 'Container '+tabContainers.length+1 : windowTabContainersJSON[key].title;
+          for(const key in windowTabContainersJSON) {
+            // if group doesn't have a name, give it a stupid dummy name
+            const containerName = windowTabContainersJSON[key].title == '' ? 'Container '+tabContainers.length+1 : windowTabContainersJSON[key].title;
 
-          windowTabContainers.push(containerName);
-          tabContainers.push(containerName);
+            windowTabContainers[key] = containerName;
+            tabContainers.push(containerName);
+          }
         }
 
         const tabs = [];
         for(const tab of w.tabs) {
           if(tab.extData['tabview-tab']) {
             const extData = JSON.parse(tab.extData['tabview-tab']);
-            tabs.push({url: tab.entries[0].url, container: windowTabContainers[Number(extData.groupID)-1]});
+            tabs.push({url: tab.entries[0].url, container: windowTabContainers[Number(extData.groupID)]});
+          } else {
+            tabs.push({url: tab.entries[0].url, container: null});
           }
         }
         windows.push(tabs);
