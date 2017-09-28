@@ -50,6 +50,7 @@ function createTabElement(tab, isBookmarkUrl) {
     return;
   }
 
+  const defaultFavIconUrl = './favicon.ico';
   const url = tab.url ? cleanUrl(tab.url) : '';
   const title = tab.title ? tab.title : '';
   const searchTerm = '${title} ${url}';
@@ -57,20 +58,28 @@ function createTabElement(tab, isBookmarkUrl) {
 
   const element =
     $e('li', {tabindex: 1, class: elClass, data_title: title.toLowerCase(), data_url: url.toLowerCase(), data_tab_id: tab.id, style: 'display:none'} ,[
-        $e('div', {}, [
-          $e('div', {class: 'image', data_bg_set: 'false', style: `background:url('${tab.favIconUrl}')`}, [
-            $e('img', {src: tab.favIconUrl})
-          ]),
-          $e('div', {class: 'text'}, [
-            $e('div', {class: 'tab-title', content: title}),
-            $e('div', {class: 'tab-url', content: url})
-          ]),
-          $e('div', {class: 'close'}, [
-            $e('span', {content: '╳', title: 'close this tab', class: 'close-button', data_tab_id: tab.id}),
-            $e('span', {content: '★', title: 'this tab is a bookmark', class: 'bookmark-marker', data_tab_id: tab.id})
-          ])
+      $e('div', {}, [
+        $e('div', {class: 'image', data_bg_set: 'false', style: `background:url('${defaultFavIconUrl}')`}, [
+          $e('img', {src: defaultFavIconUrl})
         ]),
+        $e('div', {class: 'text'}, [
+          $e('div', {class: 'tab-title', content: title}),
+          $e('div', {class: 'tab-url', content: url})
+        ]),
+        $e('div', {class: 'close'}, [
+          $e('span', {content: '╳', title: 'close this tab', class: 'close-button', data_tab_id: tab.id}),
+          $e('span', {content: '★', title: 'this tab is a bookmark', class: 'bookmark-marker', data_tab_id: tab.id})
+        ])
+      ]),
     ]);
+
+  fetch(tab.favIconUrl, { method: "GET", }).then(function(res) {
+    if (res.ok) {
+      $1('img', element).src = tab.favIconUrl;
+    } else {
+      console.log(`error fetching favicon for ${tab.favIconUrl} -- response was`, res);
+    }
+  }, e => console.log(`error fetching ${tab.favIconUrl}: ${e}`));
 
   return element;
 }
