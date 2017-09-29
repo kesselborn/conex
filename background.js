@@ -1,6 +1,7 @@
 const imageQuality = 8;
 const defaultCookieStoreId = 'firefox-default';
-const tabMovingSettingKey = 'conex/settings/tab-moving-allowed';
+const tabMovingEnabledKey = 'conex/settings/tab-moving-allowed';
+const tabMovingPreferContextMenuKey = 'conex/settings/tab-moving-allowed/prefer-context-menu';
 
 let lastCookieStoreId = defaultCookieStoreId;
 
@@ -28,10 +29,14 @@ function newTabInCurrentContainer(url) {
 
 function openActiveTabInDifferentContainer(cookieStoreId) {
   lastCookieStoreId = cookieStoreId;
-  browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT})
-    .then(tabs => {
-      openInDifferentContainer(cookieStoreId, tabs[0]);
-    }, e=> console.error(e));
+  browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
+    const activeTab = tabs[0];
+    if(activeTab.url.startsWith('http')) {
+      openInDifferentContainer(cookieStoreId, activeTab);
+    } else {
+      console.error(`not re-opening current tab in new container as it's not a http(s) url (url is: ${activeTab.url})`);
+    }
+  }, e=> console.error(e));
 }
 
 async function getTabsByContainer() {
@@ -72,7 +77,61 @@ function restoreTabContainersBackup(tabContainers, windows) {
   }, e => console.error(e));
 }
 
+async function setupMenus() {
+  await browser.menus.removeAll();
+  const identities = browser.contextualIdentities.query({});
+  const settings = browser.storage.local.get([tabMovingEnabledKey, tabMovingPreferContextMenuKey]);
+
+  browser.menus.create({
+    id: "settings",
+    title: "conex settings",
+    onclick: function() {browser.runtime.openOptionsPage(); },
+    contexts: ["browser_action", "page_action"]
+  });
+
+  if((await settings)[tabMovingEnabledKey] && (await settings)[tabMovingPreferContextMenuKey]) {
+    browser.menus.create({
+      id: 'headline',
+      enabled: false,
+      title: "re-open current tab in ...",
+      contexts: ["page"],
+    });
+    browser.menus.create({
+      id: 'separator',
+      type: 'separator',
+      contexts: ["page"],
+    });
+
+    for(const identity of await identities) {
+      browser.menus.create({
+        id: menuId(identity.cookieStoreId),
+        title: `${identity.name}`,
+        contexts: ["page"],
+        icons: { "16": `icons/${identity.color}_dot.svg` },
+        onclick: function() {openActiveTabInDifferentContainer(identity.cookieStoreId)}
+      });
+    }
+
+    browser.menus.create({
+      id: 'separator2',
+      type: 'separator',
+      contexts: ["page"],
+    });
+
+    browser.menus.create({
+      id: 'refresh-container-list',
+      title: "refresh container list",
+      contexts: ["page"],
+      onclick: setupMenus
+    });
+  }
+}
+
 //////////////////////////////////// end of exported functions (again: es6 features not supported yet
+const menuId = function(s) {
+  return `menu_id_for_${s}`;
+}
+
 const openInDifferentContainer = function(cookieStoreId, tab) {
   const tabProperties = {
     active: true,
@@ -110,8 +169,8 @@ const createMissingTabContainers = async function(tabContainers) {
 };
 
 const openPageActionPopup = function(tab) {
-  browser.storage.local.get(tabMovingSettingKey).then(showPageAction => {
-    if(showPageAction[tabMovingSettingKey]) {
+  browser.storage.local.get(tabMovingEnabledKey).then(settings => {
+    if(settings[tabMovingEnabledKey]) {
       browser.pageAction.show(tabId);
     } else {
       browser.runtime.openOptionsPage();
@@ -119,30 +178,56 @@ const openPageActionPopup = function(tab) {
   });
 }
 
-const showHidePageAction = function(tabId) {
-  Promise.all([browser.tabs.get(tabId), browser.storage.local.get(tabMovingSettingKey)]).then(results => {
-    const tab = results[0];
-    const showPageAction = results[1];
+const showHideMoveTabActions = async function(tabId) {
+  const tab = browser.tabs.get(tabId);
+  const settings = browser.storage.local.get([tabMovingEnabledKey, tabMovingPreferContextMenuKey]);
+  const identities = browser.contextualIdentities.query({});
 
-    if(showPageAction[tabMovingSettingKey] == true) {
-      if(tab.url.startsWith('http') || tab.url.startsWith('about:blank') || tab.url.startsWith('about:newtab')) {
+  const tabMovingEnabled = (await settings)[tabMovingEnabledKey];
+  const tabMovingPreferContextMenu = (await settings)[tabMovingPreferContextMenuKey];
+
+  console.log('tabMovingEnabled: ', tabMovingEnabled, 'preferContextMenu: ', tabMovingPreferContextMenu);
+
+  const showMoveTabMenu = async function() {
+    if(tabMovingPreferContextMenu) {
+      browser.pageAction.hide(tabId);
+      const enableMoveTabMenu = (await tab).url.startsWith('http') ? true : false;
+      console.log(`${enableMoveTabMenu ? 'enabling' : 'disabling'} context menu for moving tabs`);
+      for(identity of (await identities)) {
+        browser.menus.update(menuId(identity.cookieStoreId), { enabled: enableMoveTabMenu });
+      }
+    } else {
+      if((await tab).url.startsWith('http')) {
         browser.pageAction.setIcon({
           tabId: tabId,
           path: { 19: 'icons/icon_19.png', 38: 'icons/icon_38.png', 48: 'icons/icon_48.png'}
         });
-        browser.pageAction.setPopup({tabId: tab.id, popup: "page-action.html"});
+        browser.pageAction.setPopup({tabId: (await tab).id, popup: "page-action.html"});
         browser.pageAction.show(tabId);
       }
-    } else if(showPageAction[tabMovingSettingKey] == undefined) {
-      browser.pageAction.setIcon({
-        tabId: tabId,
-        path: { 19: 'icons/icon_error_19.png', 38: 'icons/icon_error_38.png', 48: 'icons/icon_error_48.png'}
-      });
-      browser.pageAction.show(tabId);
-    } else {
-      browser.pageAction.hide(tabId);
     }
-  });
+  };
+
+  if((await tab).url.startsWith('about:blank') || (await tab).url.startsWith('about:newtab')) {
+    showMoveTabMenu();
+    return;
+  }
+
+  if(tabMovingEnabled == undefined) {
+    browser.pageAction.setIcon({
+      tabId: tabId,
+      path: { 19: 'icons/icon_error_19.png', 38: 'icons/icon_error_38.png', 48: 'icons/icon_error_48.png'}
+    });
+    browser.pageAction.show(tabId);
+    return
+  }
+
+  if(tabMovingEnabled == false) {
+    browser.pageAction.hide(tabId);
+    return;
+  }
+
+  showMoveTabMenu();
 };
 
 const updateLastCookieStoreId = function(activeInfo) {
@@ -165,21 +250,21 @@ const storeScreenshot = function(tabId, changeInfo, tab) {
   }
 };
 
+const openExternalLinksInCurrentContainer = async function(details) {
+  const tab = browser.tabs.get(details.tabId);
+  const settings = browser.storage.local.get(tabMovingEnabledKey);
+
+  if(lastCookieStoreId != defaultCookieStoreId && (await tab).cookieStoreId == defaultCookieStoreId && details.url.startsWith('http')) {
+    if((await settings)[tabMovingEnabledKey]) {
+      console.log(`opening ${details.url} in current container`);
+      openInDifferentContainer(lastCookieStoreId, {id: (await tab).id, index: (await tab).index, url: details.url});
+    }
+  }
+}
+
 /////////////////////////// setup listeners
 
-browser.webNavigation.onBeforeNavigate.addListener(details => {
-  browser.tabs.get(details.tabId).then(tab => {
-    if(lastCookieStoreId != defaultCookieStoreId &&
-        tab.cookieStoreId == defaultCookieStoreId &&
-        details.url.startsWith('http')) {
-      browser.storage.local.get(tabMovingSettingKey).then(showPageAction => {
-        if(showPageAction[tabMovingSettingKey]) {
-          openInDifferentContainer(lastCookieStoreId, {id: tab.id, index: tab.index, url: details.url});
-        }
-      });
-    }
-  });
-});
+browser.webNavigation.onBeforeNavigate.addListener(openExternalLinksInCurrentContainer);
 
 browser.tabs.onCreated.addListener(tab => {
   if(tab.url == 'about:newtab' && tab.cookieStoreId == defaultCookieStoreId && lastCookieStoreId != defaultCookieStoreId) {
@@ -188,12 +273,13 @@ browser.tabs.onCreated.addListener(tab => {
 });
 
 
-browser.tabs.onActivated.addListener(activeInfo => { showHidePageAction(activeInfo.tabId)});
+browser.tabs.onActivated.addListener(activeInfo => { showHideMoveTabActions(activeInfo.tabId)});
 browser.tabs.onActivated.addListener(updateLastCookieStoreId);
 
 browser.tabs.onUpdated.addListener(storeScreenshot);
-browser.tabs.onUpdated.addListener(showHidePageAction);
+browser.tabs.onUpdated.addListener(showHideMoveTabActions);
 
 browser.pageAction.onClicked.addListener(openPageActionPopup)
 
-  console.log('conex loaded');
+setupMenus();
+console.log('conex loaded');

@@ -21,6 +21,7 @@ Tab Containers need be enabled in the preferences.
 # Permissions:
 
 - <all_url>: for taking screenshots for the thumbnails during search
+- contextMenus: for context menu for moving tab to a different container
 - contextualIdentities: for working with tab containers
 - cookies: for working with tab containers
 - history: for showing history results in quick search

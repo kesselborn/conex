@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+  <title>conex settings</title>
   <head>
     <meta charset="utf-8">
     <style>
@@ -43,7 +44,8 @@
     <div>
       <h1>Enable moving tabs between containers</h1>
       <p>This will allow you to move a tab from one container to another and it will open external links in the current container.</p>
-      <p><b>Note: if you use the tab-container feature of conex for privacy reasons, please note that this feature may leak tracking information from one tab-container to another</b> <a id="show-hide-tab-containers-moving-details-link" style="color:blue"> more information &gt;&gt;</a></p>
+      <p>New tabs and tabs with url <tt>about:blank</tt> will always have the option to be re-opened in a different container as there is not privacy problem</p>
+      <p><b>Note: if you use containers for privacy reasons, please note that this feature may leak tracking information from one container to another</b> <a id="show-hide-tab-containers-moving-details-link" style="color:blue"> more information &gt;&gt;</a></p>
     </div>
     <div style="display:none" id="moving-tabs-explanation">
       <p>Moving one URL from one container to another has the ability to increase tracking across containers.</p>
@@ -71,6 +73,7 @@
       <hr/>
     </div>
     <div>
+      <h3>Enable menu for moving tabs to other containers</h3>
       <h3 id="error" style="color:red">Please select one of the two options</h3>
       <form>
         <input type="radio" id="move-tab-yes" name="move-tabs" value="yes">
@@ -78,6 +81,15 @@
         </label><br><br>
         <input type="radio" id="move-tab-no" name="move-tabs" value="nope">
         <label for="move-tab-no">nope -- privacy above all ... usability is for losers</label>
+      </form>
+    </div>
+    <div>
+      <h3>Moving tabs menu</h3>
+      <form>
+        <input type="radio" id="move-tab-menu-page-action" name="move-tab-menu" value="page-action">
+        <label for="move-tab-menu-page-action">show icon in location bar (allows keyboard shortcut CTRL-Y support)</label><br><br>
+        <input type="radio" id="move-tab-menu-context-menu" name="move-tab-menu" value="context-menu">
+        <label for="move-tab-menu-context-menu">show menu for moving containers in context menu (right click)</label>
       </form>
     </div>
     <div>

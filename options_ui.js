@@ -60,8 +60,8 @@ function showHideTabContainersMovingDetails() {
 
 $1('#show-hide-tab-containers-moving-details-link').addEventListener('click', showHideTabContainersMovingDetails);
 
-browser.storage.local.get('conex/settings/tab-moving-allowed').then(showPageAction => {
-  const on = showPageAction['conex/settings/tab-moving-allowed'];
+browser.storage.local.get('conex/settings/tab-moving-allowed').then(settings => {
+  const on = settings['conex/settings/tab-moving-allowed'];
   if(on) {
     $1('#move-tab-yes').checked = 'checked';
     $1('#error').style.display = 'none';
@@ -69,13 +69,37 @@ browser.storage.local.get('conex/settings/tab-moving-allowed').then(showPageActi
     $1('#move-tab-no').checked = 'checked';
     $1('#error').style.display = 'none';
   }
+  bg.setupMenus();
 });
 
 $1('#move-tab-yes').addEventListener('click', () => {
   $1('#error').style.display = 'none';
   browser.storage.local.set({'conex/settings/tab-moving-allowed': true});
+  bg.setupMenus();
 });
+
 $1('#move-tab-no').addEventListener('click', () => {
   $1('#error').style.display = 'none';
   browser.storage.local.set({'conex/settings/tab-moving-allowed': false});
+  browser.storage.local.set({tabMovingSettingKey: false});
+  bg.setupMenus();
+});
+
+browser.storage.local.get('conex/settings/tab-moving-allowed/prefer-context-menu').then(settings => {
+  const on = settings['conex/settings/tab-moving-allowed/prefer-context-menu'];
+  if(on) {
+    $1('#move-tab-menu-context-menu').checked = 'checked';
+  } else {
+    $1('#move-tab-menu-page-action').checked = 'checked';
+  }
+});
+
+$1('#move-tab-menu-context-menu').addEventListener('click', () => {
+  browser.storage.local.set({'conex/settings/tab-moving-allowed/prefer-context-menu' : true});
+  bg.setupMenus();
+});
+
+$1('#move-tab-menu-page-action').addEventListener('click', () => {
+  browser.storage.local.set({'conex/settings/tab-moving-allowed/prefer-context-menu' : false});
+  bg.setupMenus();
 });

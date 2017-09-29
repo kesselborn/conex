@@ -59,6 +59,7 @@
     "contextualIdentities",
     "cookies",
     "history",
+    "menus",
     "storage",
     "tabs",
     "webNavigation"
