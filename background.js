@@ -28,15 +28,18 @@ function newTabInCurrentContainer(url) {
 }
 
 function openActiveTabInDifferentContainer(cookieStoreId) {
-  lastCookieStoreId = cookieStoreId;
-  browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
-    const activeTab = tabs[0];
-    if(activeTab.url.startsWith('http')) {
-      openInDifferentContainer(cookieStoreId, activeTab);
-    } else {
-      console.error(`not re-opening current tab in new container as it's not a http(s) url (url is: ${activeTab.url})`);
-    }
-  }, e=> console.error(e));
+  if(cookieStoreId.startsWith('firefox-private')) {
+    console.log(`cookieStoreId changed from ${lastCookieStoreId} -> ${cookieStoreId}`);
+    lastCookieStoreId = cookieStoreId;
+    browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
+      const activeTab = tabs[0];
+      if(activeTab.url.startsWith('http')) {
+        openInDifferentContainer(cookieStoreId, activeTab);
+      } else {
+        console.error(`not re-opening current tab in new container as it's not a http(s) url (url is: ${activeTab.url})`);
+      }
+    }, e=> console.error(e));
+  }
 }
 
 async function getTabsByContainer() {
@@ -232,7 +235,7 @@ const showHideMoveTabActions = async function(tabId) {
 
 const updateLastCookieStoreId = function(activeInfo) {
   browser.tabs.get(activeInfo.tabId).then(tab => {
-    if(tab.cookieStoreId != defaultCookieStoreId && tab.cookieStoreId != lastCookieStoreId) {
+    if(tab.cookieStoreId != defaultCookieStoreId && tab.cookieStoreId != lastCookieStoreId && !tab.cookieStoreId.startsWith('firefox-private')) {
       console.log(`cookieStoreId changed from ${lastCookieStoreId} -> ${tab.cookieStoreId}`);
       lastCookieStoreId = tab.cookieStoreId;
     }
