@@ -1,5 +1,6 @@
 const imageQuality = 8;
 const defaultCookieStoreId = 'firefox-default';
+const privateCookieStorePrefix = 'firefox-private';
 const tabMovingEnabledKey = 'conex/settings/tab-moving-allowed';
 const tabMovingPreferContextMenuKey = 'conex/settings/tab-moving-allowed/prefer-context-menu';
 
@@ -28,12 +29,12 @@ function newTabInCurrentContainer(url) {
 }
 
 function openActiveTabInDifferentContainer(cookieStoreId) {
-  if(!cookieStoreId.startsWith('firefox-private')) {
+  if(!cookieStoreId.startsWith(privateCookieStorePrefix)) {
     console.log(`cookieStoreId changed from ${lastCookieStoreId} -> ${cookieStoreId}`);
     lastCookieStoreId = cookieStoreId;
     browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
       const activeTab = tabs[0];
-      if(activeTab.url.startsWith('http') || activeTab.url.startsWith('about:blank') || activeTab.url.startsWith('about:newtab')) {
+      if(isBlessedUrl(activeTab.url)) {
         openInDifferentContainer(cookieStoreId, activeTab);
       } else {
         console.error(`not re-opening current tab in new container as it's not a http(s) url (url is: ${activeTab.url})`);
@@ -181,6 +182,10 @@ const openPageActionPopup = function(tab) {
   });
 }
 
+const isBlessedUrl = function(url) {
+  return url.startsWith('http') || url.startsWith('about:blank') || url.startsWith('about:newtab');
+}
+
 const showHideMoveTabActions = async function(tabId) {
   const tab = browser.tabs.get(tabId);
   const settings = browser.storage.local.get([tabMovingEnabledKey, tabMovingPreferContextMenuKey]);
@@ -191,16 +196,20 @@ const showHideMoveTabActions = async function(tabId) {
 
   console.log('tabMovingEnabled: ', tabMovingEnabled, 'preferContextMenu: ', tabMovingPreferContextMenu);
 
+  const enableContextMenu = async function(enable) {
+    console.log(`${enable ? 'enabling' : 'disabling'} context menu for moving tabs`);
+    for(identity of (await identities)) {
+      browser.menus.update(menuId(identity.cookieStoreId), { enabled: enable });
+    }
+  };
+
   const showMoveTabMenu = async function() {
     if(tabMovingPreferContextMenu) {
       browser.pageAction.hide(tabId);
-      const enableMoveTabMenu = ((await tab).url.startsWith('http') || (await tab).url.startsWith('about:blank') || (await tab).url.startsWith('about:newtab')) ? true : false;
-      console.log(`${enableMoveTabMenu ? 'enabling' : 'disabling'} context menu for moving tabs`);
-      for(identity of (await identities)) {
-        browser.menus.update(menuId(identity.cookieStoreId), { enabled: enableMoveTabMenu });
-      }
+      enableContextMenu(isBlessedUrl((await tab).url));
     } else {
-      if((await tab).url.startsWith('http') || (await tab).url.startsWith('about:blank') || (await tab).url.startsWith('about:newtab')) {
+      url = (await tab).url;
+      if(isBlessedUrl(url)) {
         browser.pageAction.setIcon({
           tabId: tabId,
           path: { 19: 'icons/icon_19.png', 38: 'icons/icon_38.png', 48: 'icons/icon_48.png'}
@@ -210,6 +219,12 @@ const showHideMoveTabActions = async function(tabId) {
       }
     }
   };
+
+  if((await tab).cookieStoreId.startsWith(privateCookieStorePrefix)) {
+    browser.pageAction.hide(tabId);
+    enableContextMenu(false);
+    return;
+  }
 
   if((await tab).url.startsWith('about:blank') || (await tab).url.startsWith('about:newtab')) {
     showMoveTabMenu();
@@ -235,7 +250,7 @@ const showHideMoveTabActions = async function(tabId) {
 
 const updateLastCookieStoreId = function(activeInfo) {
   browser.tabs.get(activeInfo.tabId).then(tab => {
-    if(tab.cookieStoreId != defaultCookieStoreId && tab.cookieStoreId != lastCookieStoreId && !tab.cookieStoreId.startsWith('firefox-private')) {
+    if(tab.cookieStoreId != defaultCookieStoreId && tab.cookieStoreId != lastCookieStoreId && !tab.cookieStoreId.startsWith(privateCookieStorePrefix)) {
       console.log(`cookieStoreId changed from ${lastCookieStoreId} -> ${tab.cookieStoreId}`);
       lastCookieStoreId = tab.cookieStoreId;
     }
