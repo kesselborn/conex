@@ -281,6 +281,15 @@ browser.tabs.onActivated.addListener(updateLastCookieStoreId);
 
 browser.tabs.onUpdated.addListener(storeScreenshot);
 browser.tabs.onUpdated.addListener(showHideMoveTabActions);
+browser.tabs.onActivated.addListener(activeInfo => showHideMoveTabActions(activeInfo.tabId));
+
+browser.windows.onFocusChanged.addListener(windowId => {
+  if(windowId != browser.windows.WINDOW_ID_NONE) {
+    browser.tabs.query({active: true, windowId: windowId}).then(tab => {
+      showHideMoveTabActions(tab[0].id);
+    });
+  }
+});
 
 browser.pageAction.onClicked.addListener(openPageActionPopup)
 
