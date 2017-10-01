@@ -223,6 +223,8 @@ const showHideMoveTabActions = async function(tabId) {
   if((await tab).cookieStoreId.startsWith(privateCookieStorePrefix)) {
     browser.pageAction.hide(tabId);
     enableContextMenu(false);
+    // temporary workaround: until https://bugzilla.mozilla.org/show_bug.cgi?id=1329304 is fixed disable browser action
+    browser.browserAction.disable(tabId);
     return;
   }
 
