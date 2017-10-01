@@ -28,12 +28,12 @@ function newTabInCurrentContainer(url) {
 }
 
 function openActiveTabInDifferentContainer(cookieStoreId) {
-  if(cookieStoreId.startsWith('firefox-private')) {
+  if(!cookieStoreId.startsWith('firefox-private')) {
     console.log(`cookieStoreId changed from ${lastCookieStoreId} -> ${cookieStoreId}`);
     lastCookieStoreId = cookieStoreId;
     browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
       const activeTab = tabs[0];
-      if(activeTab.url.startsWith('http')) {
+      if(activeTab.url.startsWith('http') || activeTab.url.startsWith('about:blank') || activeTab.url.startsWith('about:newtab')) {
         openInDifferentContainer(cookieStoreId, activeTab);
       } else {
         console.error(`not re-opening current tab in new container as it's not a http(s) url (url is: ${activeTab.url})`);
@@ -174,7 +174,7 @@ const createMissingTabContainers = async function(tabContainers) {
 const openPageActionPopup = function(tab) {
   browser.storage.local.get(tabMovingEnabledKey).then(settings => {
     if(settings[tabMovingEnabledKey]) {
-      browser.pageAction.show(tabId);
+      browser.pageAction.show(tab.id);
     } else {
       browser.runtime.openOptionsPage();
     }
@@ -194,13 +194,13 @@ const showHideMoveTabActions = async function(tabId) {
   const showMoveTabMenu = async function() {
     if(tabMovingPreferContextMenu) {
       browser.pageAction.hide(tabId);
-      const enableMoveTabMenu = (await tab).url.startsWith('http') ? true : false;
+      const enableMoveTabMenu = ((await tab).url.startsWith('http') || (await tab).url.startsWith('about:blank') || (await tab).url.startsWith('about:newtab')) ? true : false;
       console.log(`${enableMoveTabMenu ? 'enabling' : 'disabling'} context menu for moving tabs`);
       for(identity of (await identities)) {
         browser.menus.update(menuId(identity.cookieStoreId), { enabled: enableMoveTabMenu });
       }
     } else {
-      if((await tab).url.startsWith('http')) {
+      if((await tab).url.startsWith('http') || (await tab).url.startsWith('about:blank') || (await tab).url.startsWith('about:newtab')) {
         browser.pageAction.setIcon({
           tabId: tabId,
           path: { 19: 'icons/icon_19.png', 38: 'icons/icon_38.png', 48: 'icons/icon_48.png'}
