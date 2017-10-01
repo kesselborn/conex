@@ -56,6 +56,11 @@ document.body.addEventListener('keypress', keyHandling);
 const insertTabElements = function(tabContainers) {
   for(tabContainer in tabContainers) {
     const ul = $1(`#${tabContainer}`);
+    if(!ul) {
+      console.error(`couldn't find tab container with id ${tabContainer}`);
+      continue;
+    }
+
     for(const element of tabContainers[tabContainer]) {
       element.addEventListener('click', () => {
         bg.activateTab(element.dataset.tabId);
