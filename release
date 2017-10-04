@@ -1,5 +1,6 @@
 #!/bin/bash -e
 # (export VERSION=0.0.15; git reset --hard HEAD^; git tag -d v${VERSION}; git push origin :v${VERSION}; git push -f)
+variant=experiment
 
 if git status|grep modified
 then
@@ -12,8 +13,8 @@ test -n "${WEB_EXT_API_SECRET:?"please set WEB_EXT_API_SECRET"}"
 test -n "${GITHUB_TOKEN:?please set GITHUB_TOKEN env var}"
 
 current_version=$(cat manifest.json |jq -r ".version")
-next_patch_version=$(( $(echo ${current_version}|sed -E "s/([0-9]+)\.([0-9]+)\.([0-9]+)/\3/") + 1 ))
-next_version=$(echo ${current_version}|sed -E "s/([0-9]+)\.([0-9]+)\.([0-9]+)/\1.\2.${next_patch_version}/")
+next_patch_version=$(( $(echo ${current_version}|sed "s/${variant}//g"|sed -E "s/([0-9]+)\.([0-9]+)\.([0-9]+)/\3/") + 1 ))
+next_version=$(echo ${current_version}|sed -E "s/([0-9]+)\.([0-9]+)\.([0-9]+)${variant}/\1.\2.${next_patch_version}/")${variant}
 
 read -p "current version is ${current_version} ... next version (${next_version}): " next_version_user
 next_version=${next_version_user:-${next_version}}
