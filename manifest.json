@@ -4,7 +4,7 @@
   "description": "This is a tabgroup'esque successor for Firefox >= 57 (WebExtensions)",
   "homepage_url": "https://github.com/kesselborn/conex",
   "name": "Conex",
-  "version": "0.0.69",
+  "version": "0.0.62experiment",
   "browser_action": {
     "default_title": "Conex (CTRL+<space> / CMD+<space>)",
     "browser_style": false,
@@ -16,7 +16,7 @@
   "applications": {
     "gecko": {
       "strict_min_version": "57.0a1",
-      "update_url": "https://raw.githubusercontent.com/kesselborn/conex/master/versions.json"
+      "update_url": "https://raw.githubusercontent.com/kesselborn/conex/webext-experiment-showOnlyTheseTabs/versions.json"
     }
   },
   "commands": {
@@ -58,6 +58,7 @@
     "bookmarks",
     "contextualIdentities",
     "cookies",
+    "experiments.tabshideshow",
     "history",
     "menus",
     "storage",
