@@ -1,5 +1,12 @@
 #!/bin/bash -e
 # (export VERSION=0.0.15; git reset --hard HEAD^; git tag -d v${VERSION}; git push origin :v${VERSION}; git push -f)
+prefix=show-only-these-tabs-experiment
+
+if [ ! -e ${prefix}-versions.json ]
+then
+  echo "no ${prefix}-versions.json found"
+  exit 1
+fi
 
 if git status|grep modified
 then
@@ -12,8 +19,8 @@ test -n "${WEB_EXT_API_SECRET:?"please set WEB_EXT_API_SECRET"}"
 test -n "${GITHUB_TOKEN:?please set GITHUB_TOKEN env var}"
 
 current_version=$(cat manifest.json |jq -r ".version")
-next_patch_version=$(( $(echo ${current_version}|sed -E "s/([0-9]+)\.([0-9]+)\.([0-9]+)/\3/") + 1 ))
-next_version=$(echo ${current_version}|sed -E "s/([0-9]+)\.([0-9]+)\.([0-9]+)/\1.\2.${next_patch_version}/")
+next_patch_version=$(( $(echo ${current_version}|sed "s/${prefix}-//g"|sed -E "s/([0-9]+)\.([0-9]+)\.([0-9]+)/\3/") + 1 ))
+next_version=${prefix}-$(echo ${current_version}|sed -E "s/${prefix}-([0-9]+)\.([0-9]+)\.([0-9]+)/\1.\2.${next_patch_version}/")
 
 read -p "current version is ${current_version} ... next version (${next_version}): " next_version_user
 next_version=${next_version_user:-${next_version}}
@@ -22,11 +29,11 @@ next_version=${next_version_user:-${next_version}}
 sed -i "" -e "s/: \"${current_version}\"/: \"${next_version}\"/" manifest.json
 
 # add new release to versions.json
-jq ".addons.\"{cad4f60e-e46e-4d66-8c11-e09194d4df7d}\".updates += [{\"version\":\"${next_version}\", \"update_link\": \"https://github.com/kesselborn/conex/releases/download/v${next_version}/conex-${next_version}-an.fx.xpi\"}]" versions.json > next_versions.json
-mv next_versions.json versions.json
+jq ".addons.\"{cad4f60e-e46e-4d66-8c11-e09194d4df7d}\".updates += [{\"version\":\"${next_version}\", \"update_link\": \"https://github.com/kesselborn/conex/releases/download/v${next_version}/conex-${next_version}-an.fx.xpi\"}]" ${prefix}-versions.json > ${prefix}-next_versions.json
+mv ${prefix}-next_versions.json ${prefix}-versions.json
 
 # commit version bumps and create new tag
-git commit -m "Bump to version ${next_version}" manifest.json versions.json
+git commit -m "Bump to version ${next_version}" manifest.json ${prefix}-versions.json
 git tag v${next_version}
 
 # create signed addon
