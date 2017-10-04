@@ -58,6 +58,7 @@
     "bookmarks",
     "contextualIdentities",
     "cookies",
+    "experiments.tabshideshow",
     "history",
     "menus",
     "storage",
