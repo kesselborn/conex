@@ -45,9 +45,9 @@
   },
   "background": {
     "scripts": [
-      "helper.js",
-      "components.js",
-      "background.js"
+      "conex-helper.js",
+      "conex-components.js",
+      "conex-background.js"
     ]
   },
   "icons": {
