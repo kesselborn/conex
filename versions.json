@@ -127,28 +127,16 @@
           "update_link": "https://github.com/kesselborn/conex/releases/download/v0.0.53/conex-0.0.53-an.fx.xpi"
         },
         {
-          "version": "0.0.59",
-          "update_link": "https://github.com/kesselborn/conex/releases/download/v0.0.59/conex-0.0.59-an.fx.xpi"
+          "version": "0.0.57experiment",
+          "update_link": "https://github.com/kesselborn/conex/releases/download/v0.0.57experiment/conex-0.0.57experiment-an.fx.xpi"
         },
         {
-          "version": "0.0.60",
-          "update_link": "https://github.com/kesselborn/conex/releases/download/v0.0.60/conex-0.0.60-an.fx.xpi"
+          "version": "0.0.58experiment",
+          "update_link": "https://github.com/kesselborn/conex/releases/download/v0.0.58experiment/conex-0.0.58experiment-an.fx.xpi"
         },
         {
-          "version": "0.0.61",
-          "update_link": "https://github.com/kesselborn/conex/releases/download/v0.0.61/conex-0.0.61-an.fx.xpi"
-        },
-        {
-          "version": "0.0.62",
-          "update_link": "https://github.com/kesselborn/conex/releases/download/v0.0.62/conex-0.0.62-an.fx.xpi"
-        },
-        {
-          "version": "0.0.63",
-          "update_link": "https://github.com/kesselborn/conex/releases/download/v0.0.63/conex-0.0.63-an.fx.xpi"
-        },
-        {
-          "version": "0.0.65",
-          "update_link": "https://github.com/kesselborn/conex/releases/download/v0.0.65/conex-0.0.65-an.fx.xpi"
+          "version": "0.0.59experiment",
+          "update_link": "https://github.com/kesselborn/conex/releases/download/v0.0.59experiment/conex-0.0.59experiment-an.fx.xpi"
         }
       ]
     }
