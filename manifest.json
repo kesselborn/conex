@@ -4,11 +4,7 @@
   "description": "This is a tabgroup'esque successor for Firefox >= 57 (WebExtensions)",
   "homepage_url": "https://github.com/kesselborn/conex",
   "name": "Conex",
-<<<<<<< HEAD
   "version": "0.0.57experiment",
-=======
-  "version": "0.0.56experiment",
->>>>>>> Bump to version 0.0.56experiment
   "browser_action": {
     "default_title": "Conex (CTRL+<space> / CMD+<space>)",
     "browser_style": false,
