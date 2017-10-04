@@ -5,6 +5,10 @@
         {
           "version": "0.0.53",
           "update_link": "https://github.com/kesselborn/conex/releases/download/v0.0.53/conex-0.0.53-an.fx.xpi"
+        },
+        {
+          "version": "show-only-these-tabs-experiment-0.0.54",
+          "update_link": "https://github.com/kesselborn/conex/releases/download/vshow-only-these-tabs-experiment-0.0.54/conex-show-only-these-tabs-experiment-0.0.54-an.fx.xpi"
         }
       ]
     }
