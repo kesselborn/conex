@@ -13,6 +13,10 @@
         {
           "version": "0.0.55-experiment",
           "update_link": "https://github.com/kesselborn/conex/releases/download/v0.0.55-experiment/conex-0.0.55-experiment-an.fx.xpi"
+        },
+        {
+          "version": "0.0.56experiment",
+          "update_link": "https://github.com/kesselborn/conex/releases/download/v0.0.56experiment/conex-0.0.56experiment-an.fx.xpi"
         }
       ]
     }
