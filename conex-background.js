@@ -250,6 +250,24 @@ const showHideMoveTabActions = async function(tabId) {
   showMoveTabMenu();
 };
 
+const showHideTabs = async function(activeInfo) {
+  const activeTab = await browser.tabs.get(activeInfo.tabId);
+  const allTabs = await browser.tabs.query({windowId: browser.windows.WINDOW_ID_CURRENT});
+
+  const visibleTabs = allTabs.filter(t => t.cookieStoreId == activeTab.cookieStoreId).map(t => t.id);
+  const hiddenTabs = allTabs.filter(t => t.cookieStoreId != activeTab.cookieStoreId).map(t => t.id);
+
+  console.log('visible tabs', visibleTabs);
+  console.log('hidden tabs', hiddenTabs);
+
+  try {
+    browser.tabshideshow.show(visibleTabs);
+    browser.tabshideshow.hide(hiddenTabs);
+  } catch(e) {
+    console.error('error showing / hiding tabs', e);
+  }
+}
+
 const updateLastCookieStoreId = function(activeInfo) {
   browser.tabs.get(activeInfo.tabId).then(tab => {
     if(tab.cookieStoreId != lastCookieStoreId && !tab.cookieStoreId.startsWith(privateCookieStorePrefix)) {
@@ -295,6 +313,8 @@ browser.tabs.onCreated.addListener(tab => {
 
 browser.tabs.onActivated.addListener(activeInfo => { showHideMoveTabActions(activeInfo.tabId)});
 browser.tabs.onActivated.addListener(updateLastCookieStoreId);
+
+browser.tabs.onActivated.addListener(showHideTabs);
 
 browser.tabs.onUpdated.addListener(storeScreenshot);
 browser.tabs.onUpdated.addListener(showHideMoveTabActions);
