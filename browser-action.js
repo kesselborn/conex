@@ -13,6 +13,7 @@ const keyHandling = function(event) {
       } else if(document.activeElement.dataset.url) {
         bg.newTabInCurrentContainer(document.activeElement.dataset.url);
       } else if(document.activeElement.dataset.cookieStore) {
+        bg.activateTabInContainer(document.activeElement.dataset.cookieStore); 
         expandTabContainer(document.activeElement.dataset.cookieStore);
         return;
       } else {
@@ -216,7 +217,7 @@ const onSearchChange = function(event) {
 const startTime = Date.now();
 tabContainerRendering.then(() => {
   for(const section of $('.section')) {
-    section.addEventListener('click', () => { expandTabContainer(section.dataset.cookieStore); });
+    section.addEventListener('click', () => { bg.activateTabInContainer(section.dataset.cookieStore); expandTabContainer(section.dataset.cookieStore); });
   }
 
   Promise.all([containersTabsMapCreating, bookmarkQuerying]).then(results => {
