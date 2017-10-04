@@ -3,6 +3,21 @@
 
 This webextension is a replacement for the discontinued <b>TabGroups</b> with some differences:
 
+# Hyper-experimental
+
+The bug above has a first experiment that implements showing and hiding tabs -- with this, conex is pretty close
+to the final functionality. You can install this version of conex, but please be advised that this can break
+without warning, so no guarantees.
+In order to use conex with the hide / show functionality, do the following (instructions fuzzy as you should only
+do it if you know what you are doing):
+
+- enable legacy extension support in FirefoxNightly
+- clone https://github.com/autonome/webext-experiment-showOnlyTheseTabs
+- load this repos' `experiment` folder as a temporary addon
+- click the `.xpi` link on https://github.com/kesselborn/conex/releases/tag/v0.0.57experiment
+- in the addon manager, click on the settings icon on `Check for Updates` to get the latest version of conex
+- try it out ;)
+
 # Installation
 
 For now, it's probably best to install it from the [github releases page](https://github.com/kesselborn/conex/releases),
