@@ -1,0 +1,12 @@
+{
+  "addons": {
+    "{cad4f60e-e46e-4d66-8c11-e09194d4df7d}": {
+      "updates": [
+        {
+          "version": "0.0.53",
+          "update_link": "https://github.com/kesselborn/conex/releases/download/v0.0.53/conex-0.0.53-an.fx.xpi"
+        }
+      ]
+    }
+  }
+}

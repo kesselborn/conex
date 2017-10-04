@@ -1,6 +1,6 @@
 #!/bin/bash -e
 # (export VERSION=0.0.15; git reset --hard HEAD^; git tag -d v${VERSION}; git push origin :v${VERSION}; git push -f)
-prefix=show-only-these-tabs-experiment
+prefix=experiment
 
 if [ ! -e ${prefix}-versions.json ]
 then
