@@ -62,6 +62,7 @@ li.tab:hover span.close-button, li.tab:focus  span.close-button{
 .circle-purple    { background-color: rgb(175,81,245); }
 .circle-default   { background-color: rgb(0, 0, 0); }
 .circle-history   { background-image: url('icons/clock.svg'); }
+.circle-private   { background-image: url('icons/private-browsing.svg'); background-size: 1em 1em; }
 
 form #search {
   background-color: rgb(252,252,252);

@@ -221,6 +221,9 @@ tabContainerRendering.then(() => {
 
   Promise.all([containersTabsMapCreating, bookmarkQuerying]).then(results => {
     insertTabElements(results[0], results[1]);
+    if(!results[0]['firefox-private']) {
+      $1('#firefox-private').remove();
+    }
   });
 
   document.querySelector('#search').addEventListener('keyup', onSearchChange);
