@@ -21,6 +21,7 @@ tabContainers.then(() => {
   if(bg.lastCookieStoreId != bg.defaultCookieStoreId) {
     $1('#'+bg.lastCookieStoreId+' li').focus();
   }
+  $1('#firefox-private').remove();
 
   for(const section of $('.section')) {
     section.addEventListener('click', () => { openInDifferentContainer(section); });
