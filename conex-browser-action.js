@@ -119,6 +119,8 @@ const renderResults = function(results, parent) {
 
 const fillBookmarksSection = function(searchQuery) {
   const bookmarks = $1('#bookmarks');
+  if(bookmarks.children.length > 0) { return; }
+
   const tabContainerHeader = createTabContainerHeaderElement('', 'bookmarks', 'bookmarks', -1, '★ ');
 
   if($1('ul', bookmarks)) {
@@ -134,6 +136,7 @@ const fillBookmarksSection = function(searchQuery) {
 
 const fillHistorySection = function(searchQuery) {
   const history = $1('#history');
+  if(history.children.length > 0) { $1('ul', history).remove(); }
   const tabContainerHeader = createTabContainerHeaderElement('', 'history', 'history', -1);
 
   if($1('ul', history)) {
@@ -199,18 +202,8 @@ const onSearchChange = function(event) {
   showHideTabEntries(searchQuery);
   showHideTabContainerHeader();
 
-  if(searchQuery.length > 1) {
-    if($('#history ul li').length == 0) {
-      fillHistorySection(searchQuery);
-      fillBookmarksSection(searchQuery);
-    }
-  } else if(searchQuery.length <= 1) {
-    const bookmarks = $1('#bookmarks');
-    if(bookmarks.children.length > 0) { $1('ul', bookmarks).remove(); }
-
-    const history = $1('#history');
-    if(history.children.length > 0) { $1('ul', history).remove(); }
-  }
+  fillHistorySection(searchQuery);
+  fillBookmarksSection(searchQuery);
 };
 
 const startTime = Date.now();
