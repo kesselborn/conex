@@ -29,7 +29,11 @@ filePicker.addEventListener('change', picker => {
         for(const tab of w.tabs) {
           if(tab.extData['tabview-tab']) {
             const extData = JSON.parse(tab.extData['tabview-tab']);
-            tabs.push({url: tab.entries[0].url, container: windowTabContainers[Number(extData.groupID)]});
+            if(extData && extData.groupID) {
+              tabs.push({url: tab.entries[0].url, container: windowTabContainers[Number(extData.groupID)]});
+            } else {
+              tabs.push({url: tab.entries[0].url, container: null});
+            }
           } else {
             tabs.push({url: tab.entries[0].url, container: null});
           }
