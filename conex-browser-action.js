@@ -2,8 +2,10 @@ const deletedTabOpacity = 0.3;
 const containersTabsMapCreating = bg.getTabsByContainer();
 const tabContainerRendering = renderTabContainers();
 const bookmarkQuerying = browser.bookmarks.search({});
+let focusSetter;
 
 const keyHandling = function(event) {
+  try{ clearInterval(focusSetter); } catch(e) {}
   const searchElement = $1('#search');
 
   if(event.key == 'Enter') {
@@ -220,7 +222,7 @@ tabContainerRendering.then(() => {
   });
 
   document.querySelector('#search').addEventListener('keyup', onSearchChange);
-  setTimeout(() => { document.getElementById('search').focus()}, 200);
   console.log("rendering time: ", Date.now() - startTime);
+  focusSetter = setInterval(function(){document.getElementById('search').focus()}, 150);
 }, e => console.error(e));
 
