@@ -252,7 +252,7 @@ const showHideMoveTabActions = async function(tabId) {
 
 const updateLastCookieStoreId = function(activeInfo) {
   browser.tabs.get(activeInfo.tabId).then(tab => {
-    if(tab.cookieStoreId != defaultCookieStoreId && tab.cookieStoreId != lastCookieStoreId && !tab.cookieStoreId.startsWith(privateCookieStorePrefix)) {
+    if(tab.cookieStoreId != lastCookieStoreId && !tab.cookieStoreId.startsWith(privateCookieStorePrefix)) {
       console.log(`cookieStoreId changed from ${lastCookieStoreId} -> ${tab.cookieStoreId}`);
       lastCookieStoreId = tab.cookieStoreId;
     }
