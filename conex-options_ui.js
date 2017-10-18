@@ -17,11 +17,10 @@ filePicker.addEventListener('change', picker => {
           const windowTabContainersJSON = JSON.parse(w.extData['tabview-group']);
 
           for(const key in windowTabContainersJSON) {
-            // if group doesn't have a name, give it a stupid dummy name
-            const containerName = windowTabContainersJSON[key].title == '' ? 'Container '+tabContainers.length+1 : windowTabContainersJSON[key].title;
-
-            windowTabContainers[key] = containerName;
-            tabContainers.push(containerName);
+            if(windowTabContainersJSON[key].title) {
+              windowTabContainers[key] = windowTabContainersJSON[key].title;
+              tabContainers.push(windowTabContainers[key]);
+            }
           }
         }
 
@@ -29,7 +28,7 @@ filePicker.addEventListener('change', picker => {
         for(const tab of w.tabs) {
           if(tab.extData && tab.extData['tabview-tab']) {
             const extData = JSON.parse(tab.extData['tabview-tab']);
-            if(extData && extData.groupID) {
+            if(extData && extData.groupID && windowTabContainers[Number(extData.groupID)]) {
               tabs.push({url: tab.entries[0].url, container: windowTabContainers[Number(extData.groupID)]});
             } else {
               tabs.push({url: tab.entries[0].url, container: null});
