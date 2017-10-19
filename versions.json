@@ -137,6 +137,30 @@
         {
           "version": "0.0.66experiment",
           "update_link": "https://github.com/kesselborn/conex/releases/download/v0.0.66/conex-0.0.66experiment-an.fx.xpi"
+        },
+        {
+          "version": "0.0.67experiment",
+          "update_link": "https://github.com/kesselborn/conex/releases/download/v0.0.67experiment/conex-0.0.67experiment-an.fx.xpi"
+        },
+        {
+          "version": "0.0.69experiment",
+          "update_link": "https://github.com/kesselborn/conex/releases/download/v0.0.69experiment/conex-0.0.69experiment-an.fx.xpi"
+        },
+        {
+          "version": "0.0.71experiment",
+          "update_link": "https://github.com/kesselborn/conex/releases/download/v0.0.71experiment/conex-0.0.71experiment-an.fx.xpi"
+        },
+        {
+          "version": "0.0.72experiment",
+          "update_link": "https://github.com/kesselborn/conex/releases/download/v0.0.72experiment/conex-0.0.72experiment-an.fx.xpi"
+        },
+        {
+          "version": "0.0.73experiment",
+          "update_link": "https://github.com/kesselborn/conex/releases/download/v0.0.73experiment/conex-0.0.73experiment-an.fx.xpi"
+        },
+        {
+          "version": "0.0.74experiment",
+          "update_link": "https://github.com/kesselborn/conex/releases/download/v0.0.74experiment/conex-0.0.74experiment-an.fx.xpi"
         }
       ]
     }
