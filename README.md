@@ -1,7 +1,18 @@
 # conex
 **this addon is still experimental and lacks hiding / showing tab containers due to https://bugzilla.mozilla.org/show_bug.cgi?id=1384515**
 
+See the experimental version in action here: [conex in action](https://www.youtube.com/watch?v=wTwmIFSnLWY)
+
+[![conex in action](http://img.youtube.com/vi/wTwmIFSnLWY/0.jpg)](http://www.youtube.com/watch?v=wTwmIFSnLWY "conex in action")
+
 This webextension is a replacement for the discontinued <b>TabGroups</b> with some differences:
+
+# Functionality
+
+- it lacks the big "Manage my TabGroups" overview window
+- tab containers are handled like groups in the old tab groups addon
+- the quick search containes thumbnail of the results
+- the quick search includes the history
 
 # Hyper-experimental
 
@@ -23,13 +34,6 @@ do it if you know what you are doing):
 For now, it's probably best to install it from the [github releases page](https://github.com/kesselborn/conex/releases),
 as updates are still frequent and the [official addon page](https://addons.mozilla.org/en-us/firefox/addon/conex/)
 depends on manual reviews by mozilla. Downloads from here will get updates automatically as well.
-
-# Functionality
-
-- it lacks the big "Manage my TabGroups" overview window
-- tab containers are handled like groups in the old tab groups addon
-- the quick search containes thumbnail of the results
-- the quick search includes the history
 
 Tab Containers need be enabled in the preferences.
 
