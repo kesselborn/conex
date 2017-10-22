@@ -196,7 +196,13 @@ const showHideTabContainerHeader = function() {
 };
 
 const onSearchChange = function(event) {
-  const searchQuery = event.target.value.toLowerCase();
+  let searchQuery = "";
+  if(event.type == "paste") {
+    searchQuery = event.clipboardData.getData("text");
+  } else {
+    searchQuery = event.target.value.toLowerCase();
+  }
+
   if(searchQuery == '') {
     return resetPopup();
   }
@@ -222,6 +228,7 @@ tabContainerRendering.then(() => {
   });
 
   document.querySelector('#search').addEventListener('keyup', onSearchChange);
+  $1('#search').addEventListener('paste', onSearchChange);
   console.log("rendering time: ", Date.now() - startTime);
   focusSetter = setInterval(function(){document.getElementById('search').focus()}, 150);
 }, e => console.error(e));
