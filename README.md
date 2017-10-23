@@ -49,3 +49,9 @@ Tab Containers need be enabled in the preferences.
 - unlimitedStorage: for storing thumbnails
 - webNavigation: for intercepting and reacting on new tabs
 
+### Contributions
+are _really_ not necessary, but as I was (to my surprise) repeatedly asked:
+
+![bitcoin barcode](./bitcoinqr.png)
+
+bitcoin: 1ETnBeMDFaLH1KF2hmqK8rz2BUWPGzLwze
