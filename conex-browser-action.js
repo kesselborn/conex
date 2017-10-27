@@ -70,6 +70,7 @@ const insertTabElements = function(tabContainers) {
       });
 
       $1('.close-button', element).addEventListener('click', function(event) {
+        try{ clearInterval(focusSetter); } catch(e) {}
         event.stopPropagation();
         element.style.opacity = deletedTabOpacity;
         element.tabIndex = -1;
