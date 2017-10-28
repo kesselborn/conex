@@ -185,9 +185,23 @@ const showHideTabEntries = function(searchQuery) {
   }
 };
 
-const showHideTabContainerHeader = function() {
+const showHideTabContainerHeader = function(searchQuery) {
   for(ul of $('ul')) {
-    ul.querySelector('li.section').tabIndex = -1; // section should not be selectable when we have search results
+    const tabContainerHeader = ul.querySelector('li.section');
+    const text = $('span', tabContainerHeader)[1].innerText;
+
+    // if the search query consists of multiple words, check if ALL words match -- regardless of the order
+    const match = searchQuery.split(' ').every(q => {
+      return text.indexOf(q) >= 0
+    });
+
+    if(match) { // don't hide header if it matches the current search
+      ul.style.display = '';
+      tabContainerHeader.tabIndex = 1;
+      continue;
+    }
+
+    tabContainerHeader.tabIndex = -1; // section should not be selectable when we have search results
 
     // hide sections that don't have tabs that match the search
     if(Array.from(ul.querySelectorAll('li.tab')).filter(li => li.style.display != 'none') == 0) {
@@ -211,7 +225,7 @@ const onSearchChange = function(event) {
   }
 
   showHideTabEntries(searchQuery);
-  showHideTabContainerHeader();
+  showHideTabContainerHeader(searchQuery);
 
   fillHistorySection(searchQuery);
   fillBookmarksSection(searchQuery);
