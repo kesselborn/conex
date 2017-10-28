@@ -32,7 +32,7 @@ const $e = function(name, attributes, children) {
 
 function createTabContainerHeaderElement(id, color, name, tabindex, icon) {
   const elment =
-    $e('ul', {id: id},[
+    $e('ul', {id: id, title: 'enter to expand / ctrl-enter to switch to group'},[
         $e('li', {tabindex: tabindex || 1, class: 'section', data_cookie_store: id}, [
           $e('div', {class: 'summary'}, [
             $e('span', {class: `circle circle-${color}`, content: icon || ' '}),

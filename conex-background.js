@@ -131,6 +131,17 @@ async function setupMenus() {
   }
 }
 
+async function switchToContainer(cookieStoreId) {
+  const tabs = await browser.tabs.query({cookieStoreId: cookieStoreId});
+  if(tabs.length == 0) {
+    browser.tabs.create({cookieStoreId: cookieStoreId, active: true});
+  } else {
+    browser.tabs.update(tabs[0].id, {active: true});
+    browser.windows.update(tabs[0].windowId, {focused: true});
+  }
+}
+
+
 //////////////////////////////////// end of exported functions (again: es6 features not supported yet
 const menuId = function(s) {
   return `menu_id_for_${s}`;

@@ -10,11 +10,13 @@ const keyHandling = function(event) {
 
   if(event.key == 'Enter') {
     try {
-      if(document.activeElement.dataset.tabId) {
+      if(document.activeElement.dataset.tabId) { // a normal tab
         bg.activateTab(document.activeElement.dataset.tabId);
-      } else if(document.activeElement.dataset.url) {
+      } else if(document.activeElement.dataset.url) { // a history or bookmark entry
         bg.newTabInCurrentContainer(document.activeElement.dataset.url);
-      } else if(document.activeElement.dataset.cookieStore) {
+      } else if(document.activeElement.dataset.cookieStore && event.ctrlKey) { // a container section / ctrl+enter
+        bg.switchToContainer(document.activeElement.dataset.cookieStore);
+      } else if(document.activeElement.dataset.cookieStore) { // a container section
         expandTabContainer(document.activeElement.dataset.cookieStore);
         return;
       } else {
