@@ -1,4 +1,4 @@
-const tabContainers = renderTabContainers();
+const tabContainers = renderTabContainers($1('#tabcontainers'));
 
 const openInDifferentContainer = function(element) {
   try {

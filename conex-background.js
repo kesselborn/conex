@@ -141,6 +141,9 @@ async function switchToContainer(cookieStoreId) {
   }
 }
 
+function openLinkInContainer(link, cookieStoreId) {
+  browser.tabs.create({url: link, cookieStoreId: cookieStoreId});
+}
 
 //////////////////////////////////// end of exported functions (again: es6 features not supported yet
 const menuId = function(s) {

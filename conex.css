@@ -74,6 +74,11 @@ form #search {
   width: 500px;
 }
 
+#history .tab h2, #history .tab ul li {
+  width: 300px;
+  margin-left: 3em;
+}
+
 li {
   font-size: smaller;
   font-weight: lighter;

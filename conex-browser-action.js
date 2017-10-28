@@ -1,6 +1,6 @@
 const deletedTabOpacity = 0.3;
 const containersTabsMapCreating = bg.getTabsByContainer();
-const tabContainerRendering = renderTabContainers();
+const tabContainerRendering = renderTabContainers($1('#tabcontainers'));
 const bookmarkQuerying = browser.bookmarks.search({});
 let focusSetter;
 
@@ -13,7 +13,8 @@ const keyHandling = function(event) {
       if(document.activeElement.dataset.tabId) { // a normal tab
         bg.activateTab(document.activeElement.dataset.tabId);
       } else if(document.activeElement.dataset.url) { // a history or bookmark entry
-        bg.newTabInCurrentContainer(document.activeElement.dataset.url);
+        renderRestoreMenu(document.activeElement);
+        return;
       } else if(document.activeElement.dataset.cookieStore && event.ctrlKey) { // a container section / ctrl+enter
         bg.switchToContainer(document.activeElement.dataset.cookieStore);
       } else if(document.activeElement.dataset.cookieStore) { // a container section
@@ -23,7 +24,7 @@ const keyHandling = function(event) {
         console.error('unhandled active element:', document.activeElement);
       }
       window.close();
-    } catch(e){}
+    } catch(e){console.error(e);}
   } else if(event.key == 'Tab') { // needed to eat the tab event
   } else if(document.activeElement != searchElement) {
     searchElement.focus();

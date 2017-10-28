@@ -30,6 +30,10 @@ const $e = function(name, attributes, children) {
   return e;
 };
 
+function createHeaderElement(value) {
+  return $e('h2', {content: 're-store tab in'});
+}
+
 function createTabContainerHeaderElement(id, color, name, tabindex, icon) {
   const elment =
     $e('ul', {id: id, title: 'enter to expand / ctrl-enter to switch to group'},[
@@ -95,6 +99,6 @@ function createHistoryElement(historyItem) {
         ])
     ]);
 
-  element.addEventListener('click', () => bg.newTabInCurrentContainer(historyItem.url));
+  element.addEventListener('click', () => renderRestoreMenu(element));
   return element;
 }

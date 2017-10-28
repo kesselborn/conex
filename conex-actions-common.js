@@ -1,13 +1,31 @@
-const renderTabContainers = async function() {
-  const tabContainers = $1('#tabcontainers');
+const renderTabContainers = async function(parent) {
   const identities = await browser.contextualIdentities.query({});
 
   browser.browserAction.setBadgeText({text: ''});
   for(const context of identities.concat({cookieStoreId: 'firefox-default', color: 'default', name: 'default'})
                                  .concat({cookieStoreId: 'firefox-private', color: 'private', name: 'private browsing tabs'})) {
-    tabContainers.appendChild(createTabContainerHeaderElement(context.cookieStoreId, context.color, context.name));
+    parent.appendChild(createTabContainerHeaderElement(context.cookieStoreId, context.color, context.name));
   }
 
   return;
 }
 
+const renderRestoreMenu = async function(parent) {
+  const header = createHeaderElement('re-store tab in');
+  parent.appendChild(header);
+  await renderTabContainers(parent);
+  for(const section of $('ul .section', parent)) {
+    console.log('nnn', section);
+    section.addEventListener('click', () => { 
+      bg.openLinkInContainer(parent.dataset.url, section.dataset.cookieStore);
+      window.close();
+    });
+    section.addEventListener('keypress', (event) => { 
+      if(event.key == 'Enter') {
+        bg.openLinkInContainer(parent.dataset.url, section.dataset.cookieStore);
+        window.close();
+      }
+    });
+  }
+  $1('ul .section', parent).focus();
+}
