@@ -16,6 +16,8 @@ const keyHandling = function(event) {
       } else if(document.activeElement.dataset.url) { // a history or bookmark entry
         renderRestoreMenu(document.activeElement);
         return;
+      } else if(document.activeElement.dataset.cookieStore && event.ctrlKey) { // a container section / ctrl+enter+shift
+        browser.tabs.create({cookieStoreId: document.activeElement.dataset.cookieStore, active: true});
       } else if(document.activeElement.dataset.cookieStore && event.ctrlKey) { // a container section / ctrl+enter
         bg.switchToContainer(document.activeElement.dataset.cookieStore);
       } else if(document.activeElement.dataset.cookieStore) { // a container section

@@ -37,7 +37,7 @@ function createHeaderElement(value) {
 function createTabContainerHeaderElement(id, color, name, tabindex, icon) {
   const elment =
     $e('ul', {id: id}, [
-        $e('li', {tabindex: tabindex || 1, class: 'section', data_cookie_store: id, title: 'enter to expand / ctrl-enter to switch to group'}, [
+        $e('li', {tabindex: tabindex || 1, class: 'section', data_cookie_store: id, title: 'enter: to expand\nctrl-enter: switch to container\nctrl-shift-enter: new tab in container'}, [
           $e('div', {class: 'summary'}, [
             $e('span', {class: `circle circle-${color}`, content: icon || ' '}),
             $e('span', {content: name}),
@@ -61,7 +61,8 @@ function createTabElement(tab, isBookmarkUrl) {
   const elClass = isBookmarkUrl ? 'tab is-bookmark' : 'tab';
 
   const element =
-    $e('li', {tabindex: 1, class: elClass, data_title: title.toLowerCase(), data_url: url.toLowerCase(), data_tab_id: tab.id, style: 'display:none', title: 'enter to activate tab / backspace to close tab'} ,[
+    $e('li', {tabindex: 1, class: elClass, data_title: title.toLowerCase(), data_url: url.toLowerCase(), data_tab_id: tab.id,
+              style: 'display:none', title: 'enter: jump to tab\nbackspace: close tab'} ,[
       $e('div', {}, [
         $e('div', {class: 'image', data_bg_set: 'false', style: `background:url('${defaultFavIconUrl}')`}, [
           $e('img', {src: defaultFavIconUrl})
