@@ -61,7 +61,7 @@ function createTabElement(tab, isBookmarkUrl) {
   const elClass = isBookmarkUrl ? 'tab is-bookmark' : 'tab';
 
   const element =
-    $e('li', {tabindex: 1, class: elClass, data_title: title.toLowerCase(), data_url: url.toLowerCase(), data_tab_id: tab.id, style: 'display:none'} ,[
+    $e('li', {tabindex: 1, class: elClass, data_title: title.toLowerCase(), data_url: url.toLowerCase(), data_tab_id: tab.id, style: 'display:none', title: 'enter to activate tab / backspace to close tab'} ,[
       $e('div', {}, [
         $e('div', {class: 'image', data_bg_set: 'false', style: `background:url('${defaultFavIconUrl}')`}, [
           $e('img', {src: defaultFavIconUrl})

@@ -5,6 +5,7 @@ const bookmarkQuerying = browser.bookmarks.search({});
 let focusSetter;
 
 const keyHandling = function(event) {
+  //console.log('keypress', event);
   try{ clearInterval(focusSetter); } catch(e) {}
   const searchElement = $1('#search');
 
@@ -25,6 +26,8 @@ const keyHandling = function(event) {
       }
       window.close();
     } catch(e){console.error(e);}
+  } else if(event.key == 'Backspace' && document.activeElement.dataset.tabId) { // close tab
+    removeTab(document.activeElement);
   } else if(event.key == 'Tab') { // needed to eat the tab event
   } else if(document.activeElement != searchElement) {
     searchElement.focus();
@@ -58,6 +61,13 @@ const expandTabContainer = function(cookieStoreId) {
 
 document.body.addEventListener('keypress', keyHandling);
 
+const removeTab = function(element) {
+  element.style.opacity = deletedTabOpacity;
+  element.tabIndex = -1;
+  bg.closeTab(element.dataset.tabId);
+  updateTabCount();
+}
+
 const insertTabElements = function(tabContainers) {
   for(tabContainer in tabContainers) {
     const ul = $1(`#${tabContainer}`);
@@ -75,10 +85,7 @@ const insertTabElements = function(tabContainers) {
       $1('.close-button', element).addEventListener('click', function(event) {
         try{ clearInterval(focusSetter); } catch(e) {}
         event.stopPropagation();
-        element.style.opacity = deletedTabOpacity;
-        element.tabIndex = -1;
-        bg.closeTab(this.dataset.tabId);
-        updateTabCount();
+        removeTab(element);
         return false;
       });
 
