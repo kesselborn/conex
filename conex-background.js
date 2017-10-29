@@ -228,7 +228,7 @@ const showHideMoveTabActions = async function(tabId) {
           tabId: tabId,
           path: { 19: 'icons/icon_19.png', 38: 'icons/icon_38.png', 48: 'icons/icon_48.png'}
         });
-        browser.pageAction.setPopup({tabId: (await tab).id, popup: "page-action.html"});
+        browser.pageAction.setPopup({tabId: (await tab).id, popup: "conex-page-action.html"});
         browser.pageAction.show(tabId);
       }
     }

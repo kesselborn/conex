@@ -8,7 +8,7 @@
   "browser_action": {
     "default_title": "Conex (CTRL+<space> / CMD+<space>)",
     "browser_style": false,
-    "default_popup": "browser-action.html",
+    "default_popup": "conex-browser-action.html",
     "default_icon": {
       "48": "icons/icon_48.png"
     }
@@ -32,7 +32,7 @@
     }
   },
   "options_ui": {
-    "page": "options_ui.html",
+    "page": "conex-options-ui.html",
     "browser_style": true
   },
   "page_action": {
