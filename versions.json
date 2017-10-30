@@ -153,6 +153,10 @@
         {
           "version": "0.0.72experiment",
           "update_link": "https://github.com/kesselborn/conex/releases/download/v0.0.72experiment/conex-0.0.72experiment-an.fx.xpi"
+        },
+        {
+          "version": "0.0.73experiment",
+          "update_link": "https://github.com/kesselborn/conex/releases/download/v0.0.73experiment/conex-0.0.73experiment-an.fx.xpi"
         }
       ]
     }
