@@ -74,7 +74,7 @@ form #search {
   width: 500px;
 }
 
-#history .tab h2, #history .tab ul li {
+#bookmarks .tab h2, #bookmarks .tab ul li, #history .tab h2, #history .tab ul li {
   width: 300px;
   margin-left: 3em;
   height: 0.5em;
