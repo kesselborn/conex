@@ -27,7 +27,7 @@
     },
     "_execute_page_action": {
       "suggested_key": {
-        "default": "Ctrl+Shift+M"
+        "default": "Ctrl+Shift+E"
       }
     }
   },
@@ -41,7 +41,7 @@
       "19": "icons/icon_error_19.png",
       "38": "icons/icon_error_38.png"
     },
-    "default_title": "re-open to tab in other container (CMD+Shift+M / CTRL+Shift+M)"
+    "default_title": "re-open to tab in other container (Ctrl+Shift+E / Cmd+Shift+E (mac))"
   },
   "background": {
     "scripts": [
