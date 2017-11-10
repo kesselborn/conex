@@ -1,113 +1,90 @@
 <!DOCTYPE html>
 <html>
-  <title>conex settings</title>
+  <title>Conex Settings</title>
   <head>
     <meta charset="utf-8">
-    <style>
-      body {
-        font-size: larger;
-      }
-
-      p, h1, label {
-        -moz-user-select: text;
-      }
-
-      #missing-tab-container-support {
-        display: none;
-      }
-
-      #missing-tab-container-support h1 {
-        color: red;
-      }
-
-      input[type="file"] {
-        display: none;
-      }
-
-      .custom-file-upload {
-        display: inline;
-        padding: 6px 12px;
-        cursor: pointer;
-        border: solid 1px rgb(229,229,232);
-      }
-
-      .custom-file-upload:hover, .custom-file-upload:focus {
-        background-color: rgb(235,235,235);
-      }
-    </style>
+    <link rel="stylesheet" type="text/css" href="conex.css">
   </head>
   <body id="options-ui">
-    <div>
-      <h1>Add / remove / rename containers</h1>
-      <p>Please go to preferences / containers (url: <b>about:preferences#containers</b>) for container management for now</p>
-    </div>
-    <div id="missing-tab-container-support">
-      <h1>Please enable "container tabs" in preferences</h1>
-      <p>Conex only works with container tabs enabled.</p>
-    </div>
-    <div>
-      <h1>Enable moving tabs between containers</h1>
-      <p>This will allow you to move a tab from one container to another and it will open external links in the current container.</p>
-      <p>New tabs and tabs with url <tt>about:blank</tt> will always have the option to be re-opened in a different container as there is not privacy problem</p>
-      <p><b>Note: if you use containers for privacy reasons, please note that this feature may leak tracking information from one container to another</b> <a id="show-hide-tab-containers-moving-details-link" style="color:blue"> more information &gt;&gt;</a></p>
-    </div>
-    <div style="display:none" id="moving-tabs-explanation">
-      <p>Moving one URL from one container to another has the ability to increase tracking across containers.</p>
-      <h1>Explanation</h1>
-      <p>Essentially you turn containers into a organisational tool rather than a privacy one. If you imagine that when visiting websites you always wear the clothing, containers give you different clothing to wear.  These disguises containers work by clearing what websites know about you, which works really well in stopping adverts from following you around the internet.</p>
-      <p>When you transfer one URL to another container you risk that website knowing about both of your disguises.</p>
-      <p>The URL itself can leak information about your previous container or the website could make the correlation that you have visited it twice with the same browser fingerprint but without the same cookies.</p>
-      <p>Containers don’t currently solve browser fingerprinting which is a technique where websites essentially monitor the hardware and OS that you have (graphics rendering, sound and performance). Containers add ambiguity in that fingerprinting isn’t perfect either. However the more you cross that boundary the bigger the risk you are in for this correlation.</p>
-      <p>URLs themselves also contain parameters like session id’s or google analytic campaigns that could be unique to you. There isn’t any simple way to filter these out without breaking pages also.</p>
-      <h1>Other info</h1>
-      <p>Implementing this would also increase the issues <a href="https://jotter.jonathankingston.co.uk/blog/2017/04/04/containers-assignment/#the-ability-to-csrf-yourself">issue 1</a> and <a href="https://jotter.jonathankingston.co.uk/blog/2017/04/04/containers-assignment/#the-inability-to-grasp-why-containers-are-isolated">issue 3</a> here.</p>
-      <h1>Example risk</h1>
-      <p>Take for example that obscure YouTube video you wanted to look at, it turns out maybe only 5 people visit it a day. It would be clear to YouTube that you crossed a container boundary when you switched the URL over to your personal container to login.</p>
-      <p>Once a website can link the histories for two containers, imagine anything you have done in the previous container potentially known to the website. So if you visited a medical site, financial advise, shopping, adult sites or just something about your child's next school play they might gain access to all of that.</p>
-      <h1>Frequently asked questions</h1>
-      <blockquote>
-        <p>I'm not quite sure why this is so hard to switch containers per navigation then?</p>
-      </blockquote>
-      <p>Because the web has many features which makes this hard like <code>window.opener</code> this would also indeed break OAuth as previously mentioned. If you wanted opener to work across containers it is a privacy issue.</p>
-      <p>The window change requires a lot more security checking etc that will require additional work. <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1323873">Bugzilla change</a>.</p>
-      <p>This enhancement would allow assignment to stay within the same tab and clean history navigations. It doesn't however solve migrating a site from one container to another.</p>
-      <h1>Think we are wrong?</h1>
-      <p>If you think we are wrong about this, we <strong>really</strong> would like to solve this issue without the privacy impact. Please let us know if you think it is possible!</p>
-      <p>You can raise an issue on Github or contact us at <a href="mailto:containers@mozilla.com">containers@mozilla.com</a></p>
-      <hr/>
-    </div>
-    <div>
-      <h3>Enable menu for moving tabs to other containers</h3>
-      <h3 id="error" style="color:red">Please select one of the two options</h3>
-      <form>
-        <input type="radio" id="move-tab-yes" name="move-tabs" value="yes">
-        <label for="move-tab-yes">yup -- all I ever wanted is moving tabs between containers, <b>don't care about privacy between containers</b>
-        </label><br><br>
-        <input type="radio" id="move-tab-no" name="move-tabs" value="nope">
-        <label for="move-tab-no">nope -- privacy above all ... usability is for losers</label>
-      </form>
-    </div>
-    <div>
-      <h3>Moving tabs menu</h3>
-      <form>
-        <input type="radio" id="move-tab-menu-page-action" name="move-tab-menu" value="page-action">
-        <label for="move-tab-menu-page-action">show icon in address bar (allows keyboard shortcut CTRL-Y support)</label><br><br>
-        <input type="radio" id="move-tab-menu-context-menu" name="move-tab-menu" value="context-menu">
-        <label for="move-tab-menu-context-menu">show menu for moving containers in context menu (right click)</label>
-      </form>
-    </div>
-    <div>
-      <h1>Import TabGroups backup file</h1>
-      <p>this is experimental ... tabgroups, windows and all tabs will be recreated, apart from urls starting with 'about://' due to technical limitations. All tabs and windows will be opened rather quickly, so expert your CPU fan to be noisy for a while</p>
-    </div>
+    
+    <div class="options-ui">
+      <h2>Container Management</h2>
+      <p>Please go to preferences / containers to add, remove, or rename a container.</p> 
+      <p>url: <tt>about:preferences#containers</tt></p>
 
-    <div>
-      <label class="custom-file-upload">
-        <input id="file-picker" type="file"/>
-        Select TabGroup backup file
-      </label>
-    </div>
+      <div id="missing-tab-container-support">
+        <h2>Please enable "container tabs" in preferences</h2>
+        <p>Conex only works with container tabs enabled.</p>
+      </div>
+      
+      <h2>Enable moving tabs between containers.</h2>
+      <p>This will allow you to move a tab from one container to another.</p>
+      <p>External links are opened in the current container.</p>
+      <p>New tabs and tabs with url <tt>about:blank</tt> can always be re-opened in a different container</p>
+      <br>
+      <p>Note: If you use containers for privacy reasons, please note that this feature may leak tracking information from one container to another. <a id="show-hide-tab-containers-moving-details-link">Read more...</a></p>
 
+      <div style="display:none" id="moving-tabs-explanation">
+        <p>Moving one url from one container to another will increase tracking across containers.</p>
+        <h2>Explanation</h2>
+        <p>Essentially you turn containers into a organisational tool rather than a privacy one. If you imagine that when visiting websites you always wear the clothing, containers give you different clothing to wear.  These disguises containers work by clearing what websites know about you, which works really well in stopping adverts from following you around the internet.</p>
+        <p>When you transfer one URL to another container you risk that website knowing about both of your disguises.</p>
+        <p>The URL itself can leak information about your previous container or the website could make the correlation that you have visited it twice with the same browser fingerprint but without the same cookies.</p>
+        <p>Containers don’t currently solve browser fingerprinting which is a technique where websites essentially monitor the hardware and OS that you have (graphics rendering, sound and performance). Containers add ambiguity in that fingerprinting isn’t perfect either. However the more you cross that boundary the bigger the risk you are in for this correlation.</p>
+        <p>URLs themselves also contain parameters like session id’s or google analytic campaigns that could be unique to you. There isn’t any simple way to filter these out without breaking pages also.</p>
+        <h2>Other info</h2>
+        <p>Implementing this would also increase the issues <a href="https://jotter.jonathankingston.co.uk/blog/2017/04/04/containers-assignment/#the-ability-to-csrf-yourself">issue 1</a> and <a href="https://jotter.jonathankingston.co.uk/blog/2017/04/04/containers-assignment/#the-inability-to-grasp-why-containers-are-isolated">issue 3</a> here.</p>
+        <h2>Example risk</h2>
+        <p>Take for example that obscure YouTube video you wanted to look at, it turns out maybe only 5 people visit it a day. It would be clear to YouTube that you crossed a container boundary when you switched the URL over to your personal container to login.</p>
+        <p>Once a website can link the histories for two containers, imagine anything you have done in the previous container potentially known to the website. So if you visited a medical site, financial advise, shopping, adult sites or just something about your child's next school play they might gain access to all of that.</p>
+        <h2>Frequently asked questions</h2>
+        <blockquote>
+          <p>I'm not quite sure why this is so hard to switch containers per navigation then?</p>
+        </blockquote>
+        <p>Because the web has many features which makes this hard like <code>window.opener</code> this would also indeed break OAuth as previously mentioned. If you wanted opener to work across containers it is a privacy issue.</p>
+        <p>The window change requires a lot more security checking etc that will require additional work. <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1323873">Bugzilla change</a>.</p>
+        <p>This enhancement would allow assignment to stay within the same tab and clean history navigations. It doesn't however solve migrating a site from one container to another.</p>
+        <h2>Think we are wrong?</h2>
+        <p>If you think we are wrong about this, we <strong>really</strong> would like to solve this issue without the privacy impact. Please let us know if you think it is possible!</p>
+        <p>You can raise an issue on Github or contact us at <a href="mailto:containers@mozilla.com">containers@mozilla.com</a></p>
+        <hr/>
+      </div>
+    
+      <div>
+        <h2>Enable menu for moving tabs to other containers.</h2>
+        <p id="error">Please select one of the two options.</p>
+        <form>
+          <div class="option-item">
+            <input type="radio" id="move-tab-yes" name="move-tabs" value="yes">
+            <label for="move-tab-yes">Yes - all I want is to move tabs from one container to the other, <b>privacy does not concern me.</b>
+            </label>
+          </div>
+          <div class="option-item">
+            <input type="radio" id="move-tab-no" name="move-tabs" value="nope">
+            <label for="move-tab-no">Nope - privacy above all ... usability is for Jutebeutel</label>
+          </div>
+        </form>
+      </div>
+      <div>
+        <h2>Moving tabs menu</h2>
+        <form>
+          <div class="option-item">
+            <input type="radio" id="move-tab-menu-page-action" name="move-tab-menu" value="page-action">
+            <label for="move-tab-menu-page-action">Display conex icon in my address bar. Keyboard shortcut: CTRL-Y</label>
+          </div>
+          <div class="option-item">          
+            <input type="radio" id="move-tab-menu-context-menu" name="move-tab-menu" value="context-menu">
+            <label for="move-tab-menu-context-menu">Display menu for moving containers, via right click.</label>
+          </div>
+        </form>
+      </div>
+      <h2>Import TabGroups backup file</h2>
+      <p>This is an experiment: tabgroups, windows and all tabs will be recreated, apart from urls starting with <tt>about://</tt> due to technical limitations. All tabs and windows will be opened rather quickly, so expect your CPU fan to be noisy for a while</p>
+        
+      <input id="file-picker" type="file">
+      <label class="custom-file-upload">Select TabGroup backup file </label>
+      
+    </div>
     <script type="text/javascript" src="conex-helper.js"></script>
     <script type="text/javascript" src="conex-options-ui.js"></script>
   </body>
