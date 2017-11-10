@@ -1,7 +1,60 @@
-body, ul {
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,700');
+
+* {
   margin: 0;
   padding: 0;
-  font-family: Sans-Serif;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: 'Open Sans', sans-serif; 
+  font-size: 100%;
+}
+
+body { }
+
+h1, h2 {  font-size: 1.5em; font-weight: 400; line-height: 2em; margin-top: 1em;  }
+h3 {}
+a { color: indigo; text-decoration: underline; }
+p {}
+
+.options-ui {
+  margin: 100px;
+  max-width: 800px;
+}
+
+.option-item {
+  margin-top: 1em;
+}
+
+form {
+  margin-top: 1em;
+}
+
+.custom-file-upload {
+  display: inline-block;
+  margin-top: 1em;
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: indigo;
+  color: white;
+  border-radius: 0.25em;
+}
+
+.custom-file-upload:hover, .custom-file-upload:focus {
+  background-color: white;
+  border: 2px solid indigo;
+  color: indigo;
+}
+
+/*Daniel's CSS*/
+
+#missing-tab-container-support {
+  display: none;
+}
+
+#missing-tab-container-support h1 {
+  color: red;
 }
 
 #pageaction h2 {
@@ -21,6 +74,10 @@ body, ul {
 
 #browseraction span.bookmark-marker, span.close-button, #browseraction span.tabs-count {
   float: right;
+}
+
+input[type="file"] {
+  display: none;
 }
 
 span.close-button {
