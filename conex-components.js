@@ -54,14 +54,30 @@ function createTabElement(tab, isBookmarkUrl) {
     return;
   }
 
+  return renderEntry(tab.url ? cleanUrl(tab.url) : '',
+    tab.title ? tab.title : '',
+    tab.id,
+    tab.favIconUrl,
+    isBookmarkUrl);
+}
+
+function createHistoryOrBookmarkElement(historyItem) {
+  const favIconUrl = (new URL(historyItem.url)).protocol + '//' + (new URL(historyItem.url)).host + '/favicon.ico';
+  const element = renderEntry(historyItem.url.toLowerCase(), historyItem.title.toLowerCase(), 0, favIconUrl);
+  element.style.display = "";
+
+  element.addEventListener('click', () => renderRestoreMenu(element));
+
+  return element;
+}
+
+const renderEntry = function(url, title, id, favIconUrl, drawBookmarkIcon) {
   const defaultFavIconUrl = './favicon.ico';
-  const url = tab.url ? cleanUrl(tab.url) : '';
-  const title = tab.title ? tab.title : '';
+  const elClass = drawBookmarkIcon ? 'tab is-bookmark' : 'tab';
   const searchTerm = '${title} ${url}';
-  const elClass = isBookmarkUrl ? 'tab is-bookmark' : 'tab';
 
   const element =
-    $e('li', {tabindex: 1, class: elClass, data_title: title.toLowerCase(), data_url: url.toLowerCase(), data_tab_id: tab.id,
+    $e('li', {tabindex: 1, class: elClass, data_title: title.toLowerCase(), data_url: url.toLowerCase(), data_tab_id: id,
               style: 'display:none', title: 'enter: jump to tab\nbackspace: close tab'} ,[
       $e('div', {}, [
         $e('div', {class: 'image', data_bg_set: 'false', style: `background:url('${defaultFavIconUrl}')`}, [
@@ -72,34 +88,20 @@ function createTabElement(tab, isBookmarkUrl) {
           $e('div', {class: 'tab-url', content: url})
         ]),
         $e('div', {class: 'close'}, [
-          $e('span', {content: '╳', title: 'close this tab', class: 'close-button', data_tab_id: tab.id}),
-          $e('span', {content: '★', title: 'this tab is a bookmark', class: 'bookmark-marker', data_tab_id: tab.id})
+          $e('span', {content: '╳', title: 'close this tab', class: 'close-button', data_tab_id: id}),
+          $e('span', {content: '★', title: 'this tab is a bookmark', class: 'bookmark-marker', data_tab_id: id})
         ])
       ]),
     ]);
 
-  fetch(tab.favIconUrl, { method: "GET", }).then(function(res) {
+  fetch(favIconUrl, { method: "GET", }).then(function(res) {
     if (res.ok) {
-      $1('img', element).src = tab.favIconUrl;
+      $1('img', element).src = favIconUrl;
     } else {
-      console.log(`error fetching favicon for ${tab.favIconUrl} -- response was`, res);
+      //console.log(`error fetching favicon for ${favIconUrl} -- response was`, res);
     }
-  }, e => console.log(`error fetching ${tab.favIconUrl}: ${e}`));
+  }, e => console.log(`error fetching ${favIconUrl}: ${e}`));
 
   return element;
 }
 
-function createHistoryElement(historyItem) {
-  const element =
-    $e('li', {tabindex: 1, class: 'tab', data_title: historyItem.title.toLowerCase(), data_url: historyItem.url.toLowerCase()}, [
-        $e('div', {}, [
-          $e('div', {class: 'text'}, [
-            $e('div', {class: 'tab-title', content: historyItem.title}),
-            $e('div', {class: 'tab-url', content: cleanUrl(historyItem.url)})
-          ])
-        ])
-    ]);
-
-  element.addEventListener('click', () => renderRestoreMenu(element));
-  return element;
-}

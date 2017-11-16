@@ -5,13 +5,13 @@ const bookmarkQuerying = browser.bookmarks.search({});
 let focusSetter;
 
 const keyHandling = function(event) {
-  console.log('keypress', event);
+  //console.log('keypress', event, document.activeElement);
   try{ clearInterval(focusSetter); } catch(e) {}
   const searchElement = $1('#search');
 
   if(event.key == 'Enter') {
     try {
-      if(document.activeElement.dataset.tabId) { // a normal tab
+      if(document.activeElement.dataset.tabId && document.activeElement.dataset.tabId > 0) { // a normal tab
         bg.activateTab(document.activeElement.dataset.tabId);
       } else if(document.activeElement.dataset.url) { // a history or bookmark entry
         renderRestoreMenu(document.activeElement);
@@ -129,7 +129,14 @@ const renderResults = function(results, parent) {
   results
     .sort((a,b) => b.visitCount - a.visitCount)
     .filter(e => e.url && ! tabLinks.includes(cleanUrl(e.url)))
-    .forEach(searchResult => parent.appendChild(createHistoryElement(searchResult)));
+    .forEach(searchResult => {
+      const element = createHistoryOrBookmarkElement(searchResult);
+      const thumbnailElement = $1('.image', element);
+      if(thumbnailElement && thumbnailElement.dataset.bgSet == 'false') {
+        setBgImage(thumbnailElement, element.dataset.url);
+      }
+      parent.appendChild(element);
+    });
 }
 
 const fillBookmarksSection = function(searchQuery) {
@@ -162,15 +169,18 @@ const fillHistorySection = function(searchQuery) {
 
   browser.history.search({
     text: searchQuery,
+    maxResults: 30,
     startTime: 0
   }).then(results => renderResults(results, $1('ul', history)), e => console.error(e));
 };
 
 const setBgImage = async function(element, url) {
+  const cleanedUrl = cleanUrl(url);
+
   element.dataset.bgSet = 'true';
-  const cachedThumbnails = await browser.storage.local.get(url);
-  if(cachedThumbnails[url] && cachedThumbnails[url].thumbnail) {
-    element.style.background = "url("+cachedThumbnails[url].thumbnail+")";
+  const cachedThumbnails = await browser.storage.local.get(cleanedUrl);
+  if(cachedThumbnails[cleanedUrl] && cachedThumbnails[cleanedUrl].thumbnail) {
+    element.style.background = "url("+cachedThumbnails[cleanedUrl].thumbnail+")";
   }
 }
 
