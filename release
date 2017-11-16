@@ -30,7 +30,8 @@ git commit -m "Bump to version ${next_version}" manifest.json versions.json
 git tag v${next_version}
 
 # create signed addon
-docker run -v ${PWD}:${PWD} -w ${PWD} -e HOME=${PWD} web-ext web-ext sign --api-key ${WEB_EXT_API_KEY:?"please set WEB_EXT_API_KEY"} \
+#docker run -v ${PWD}:${PWD} -w ${PWD} -e HOME=${PWD} web-ext 
+web-ext sign --api-key ${WEB_EXT_API_KEY:?"please set WEB_EXT_API_KEY"} \
              --api-secret ${WEB_EXT_API_SECRET:?"please set WEB_EXT_API_SECRET"} \
              --ignore-files tags tabgroups-backup.json tabgroups-backup-small.json web-ext-artifacts *.xpi icons/*.afdesign release versions.json || true
 
@@ -81,7 +82,8 @@ cat manifest.json | jq 'del(.applications.gecko.update_url)' > next_manifest.jso
 mv next_manifest.json manifest.json
 ################ github release upload end
 
-docker run -v ${PWD}:${PWD} -w ${PWD} -e HOME=${PWD} web-ext web-ext sign --id '{ec9d70ea-0229-49c0-bbf7-0df9bbccde35}' --api-key ${WEB_EXT_API_KEY:?'please set WEB_EXT_API_KEY'} --api-secret ${WEB_EXT_API_SECRET:?'please set WEB_EXT_API_SECRET'} --ignore-files tags tabgroups-backup.json tabgroups-backup-small.json web-ext-artifacts *.xpi icons/*.afdesign release versions.json || true
+#docker run -v ${PWD}:${PWD} -w ${PWD} -e HOME=${PWD} web-ext 
+web-ext sign --id '{ec9d70ea-0229-49c0-bbf7-0df9bbccde35}' --api-key ${WEB_EXT_API_KEY:?'please set WEB_EXT_API_KEY'} --api-secret ${WEB_EXT_API_SECRET:?'please set WEB_EXT_API_SECRET'} --ignore-files tags tabgroups-backup.json tabgroups-backup-small.json web-ext-artifacts *.xpi icons/*.afdesign release versions.json || true
 
 git checkout manifest.json
 
