@@ -34,6 +34,21 @@ please only proceed if you know what this means:
 - install the [hidetabsexperiment.xpi](https://github.com/kesselborn/conex/releases/tag/hidetabsexperiment) -- you need to acknowledge all the warnings
 - install the newest 'experiment' release from the [github conex release page](https://github.com/kesselborn/conex/releases) (something like v0.0.75experiment)
 
+# Getting back my last tab group sesssion
+
+So: Firefox Quantum rolled in, tab groups doesn't work anymore and you would like to get back
+your last tab groups session? Here is a way you can get a tab groups backup which again you
+can import to conex (note: only tested it briefly, but it's worth a try):
+
+- download [Firefox ESR](https://www.mozilla.org/en-US/firefox/organizations/all/?q=English%20(US)) (this still supports old extension) and install it
+- close Firefox Quantum
+- open Firefox ESR
+- if you are lucky, your old session is restored and you can just open tab-groups and create a manual backup which you can use as an import for conex
+- if your session is not restored, all hope is not lost:
+  - go to tab-groups preferences and open the 'Backup / Restore' section
+  - click the 'Load Groups and Tabs From ...' button and select 'Previous Session'
+  - once imported, create the manual backup now
+
 # Permissions:
 
 - <all_url>: for taking screenshots for the thumbnails during search
