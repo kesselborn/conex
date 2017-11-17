@@ -1,7 +1,7 @@
 # conex
 **this addon is still experimental and lacks hiding / showing tab containers due to https://bugzilla.mozilla.org/show_bug.cgi?id=1384515**
 
-See the experimental version in action here: [conex in action](https://www.youtube.com/watch?v=wTwmIFSnLWY)
+See the [experiment version](https://github.com/kesselborn/conex#getting-a-version-that-can-really-hide-tabs) in action here: [conex in action](https://www.youtube.com/watch?v=wTwmIFSnLWY)
 
 [![conex in action](http://img.youtube.com/vi/wTwmIFSnLWY/0.jpg)](http://www.youtube.com/watch?v=wTwmIFSnLWY "conex in action")
 
@@ -10,48 +10,39 @@ This webextension is a replacement for the discontinued <b>TabGroups</b> with so
 # Functionality
 
 - it lacks the big "Manage my TabGroups" overview window
-- tab containers are handled like groups in the old tab groups addon
+- tab groups are implemented via containers
 - the quick search containes thumbnail of the results
-- the quick search includes the history
-
-# Hyper-experimental
-
-The bug above has a first experiment that implements showing and hiding tabs -- with this, conex is pretty close
-to the final functionality. You can install this version of conex, but please be advised that this can break
-without warning, so no guarantees.
-In order to use conex with the hide / show functionality, do the following (instructions fuzzy as you should only
-do it if you know what you are doing):
-
-- enable legacy extension support in FirefoxNightly
-- clone https://github.com/autonome/webext-experiment-showOnlyTheseTabs
-- load this repos' `experiment` folder as a temporary addon
-- click the `.xpi` link on https://github.com/kesselborn/conex/releases/tag/v0.0.57experiment
-- in the addon manager, click on the settings icon on `Check for Updates` to get the latest version of conex
-- try it out ;)
+- the quick search includes bookmarks and history
 
 # Installation
 
-For now, it's probably best to install it from the [github releases page](https://github.com/kesselborn/conex/releases),
-as updates are still frequent and the [official addon page](https://addons.mozilla.org/en-us/firefox/addon/conex/)
-depends on manual reviews by mozilla. Downloads from here will get updates automatically as well.
+Just install from the [official mozilla addons page](https://addons.mozilla.org/en-us/firefox/addon/conex)
 
-Tab Containers need be enabled in the preferences.
+# Getting a version that can really hide tabs
+
+The [mentioned bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1384515) had a [firefox experiment with an api
+for hiding & showing tabs](https://github.com/kesselborn/conex/releases/tag/hidetabsexperiment) which makes conex behave as expected.
+
+**Please read**: This works on **FirefoxNightly only** and you must turn off extension signature checking ...
+please only proceed if you know what this means:
+
+- in FirefoxNightly open `about:config` and acknowledge the warning. Change the following settings:
+
+    xpinstall.signatures.required: false
+    extensions.legacy.enabled: true
+
+- install the [hidetabsexperiment.xpi](https://github.com/kesselborn/conex/releases/tag/hidetabsexperiment) -- you need to acknowledge all the warnings
+- install the newest 'experiment' release from the [github conex release page](https://github.com/kesselborn/conex/releases) (something like v0.0.75experiment)
 
 # Permissions:
 
 - <all_url>: for taking screenshots for the thumbnails during search
+- bookmarks: for searching in bookmarks
 - contextMenus: for context menu for moving tab to a different container
 - contextualIdentities: for working with tab containers
 - cookies: for working with tab containers
 - history: for showing history results in quick search
+- menus: for creating context menus when moving tabs
 - storage: for storing thumbnails
 - tabs: for tab handling
-- unlimitedStorage: for storing thumbnails
 - webNavigation: for intercepting and reacting on new tabs
-
-### Contributions
-are _really_ not necessary, but as I was (to my surprise) repeatedly asked:
-
-![bitcoin barcode](./bitcoinqr.png)
-
-bitcoin: 1ETnBeMDFaLH1KF2hmqK8rz2BUWPGzLwze
