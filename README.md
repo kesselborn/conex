@@ -28,8 +28,8 @@ please only proceed if you know what this means:
 
 - in FirefoxNightly open `about:config` and acknowledge the warning. Change the following settings:
 
-    xpinstall.signatures.required: false
-    extensions.legacy.enabled: true
+      xpinstall.signatures.required: false
+      extensions.legacy.enabled: true
 
 - install the [hidetabsexperiment.xpi](https://github.com/kesselborn/conex/releases/tag/hidetabsexperiment) -- you need to acknowledge all the warnings
 - install the newest 'experiment' release from the [github conex release page](https://github.com/kesselborn/conex/releases) (something like v0.0.75experiment)
