@@ -208,8 +208,6 @@ const showHideMoveTabActions = async function(tabId) {
   const tabMovingEnabled = (await settings)[tabMovingEnabledKey];
   const tabMovingPreferContextMenu = (await settings)[tabMovingPreferContextMenuKey];
 
-  console.log('tabMovingEnabled: ', tabMovingEnabled, 'preferContextMenu: ', tabMovingPreferContextMenu);
-
   const enableContextMenu = async function(enable) {
     console.log(`${enable ? 'enabling' : 'disabling'} context menu for moving tabs`);
     for(identity of (await identities)) {
