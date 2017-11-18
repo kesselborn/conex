@@ -72,13 +72,16 @@ function createHistoryOrBookmarkElement(historyItem) {
 }
 
 const renderEntry = function(url, title, id, favIconUrl, drawBookmarkIcon) {
+  const isHistoryOrBookmark = (id == 0);
   const defaultFavIconUrl = './favicon.ico';
   const elClass = drawBookmarkIcon ? 'tab is-bookmark' : 'tab';
   const searchTerm = '${title} ${url}';
 
+  const tooltip = isHistoryOrBookmark ? 'enter: re-open tab' : 'enter: jump to tab\nbackspace: close tab';
+
   const element =
     $e('li', {tabindex: 1, class: elClass, data_title: title.toLowerCase(), data_url: url.toLowerCase(), data_tab_id: id,
-              style: 'display:none', title: 'enter: jump to tab\nbackspace: close tab'} ,[
+              style: 'display:none', title: tooltip } ,[
       $e('div', {}, [
         $e('div', {class: 'image', data_bg_set: 'false', style: `background:url('${defaultFavIconUrl}')`}, [
           $e('img', {src: defaultFavIconUrl})
@@ -87,7 +90,7 @@ const renderEntry = function(url, title, id, favIconUrl, drawBookmarkIcon) {
           $e('div', {class: 'tab-title', content: title}),
           $e('div', {class: 'tab-url', content: url})
         ]),
-        $e('div', {class: 'close'}, [
+        $e('div', {class: 'close', style: isHistoryOrBookmark ? 'display: none' : ''}, [
           $e('span', {content: '╳', title: 'close this tab', class: 'close-button', data_tab_id: id}),
           $e('span', {content: '★', title: 'this tab is a bookmark', class: 'bookmark-marker', data_tab_id: id})
         ])
