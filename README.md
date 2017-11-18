@@ -43,6 +43,11 @@ can import to conex (note: only tested it briefly, but it's worth a try):
 - download [Firefox ESR](https://www.mozilla.org/en-US/firefox/organizations/all/?q=English%20(US)) (this still supports old extension) and install it
 - close Firefox Quantum
 - open Firefox ESR
+- if you see tab groups in your addon section but it is disabled, please do the following:
+    - open `about:config` and acknowledge the warning. Change the following settings:
+
+            xpinstall.signatures.required: false
+
 - if you are lucky, your old session is restored and you can just open tab-groups and create a manual backup which you can use as an import for conex
 - if your session is not restored, all hope is not lost:
   - go to tab-groups preferences and open the 'Backup / Restore' section
