@@ -26,7 +26,7 @@ for hiding & showing tabs](https://github.com/kesselborn/conex/releases/tag/hide
 **Please read**: This works on **FirefoxNightly only** and you must turn off extension signature checking ...
 please only proceed if you know what this means:
 
-- in FirefoxNightly open `about:config` and acknowledge the warning. Change the following settings:
+- in FirefoxNightly open the url `about:config` and acknowledge the warning. Change the following settings:
 
       xpinstall.signatures.required: false
       extensions.legacy.enabled: true
@@ -44,7 +44,7 @@ can import to conex (note: only tested it briefly, but it's worth a try):
 - close Firefox Quantum
 - open Firefox ESR
 - if you see tab groups in your addon section but it is disabled, please do the following:
-    - open `about:config` and acknowledge the warning. Change the following settings:
+    - open the url `about:config` and acknowledge the warning. Change the following settings:
 
             xpinstall.signatures.required: false
 
