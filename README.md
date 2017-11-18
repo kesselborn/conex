@@ -1,4 +1,4 @@
-# conex
+# [conex](https://addons.mozilla.org/en-US/firefox/addon/conex/)
 **this addon is still experimental and lacks hiding / showing tab containers due to https://bugzilla.mozilla.org/show_bug.cgi?id=1384515**
 
 See the [experiment version](https://github.com/kesselborn/conex#getting-a-version-that-can-really-hide-tabs) in action here: [conex in action](https://www.youtube.com/watch?v=wTwmIFSnLWY)
