@@ -23,8 +23,8 @@ Just install from the [official mozilla addons page](https://addons.mozilla.org/
 The [mentioned bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1384515) had a [firefox experiment with an api
 for hiding & showing tabs](https://github.com/kesselborn/conex/releases/tag/hidetabsexperiment) which makes conex behave as expected.
 
-**Please read**: This works on **FirefoxNightly only** and you must turn off extension signature checking ...
-please only proceed if you know what this means:
+**Please read**: This works (and will always work) on **FirefoxNightly only**. Furthermore, you must turn off extension signature checking ...
+*please only proceed if you know what this means*:
 
 - in FirefoxNightly open the url `about:config` and acknowledge the warning. Change the following settings:
 
