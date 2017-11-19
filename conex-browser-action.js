@@ -78,6 +78,7 @@ const insertTabElements = function(tabContainers) {
       continue;
     }
 
+    let cnt = 0;
     for(const element of tabContainers[tabContainer]) {
       element.addEventListener('click', () => {
         bg.activateTab(element.dataset.tabId);
@@ -92,7 +93,9 @@ const insertTabElements = function(tabContainers) {
       });
 
       ul.appendChild(element);
+      cnt++;
     }
+    console.log(`inserted ${cnt} tabs to ${tabContainer}`);
   }
   updateTabCount();
 };
@@ -102,8 +105,10 @@ const tabIsDeleted = function(e) {
 }
 
 const updateTabCount = function() {
+  console.log('updating tab count');
   for(const tabContainer of $('#tabcontainers ul')) {
     const tabCnt = Array.from($('li.tab', tabContainer)).filter(e => !tabIsDeleted(e)).length;
+    console.log(`found ${tabCnt} tabs for container`,  tabContainer);
     const tabCntElement = $1('.tabs-count', tabContainer);
     tabCntElement.removeChild(tabCntElement.firstChild);
     tabCntElement.appendChild(document.createTextNode(`(${tabCnt} tabs)`));
@@ -153,7 +158,7 @@ const fillBookmarksSection = function(searchQuery) {
 
   browser.bookmarks.search({
     query: searchQuery
-  }).then(results => renderResults(results, $1('ul', bookmarks)), e => console.error(e));
+  }).then(results => renderResults(results, $1('ul', bookmarks)), e => console.error(`Error searching ${searchQuery}: `, e));
 };
 
 const fillHistorySection = function(searchQuery) {
@@ -171,7 +176,7 @@ const fillHistorySection = function(searchQuery) {
     text: searchQuery,
     maxResults: 30,
     startTime: 0
-  }).then(results => renderResults(results, $1('ul', history)), e => console.error(e));
+  }).then(results => renderResults(results, $1('ul', history)), e => console.error(`Error searching ${searchQuery}: `, e));
 };
 
 const setBgImage = async function(element, url) {
@@ -269,4 +274,3 @@ tabContainerRendering.then(() => {
   console.log("rendering time: ", Date.now() - startTime);
   focusSetter = setInterval(function(){document.getElementById('search').focus()}, 150);
 }, e => console.error(e));
-

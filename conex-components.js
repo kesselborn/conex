@@ -97,13 +97,15 @@ const renderEntry = function(url, title, id, favIconUrl, drawBookmarkIcon) {
       ]),
     ]);
 
-  fetch(favIconUrl, { method: "GET", }).then(function(res) {
-    if (res.ok) {
-      $1('img', element).src = favIconUrl;
-    } else {
-      //console.log(`error fetching favicon for ${favIconUrl} -- response was`, res);
-    }
-  }, e => console.log(`error fetching ${favIconUrl}: ${e}`));
+  if(favIconUrl && favIconUrl.startsWith('http')) {
+    fetch(favIconUrl, { method: "GET", }).then(function(res) {
+      if (res.ok) {
+        $1('img', element).src = favIconUrl;
+      } else {
+        console.log(`error fetching favicon for ${favIconUrl} -- response was`, res);
+      }
+    }, e => console.log(`error fetching ${favIconUrl}: ${e}`));
+  }
 
   return element;
 }

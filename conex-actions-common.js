@@ -15,7 +15,6 @@ const renderRestoreMenu = async function(parent) {
   parent.appendChild(header);
   await renderTabContainers(parent);
   for(const section of $('ul .section', parent)) {
-    console.log('nnn', section);
     section.addEventListener('click', () => { 
       bg.openLinkInContainer(parent.dataset.url, section.dataset.cookieStore);
       window.close();
