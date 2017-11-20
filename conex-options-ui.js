@@ -53,7 +53,7 @@ browser.contextualIdentities.query({}).then(identities => {
   if(!identities) {
     document.querySelector('#missing-tab-container-support').style.display = 'block';
   }
-});
+}, e => console.error(e));
 
 function showHideTabContainersMovingDetails() {
   $1('#show-hide-tab-containers-moving-details-link').remove();
@@ -73,7 +73,7 @@ browser.storage.local.get('conex/settings/tab-moving-allowed').then(settings => 
     $1('#error').style.display = 'none';
   }
   bg.setupMenus();
-});
+}, e => console.error(e));
 
 $1('#move-tab-yes').addEventListener('click', _ => {
   $1('#error').style.display = 'none';
@@ -95,7 +95,7 @@ browser.storage.local.get('conex/settings/tab-moving-allowed/prefer-context-menu
   } else {
     $1('#move-tab-menu-page-action').checked = 'checked';
   }
-});
+}, console.error(e));
 
 $1('#move-tab-menu-context-menu').addEventListener('click', _ => {
   browser.storage.local.set({'conex/settings/tab-moving-allowed/prefer-context-menu' : true});

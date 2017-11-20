@@ -10,7 +10,7 @@ let lastCookieStoreId = defaultCookieStoreId;
 function activateTab(tabId) {
   browser.tabs.update(Number(tabId), {active: true}).then(tab => {
     browser.windows.update(tab.windowId, {focused: true});
-  });
+  }, e => console.error(e));
 }
 
 function closeTab(tabId) {
@@ -63,6 +63,7 @@ async function getTabsByContainer() {
   return containersTabsMap;
 }
 
+// TODO: make async?
 function restoreTabContainersBackup(tabContainers, windows) {
   createMissingTabContainers(tabContainers).then(identities => {
     for(const tabs of windows) {
@@ -74,7 +75,7 @@ function restoreTabContainersBackup(tabContainers, windows) {
           }
           browser.tabs.create({url: tab.url, cookieStoreId: cookieStoreId, windowId: w.id, active: false}).then(_ => {
             console.log(`creating tab ${tab.url} in container ${tab.container} (cookieStoreId: ${cookieStoreId})`);
-          });
+          }, e => console.error(e));
         }
       }, e => console.error(e));
     }
@@ -193,7 +194,7 @@ const openPageActionPopup = function(tab) {
     } else {
       browser.runtime.openOptionsPage();
     }
-  });
+  }, e => console.error(e));
 }
 
 const isBlessedUrl = function(url) {
@@ -268,7 +269,7 @@ const updateLastCookieStoreId = function(activeInfo) {
       console.log(`cookieStoreId changed from ${lastCookieStoreId} -> ${tab.cookieStoreId}`);
       lastCookieStoreId = tab.cookieStoreId;
     }
-  });
+  }, e => console.error(e));
 };
 
 const storeScreenshot = function(tabId, changeInfo, tab) {
@@ -278,7 +279,7 @@ const storeScreenshot = function(tabId, changeInfo, tab) {
         .then(_ => console.info('succesfully created thumbnail for', cleanUrl(tab.url)),
               e  => console.error(e));
 
-    });
+    }, e => console.error(e));
   }
 };
 
@@ -316,7 +317,7 @@ browser.windows.onFocusChanged.addListener(windowId => {
   if(windowId != browser.windows.WINDOW_ID_NONE) {
     browser.tabs.query({active: true, windowId: windowId}).then(tab => {
       showHideMoveTabActions(tab[0].id);
-    });
+    }, e => console.error(e));
   }
 });
 

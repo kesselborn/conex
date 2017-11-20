@@ -26,6 +26,6 @@ tabContainers.then(_ => {
   for(const section of $('.section')) {
     section.addEventListener('click', _ => { openInDifferentContainer(section); });
   }
-});
+}, e => console.error(e));
 
 document.body.addEventListener('keypress', keyHandling);
