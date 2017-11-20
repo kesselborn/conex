@@ -1,7 +1,6 @@
 const deletedTabOpacity = 0.3;
 const containersTabsMapCreating = bg.getTabsByContainer();
 const tabContainerRendering = renderTabContainers($1('#tabcontainers'));
-const bookmarkQuerying = browser.bookmarks.search({});
 let focusSetter;
 
 const keyHandling = function(event) {
@@ -262,12 +261,9 @@ tabContainerRendering.then(() => {
     section.addEventListener('click', () => { expandTabContainer(section.dataset.cookieStore); });
   }
 
-  Promise.all([containersTabsMapCreating, bookmarkQuerying]).then(results => {
-    insertTabElements(results[0], results[1]);
-    if(!results[0]['firefox-private']) {
-      $1('#firefox-private').remove();
-    }
-  });
+  containersTabsMapCreating.then(containerTabs => {
+      insertTabElements(containerTabs);
+  }, e => console.error(e));
 
   document.querySelector('#search').addEventListener('keyup', onSearchChange);
   $1('#search').addEventListener('paste', onSearchChange);
