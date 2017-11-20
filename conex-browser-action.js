@@ -79,7 +79,7 @@ const insertTabElements = function(tabContainers) {
 
     let cnt = 0;
     for(const element of tabContainers[tabContainer]) {
-      element.addEventListener('click', () => {
+      element.addEventListener('click', _ => {
         bg.activateTab(element.dataset.tabId);
         window.close();
       });
@@ -256,9 +256,9 @@ const onSearchChange = function(event) {
 };
 
 const startTime = Date.now();
-tabContainerRendering.then(() => {
+tabContainerRendering.then(_ => {
   for(const section of $('.section')) {
-    section.addEventListener('click', () => { expandTabContainer(section.dataset.cookieStore); });
+    section.addEventListener('click', _ => { expandTabContainer(section.dataset.cookieStore); });
   }
 
   containersTabsMapCreating.then(containerTabs => {

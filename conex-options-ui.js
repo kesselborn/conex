@@ -75,13 +75,13 @@ browser.storage.local.get('conex/settings/tab-moving-allowed').then(settings => 
   bg.setupMenus();
 });
 
-$1('#move-tab-yes').addEventListener('click', () => {
+$1('#move-tab-yes').addEventListener('click', _ => {
   $1('#error').style.display = 'none';
   browser.storage.local.set({'conex/settings/tab-moving-allowed': true});
   bg.setupMenus();
 });
 
-$1('#move-tab-no').addEventListener('click', () => {
+$1('#move-tab-no').addEventListener('click', _ => {
   $1('#error').style.display = 'none';
   browser.storage.local.set({'conex/settings/tab-moving-allowed': false});
   browser.storage.local.set({tabMovingSettingKey: false});
@@ -97,12 +97,12 @@ browser.storage.local.get('conex/settings/tab-moving-allowed/prefer-context-menu
   }
 });
 
-$1('#move-tab-menu-context-menu').addEventListener('click', () => {
+$1('#move-tab-menu-context-menu').addEventListener('click', _ => {
   browser.storage.local.set({'conex/settings/tab-moving-allowed/prefer-context-menu' : true});
   bg.setupMenus();
 });
 
-$1('#move-tab-menu-page-action').addEventListener('click', () => {
+$1('#move-tab-menu-page-action').addEventListener('click', _ => {
   browser.storage.local.set({'conex/settings/tab-moving-allowed/prefer-context-menu' : false});
   bg.setupMenus();
 });

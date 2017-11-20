@@ -16,7 +16,7 @@ const keyHandling = function(event) {
   }
 };
 
-tabContainers.then(() => {
+tabContainers.then(_ => {
   $1('li').focus();
   if(bg.lastCookieStoreId != bg.defaultCookieStoreId) {
     $1('#'+bg.lastCookieStoreId+' li').focus();
@@ -24,7 +24,7 @@ tabContainers.then(() => {
   $1('#firefox-private').remove();
 
   for(const section of $('.section')) {
-    section.addEventListener('click', () => { openInDifferentContainer(section); });
+    section.addEventListener('click', _ => { openInDifferentContainer(section); });
   }
 });
 

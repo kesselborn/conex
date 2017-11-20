@@ -72,7 +72,7 @@ function restoreTabContainersBackup(tabContainers, windows) {
           if(tab.container) {
             cookieStoreId = identities.get(tab.container.toLowerCase());
           }
-          browser.tabs.create({url: tab.url, cookieStoreId: cookieStoreId, windowId: w.id, active: false}).then(() => {
+          browser.tabs.create({url: tab.url, cookieStoreId: cookieStoreId, windowId: w.id, active: false}).then(_ => {
             console.log(`creating tab ${tab.url} in container ${tab.container} (cookieStoreId: ${cookieStoreId})`);
           });
         }
@@ -275,8 +275,8 @@ const storeScreenshot = function(tabId, changeInfo, tab) {
   if(changeInfo.status == 'complete' && tab.url != 'about:blank' && tab.url != 'about:newtab') {
     browser.tabs.captureVisibleTab(null, {format: 'jpeg', quality: imageQuality}).then(imageData => {
       browser.storage.local.set({[cleanUrl(tab.url)] : {thumbnail: imageData, favicon: tab.favIconUrl}})
-        .then(() => console.info('succesfully created thumbnail for', cleanUrl(tab.url)),
-            e  => console.error(e));
+        .then(_ => console.info('succesfully created thumbnail for', cleanUrl(tab.url)),
+              e  => console.error(e));
 
     });
   }

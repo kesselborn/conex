@@ -66,7 +66,7 @@ function createHistoryOrBookmarkElement(historyItem) {
   const element = renderEntry(historyItem.url.toLowerCase(), historyItem.title.toLowerCase(), 0, favIconUrl);
   element.style.display = "";
 
-  element.addEventListener('click', () => renderRestoreMenu(element));
+  element.addEventListener('click', _ => renderRestoreMenu(element));
 
   return element;
 }
@@ -98,7 +98,7 @@ const renderEntry = function(url, title, id, favIconUrl, drawBookmarkIcon) {
     ]);
 
   if(favIconUrl && favIconUrl.startsWith('http')) {
-    fetch(favIconUrl, { method: "GET", }).then(function(res) {
+    fetch(favIconUrl, { method: "GET", }).then(res => {
       if (res.ok) {
         $1('img', element).src = favIconUrl;
       } else {

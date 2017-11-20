@@ -15,11 +15,11 @@ const renderRestoreMenu = async function(parent) {
   parent.appendChild(header);
   await renderTabContainers(parent);
   for(const section of $('ul .section', parent)) {
-    section.addEventListener('click', () => { 
+    section.addEventListener('click', _ => {
       bg.openLinkInContainer(parent.dataset.url, section.dataset.cookieStore);
       window.close();
     });
-    section.addEventListener('keypress', (event) => { 
+    section.addEventListener('keypress', event => {
       if(event.key == 'Enter') {
         bg.openLinkInContainer(parent.dataset.url, section.dataset.cookieStore);
         window.close();
