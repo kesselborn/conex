@@ -49,7 +49,12 @@ async function getTabsByContainer() {
   const bookmarks = browser.bookmarks.search({});
   const tabs = browser.tabs.query({});
 
-  const bookmarkUrls = (await bookmarks).filter(b => b.url != undefined).map(b => b.url.toLowerCase());
+  let bookmarkUrls = [];
+  try {
+    bookmarkUrls = (await bookmarks).filter(b => b.url != undefined).map(b => b.url.toLowerCase());
+  } catch(e) {
+    console.log('error querying bookmarks: ', e);
+  }
   for(const tab of await tabs) {
     const url = tab.url || "";
     const thumbnailElement = createTabElement(tab, bookmarkUrls.indexOf(url.toLowerCase()) >= 0);
