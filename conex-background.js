@@ -268,6 +268,45 @@ const showHideMoveTabActions = async function(tabId) {
   showMoveTabMenu();
 };
 
+const showTabs = async function(tabIds) {
+  for (let tabId of tabIds) {
+    browser.tabs.show(tabId);
+  }
+}
+
+const hideTabs = async function(tabIds) {
+  browser.tabs.hide(tabIds.pop()).catch(e => {
+    browser.notifications.create(null, {
+      type: 'basic',
+      title: 'Configuration setting missing',
+      message: 'Tab hiding has to be manually configured in order to work. Please see conex settings for instructions.',
+    })
+    console.log('please activate tab hiding', e);
+  });
+
+  for (let tabId of tabIds) {
+    browser.tabs.hide(tabId);
+  }
+}
+
+const showHideTabs = async function(activeInfo) {
+  const activeTab = await browser.tabs.get(activeInfo.tabId);
+  const allTabs = await browser.tabs.query({windowId: browser.windows.WINDOW_ID_CURRENT});
+
+  const visibleTabs = allTabs.filter(t => t.cookieStoreId == activeTab.cookieStoreId).map(t => t.id);
+  const hiddenTabs = allTabs.filter(t => t.cookieStoreId != activeTab.cookieStoreId).map(t => t.id);
+
+  console.log('visible tabs', visibleTabs);
+  console.log('hidden tabs', hiddenTabs);
+
+  try {
+    showTabs(visibleTabs);
+    hideTabs(hiddenTabs);
+  } catch(e) {
+    console.error('error showing / hiding tabs', e);
+  }
+}
+
 const updateLastCookieStoreId = function(activeInfo) {
   browser.tabs.get(activeInfo.tabId).then(tab => {
     if(tab.cookieStoreId != lastCookieStoreId && !tab.cookieStoreId.startsWith(privateCookieStorePrefix)) {
@@ -313,6 +352,8 @@ browser.tabs.onCreated.addListener(tab => {
 
 browser.tabs.onActivated.addListener(activeInfo => { showHideMoveTabActions(activeInfo.tabId)});
 browser.tabs.onActivated.addListener(updateLastCookieStoreId);
+
+browser.tabs.onActivated.addListener(showHideTabs);
 
 browser.tabs.onUpdated.addListener(storeScreenshot);
 browser.tabs.onUpdated.addListener(showHideMoveTabActions);
