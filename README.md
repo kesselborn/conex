@@ -1,40 +1,35 @@
-# [conex](https://addons.mozilla.org/en-US/firefox/addon/conex/)
-**this addon is still experimental and lacks hiding / showing tab containers due to https://bugzilla.mozilla.org/show_bug.cgi?id=1384515**
+<!-- TOC -->
 
-See the [experiment version](https://github.com/kesselborn/conex#getting-a-version-that-can-really-hide-tabs) in action here: [conex in action](https://www.youtube.com/watch?v=wTwmIFSnLWY)
+- [conex](#conex)
+    - [Differences to tabgroups](#differences-to-tabgroups)
+    - [Enable tab hiding](#enable-tab-hiding)
+    - [Installation](#installation)
+    - [Getting back my last tab group session](#getting-back-my-last-tab-group-session)
+    - [Necessary addon permissions](#necessary-addon-permissions)
 
-[![conex in action](http://img.youtube.com/vi/wTwmIFSnLWY/0.jpg)](http://www.youtube.com/watch?v=wTwmIFSnLWY "conex in action")
+<!-- /TOC -->
 
-This webextension is a replacement for the discontinued <b>TabGroups</b> with some differences:
+# conex
+This addon tries to replace some functionality from the discontinued *TabGroups* with some differences:
 
-# Functionality
+## Differences to tabgroups
 
 - it lacks the big "Manage my TabGroups" overview window
 - tab groups are implemented via containers
-- the quick search containes thumbnail of the results
+- the quick search contains thumbnail of the results
 - the quick search includes bookmarks and history
 
-# Installation
+## Enable tab hiding
+
+Conex uses a feature which only exists in Firefox >= 59.0a1 updated after the 19th of January 2018. 
+
+At the moment, tab hiding has to be enabled manually: In the location bar, type in `about:config`, filter for `extensions.webextensions.tabhide.enabled` and set the value to `true`.
+
+## Installation
 
 Just install from the [official mozilla addons page](https://addons.mozilla.org/en-us/firefox/addon/conex)
 
-# Getting a version that can really hide tabs
-
-The [mentioned bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1384515) had a [firefox experiment with an api
-for hiding & showing tabs](https://github.com/kesselborn/conex/releases/tag/hidetabsexperiment) which makes conex behave as expected.
-
-**Please read**: This works (and will always work) on **FirefoxNightly only**. Furthermore, you must turn off extension signature checking ...
-*please only proceed if you know what this means*:
-
-- in FirefoxNightly open the url `about:config` and acknowledge the warning. Change the following settings:
-
-      xpinstall.signatures.required: false
-      extensions.legacy.enabled: true
-
-- install the [hidetabsexperiment.xpi](https://github.com/kesselborn/conex/releases/tag/hidetabsexperiment) -- you need to acknowledge all the warnings
-- install the newest 'experiment' release from the [github conex release page](https://github.com/kesselborn/conex/releases) (something like v0.0.75experiment)
-
-# Getting back my last tab group sesssion
+## Getting back my last tab group session
 
 So: Firefox Quantum rolled in, tab groups doesn't work anymore and you would like to get back
 your last tab groups session? Here is a way you can get a tab groups backup which again you
@@ -54,15 +49,19 @@ can import to conex (note: only tested it briefly, but it's worth a try):
   - click the 'Load Groups and Tabs From ...' button and select 'Previous Session'
   - once imported, create the manual backup now
 
-# Permissions:
+## Necessary addon permissions
 
-- <all_url>: for taking screenshots for the thumbnails during search
-- bookmarks: for searching in bookmarks
-- contextMenus: for context menu for moving tab to a different container
-- contextualIdentities: for working with tab containers
-- cookies: for working with tab containers
-- history: for showing history results in quick search
-- menus: for creating context menus when moving tabs
-- storage: for storing thumbnails
-- tabs: for tab handling
-- webNavigation: for intercepting and reacting on new tabs
+| permission           | reason                                                   |
+|----------------------|----------------------------------------------------------|
+| <all_url>            | for taking screenshots for the thumbnails during search  |
+| bookmarks            | for searching in bookmarks                               |
+| contextMenus         | for context menu for moving tab to a different container |
+| contextualIdentities | for working with tab containers                          |
+| cookies              | for working with tab containers                          |
+| history              | for showing history results in quick search              |
+| menus                | for creating context menus when moving tabs              |
+| notifications        | to show a warning if the tabhiding is not activated      |
+| storage              | for storing thumbnails                                   |
+| tabs                 | for tab handling                                         |
+| tabHide              | for hiding and showing tabs                              |
+| webNavigation        | for intercepting and reacting on new tabs                |
