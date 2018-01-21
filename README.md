@@ -3,6 +3,7 @@
 - [conex](#conex)
     - [Differences to tabgroups](#differences-to-tabgroups)
     - [Enable tab hiding](#enable-tab-hiding)
+        - [Old experimental version](#old-experimental-version)
     - [Installation](#installation)
     - [Getting back my last tab group session](#getting-back-my-last-tab-group-session)
     - [Necessary addon permissions](#necessary-addon-permissions)
@@ -24,6 +25,14 @@ This addon tries to replace some functionality from the discontinued *TabGroups*
 Conex uses a feature which only exists in Firefox >= 59.0a1 updated after the 19th of January 2018. 
 
 At the moment, tab hiding has to be enabled manually: In the location bar, type in `about:config`, filter for `extensions.webextensions.tabhide.enabled` and set the value to `true`.
+
+### Old experimental version
+
+If you used the old experimental conex version, please uninstall the `hidetabsexperiment`  and change the following settings in `about:config`:
+
+- `xpinstall.signatures.required`: `true`
+- `extensions.legacy.enabled`: `false`
+
 
 ## Installation
 
