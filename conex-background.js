@@ -2,6 +2,7 @@ const imageQuality = 8;
 const defaultCookieStoreId = 'firefox-default';
 const privateCookieStorePrefix = 'firefox-private';
 const tabMovingEnabledKey = 'conex/settings/tab-moving-allowed';
+const tabHidingEnabledKey = 'conex/settings/tab-hiding-allowed';
 const tabMovingPreferContextMenuKey = 'conex/settings/tab-moving-allowed/prefer-context-menu';
 
 let lastCookieStoreId = defaultCookieStoreId;
@@ -290,6 +291,9 @@ const hideTabs = async function(tabIds) {
 }
 
 const showHideTabs = async function(activeInfo) {
+  if (!(await browser.storage.local.get(tabHidingEnabledKey))[tabHidingEnabledKey]) {
+    return;
+  }
   const activeTab = await browser.tabs.get(activeInfo.tabId);
   const allTabs = await browser.tabs.query({windowId: browser.windows.WINDOW_ID_CURRENT});
 
