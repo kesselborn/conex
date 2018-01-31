@@ -269,9 +269,7 @@ const showHideMoveTabActions = async function(tabId) {
 };
 
 const showTabs = async function(tabIds) {
-  for (let tabId of tabIds) {
-    browser.tabs.show(tabId);
-  }
+  browser.tabs.show(tabIds);
 }
 
 const hideTabs = async function(tabIds) {
@@ -284,9 +282,7 @@ const hideTabs = async function(tabIds) {
     console.log('please activate tab hiding', e);
   });
 
-  for (let tabId of tabIds) {
-    browser.tabs.hide(tabId);
-  }
+  browser.tabs.hide(tabIds);
 }
 
 const showHideTabs = async function(activeInfo) {
