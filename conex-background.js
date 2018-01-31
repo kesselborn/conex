@@ -276,11 +276,6 @@ const showTabs = async function(tabIds) {
 
 const hideTabs = async function(tabIds) {
   browser.tabs.hide(tabIds.pop()).catch(e => {
-    browser.notifications.create(null, {
-      type: 'basic',
-      title: 'Configuration setting missing',
-      message: 'Tab hiding has to be manually configured in order to work. Please see conex settings for instructions.',
-    })
     console.log('please activate tab hiding', e);
   });
 
