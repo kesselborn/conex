@@ -293,6 +293,9 @@ const showHideTabs = async function(activeInfo) {
   const activeTab = await browser.tabs.get(activeInfo.tabId);
   const allTabs = await browser.tabs.query({windowId: browser.windows.WINDOW_ID_CURRENT});
 
+  if (activeTab.pinned)
+    return;
+
   const visibleTabs = allTabs.filter(t => t.cookieStoreId == activeTab.cookieStoreId).map(t => t.id);
   const hiddenTabs = allTabs.filter(t => t.cookieStoreId != activeTab.cookieStoreId).map(t => t.id);
 
