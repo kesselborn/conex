@@ -75,6 +75,14 @@ browser.storage.local.get('conex/settings/tab-moving-allowed').then(settings => 
   bg.setupMenus();
 }, e => console.error(e));
 
+browser.storage.local.get('conex/settings/tab-hiding-allowed').then(settings => {
+  $1('#enable-tab-hiding').checked = settings['conex/settings/tab-hiding-allowed'];
+}, e => console.error(e));
+
+$1('#enable-tab-hiding').addEventListener('change', e => {
+  browser.storage.local.set({'conex/settings/tab-hiding-allowed': e.target.checked});
+})
+
 $1('#move-tab-yes').addEventListener('click', _ => {
   $1('#error').style.display = 'none';
   browser.storage.local.set({'conex/settings/tab-moving-allowed': true});
