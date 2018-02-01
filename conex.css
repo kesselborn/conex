@@ -135,6 +135,19 @@ li.tab div.image img {
   width: 20px;
 }
 
+li.tab img.no-thumbnail {
+  width: 20px;
+  margin-right: 10px;
+}
+
+li.tab img.no-thumbnail + div.text {
+  max-width: 436px;
+}
+
+li.tab img.no-thumbnail + div.text div {
+  width: 416px;
+}
+
 li.tab div.text {
   text-overflow: ellipsis;
   white-space: nowrap;

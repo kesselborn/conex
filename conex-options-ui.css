@@ -1,0 +1,128 @@
+    /* remove body when https://bugzilla.mozilla.org/show_bug.cgi?id=1382953 is fixed */
+    body {
+        font-family: Helvetica, Arial, sans-serif;
+        padding: 5em;
+    }
+
+    p, h1, label {
+        -moz-user-select: text;
+    }
+
+    #missing-tab-container-support {
+        display: none;
+    }
+
+    #missing-tab-container-support h1 {
+        color: red;
+    }
+
+    input[type="file"] {
+        display: none;
+    }
+
+    .custom-file-upload {
+        display: inline;
+        padding: 6px 12px;
+        cursor: pointer;
+        border: solid 1px rgb(229, 229, 232);
+    }
+
+    li {
+        list-style: none;
+        margin-top: 0.7em;
+    }
+
+    .custom-file-upload:hover, .custom-file-upload:focus {
+        background-color: rgb(235, 235, 235);
+    }
+
+    tt {
+        font-size: large;
+        background-color:rgb(240,240,240);
+    }
+
+    .keys {
+        width: 12em;
+        display: inline-block;
+    }
+
+    h2 {
+        border-top: 1px solid rgb(232, 232, 234);
+        padding-top: 1em;
+        width: 100%;
+        margin-top: 2em;
+        font-weight: 100;
+    }
+
+    h3 {
+        font-weight: 100;
+        text-decoration: underline;
+    }
+
+    .option-toggle {
+        position: absolute;
+        margin-left: -9999px;
+        visibility: hidden;
+    }
+
+    .option-toggle+label {
+        display: inline-block;
+        position: relative;
+        cursor: pointer;
+        outline: none;
+        user-select: none;
+    }
+
+    input.option-toggle-round+label {
+        padding: 2px;
+        margin: 0.5em 0 0 0;
+        width: 2em;
+        height: 1em;
+        background-color: #dddddd;
+        border-radius: 1em;
+    }
+
+    input.option-toggle-round+label:before, input.option-toggle-round+label:after {
+        display: block;
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        bottom: 1px;
+        content: "";
+    }
+
+    input.option-toggle-round+label:before {
+        right: 1px;
+        background-color: #f1f1f1;
+        border-radius: 1em;
+        transition: background 0.4s;
+    }
+
+    input.option-toggle-round+label:after {
+        width: 1em;
+        /* change to 0.65em when moving settings back to about:addons page ... currently blocked by https://bugzilla.mozilla.org/show_bug.cgi?id=1382953 */
+        background-color: #fff;
+        border-radius: 100%;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        transition: margin 0.4s;
+    }
+
+    input.option-toggle-round:checked+label:before {
+        background-color: #8ce196;
+    }
+
+    input.option-toggle-round:checked+label:after {
+        margin-left: 1.15em;
+    }
+
+    .checkbox-label {
+        padding-left: 1em;
+    }
+
+    em {
+        font-weight: bold;
+    }
+
+    #moving-tabs-explanation {
+        margin-top: 30em;
+    }

@@ -79,13 +79,18 @@ const renderEntry = function(url, title, id, favIconUrl, drawBookmarkIcon) {
 
   const tooltip = isHistoryOrBookmark ? 'enter: re-open tab' : 'enter: jump to tab\nbackspace: close tab';
 
+  let thumbnailElement = $e('img', { src: defaultFavIconUrl, class: 'no-thumbnail' });
+  if(settings['create-thumbnail']) {
+    thumbnailElement = $e('div', { class: 'image', data_bg_set: 'false', style: `background:url('${defaultFavIconUrl}')` }, [
+      $e('img', { src: defaultFavIconUrl })
+    ]);
+  }
+
   const element =
     $e('li', {tabindex: 1, class: elClass, data_title: title.toLowerCase(), data_url: url.toLowerCase(), data_tab_id: id,
               style: 'display:none', title: tooltip } ,[
       $e('div', {}, [
-        $e('div', {class: 'image', data_bg_set: 'false', style: `background:url('${defaultFavIconUrl}')`}, [
-          $e('img', {src: defaultFavIconUrl})
-        ]),
+        thumbnailElement,
         $e('div', {class: 'text'}, [
           $e('div', {class: 'tab-title', content: title}),
           $e('div', {class: 'tab-url', content: url})

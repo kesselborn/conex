@@ -179,12 +179,15 @@ const fillHistorySection = function(searchQuery) {
 };
 
 const setBgImage = async function(element, url) {
-  const cleanedUrl = cleanUrl(url);
+  await readSettings;
+  if(settings['create-thumbnail']) {
+    const cleanedUrl = cleanUrl(url);
 
-  element.dataset.bgSet = 'true';
-  const cachedThumbnails = await browser.storage.local.get(cleanedUrl);
-  if(cachedThumbnails[cleanedUrl] && cachedThumbnails[cleanedUrl].thumbnail) {
-    element.style.background = "url("+cachedThumbnails[cleanedUrl].thumbnail+")";
+    element.dataset.bgSet = 'true';
+    const cachedThumbnails = await browser.storage.local.get(cleanedUrl);
+    if (cachedThumbnails[cleanedUrl] && cachedThumbnails[cleanedUrl].thumbnail) {
+      element.style.background = "url(" + cachedThumbnails[cleanedUrl].thumbnail + ")";
+    }
   }
 }
 
@@ -251,8 +254,13 @@ const onSearchChange = function(event) {
   showHideTabEntries(searchQuery);
   showHideTabContainerHeader(searchQuery);
 
-  fillHistorySection(searchQuery);
-  fillBookmarksSection(searchQuery);
+  if(settings["search-history"]) {
+    fillHistorySection(searchQuery);
+  }
+
+  if(settings["search-bookmarks"]) {
+    fillBookmarksSection(searchQuery);
+  }
 };
 
 const startTime = Date.now();
