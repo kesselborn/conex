@@ -85,7 +85,14 @@ function restoreTabContainersBackup(tabContainers, windows) {
           if(tab.container) {
             cookieStoreId = identities.get(tab.container.toLowerCase());
           }
-          browser.tabs.create({url: tab.url, cookieStoreId: cookieStoreId, windowId: w.id, active: false}).then(_ => {
+          browser.tabs.create({url: tab.url, cookieStoreId: cookieStoreId, windowId: w.id, active: false}).then(tab => {
+            // we need to wait for the first onUpdated event before discarding, otherwise the tab is in limbo
+            const listener = browser.tabs.onUpdated.addListener(function(tabId) {
+              if(tabId == tab.id) {
+                browser.tabs.onCreated.removeListener(listener);
+                browser.tabs.discard(tab.id);
+              }
+            });
             console.log(`creating tab ${tab.url} in container ${tab.container} (cookieStoreId: ${cookieStoreId})`);
           }, e => console.error(e));
         }
