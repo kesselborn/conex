@@ -67,7 +67,8 @@ var handlePermission = function(setting, value) {
   return new Promise(resolve => {
     const mapping = {
       'search-bookmarks': {permissions: ['bookmarks']},
-      'search-history': {permissions: ['history']}
+      'search-history': {permissions: ['history']},
+      'hide-tabs': {permissions: ['notifications']}
       /* 'hide-tabs': {permissions: ['tabHide', 'notifications']} mozilla validator does not accept it as an optional permissions yet */
       /* 'create-thumbnail': {origins: ['<all_urls>']}, <all_urls> does not work correctly for optional permissions :( */
     };
