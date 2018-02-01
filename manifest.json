@@ -61,12 +61,12 @@
     "menus",
     "storage",
     "tabs",
+    "tabHide",
     "webNavigation"
   ],
   "optional_permissions": [
     "bookmarks",
     "history",
-    "notifications",
-    "tabHide"
+    "notifications"
   ]
 }
