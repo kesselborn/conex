@@ -90,6 +90,7 @@ var handlePermission = function(setting, value) {
         });
       }
     }
+    resolve();
   });
 }
 
