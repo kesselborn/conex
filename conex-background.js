@@ -351,6 +351,10 @@ const openExternalLinksInCurrentContainer = async function(details) {
 
 const handleSettingsMigration = async function(details) {
   await readSettings;
+  const currentVersion = 2;
+  if(settings['settings-version'] == currentVersion) {
+    return;
+  }
 
   // old setting or first install: open the setting page
   if (settings['settings-version'] == undefined) {
@@ -364,16 +368,30 @@ const handleSettingsMigration = async function(details) {
         console.error(`error persisting ${settingId}: ${e}`)
       }
     }
-    try {
-      browser.storage.local.set({ 'conex/settings/settings-version': 1 });
-    } catch(e) {
-      console.error(`error persisting ${settingId}: ${e}`)
-    }
-
-    refreshSettings();
-    await readSettings;
-    browser.runtime.openOptionsPage();
+  } 
+  
+  // setting version 1: tabHide was not optional
+  if(settings['settings-version'] == 1) {
+      try {
+        const tabs = await browser.tabs.query({});
+        await browser.tabs.show(tabs.map(t => t.id));
+        await browser.storage.local.set({ 'conex/settings/hide-tabs': false });
+        await browser.permissions.remove({permissions: ['tabHide', 'notifications']});
+        await browser.storage.local.set({ 'conex/settings/settings-version': currentVersion });
+      } catch(e) {
+        console.error(`error persisting settings: ${e}`)
+      }
   }
+
+  try {
+    await browser.storage.local.set({ 'conex/settings/settings-version': currentVersion });
+  } catch (e) {
+    console.error(`error persisting ${settingId}: ${e}`)
+  }
+
+  refreshSettings();
+  await readSettings;
+  browser.runtime.openOptionsPage();
 }
 
 /////////////////////////// setup listeners
