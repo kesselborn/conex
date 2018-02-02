@@ -111,6 +111,11 @@ const updateTabCount = function() {
     const tabCntElement = $1('.tabs-count', tabContainer);
     tabCntElement.removeChild(tabCntElement.firstChild);
     tabCntElement.appendChild(document.createTextNode(`(${tabCnt} tabs)`));
+
+    // hide private browsing tabs section if we don't have any private tabs open
+    if(tabCnt == 0 && tabContainer.id == "firefox-private") {
+      tabContainer.remove();
+    }
   }
 }
 
