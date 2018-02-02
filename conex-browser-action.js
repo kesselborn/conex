@@ -154,15 +154,17 @@ const fillBookmarksSection = function(searchQuery) {
 
   const tabContainerHeader = createTabContainerHeaderElement('', 'bookmarks', 'bookmarks', -1, '★ ');
 
-  if($1('ul', bookmarks)) {
-    $1('ul', bookmarks).replaceWith(tabContainerHeader);
-  } else {
-    bookmarks.appendChild(tabContainerHeader);
-  }
-
   browser.bookmarks.search({
     query: searchQuery
-  }).then(results => renderResults(results, $1('ul', bookmarks)), e => console.error(`Error searching ${searchQuery}: `, e));
+  }).then(results => {
+    renderResults(results, tabContainerHeader);
+
+    if ($1('ul', bookmarks)) {
+      $1('ul', bookmarks).replaceWith(tabContainerHeader);
+    } else {
+      bookmarks.appendChild(tabContainerHeader);
+    }
+  }, e => console.error(`Error searching ${searchQuery}: `, e));
 };
 
 const fillHistorySection = function(searchQuery) {
@@ -170,17 +172,19 @@ const fillHistorySection = function(searchQuery) {
   if(history.children.length > 0) { $1('ul', history).remove(); }
   const tabContainerHeader = createTabContainerHeaderElement('', 'history', 'history', -1);
 
-  if($1('ul', history)) {
-    $1('ul', history).replaceWith(tabContainerHeader);
-  } else {
-    history.appendChild(tabContainerHeader);
-  }
-
   browser.history.search({
     text: searchQuery,
     maxResults: 30,
     startTime: 0
-  }).then(results => renderResults(results, $1('ul', history)), e => console.error(`Error searching ${searchQuery}: `, e));
+  }).then(results => { 
+    renderResults(results, tabContainerHeader);
+
+    if ($1('ul', history)) {
+      $1('ul', history).replaceWith(tabContainerHeader);
+    } else {
+      history.appendChild(tabContainerHeader);
+    }
+  }, e => console.error(`Error searching ${searchQuery}: `, e));
 };
 
 const setBgImage = async function(element, url) {
