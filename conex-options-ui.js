@@ -64,7 +64,7 @@ function showHideTabContainersMovingDetails() {
 $1('#show-hide-tab-containers-moving-details-link').addEventListener('click', showHideTabContainersMovingDetails);
 
 var handlePermission = function(setting, value) {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     const mapping = {
       'search-bookmarks': {permissions: ['bookmarks']},
       'search-history': {permissions: ['history']},
@@ -75,22 +75,26 @@ var handlePermission = function(setting, value) {
     const permissions = mapping[setting];
     if (permissions) {
       if (value) {
-        browser.permissions.request(permissions).then(_ => {
+        permissionQueryOpen = true;
+        browser.permissions.request(permissions).then(success => {
           browser.permissions.getAll().then(permissions => console.info('current conex permissions:', permissions.permissions, 'origins:', permissions.origins));
-          resolve();
+          resolve(success);
         }).catch(e => {
           console.error(`error requesting permission ${setting}`);
+          reject(e);
         });
       } else {
-        browser.permissions.remove(permissions).then(_ => {
+        browser.permissions.remove(permissions).then(success => {
           browser.permissions.getAll().then(permissions => console.info('current conex permissions:', permissions.permissions, 'origins:', permissions.origins));
-          resolve();
+          resolve(success);
         }).catch(e => {
           console.error(`error removing permission ${setting}`);
+          reject(e);
         });
       }
+    } else {
+      resolve(true);
     }
-    resolve();
   });
 }
 
@@ -103,33 +107,60 @@ readSettings.then(_ => {
   bg.setupMenus();
 });
 
+let permissionQueryOpen = false;
 for(const element of $('input[type=checkbox]')) {
   element.addEventListener('click', event => {
     const settingId = 'conex/settings/' + event.target.id;
     const value = event.target.checked;
-
-    console.debug(`setting ${settingId} to ${value}`);
-    browser.storage.local.set({ [settingId] : value }).catch(e => {
-      console.error(`error setting ${settingId} to ${value}: ${e}`)
-    });
+    if(permissionQueryOpen) {
+        event.target.checked = !event.target.checked;
+        return;
+    }
 
     bg.refreshSettings();
 
+    const handlePermissionResult = function(success) {
+      permissionQueryOpen = false;
+      if (success) {
+        console.debug(`setting ${settingId} to ${value}`);
+        browser.storage.local.set({ [settingId]: value }).catch(e => {
+          console.error(`error setting ${settingId} to ${value}: ${e}`)
+        });
+      } else {
+        event.target.checked = !event.target.checked;
+      }
+    }
+
     if (event.target.id == 'hide-tabs') {
       if (value == true) {
-        handlePermission(event.target.id, value).then(_ => {
-          browser.tabs.query({ active: true, windowId: browser.windows.WINDOW_ID_CURRENT }).then(tabs => {
-            const activeTab = tabs[0];
-            bg.showHideTabs(activeTab.id);
-          });
+        handlePermission(event.target.id, value).then(success => {
+          if(success) {
+            browser.tabs.query({ active: true, windowId: browser.windows.WINDOW_ID_CURRENT }).then(tabs => {
+              const activeTab = tabs[0];
+              bg.showHideTabs(activeTab.id);
+            });
+          }
+          handlePermissionResult(success);
+        }).catch(e => {
+          permissionQueryOpen = false;
+          consol.error('error handling permissions:', e);
         });
       } else {
         browser.tabs.query({}).then(tabs => {
-          browser.tabs.show(tabs.map(t => t.id)).then(_ => handlePermission(event.target.id, value));
+          browser.tabs.show(tabs.map(t => t.id)).then(_ => {
+            handlePermission(event.target.id, value).then(success => {
+              handlePermissionResult(success);
+            }).catch(e => {
+              permissionQueryOpen = false;
+              consol.error('error handling permissions:', e);
+            });
+          });
         });
       }
     } else {
-      handlePermission(event.target.id, value);
+      handlePermission(event.target.id, value).then(success => {
+        handlePermissionResult(success);
+      });
     }
 
     bg.setupMenus();
