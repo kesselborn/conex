@@ -117,7 +117,6 @@ for(const element of $('input[type=checkbox]')) {
         return;
     }
 
-    bg.refreshSettings();
 
     const handlePermissionResult = function(success) {
       permissionQueryOpen = false;
@@ -126,6 +125,7 @@ for(const element of $('input[type=checkbox]')) {
         browser.storage.local.set({ [settingId]: value }).catch(e => {
           console.error(`error setting ${settingId} to ${value}: ${e}`)
         });
+        bg.refreshSettings();
       } else {
         event.target.checked = !event.target.checked;
       }

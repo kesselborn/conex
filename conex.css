@@ -148,6 +148,14 @@ li.tab img.no-thumbnail + div.text div {
   width: 416px;
 }
 
+li.tab span + div.text {
+  max-width: 486px;
+}
+
+li.tab span + div.text div {
+  width: 466px;
+}
+
 li.tab div.text {
   text-overflow: ellipsis;
   white-space: nowrap;

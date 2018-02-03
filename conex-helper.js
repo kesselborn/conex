@@ -8,7 +8,7 @@ const cleanUrl = function(url) {
   return url.replace('http://','').replace('https://','').toLowerCase();
 };
 
-const settings = {};
+var settings = {};
 
 function _refreshSettings() {
   return new Promise((resolve, reject) => {
@@ -18,8 +18,9 @@ function _refreshSettings() {
       'conex/settings/prefer-context',
       'conex/settings/search-bookmarks',
       'conex/settings/search-history',
-      'conex/settings/tab-moving-allowed',
       'conex/settings/settings-version',
+      'conex/settings/show-favicons',
+      'conex/settings/tab-moving-allowed',
     ]).then(localSettings => {
       for (const key in localSettings) {
         // conex/settings/tab-moving-allowed -> tab-moving-allowed

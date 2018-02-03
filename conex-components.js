@@ -79,8 +79,11 @@ const renderEntry = function(url, title, id, favIconUrl, drawBookmarkIcon) {
 
   const tooltip = isHistoryOrBookmark ? 'enter: re-open tab' : 'enter: jump to tab\nbackspace: close tab';
 
-  let thumbnailElement = $e('img', { src: defaultFavIconUrl, class: 'no-thumbnail' });
-  if(settings['create-thumbnail']) {
+  let thumbnailElement = $e('span');
+  if(bg.settings['show-favicons']) {
+    thumbnailElement = $e('img', { src: defaultFavIconUrl, class: 'no-thumbnail' });
+  }
+  if(bg.settings['create-thumbnail']) {
     thumbnailElement = $e('div', { class: 'image', data_bg_set: 'false', style: `background:url('${defaultFavIconUrl}')` }, [
       $e('img', { src: defaultFavIconUrl })
     ]);
@@ -102,7 +105,7 @@ const renderEntry = function(url, title, id, favIconUrl, drawBookmarkIcon) {
       ]),
     ]);
 
-  if(favIconUrl && favIconUrl.startsWith('http')) {
+  if (bg.settings['show-favicons'] && favIconUrl && favIconUrl.startsWith('http')) {
     fetch(favIconUrl, { method: "GET", }).then(res => {
       if (res.ok) {
         $1('img', element).src = favIconUrl;
