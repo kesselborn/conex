@@ -19,8 +19,12 @@ body, ul {
   width: 200px;
 }
 
-#browseraction span.bookmark-marker, span.close-button, #browseraction span.tabs-count {
+#browseraction span.bookmark-marker, span.close-button, #browseraction .tabs-count {
   float: right;
+}
+
+button.tabs-count {
+  height: 1em; 
 }
 
 span.close-button {
@@ -43,26 +47,64 @@ li.tab:hover span.close-button, li.tab:focus  span.close-button{
   opacity: 0.7;
 }
 
-.circle {
-  border-radius:50%;
+li.section:hover span.tabs-count {
+  display:none;
+}
+li.section a.tabs-count {
+  display:none;
+}
+li.section:hover a.tabs-count {
+  display:inherit;
+  background-color: white;
+}
+
+
+ul.blue      li { border-left:solid 5px rgb(55,173,255); }
+ul.turquoise li { border-left:solid 5px rgb(0,199,154); }
+ul.green     li { border-left:solid 5px rgb(81,205,0); }
+ul.yellow    li { border-left:solid 5px rgb(255,203,0); }
+ul.orange    li { border-left:solid 5px rgb(255,159,0); }
+ul.red       li { border-left:solid 5px rgb(255,97,61); }
+ul.pink      li { border-left:solid 5px rgb(255,75,218); }
+ul.purple    li { border-left:solid 5px rgb(175,81,245); }
+ul.default   li { border-left:solid 5px rgb(0, 0, 0); }
+ul.private   li { border-left:solid 5px rgb(141,32,174); }
+
+ul li.tab { border-left-width: 1px; }
+
+
+.icon-history, .icon-private {
   min-width: 1em;
   min-height: 1em;
   margin-right: 1em;
   display: inline-block;
-  float:left;
+  float: left;
+}
+.icon-history   { background-image: url('icons/clock.svg'); }
+.icon-private   { background-image: url('icons/private-browsing.svg'); background-size: 1em 1em; }
+
+.arrow-right, .arrow-down {
+  width: 0; 
+  height: 0; 
+  display: inline-block;
+  margin-right: 0.5em;
+  margin: 0.5em;
 }
 
-.circle-blue      { background-color: rgb(55,173,255); }
-.circle-turquoise { background-color: rgb(0,199,154); }
-.circle-green     { background-color: rgb(81,205,0); }
-.circle-yellow    { background-color: rgb(255,203,0); }
-.circle-orange    { background-color: rgb(255,159,0); }
-.circle-red       { background-color: rgb(255,97,61); }
-.circle-pink      { background-color: rgb(255,75,218); }
-.circle-purple    { background-color: rgb(175,81,245); }
-.circle-default   { background-color: rgb(0, 0, 0); }
-.circle-history   { background-image: url('icons/clock.svg'); }
-.circle-private   { background-image: url('icons/private-browsing.svg'); background-size: 1em 1em; }
+.arrow-right:hover, .arrow-down:hover {
+  background-color: red;
+}
+
+.arrow-right {
+  border-bottom: 0.5em solid transparent;
+  border-left: 0.5em solid black;
+  border-top: 0.5em solid transparent;
+}
+.arrow-down {
+  border-left: 0.5em solid transparent;
+  border-right: 0.5em solid transparent;
+  border-top: 0.5em solid black;
+}
 
 form #search {
   background-color: rgb(252,252,252);

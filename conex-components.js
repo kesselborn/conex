@@ -35,11 +35,15 @@ function createHeaderElement(value) {
 }
 
 function createTabContainerHeaderElement(id, color, name, tabindex, icon) {
+  let iconElement = $e('span', {class: 'arrow-right'});
+  if(color == "bookmarks" || color == "history") {
+    iconElement = $e('span', { class: `icon-${color}`, content: icon || ' ' });
+  }
   const elment =
-    $e('ul', {id: id}, [
+    $e('ul', {id: id, class: color}, [
         $e('li', {tabindex: tabindex || 1, class: 'section', data_cookie_store: id, title: 'enter: to expand\nctrl-enter: switch to container\nctrl-shift-enter: new tab in container'}, [
+        iconElement,
           $e('div', {class: 'summary'}, [
-            $e('span', {class: `circle circle-${color}`, content: icon || ' '}),
             $e('span', {content: name}),
             $e('span', {content: '', class: 'tabs-count'}),
           ]),

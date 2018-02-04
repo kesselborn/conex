@@ -47,6 +47,7 @@ const expandTabContainer = function(cookieStoreId) {
 
   const tabContainer = $1(`ul#${cookieStoreId}`);
   if(tabContainer.dataset.expanded != "true") {
+    $1('.arrow-right', tabContainer).className = 'arrow-down';
     for(const element of $(`ul#${cookieStoreId} li.tab`)) {
       const thumbnailElement = $1('.image', element);
       if(thumbnailElement && thumbnailElement.dataset.bgSet == 'false') {
@@ -56,6 +57,10 @@ const expandTabContainer = function(cookieStoreId) {
     }
     tabContainer.dataset.expanded = true;
   } else {
+    {
+      const e =  $1('.arrow-down', tabContainer);
+      if(e) { e.className = 'arrow-right'; }
+    }
     tabContainer.dataset.expanded = false;
   }
 }
@@ -125,6 +130,13 @@ const resetPopup = function() {
   for(ul of $('#tabcontainers ul')) {
     ul.style.display = '';
     ul.querySelector('li.section').tabIndex = 1;
+
+    {
+      const arrowDown = $1('.arrow-down', ul);
+      if(arrowDown) {
+        arrowDown.className = 'arrow-right';
+      }
+    }
   }
 
   for(li of $('#tabcontainers li.tab')) {
@@ -134,6 +146,13 @@ const resetPopup = function() {
 
 const renderResults = function(results, parent) {
   const tabLinks = Array.from($('.tab')).map(t => t.dataset.url.toLowerCase());
+
+  {
+    const arrowRight = $1('.arrow-right', parent);
+    if (arrowRight) {
+      arrowRight.className = 'arrow-down';
+    }
+  }
 
   results
     .sort((a,b) => b.visitCount - a.visitCount)
@@ -152,7 +171,7 @@ const fillBookmarksSection = function(searchQuery) {
   const bookmarks = $1('#bookmarks');
   if(bookmarks.children.length > 0) { return; }
 
-  const tabContainerHeader = createTabContainerHeaderElement('', 'bookmarks', 'bookmarks', -1, '★ ');
+  const tabContainerHeader = createTabContainerHeaderElement('', '  bookmarks', 'bookmarks', -1, '★  ');
 
   browser.bookmarks.search({
     query: searchQuery
@@ -238,6 +257,13 @@ const showHideTabContainerHeader = function(searchQuery) {
     }
 
     tabContainerHeader.tabIndex = -1; // section should not be selectable when we have search results
+
+    {
+      const arrowDown = $1('.arrow-right', tabContainerHeader);
+      if(arrowDown) {
+        arrowDown.className = 'arrow-down';
+      }
+    }
 
     // hide sections that don't have tabs that match the search
     if(Array.from(ul.querySelectorAll('li.tab')).filter(li => li.style.display != 'none') == 0) {
