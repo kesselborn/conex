@@ -156,8 +156,9 @@ async function switchToContainer(cookieStoreId) {
   if(tabs.length == 0) {
     browser.tabs.create({cookieStoreId: cookieStoreId, active: true});
   } else {
-    browser.tabs.update(tabs[0].id, {active: true});
-    browser.windows.update(tabs[0].windowId, {focused: true});
+    const lastAccessedTab = tabs.sort((a,b) => b.lastAccessed - a.lastAccessed)[0];
+    browser.tabs.update(lastAccessedTab.id, {active: true});
+    browser.windows.update(lastAccessedTab.windowId, {focused: true});
   }
 }
 
