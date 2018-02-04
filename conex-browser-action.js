@@ -302,8 +302,11 @@ const startTime = Date.now();
 tabContainerRendering.then(_ => {
   for(const section of $('.section')) {
     $1('.icon', section).addEventListener('click', _ => expandTabContainer(section.dataset.cookieStore));
-    $1('.name', section).addEventListener('click', _ => bg.switchToContainer(section.dataset.cookieStore));
     $1('.new-tab-button', section).addEventListener('click', _ => browser.tabs.create({cookieStoreId: section.dataset.cookieStore, active: true}));
+    $1('.name', section).addEventListener('click', _ => {
+      bg.switchToContainer(section.dataset.cookieStore)
+      window.close();
+    });
   }
 
   containersTabsMapCreating.then(containerTabs => {
