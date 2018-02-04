@@ -277,6 +277,10 @@
         {
           "version": "0.2.13",
           "update_link": "https://github.com/kesselborn/conex/releases/download/v0.2.13/conex-0.2.13-an.fx.xpi"
+        },
+        {
+          "version": "0.2.14",
+          "update_link": "https://github.com/kesselborn/conex/releases/download/v0.2.14/conex-0.2.14-an.fx.xpi"
         }
       ]
     }
