@@ -171,7 +171,7 @@ const fillBookmarksSection = function(searchQuery) {
   const bookmarks = $1('#bookmarks');
   if(bookmarks.children.length > 0) { return; }
 
-  const tabContainerHeader = createTabContainerHeaderElement('', '  bookmarks', 'bookmarks', -1, '★  ');
+  const tabContainerHeader = createTabContainerHeaderElement('', 'bookmarks', 'bookmarks', -1, '★  ');
 
   browser.bookmarks.search({
     query: searchQuery
@@ -301,7 +301,9 @@ const onSearchChange = function(event) {
 const startTime = Date.now();
 tabContainerRendering.then(_ => {
   for(const section of $('.section')) {
-    section.addEventListener('click', _ => { expandTabContainer(section.dataset.cookieStore); });
+    $1('.icon', section).addEventListener('click', _ => expandTabContainer(section.dataset.cookieStore));
+    $1('.name', section).addEventListener('click', _ => bg.switchToContainer(section.dataset.cookieStore));
+    $1('.new-tab-button', section).addEventListener('click', _ => browser.tabs.create({cookieStoreId: section.dataset.cookieStore, active: true}));
   }
 
   containersTabsMapCreating.then(containerTabs => {

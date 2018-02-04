@@ -31,23 +31,22 @@ const $e = function(name, attributes, children) {
 };
 
 function createHeaderElement(value) {
-  return $e('h2', {content: 're-store tab in'});
+  return $e('h2', {content: value});
 }
 
 function createTabContainerHeaderElement(id, color, name, tabindex, icon) {
-  let iconElement = $e('span', {class: 'arrow-right'});
+  let iconElement = $e('span', {class: 'icon', title: 'click to expand container list'}, [$e('span', {class: 'arrow-right'})]);
   if(color == "bookmarks" || color == "history") {
-    iconElement = $e('span', { class: `icon-${color}`, content: icon || ' ' });
+    iconElement = $e('span', {class: 'icon'}, [$e('span', { class: `icon-${color}`, content: icon || ' ' })]);
   }
   const elment =
     $e('ul', {id: id, class: color}, [
         $e('li', {tabindex: tabindex || 1, class: 'section', data_cookie_store: id, title: 'enter: to expand\nctrl-enter: switch to container\nctrl-shift-enter: new tab in container'}, [
         iconElement,
-          $e('div', {class: 'summary'}, [
-            $e('span', {content: name}),
-            $e('span', {content: '', class: 'tabs-count'}),
-          ]),
-        ])
+        $e('span', { class: 'name', title: 'click to change to this container', content: name }),
+        $e('span', { class: 'tabs-count', content: '(x tabs)'}),
+        $e('span', { class: 'new-tab-button', title: 'click to open new tab in this container', content: 'new tab'})
+      ])
     ]);
 
   return elment;

@@ -15,6 +15,7 @@ const renderRestoreMenu = async function(parent) {
   const header = createHeaderElement('re-store tab in');
   parent.appendChild(header);
   await renderTabContainers(parent);
+  parent.scrollIntoView();
   for(const section of $('ul .section', parent)) {
     section.addEventListener('click', _ => {
       bg.openLinkInContainer(parent.dataset.url, section.dataset.cookieStore);
