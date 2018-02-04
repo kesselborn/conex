@@ -108,7 +108,7 @@ async function setupMenus() {
 
   browser.menus.create({
     id: "settings",
-    title: "conex settings",
+    title: "Conex settings",
     onclick: function() {browser.runtime.openOptionsPage(); },
     contexts: ["browser_action", "page_action"]
   });

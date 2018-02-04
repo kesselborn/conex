@@ -1,6 +1,6 @@
 <!-- TOC -->
 
-- [conex](#conex)
+- [Conex](#conex)
     - [Differences to tabgroups](#differences-to-tabgroups)
     - [Enable tab hiding](#enable-tab-hiding)
         - [Old experimental version](#old-experimental-version)
@@ -10,7 +10,7 @@
 
 <!-- /TOC -->
 
-# conex
+# Conex
 This addon tries to replace some functionality from the discontinued *TabGroups* with some differences:
 
 ## Differences to tabgroups
@@ -28,7 +28,7 @@ At the moment, tab hiding has to be enabled manually: In the location bar, type 
 
 ### Old experimental version
 
-If you used the old experimental conex version, please uninstall the `hidetabsexperiment`  and change the following settings in `about:config`:
+If you used the old experimental Conex version, please uninstall the `hidetabsexperiment`  and change the following settings in `about:config`:
 
 - `xpinstall.signatures.required`: `true`
 - `extensions.legacy.enabled`: `false`
