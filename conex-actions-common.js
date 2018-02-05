@@ -23,6 +23,7 @@ const renderRestoreMenu = async function(parent) {
     });
     section.addEventListener('keypress', event => {
       if(event.key == 'Enter') {
+        event.stopPropagation();
         bg.openLinkInContainer(parent.dataset.url, section.dataset.cookieStore);
         window.close();
       }

@@ -42,7 +42,7 @@ Just install from the [official mozilla addons page](https://addons.mozilla.org/
 
 So: Firefox Quantum rolled in, tab groups doesn't work anymore and you would like to get back
 your last tab groups session? Here is a way you can get a tab groups backup which again you
-can import to conex (note: only tested it briefly, but it's worth a try):
+can import to Conex (note: only tested it briefly, but it's worth a try):
 
 - download [Firefox ESR](https://www.mozilla.org/en-US/firefox/organizations/all/?q=English%20(US)) (this still supports old extension) and install it
 - close Firefox Quantum
@@ -52,7 +52,7 @@ can import to conex (note: only tested it briefly, but it's worth a try):
 
             xpinstall.signatures.required: false
 
-- if you are lucky, your old session is restored and you can just open tab-groups and create a manual backup which you can use as an import for conex
+- if you are lucky, your old session is restored and you can just open tab-groups and create a manual backup which you can use as an import for Conex
 - if your session is not restored, all hope is not lost:
   - go to tab-groups preferences and open the 'Backup / Restore' section
   - click the 'Load Groups and Tabs From ...' button and select 'Previous Session'
