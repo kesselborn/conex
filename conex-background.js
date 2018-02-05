@@ -156,9 +156,21 @@ async function switchToContainer(cookieStoreId) {
   if(tabs.length == 0) {
     browser.tabs.create({cookieStoreId: cookieStoreId, active: true});
   } else {
-    const lastAccessedTab = tabs.sort((a,b) => b.lastAccessed - a.lastAccessed)[0];
-    browser.tabs.update(lastAccessedTab.id, {active: true});
-    browser.windows.update(lastAccessedTab.windowId, {focused: true});
+
+    const lastAccessedTabs = tabs.sort((a,b) => b.lastAccessed - a.lastAccessed);
+
+	// Try to switch to an unpinned tab, as switching a to pinned tab
+    // will not update the visible tabs
+    for (const tab of lastAccessedTabs) {
+      if (!tab.pinned) {
+        browser.tabs.update(tab.id, {active: true});
+        browser.windows.update(tab.windowId, {focused: true});
+        return;
+      }
+	}
+    // All tabs in this container are pinned. Just switch to first one
+    browser.tabs.update(lastAccessedTabs[0].id, {active: true});
+    browser.windows.update(lastAccessedTabs[0].windowId, {focused: true});
   }
 }
 
