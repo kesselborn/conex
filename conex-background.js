@@ -314,15 +314,18 @@ const hideTabs = async function(tabIds) {
     return;
   }
 
-  browser.tabs.hide(tabIds.pop()).catch(e => {
-    browser.notifications.create(null, {
-      type: 'basic',
-      title: 'Configuration setting missing',
-      message: 'Tab hiding has to be manually configured in order to work. Please see conex settings for instructions.',
-    })
-    console.log('please activate tab hiding', e);
-  });
-
+  // sometimes the tab that just got closed is in this list as well and will produce an error
+  // not connected to hiding
+  if(tabIds.length > 1) {
+    browser.tabs.hide(tabIds.pop()).catch(e => {
+      browser.notifications.create(null, {
+        type: 'basic',
+        title: 'Configuration setting missing',
+        message: 'Tab hiding has to be manually configured in order to work. Please see conex settings for instructions.',
+      })
+      console.log('please activate tab hiding', e);
+    });
+  }
   browser.tabs.hide(tabIds);
 }
 
