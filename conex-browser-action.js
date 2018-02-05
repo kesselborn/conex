@@ -18,10 +18,10 @@ const keyHandling = function(event) {
       } else if(document.activeElement.dataset.cookieStore && event.ctrlKey && event.shiftKey ) { // a container section / ctrl+enter+shift
         browser.tabs.create({cookieStoreId: document.activeElement.dataset.cookieStore, active: true});
       } else if(document.activeElement.dataset.cookieStore && event.ctrlKey) { // a container section / ctrl+enter
-        bg.switchToContainer(document.activeElement.dataset.cookieStore);
-      } else if(document.activeElement.dataset.cookieStore) { // a container section
         expandTabContainer(document.activeElement.dataset.cookieStore);
         return;
+      } else if(document.activeElement.dataset.cookieStore) { // a container section
+        bg.switchToContainer(document.activeElement.dataset.cookieStore);
       } else {
         console.error('unhandled active element:', document.activeElement);
       }
