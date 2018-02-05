@@ -35,7 +35,7 @@ function createHeaderElement(value) {
 }
 
 function createTabContainerHeaderElement(id, color, name, tabindex, icon) {
-  let iconElement = $e('span', {class: 'icon', title: 'click to expand container list'}, [$e('span', {class: 'arrow-right'})]);
+  let iconElement = $e('span', {class: 'icon', title: 'expand container list'}, [$e('span', {class: 'arrow-right'})]);
   if(color == "bookmarks" || color == "history") {
     iconElement = $e('span', {class: 'icon'}, [$e('span', { class: `icon-${color}`, content: icon || ' ' })]);
   }
@@ -43,9 +43,9 @@ function createTabContainerHeaderElement(id, color, name, tabindex, icon) {
     $e('ul', {id: id, class: color}, [
         $e('li', {tabindex: tabindex || 1, class: 'section', data_cookie_store: id, title: 'enter: to expand\nctrl-enter: switch to container\nctrl-shift-enter: new tab in container'}, [
         iconElement,
-        $e('span', { class: 'name', title: 'click to change to this container', content: name }),
+        $e('span', { class: 'name', title: 'change to this container', content: name }),
         $e('span', { class: 'tabs-count', content: '(x tabs)'}),
-        $e('span', { class: 'new-tab-button', title: 'click to open new tab in this container', content: 'new tab'})
+        $e('span', { class: 'new-tab-button', title: 'open new tab in this container', content: 'new tab'})
       ])
     ]);
 
