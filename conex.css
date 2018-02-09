@@ -3,6 +3,7 @@ body, ul {
   padding: 0;
   font-family: Sans-Serif;
   background-color: white;
+  overflow-x:hidden
 }
 
 #pageaction h2 {
