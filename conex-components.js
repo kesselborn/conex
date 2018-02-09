@@ -43,7 +43,7 @@ function createTabContainerHeaderElement(id, color, name, tabindex, icon) {
     $e('ul', {id: id, class: color}, [
         $e('li', {tabindex: tabindex || 1, class: 'section', data_cookie_store: id, title: 'enter: to expand\nctrl-enter: switch to container\nctrl-shift-enter: new tab in container'}, [
         iconElement,
-        $e('span', { class: 'name', title: 'change to this container', content: name }),
+        $e('span', { class: 'name', title: 'change to this container (x tabs)', content: name }),
         $e('span', { class: 'tabs-count', content: '(x tabs)'}),
         $e('span', { class: 'new-tab-button', title: 'open new tab in this container', content: 'new tab'})
       ])
