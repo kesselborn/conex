@@ -34,7 +34,7 @@ function createHeaderElement(value) {
   return $e('h2', {content: value});
 }
 
-function createTabContainerHeaderElement(id, color, name, tabindex, icon) {
+function createTabContainerHeaderElement(id, color, name, tabindex, icon, containsAudibleTab) {
   let iconElement = $e('span', {class: 'icon', title: 'expand container list'}, [$e('span', {class: 'arrow-right'})]);
   if(color == "bookmarks" || color == "history") {
     iconElement = $e('span', {class: 'icon'}, [$e('span', { class: `icon-${color}`, content: icon || ' ' })]);
@@ -44,6 +44,7 @@ function createTabContainerHeaderElement(id, color, name, tabindex, icon) {
         $e('li', {tabindex: tabindex || 1, class: 'section', data_cookie_store: id, title: 'enter: to expand\nctrl-enter: switch to container\nctrl-shift-enter: new tab in container'}, [
         iconElement,
         $e('span', { class: 'name', title: 'change to this container (x tabs)', content: name }),
+        $e('img',  { class: `audible-${containsAudibleTab}`, src: 'icons/loudspeaker.svg'}),
         $e('span', { class: 'tabs-count', content: '(x tabs)'}),
         $e('span', { class: 'new-tab-button', title: 'open new tab in this container', content: 'new tab'})
       ])
@@ -61,7 +62,9 @@ function createTabElement(tab, isBookmarkUrl) {
     tab.title ? tab.title : '',
     tab.id,
     tab.favIconUrl,
-    isBookmarkUrl);
+    isBookmarkUrl,
+    tab.audible
+  );
 }
 
 function createHistoryOrBookmarkElement(historyItem) {
@@ -74,7 +77,7 @@ function createHistoryOrBookmarkElement(historyItem) {
   return element;
 }
 
-const renderEntry = function(url, title, id, favIconUrl, drawBookmarkIcon) {
+const renderEntry = function(url, title, id, favIconUrl, drawBookmarkIcon, drawAudibleIcon) {
   const isHistoryOrBookmark = (id == 0);
   const defaultFavIconUrl = './favicon.ico';
   const elClass = drawBookmarkIcon ? 'tab is-bookmark' : 'tab';
@@ -102,8 +105,9 @@ const renderEntry = function(url, title, id, favIconUrl, drawBookmarkIcon) {
           $e('div', {class: 'tab-url', content: url})
         ]),
         $e('div', {class: 'close', style: isHistoryOrBookmark ? 'display: none' : ''}, [
+          $e('span', {content: '★', title: 'this tab is a bookmark', class: 'bookmark-marker', data_tab_id: id}),
           $e('span', {content: '╳', title: 'close this tab', class: 'close-button', data_tab_id: id}),
-          $e('span', {content: '★', title: 'this tab is a bookmark', class: 'bookmark-marker', data_tab_id: id})
+          $e('img', {src: 'icons/loudspeaker.svg', title: 'this tab is playing audio', class: `audible-${drawAudibleIcon}`}),
         ])
       ]),
     ]);

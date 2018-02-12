@@ -34,15 +34,19 @@ body, ul {
   margin: 1em 0 0 0;
 }
 
-#browseraction span.bookmark-marker, span.close-button {
+.audible-true, #browseraction span.bookmark-marker, span.close-button {
   float: right;
+}
+
+.audible-false, li.tab:hover .audible-true {
+  display: none;
 }
 
 span.close-button {
   padding: 3px;
   font-size: x-large;
   border-radius:5%;
-  opacity: 0;
+  display: none;
 }
 
 span.bookmark-marker {
@@ -55,6 +59,7 @@ li.is-bookmark span.bookmark-marker {
 
 li.tab:hover span.close-button, li.tab:focus  span.close-button{
   background-color: rgb(208,208,208);
+  display: inherit;
   opacity: 0.7;
 }
 
@@ -214,10 +219,15 @@ li.tab img.no-thumbnail + div.text div {
 
 li.tab span + div.text {
   max-width: 486px;
+  height: 2.5em;
 }
 
 li.tab span + div.text div {
   width: 466px;
+}
+
+li.tab:hover span + div.text div {
+  width: 436px;
 }
 
 li.tab div.text {
