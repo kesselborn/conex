@@ -322,8 +322,13 @@ tabContainerRendering.then(_ => {
       insertTabElements(containerTabs);
   }, e => console.error(e));
 
-  document.querySelector('#search').addEventListener('keyup', onSearchChange);
+  $1('#search').addEventListener('keyup', onSearchChange);
   $1('#search').addEventListener('paste', onSearchChange);
   console.log("rendering time: ", Date.now() - startTime);
   focusSetter = setInterval(function(){document.getElementById('search').focus()}, 150);
+  const mouseMoveListener = function() {
+    try { clearInterval(focusSetter); } catch (e) { };
+    try { $1('body').removeEventListener('mousemove', mouseMoveListener); } catch (e) { console.error(e); };
+  }
+  $1('body').addEventListener('mousemove', mouseMoveListener);
 }, e => console.error(e));
