@@ -44,7 +44,7 @@ body, ul {
 
 span.close-button {
   padding: 3px;
-  font-size: x-large;
+  font-size: large;
   border-radius:5%;
   display: none;
 }
@@ -217,7 +217,7 @@ li.tab img.no-thumbnail + div.text div {
   width: 416px;
 }
 
-li.tab span + div.text {
+li.tab img + div.text, li.tab span + div.text {
   max-width: 486px;
   height: 2.5em;
 }
