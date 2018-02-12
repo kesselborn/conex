@@ -38,7 +38,7 @@ body, ul {
   float: right;
 }
 
-.audible-false, li.tab:hover .audible-true {
+.audible-undefined, .audible-false, li.tab:hover .audible-true {
   display: none;
 }
 
