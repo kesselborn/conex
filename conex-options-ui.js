@@ -99,9 +99,11 @@ var handlePermission = function(setting, value) {
 }
 
 readSettings.then(_ => {
+  console.log('vvv', settings);
   for (const key in settings) {
-    if(settings[key]) {
-      $1('#' + key).checked = 'checked';
+    const checkbox = $1('#' + key);
+    if(settings[key] && checkbox) {
+      checkbox.checked = 'checked';
     }
   }
   bg.setupMenus();
