@@ -44,9 +44,9 @@ So: Firefox Quantum rolled in, tab groups doesn't work anymore and you would lik
 your last tab groups session? Here is a way you can get a tab groups backup which again you
 can import to Conex (note: only tested it briefly, but it's worth a try):
 
-- download [Firefox ESR](https://www.mozilla.org/en-US/firefox/organizations/all/?q=English%20(US)) (this still supports old extension) and install it
+- download the latest Firefox version that you used TagGroups with (using [Firefox ESR can cause problems](https://github.com/kesselborn/conex/issues/151))
 - close Firefox Quantum
-- open Firefox ESR
+- open the old Firefox
 - if you see tab groups in your addon section but it is disabled, please do the following:
     - open the url `about:config` and acknowledge the warning. Change the following settings:
 
