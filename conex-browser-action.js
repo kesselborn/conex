@@ -244,7 +244,7 @@ const showHideTabEntries = function(searchQuery) {
 const showHideTabContainerHeader = function(searchQuery) {
   for(ul of $('ul')) {
     const tabContainerHeader = ul.querySelector('li.section');
-    const text = $('span', tabContainerHeader)[1].innerText.toLowerCase();
+    const text = $1('.name', tabContainerHeader).innerText.toLowerCase();
 
     // if the search query consists of multiple words, check if ALL words match -- regardless of the order
     const match = searchQuery.split(' ').every(q => {
