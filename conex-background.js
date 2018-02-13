@@ -62,7 +62,7 @@ async function getTabsByContainer() {
     }
   }
 
-  for(const tab of await tabs) {
+  for(const tab of (await tabs).sort((a,b) => b.lastAccessed - a.lastAccessed)) {
     const url = tab.url || "";
     const thumbnailElement = createTabElement(tab, bookmarkUrls.indexOf(url.toLowerCase()) >= 0);
 
