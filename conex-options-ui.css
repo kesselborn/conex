@@ -41,10 +41,31 @@
         background-color:rgb(240,240,240);
     }
 
+    .keys.keyboard-shortcut-help {
+        font-size: smaller;
+        color: gray;
+        text-align: center;
+        margin-right: 0px;
+    }
+
+    input.keyboard-shortcut {
+        font-family: monospace;
+        font-size: large;
+        border: 2px solid black; 
+        padding: 4px;
+        background-color: rgb(240,240,240);
+    }
+
+    input.keyboard-shortcut:focus {
+        background-color: lightpink;
+    }
+
     .keys {
         width: 12em;
         display: inline-block;
+        margin-right: 1em;
     }
+    
 
     h2 {
         border-top: 1px solid rgb(232, 232, 234);

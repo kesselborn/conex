@@ -48,6 +48,184 @@ filePicker.addEventListener('change', picker => {
 
 });
 
+async function fillShortcutFields(field) {
+  const commands = await browser.commands.getAll();
+  for(command of commands) {
+    if(field == undefined || field == command.name) {
+      $1('#' + command.name).value = command.shortcut;
+    }
+  }
+}
+
+async function setupShortcutListeners() {
+  const isMac = /^Mac/i.test(navigator.platform);
+  fillShortcutFields();
+
+  for (input of $('.keyboard-shortcut')) {
+    input.addEventListener('focus', e => {
+      e.target.value = "";
+      e.target.placeholder = "type shortcut";
+    });
+
+    input.addEventListener('blur', e => {
+      fillShortcutFields(e.target.id);
+    });
+
+    input.addEventListener('keypress', e => {
+      if(typeof browser.commands.update != 'function') {
+        alert('shortcut remapping is only available in Firefox >= v60');
+        return;
+      }
+      const normalizedKey = normalizeKey(e.code);
+      if((e.ctrlKey || e.altKey || e.metaKey) && normalizedKey) {
+        const shortcutParts = [e.ctrlKey ? (isMac ? "MacCtrl" : "Ctrl") : (e.altKey ? "Alt" : "Command")];
+        if (e.shiftKey) {
+          shortcutParts.push("Shift");
+        }
+
+        shortcutParts.push(normalizedKey);
+        const shortcut = shortcutParts.join("+");
+        e.target.value = shortcut;
+        browser.commands.update({
+          name: e.target.id,
+          shortcut: shortcut
+        });
+        console.info(`mapping ${e.target.id} to ${shortcut}`);
+        e.target.blur();
+      } else {
+        alert(`
+Key combinations must consist of two or three keys:
+
+- modifier (mandatory, except for function keys). This can be any of: "Ctrl", "Alt", "Command", "MacCtrl".
+- secondary modifier (optional). If supplied, this must be "Shift".
+- key (mandatory). This can be any one of:
+    the letters A-Z
+    the numbers 0-9
+    the function keys F1-F12
+    Comma, Period, Home, End, PageUp, PageDown, Space, Insert, Delete, Up, Down, Left, Right`);
+        e.target.blur();
+      }
+    });
+  }
+}
+
+// from: https://github.com/piroor/webextensions-lib-shortcut-customize-ui/blob/master/ShortcutCustomizeUI.js
+function normalizeKey(value) {
+  const aKey = value.trim().replace(/^Digit/,"").replace(/^Key/,"").toLowerCase();
+  const normalizedKey = aKey.replace(/\s+/g, '');
+  console.log('yyy', normalizedKey);
+  if (/^[a-z0-9]$/i.test(normalizedKey) ||
+      /^F([1-9]|1[0-2])$/i.test(normalizedKey))
+    return aKey.toUpperCase();
+
+  switch (normalizedKey) {
+    case 'comma':
+      return 'Comma';
+    case 'period':
+      return 'Period';
+    case 'home':
+      return 'Home';
+    case 'end':
+      return 'End';
+    case 'pageup':
+      return 'PageUp';
+    case 'pagedown':
+      return 'PageDown';
+    case 'space':
+      return 'Space';
+    case 'del':
+    case 'delete':
+      return 'Delete';
+    case 'up':
+      return 'Up';
+    case 'down':
+      return 'Down';
+    case 'left':
+      return 'Left';
+    case 'right':
+      return 'right';
+    case 'next':
+    case 'medianexttrack':
+      return 'MediaNextTrack';
+    case 'play':
+    case 'pause':
+    case 'mediaplaypause':
+      return 'MediaPlayPause';
+    case 'prev':
+    case 'previous':
+    case 'mediaprevtrack':
+      return 'MediaPrevTrack';
+    case 'stop':
+    case 'mediastop':
+      return 'MediaStop';
+
+    default:
+      for (let map of [keyNameMapLocales[browser.i18n.getUILanguage()] || 
+                       keyNameMapLocales[browser.i18n.getUILanguage().replace(/[-_].+$/, '')] || 
+                       {}, keyNameMapLocales.global]) {
+        for (let key of Object.keys(map)) {
+          if (Array.isArray(map[key])) {
+            if (map[key].some(aLocalizedKey => aLocalizedKey.toLowerCase() == aKey))
+              return key;
+        }
+        else {
+            if (map[key] &&
+                map[key].toLowerCase() == aKey)
+              return key;
+          }
+        }
+      }
+      break;
+  }
+  return '';
+}
+
+const keyNameMapLocales = {
+  global: {
+    Comma:  [','],
+    Period: ['.'],
+    Space:  [' '],
+    Up:     ['↑'],
+    Down:   ['↓'],
+    Left:   ['←', '<=', '<-'],
+    Right:  ['→', '=>', '->'],
+  },
+  // define tables with https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/i18n/LanguageCode
+  ja: {
+    // key: valid key name listed at https://developer.mozilla.org/en-US/Add-ons/WebExtensions/manifest.json/commands#Shortcut_values
+    // value: array of localized key names
+    Up:    ['上'],
+    Down:  ['下'],
+    Left:  ['左'],
+    Right: ['右'],
+    // you can localize modifier keys also.
+    // Alt:     ['オルト'],
+    // Ctrl:    ['コントロール'],
+    // MacCtrl: ['コントロール'], // for macOS
+    // Command: ['コマンド`], // for macOS
+    // Shift:   ['シフト`],
+  },
+  ru: {
+    // key: valid key name listed at https://developer.mozilla.org/en-US/Add-ons/WebExtensions/manifest.json/commands#Shortcut_values
+    // value: array of localized key names
+    Up:    ['Вверх'],
+    Down:  ['Вниз'],
+    Left:  ['Влево'],
+    Right: ['Вправо'],
+    Comma: ['Запятая'],
+    Period: ['Точка'],
+    Space: ['Пробел'],
+    MediaNextTrack: ['Следующий трек'],
+    MediaPrevTrack: ['Предыдущий трек'],
+    MediaPlayPause: ['Пауза проигрывания'],
+    MediaStop: ['Остановка проигрывания']
+  },
+  // de: {...},
+  // fr: {...},
+}
+
+setupShortcutListeners();
+
 
 browser.contextualIdentities.query({}).then(identities => {
   if (!identities) {
