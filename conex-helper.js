@@ -14,6 +14,7 @@ function _refreshSettings() {
   return new Promise((resolve, reject) => {
     browser.storage.local.get([
       'conex/settings/create-thumbnail',
+      'conex/settings/experimental-features',
       'conex/settings/hide-tabs',
       'conex/settings/search-bookmarks',
       'conex/settings/search-history',

@@ -48,12 +48,16 @@
     "scripts": [
       "conex-helper.js",
       "conex-components.js",
+      "conex-actions-common.js",
       "conex-background.js"
     ]
   },
   "icons": {
     "48": "icons/icon_48.png"
   },
+  "web_accessible_resources": [
+    "container-selector.html"
+  ],
   "permissions": [
     "<all_urls>",
     "contextualIdentities",
@@ -64,9 +68,12 @@
     "webNavigation"
   ],
   "optional_permissions": [
+    "activeTab",
     "bookmarks",
     "history",
     "notifications",
-    "tabHide"
+    "tabHide",
+    "webRequestBlocking",
+    "webRequest"
   ]
 }

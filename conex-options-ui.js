@@ -254,7 +254,8 @@ var handlePermission = function(setting, value) {
     const mapping = {
       'search-bookmarks': {permissions: ['bookmarks']},
       'search-history': {permissions: ['history']},
-      'hide-tabs': {permissions: ['tabHide', 'notifications']}
+      'hide-tabs': {permissions: ['tabHide', 'notifications']},
+      'experimental-features': {permissions: ['webRequest', 'webRequestBlocking', 'activeTab']}
       /* 'create-thumbnail': {origins: ['<all_urls>']}, <all_urls> does not work correctly for optional permissions :( */
     };
 
@@ -318,6 +319,7 @@ for(const element of $('input[type=checkbox]')) {
       }
     }
 
+
     if (event.target.id == 'hide-tabs') {
       if (value == true) {
         handlePermission(event.target.id, value).then(success => {
@@ -344,6 +346,11 @@ for(const element of $('input[type=checkbox]')) {
           });
         });
       }
+    } else if (event.target.id == 'experimental-features' && value == true) {
+      handlePermission(event.target.id, value).then(success => {
+        bg.interceptRequests();
+        handlePermissionResult(success);
+      });
     } else {
       handlePermission(event.target.id, value).then(success => {
         handlePermissionResult(success);
