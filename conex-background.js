@@ -89,16 +89,18 @@ async function restoreTabContainersBackup(tabContainers, windows) {
         cookieStoreId = (await identities).get(tab.container.toLowerCase());
       }
 
-      const newTab = await browser.tabs.create({ url: tab.url, cookieStoreId: cookieStoreId, windowId: (await w).id, active: false });
+      const newTab = browser.tabs.create({ url: tab.url, cookieStoreId: cookieStoreId, windowId: (await w).id, active: false });
+
       // we need to wait for the first onUpdated event before discarding, otherwise the tab is in limbo
-      const onUpdatedHandler = tabId => {
-        if (tabId == newTab.id) {
+      const onUpdatedHandler = async function(tabId, changeInfo) {
+        if (tabId == (await newTab).id && changeInfo.status == "complete") {
           browser.tabs.onCreated.removeListener(onUpdatedHandler);
-          browser.tabs.discard(newTab.id);
+          browser.tabs.discard(tabId);
         }
       }
+
       browser.tabs.onUpdated.addListener(onUpdatedHandler);
-      console.log(`creating tab ${newTab.url} in container ${newTab.container} (cookieStoreId: ${cookieStoreId})`);
+      console.log(`creating tab ${tab.url} in container ${(await newTab).cookieStoreId} (cookieStoreId: ${cookieStoreId})`);
     }
   }
 }
