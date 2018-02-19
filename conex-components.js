@@ -69,7 +69,7 @@ function createTabElement(tab, isBookmarkUrl) {
 
 function createHistoryOrBookmarkElement(historyItem) {
   const favIconUrl = (new URL(historyItem.url)).protocol + '//' + (new URL(historyItem.url)).host + '/favicon.ico';
-  const element = renderEntry(historyItem.url.toLowerCase(), historyItem.title.toLowerCase(), 0, favIconUrl);
+  const element = renderEntry(historyItem.url, historyItem.title.toLowerCase(), 0, favIconUrl);
   element.style.display = "";
 
   element.addEventListener('click', _ => renderRestoreMenu(element));
@@ -81,7 +81,7 @@ const renderEntry = function(url, title, id, favIconUrl, drawBookmarkIcon, drawA
   const isHistoryOrBookmark = (id == 0);
   const defaultFavIconUrl = './favicon.ico';
   const elClass = drawBookmarkIcon ? 'tab is-bookmark' : 'tab';
-  const searchTerm = '${title} ${url}';
+  const searchTerm = '${title} ${url.toLowerCase()}';
 
   const tooltip = isHistoryOrBookmark ? 'enter: re-open tab' : 'enter: jump to tab\nbackspace: close tab';
 
@@ -96,7 +96,7 @@ const renderEntry = function(url, title, id, favIconUrl, drawBookmarkIcon, drawA
   }
 
   const element =
-    $e('li', {tabindex: 1, class: elClass, data_title: title.toLowerCase(), data_url: url.toLowerCase(), data_tab_id: id,
+    $e('li', {tabindex: 1, class: elClass, data_title: title.toLowerCase(), data_url: url, data_tab_id: id,
               style: 'display:none', title: tooltip } ,[
       $e('div', {}, [
         thumbnailElement,
