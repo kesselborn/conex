@@ -117,9 +117,9 @@ const renderEntry = function(url, title, id, favIconUrl, drawBookmarkIcon, drawA
       if (res.ok) {
         $1('img', element).src = favIconUrl;
       } else {
-        console.log(`error fetching favicon for ${favIconUrl} -- response was`, res);
+        console.error(`error fetching favicon for ${favIconUrl} -- response was`, res);
       }
-    }, e => console.log(`error fetching ${favIconUrl}: ${e}`));
+    }, e => console.error(`error fetching ${favIconUrl}: ${e}`));
   }
 
   return element;

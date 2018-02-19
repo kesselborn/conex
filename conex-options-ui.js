@@ -90,7 +90,7 @@ async function setupShortcutListeners() {
           name: e.target.id,
           shortcut: shortcut
         });
-        console.info(`mapping ${e.target.id} to ${shortcut}`);
+        console.debug(`mapping ${e.target.id} to ${shortcut}`);
         e.target.blur();
       } else {
         alert(`
@@ -113,7 +113,6 @@ Key combinations must consist of two or three keys:
 function normalizeKey(value) {
   const aKey = value.trim().replace(/^Digit/,"").replace(/^Key/,"").toLowerCase();
   const normalizedKey = aKey.replace(/\s+/g, '');
-  console.log('yyy', normalizedKey);
   if (/^[a-z0-9]$/i.test(normalizedKey) ||
       /^F([1-9]|1[0-2])$/i.test(normalizedKey))
     return aKey.toUpperCase();
@@ -255,7 +254,7 @@ var handlePermission = function(setting, value) {
       if (value) {
         permissionQueryOpen = true;
         browser.permissions.request(permissions).then(success => {
-          browser.permissions.getAll().then(permissions => console.info('current conex permissions:', permissions.permissions, 'origins:', permissions.origins));
+          browser.permissions.getAll().then(permissions => console.debug('current conex permissions:', permissions.permissions, 'origins:', permissions.origins));
           resolve(success);
         }).catch(e => {
           console.error(`error requesting permission ${setting}`);
@@ -263,7 +262,7 @@ var handlePermission = function(setting, value) {
         });
       } else {
         browser.permissions.remove(permissions).then(success => {
-          browser.permissions.getAll().then(permissions => console.info('current conex permissions:', permissions.permissions, 'origins:', permissions.origins));
+          browser.permissions.getAll().then(permissions => console.debug('current conex permissions:', permissions.permissions, 'origins:', permissions.origins));
           resolve(success);
         }).catch(e => {
           console.error(`error removing permission ${setting}`);
@@ -277,7 +276,6 @@ var handlePermission = function(setting, value) {
 }
 
 readSettings.then(_ => {
-  console.log('vvv', settings);
   for (const key in settings) {
     const checkbox = $1('#' + key);
     if(settings[key] && checkbox) {
@@ -317,7 +315,7 @@ for(const element of $('input[type=checkbox]')) {
           if(success) {
             browser.tabs.query({ active: true, windowId: browser.windows.WINDOW_ID_CURRENT }).then(tabs => {
               const activeTab = tabs[0];
-              bg.showHideTabs(activeTab.id);
+              bg.showCurrentContainerTabsOnly(activeTab.id);
             });
           }
           handlePermissionResult(success);

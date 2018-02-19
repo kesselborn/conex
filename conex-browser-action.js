@@ -4,7 +4,7 @@ const tabContainerRendering = renderTabContainers($1('#tabcontainers'));
 let focusSetter;
 
 const keyHandling = function(event) {
-  //console.log('keypress', event, document.activeElement);
+  //console.debug('keypress', event, document.activeElement);
   try{ clearInterval(focusSetter); } catch(e) {}
   const searchElement = $1('#search');
 
@@ -99,7 +99,6 @@ const insertTabElements = function(tabContainers) {
       ul.appendChild(element);
       cnt++;
     }
-    console.log(`inserted ${cnt} tabs to ${tabContainer}`);
   }
   updateTabCount();
 };
@@ -109,10 +108,10 @@ const tabIsDeleted = function(e) {
 }
 
 const updateTabCount = function() {
-  console.log('updating tab count');
+  console.debug('updating tab count');
   for(const tabContainer of $('#tabcontainers ul')) {
     const tabCnt = Array.from($('li.tab', tabContainer)).filter(e => !tabIsDeleted(e)).length;
-    console.log(`found ${tabCnt} tabs for container`,  tabContainer);
+    console.debug(`found ${tabCnt} tabs for container`,  tabContainer);
     const tabCntElement = $1('.tabs-count', tabContainer);
     tabCntElement.removeChild(tabCntElement.firstChild);
     tabCntElement.appendChild(document.createTextNode(`(${tabCnt} tabs)`));
@@ -324,7 +323,7 @@ tabContainerRendering.then(_ => {
 
   $1('#search').addEventListener('keyup', onSearchChange);
   $1('#search').addEventListener('paste', onSearchChange);
-  console.log("rendering time: ", Date.now() - startTime);
+  console.debug("rendering time: ", Date.now() - startTime);
   focusSetter = setInterval(function(){document.getElementById('search').focus()}, 150);
   const mouseMoveListener = function() {
     try { clearInterval(focusSetter); } catch (e) { };

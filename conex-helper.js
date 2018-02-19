@@ -15,7 +15,6 @@ function _refreshSettings() {
     browser.storage.local.get([
       'conex/settings/create-thumbnail',
       'conex/settings/hide-tabs',
-      'conex/settings/prefer-context',
       'conex/settings/search-bookmarks',
       'conex/settings/search-history',
       'conex/settings/settings-version',
