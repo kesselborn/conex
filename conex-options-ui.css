@@ -50,6 +50,7 @@
 
     input.keyboard-shortcut {
         font-family: monospace;
+        cursor: pointer;
         font-size: large;
         border: 2px solid black; 
         padding: 4px;
