@@ -135,19 +135,6 @@ async function setupMenus() {
         onclick: function() {openActiveTabInDifferentContainer(identity.cookieStoreId)}
       });
     }
-
-    browser.menus.create({
-      id: 'separator2',
-      type: 'separator',
-      contexts: ["page"],
-    });
-
-    browser.menus.create({
-      id: 'refresh-container-list',
-      title: "refresh container list",
-      contexts: ["page"],
-      onclick: setupMenus
-    });
   }
 }
 
@@ -431,6 +418,10 @@ browser.tabs.onActivated.addListener(function(activeInfo) {
 browser.tabs.onUpdated.addListener(storeScreenshot);
 browser.tabs.onUpdated.addListener(showHideMoveTabActions);
 browser.tabs.onActivated.addListener(activeInfo => showHideMoveTabActions(activeInfo.tabId));
+
+browser.contextualIdentities.onUpdated.addListener(_ => setupMenus());
+browser.contextualIdentities.onCreated.addListener(_ => setupMenus());
+browser.contextualIdentities.onRemoved.addListener(_ => setupMenus());
 
 browser.windows.onFocusChanged.addListener(windowId => {
   if(windowId != browser.windows.WINDOW_ID_NONE) {
