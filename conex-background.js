@@ -75,30 +75,32 @@ async function getTabsByContainer() {
   return containersTabsMap;
 }
 
-// TODO: make async?
-function restoreTabContainersBackup(tabContainers, windows) {
-  createMissingTabContainers(tabContainers).then(identities => {
-    for(const tabs of windows) {
-      browser.windows.create({}).then(w => {
-        for(const tab of tabs) {
-          let cookieStoreId = defaultCookieStoreId;
-          if(tab.container) {
-            cookieStoreId = identities.get(tab.container.toLowerCase());
-          }
-          browser.tabs.create({url: tab.url, cookieStoreId: cookieStoreId, windowId: w.id, active: false}).then(tab => {
-            // we need to wait for the first onUpdated event before discarding, otherwise the tab is in limbo
-            const listener = browser.tabs.onUpdated.addListener(function(tabId) {
-              if(tabId == tab.id) {
-                browser.tabs.onCreated.removeListener(listener);
-                browser.tabs.discard(tab.id);
-              }
-            });
-            console.log(`creating tab ${tab.url} in container ${tab.container} (cookieStoreId: ${cookieStoreId})`);
-          }, e => console.error(e));
+async function restoreTabContainersBackup(tabContainers, windows) {
+  const identities = createMissingTabContainers(tabContainers);
+  for (const tabs of windows) {
+    const w = browser.windows.create({});
+    for (const tab of tabs) {
+      if(!isBlessedUrl(tab.url)) {
+        continue;
+      }
+
+      let cookieStoreId = defaultCookieStoreId;
+      if (tab.container) {
+        cookieStoreId = (await identities).get(tab.container.toLowerCase());
+      }
+
+      const newTab = await browser.tabs.create({ url: tab.url, cookieStoreId: cookieStoreId, windowId: (await w).id, active: false });
+      // we need to wait for the first onUpdated event before discarding, otherwise the tab is in limbo
+      const onUpdatedHandler = tabId => {
+        if (tabId == newTab.id) {
+          browser.tabs.onCreated.removeListener(onUpdatedHandler);
+          browser.tabs.discard(newTab.id);
         }
-      }, e => console.error(e));
+      }
+      browser.tabs.onUpdated.addListener(onUpdatedHandler);
+      console.log(`creating tab ${newTab.url} in container ${newTab.container} (cookieStoreId: ${cookieStoreId})`);
     }
-  }, e => console.error(e));
+  }
 }
 
 async function setupMenus() {
