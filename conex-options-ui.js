@@ -85,6 +85,15 @@ async function setupShortcutListeners() {
 
         shortcutParts.push(normalizedKey);
         const shortcut = shortcutParts.join("+");
+
+        for(const e of $('.keyboard-shortcut')) {
+          if(shortcut == e.value) {
+            alert('Key combinations must differ');
+            e.target.blur();
+            return;
+          }
+        }
+        
         e.target.value = shortcut;
         browser.commands.update({
           name: e.target.id,
