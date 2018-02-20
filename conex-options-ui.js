@@ -254,7 +254,7 @@ var handlePermission = function(setting, value) {
     const mapping = {
       'search-bookmarks': {permissions: ['bookmarks']},
       'search-history': {permissions: ['history']},
-      'hide-tabs': {permissions: ['tabHide', 'notifications']}
+      'hide-tabs': {permissions: ['tabHide', 'notifications']},
       /* 'create-thumbnail': {origins: ['<all_urls>']}, <all_urls> does not work correctly for optional permissions :( */
     };
 
@@ -308,7 +308,7 @@ for(const element of $('input[type=checkbox]')) {
     const handlePermissionResult = function(success) {
       permissionQueryOpen = false;
       if (success) {
-        console.debug(`setting ${settingId} to ${value}`);
+        console.info(`setting ${settingId} to ${value}`);
         browser.storage.local.set({ [settingId]: value }).catch(e => {
           console.error(`error setting ${settingId} to ${value}: ${e}`)
         });
@@ -317,6 +317,7 @@ for(const element of $('input[type=checkbox]')) {
         event.target.checked = !event.target.checked;
       }
     }
+
 
     if (event.target.id == 'hide-tabs') {
       if (value == true) {

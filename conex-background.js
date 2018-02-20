@@ -1,10 +1,23 @@
 const imageQuality = 8;
 const defaultCookieStoreId = 'firefox-default';
 const privateCookieStorePrefix = 'firefox-private';
+const newTabs = new Set();
+const newTabsUrls = new Map();
 
 let lastCookieStoreId = defaultCookieStoreId;
 
 //////////////////////////////////// exported functions (es6 import / export stuff is not supported in webextensions)
+function interceptRequests() {
+  if(typeof browser.webRequest == 'object') {
+    console.info('set up request interceptor');
+    browser.webRequest.onBeforeRequest.addListener(
+      showContainerSelectionOnNewTabs,
+      { urls: ["<all_urls>"], types: ["main_frame"] },
+      ["blocking"]
+    );
+  }
+}
+
 function activateTab(tabId) {
   browser.tabs.update(Number(tabId), {active: true}).then(tab => {
     browser.windows.update(tab.windowId, {focused: true});
@@ -21,7 +34,9 @@ function closeTab(tabId) {
 
 function newTabInCurrentContainer(url) {
   browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
-    const createProperties = { cookieStoreId: tabs[0].cookieStoreId };
+    const createProperties = { 
+      cookieStoreId: tabs[0].cookieStoreId 
+    };
     if(url) {
       createProperties['url'] = url
     }
@@ -103,6 +118,10 @@ async function restoreTabContainersBackup(tabContainers, windows) {
       console.info(`creating tab ${tab.url} in container ${(await newTab).cookieStoreId} (cookieStoreId: ${cookieStoreId})`);
     }
   }
+}
+
+async function containerChanged() {
+  setupMenus();
 }
 
 async function setupMenus() {
@@ -227,6 +246,7 @@ const openInDifferentContainer = function(cookieStoreId, tab) {
     cookieStoreId: cookieStoreId,
     index: tab.index+1
   };
+
   if(tab.url != 'about:newtab' && tab.url != 'about:blank') {
     tabProperties.url = tab.url;
   }
@@ -419,9 +439,72 @@ const handleSettingsMigration = async function(details) {
   browser.runtime.openOptionsPage();
 }
 
+const showContainerSelectionOnNewTabs = function(requestDetails) {
+  if(!requestDetails.originUrl && newTabs.delete(requestDetails.tabId) && requestDetails.url.startsWith('http')) { 
+    return new Promise((resolve, reject) => {
+        newTabsUrls.set(requestDetails.tabId, requestDetails.url);
+        resolve({redirectUrl: browser.extension.getURL("container-selector.html")});
+    });
+  };
+  
+  Promise.resolve({ cancel: false });
+};
+
+
+const createContainerSelectorHTML = async function() {
+  const main = document.body.appendChild($e('div', {id: 'main'}, [
+    $e('tt', { id: 'url' }),
+    $e('span', {content: 'open in:'}),
+    $e('div', {id: 'tabcontainers'})
+  ]));
+
+  document.body.appendChild(main);
+  const tabContainers = $1("#tabcontainers");
+  await renderTabContainers(tabContainers);
+  const src = $1('#main').innerHTML;
+  document.body.removeChild($1('#main'));
+
+  return src.replace(/(\r\n|\n|\r)/gm,"");
+}
+const containerSelectorHTML = createContainerSelectorHTML();
+
+const fillContainerSelector = async function(details) {
+  if(details.url == browser.extension.getURL("container-selector.html")) {
+    const url = newTabsUrls.get(details.tabId);
+    newTabsUrls.delete(details.tabId);
+    
+    browser.tabs.executeScript(details.tabId, {code: 
+      `const port = browser.runtime.connect(); \
+       document.querySelector('#main').innerHTML = '${await containerSelectorHTML}'; \
+       document.querySelector('#url').innerHTML = '${url}'; \
+       document.title = '${url}'; \
+       for(const ul of document.querySelectorAll('#tabcontainers ul')) {  \
+        const post = _ => port.postMessage({tabId: '${details.tabId}', url: '${url}', container: ul.id});
+        ul.addEventListener('click', post);
+        ul.addEventListener('keypress', e => {
+          if(e.key == 'Enter') { post(); }
+        });
+       }`});
+  }
+}
+
+browser.runtime.onConnect.addListener(function(p){
+  p.onMessage.addListener(function(msg) {
+    browser.tabs.create({
+      active: true,
+      openerTabId: Number(msg.tabId),
+      cookieStoreId: msg.container,
+      url: msg.url
+    });
+    browser.tabs.remove(Number(msg.tabId));
+  });
+});
+
 /////////////////////////// setup listeners
 browser.runtime.onInstalled.addListener(handleSettingsMigration);
-browser.webNavigation.onBeforeNavigate.addListener(openExternalLinksInCurrentContainer);
+//browser.webNavigation.onBeforeNavigate.addListener(openExternalLinksInCurrentContainer);
+
+browser.webNavigation.onCompleted.addListener(fillContainerSelector);
 
 browser.tabs.onCreated.addListener(tab => {
   if(tab.url == 'about:newtab' 
@@ -432,6 +515,15 @@ browser.tabs.onCreated.addListener(tab => {
   }
 });
 
+browser.tabs.onCreated.addListener(tab => {
+  if(tab.url != 'about:newtab' 
+     && tab.openerTabId == undefined 
+     && tab.cookieStoreId == defaultCookieStoreId) {
+    newTabs.add(tab.id);
+  }
+});
+
+browser.tabs.onUpdated.addListener(tab => newTabs.delete(tab.id));
 
 browser.tabs.onActivated.addListener(activeInfo => { showHideMoveTabActions(activeInfo.tabId)});
 browser.tabs.onActivated.addListener(updateLastCookieStoreId);
@@ -444,9 +536,9 @@ browser.tabs.onUpdated.addListener(storeScreenshot);
 browser.tabs.onUpdated.addListener(showHideMoveTabActions);
 browser.tabs.onActivated.addListener(activeInfo => showHideMoveTabActions(activeInfo.tabId));
 
-browser.contextualIdentities.onUpdated.addListener(_ => setupMenus());
-browser.contextualIdentities.onCreated.addListener(_ => setupMenus());
-browser.contextualIdentities.onRemoved.addListener(_ => setupMenus());
+browser.contextualIdentities.onUpdated.addListener(_ => containerChanged());
+browser.contextualIdentities.onCreated.addListener(_ => containerChanged());
+browser.contextualIdentities.onRemoved.addListener(_ => containerChanged());
 
 browser.windows.onFocusChanged.addListener(windowId => {
   if(windowId != browser.windows.WINDOW_ID_NONE) {
@@ -460,5 +552,6 @@ browser.windows.onFocusChanged.addListener(windowId => {
 
 browser.pageAction.onClicked.addListener(openPageActionPopup)
 
-setupMenus();
+containerChanged();
+interceptRequests();
 console.info('conex loaded');

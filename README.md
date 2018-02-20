@@ -74,3 +74,5 @@ can import to Conex (note: only tested it briefly, but it's worth a try):
 | tabs                 | for tab handling                                         |
 | tabHide              | for hiding and showing tabs                              |
 | webNavigation        | for intercepting and reacting on new tabs                |
+| webRequestBlocking   | for intercepting and reacting on external links          |
+  webRequest           | for intercepting and reacting on external links          |
