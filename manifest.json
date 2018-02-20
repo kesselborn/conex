@@ -65,15 +65,15 @@
     "menus",
     "storage",
     "tabs",
-    "webNavigation"
+    "webNavigation",
+    "webRequest",
+    "webRequestBlocking"
   ],
   "optional_permissions": [
     "activeTab",
     "bookmarks",
     "history",
     "notifications",
-    "tabHide",
-    "webRequestBlocking",
-    "webRequest"
+    "tabHide"
   ]
 }
