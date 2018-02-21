@@ -501,6 +501,7 @@ const fillContainerSelector = async function(details) {
           if(e.key == 'Enter') { post(); }
         });
        }`});
+       browser.history.deleteUrl({url: browser.extension.getURL("container-selector.html")});
   }
 }
 
