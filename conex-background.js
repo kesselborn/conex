@@ -440,14 +440,15 @@ const handleSettingsMigration = async function(details) {
 }
 
 const showContainerSelectionOnNewTabs = function(requestDetails) {
-  if(!requestDetails.originUrl && newTabs.delete(requestDetails.tabId) && requestDetails.url.startsWith('http')) { 
-    return new Promise((resolve, reject) => {
-        newTabsUrls.set(requestDetails.tabId, requestDetails.url);
-        resolve({redirectUrl: browser.extension.getURL("container-selector.html")});
-    });
-  };
-  
-  Promise.resolve({ cancel: false });
+  setTimeout(function() {
+    if(!requestDetails.originUrl && newTabs.delete(requestDetails.tabId) && requestDetails.url.startsWith('http')) { 
+      return new Promise((resolve, reject) => {
+          newTabsUrls.set(requestDetails.tabId, requestDetails.url);
+          resolve({redirectUrl: browser.extension.getURL("container-selector.html")});
+      });
+    };
+    Promise.resolve({ cancel: false });
+  }, 200);
 };
 
 
