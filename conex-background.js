@@ -3,7 +3,6 @@ const defaultCookieStoreId = 'firefox-default';
 const privateCookieStorePrefix = 'firefox-private';
 const newTabs = new Set();
 const newTabsUrls = new Map();
-const redirectedRequests = new Set();
 
 let lastCookieStoreId = defaultCookieStoreId;
 
@@ -440,18 +439,12 @@ const handleSettingsMigration = async function(details) {
   browser.runtime.openOptionsPage();
 }
 
-const showContainerSelectionOnNewTabs = function(requestDetails) {
+const showContainerSelectionOnNewTabs = function (requestDetails) {
   console.log('is new tab', newTabs.has(requestDetails.tabId), requestDetails);
   if (!requestDetails.originUrl && newTabs.has(requestDetails.tabId) && requestDetails.url.startsWith('http')) {
-    if(redirectedRequests.has(requestDetails.requestId)) {
-      console.log("cancelling request", requestDetails);
-      return {cancel: true};
-    } else {
-      console.log("redirecting request", requestDetails);
-      redirectedRequests.add(requestDetails.requestId);
-      newTabsUrls.set(requestDetails.tabId, requestDetails.url);
-      return { redirectUrl: browser.extension.getURL("container-selector.html") };
-    }
+    console.log("redirecting request", requestDetails);
+    newTabsUrls.set(requestDetails.tabId, requestDetails.url);
+    return { redirectUrl: browser.extension.getURL("container-selector.html") };
   } else {
     return { cancel: false };
   }
