@@ -385,6 +385,10 @@
         {
           "version": "0.5.9",
           "update_link": "https://github.com/kesselborn/conex/releases/download/v0.5.9/conex-0.5.9-an.fx.xpi"
+        },
+        {
+          "version": "0.5.10",
+          "update_link": "https://github.com/kesselborn/conex/releases/download/v0.5.10/conex-0.5.10-an.fx.xpi"
         }
       ]
     }
