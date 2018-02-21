@@ -72,7 +72,11 @@ function createHistoryOrBookmarkElement(historyItem) {
   const element = renderEntry(historyItem.url, historyItem.title.toLowerCase(), 0, favIconUrl);
   element.style.display = "";
 
-  element.addEventListener('click', _ => renderRestoreMenu(element));
+  element.addEventListener('click', _ => {
+      bg.openContainerSelector(element.dataset.url, element.dataset.title);
+      window.close();
+    }
+  );
 
   return element;
 }

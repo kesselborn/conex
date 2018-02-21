@@ -3,6 +3,7 @@ const defaultCookieStoreId = 'firefox-default';
 const privateCookieStorePrefix = 'firefox-private';
 const newTabs = new Set();
 const newTabsUrls = new Map();
+const newTabsTitles = new Map();
 
 let lastCookieStoreId = defaultCookieStoreId;
 
@@ -235,6 +236,16 @@ async function showContainerTabsOnly(cookieStoreId) {
   }
 }
 
+async function openContainerSelector(url, title) {
+  const tab = await browser.tabs.create({
+    active: true,
+    cookieStoreId: defaultCookieStoreId,
+    url: url,
+  });
+
+  newTabsTitles.set(tab.id, title);
+}
+
 //////////////////////////////////// end of exported functions (again: es6 features not supported yet
 const menuId = function(s) {
   return `menu_id_for_${s}`;
@@ -439,21 +450,21 @@ const handleSettingsMigration = async function(details) {
   browser.runtime.openOptionsPage();
 }
 
-const showContainerSelectionOnNewTabs = function(requestDetails) {
-  return new Promise((resolve, reject) => {
-    console.log('is new tab', newTabs.has(requestDetails.tabId), requestDetails);
-    if (!requestDetails.originUrl && newTabs.has(requestDetails.tabId) && requestDetails.url.startsWith('http')) {
-      newTabsUrls.set(requestDetails.tabId, requestDetails.url);
-      resolve({ redirectUrl: browser.extension.getURL("container-selector.html") });
-    } else {
-      resolve({ cancel: false });
-    }
-  });
-};
+const showContainerSelectionOnNewTabs = async function(requestDetails) {
+  const tab = browser.tabs.get(requestDetails.tabId);
 
+  if (!requestDetails.originUrl && newTabs.has(requestDetails.tabId) && requestDetails.url.startsWith('http')) {
+    console.debug('is new tab', newTabs.has(requestDetails.tabId), requestDetails, (await tab));
+    newTabsUrls.set(requestDetails.tabId, requestDetails.url);
+    return { redirectUrl: browser.extension.getURL("container-selector.html") };
+  } else {
+    return { cancel: false };
+  }
+};
 
 const createContainerSelectorHTML = async function() {
   const main = document.body.appendChild($e('div', {id: 'main'}, [
+    $e('h2', { id: 'title' }),
     $e('tt', { id: 'url' }),
     $e('span', {content: 'open in:'}),
     $e('div', {id: 'tabcontainers'})
@@ -474,9 +485,13 @@ const fillContainerSelector = async function(details) {
     const url = newTabsUrls.get(details.tabId);
     newTabsUrls.delete(details.tabId);
     
+    const title = newTabsTitles.get(details.tabId) ? newTabsTitles.get(details.tabId) : '';
+    newTabsTitles.delete(details.tabId);
+    
     browser.tabs.executeScript(details.tabId, {code: 
       `const port = browser.runtime.connect(); \
        document.querySelector('#main').innerHTML = '${await containerSelectorHTML}'; \
+       document.querySelector('#title').innerHTML = '${title}'; \
        document.querySelector('#url').innerHTML = '${url}'; \
        document.title = '${url}'; \
        for(const ul of document.querySelectorAll('#tabcontainers ul')) {  \
@@ -521,7 +536,6 @@ browser.tabs.onCreated.addListener(tab => {
      && tab.openerTabId == undefined 
      && tab.cookieStoreId == defaultCookieStoreId) {
     newTabs.add(tab.id);
-    console.log(`adding ${tab.id} to newTabs`, tab, newTabs);
   }
 });
 

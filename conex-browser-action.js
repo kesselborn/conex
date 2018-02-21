@@ -13,8 +13,7 @@ const keyHandling = function(event) {
       if(document.activeElement.dataset.tabId && document.activeElement.dataset.tabId > 0) { // a normal tab
         bg.activateTab(document.activeElement.dataset.tabId);
       } else if(document.activeElement.dataset.url) { // a history or bookmark entry
-        renderRestoreMenu(document.activeElement);
-        return;
+        bg.openContainerSelector(document.activeElement.dataset.url, document.activeElement.dataset.title);
       } else if(document.activeElement.dataset.cookieStore && event.ctrlKey && event.shiftKey ) { // a container section / ctrl+enter+shift
         browser.tabs.create({cookieStoreId: document.activeElement.dataset.cookieStore, active: true});
       } else if(document.activeElement.dataset.cookieStore && event.ctrlKey) { // a container section / ctrl+enter
@@ -111,7 +110,6 @@ const updateTabCount = function() {
   console.debug('updating tab count');
   for(const tabContainer of $('#tabcontainers ul')) {
     const tabCnt = Array.from($('li.tab', tabContainer)).filter(e => !tabIsDeleted(e)).length;
-    console.debug(`found ${tabCnt} tabs for container`,  tabContainer);
     const tabCntElement = $1('.tabs-count', tabContainer);
     tabCntElement.removeChild(tabCntElement.firstChild);
     tabCntElement.appendChild(document.createTextNode(`(${tabCnt} tabs)`));

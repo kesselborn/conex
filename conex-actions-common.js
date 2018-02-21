@@ -19,24 +19,3 @@ const renderTabContainers = async function(parent) {
 
   return;
 }
-
-const renderRestoreMenu = async function(parent) {
-  const header = createHeaderElement('re-store tab in');
-  parent.appendChild(header);
-  await renderTabContainers(parent);
-  parent.scrollIntoView();
-  for(const section of $('ul .section', parent)) {
-    section.addEventListener('click', _ => {
-      bg.openLinkInContainer(parent.dataset.url, section.dataset.cookieStore);
-      window.close();
-    });
-    section.addEventListener('keypress', event => {
-      if(event.key == 'Enter') {
-        event.stopPropagation();
-        bg.openLinkInContainer(parent.dataset.url, section.dataset.cookieStore);
-        window.close();
-      }
-    });
-  }
-  $1('ul .section', parent).focus();
-}
