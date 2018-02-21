@@ -516,7 +516,8 @@ browser.tabs.onCreated.addListener(tab => {
 });
 
 browser.tabs.onCreated.addListener(tab => {
-  if(tab.openerTabId == undefined 
+  if(tab.url != 'about:newtab'
+     && tab.openerTabId == undefined 
      && tab.cookieStoreId == defaultCookieStoreId) {
     newTabs.add(tab.id);
   }
