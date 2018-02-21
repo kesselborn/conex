@@ -439,14 +439,15 @@ const handleSettingsMigration = async function(details) {
   browser.runtime.openOptionsPage();
 }
 
-const showContainerSelectionOnNewTabs = function (requestDetails) {
-  console.log('is new tab', newTabs.has(requestDetails.tabId), requestDetails);
-  if (!requestDetails.originUrl && newTabs.has(requestDetails.tabId) && requestDetails.url.startsWith('http')) {
-    newTabsUrls.set(requestDetails.tabId, requestDetails.url);
-    return { redirectUrl: browser.extension.getURL("container-selector.html") };
-  };
-
-  return { cancel: false };
+const showContainerSelectionOnNewTabs = function(requestDetails) {
+  return new Promise((resolve, reject) => {
+    console.log('is new tab', newTabs.has(requestDetails.tabId), requestDetails);
+    if (!requestDetails.originUrl && newTabs.has(requestDetails.tabId) && requestDetails.url.startsWith('http')) {
+      newTabsUrls.set(requestDetails.tabId, requestDetails.url);
+      resolve({ redirectUrl: browser.extension.getURL("container-selector.html") });
+    }
+    resolve({ cancel: false });
+  });
 };
 
 
