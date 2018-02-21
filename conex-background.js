@@ -440,7 +440,7 @@ const handleSettingsMigration = async function(details) {
 }
 
 const showContainerSelectionOnNewTabs = function(requestDetails) {
-  console.log('is new tab', newTabs.get(requestDetails.tabId), requestDetails);
+  console.log('is new tab', newTabs.has(requestDetails.tabId), requestDetails);
   if(!requestDetails.originUrl && newTabs.delete(requestDetails.tabId) && requestDetails.url.startsWith('http')) { 
     return new Promise((resolve, reject) => {
         newTabsUrls.set(requestDetails.tabId, requestDetails.url);
@@ -517,7 +517,7 @@ browser.tabs.onCreated.addListener(tab => {
 });
 
 browser.tabs.onCreated.addListener(tab => {
-  if(tab.url != 'about:newtab'
+  if(tab.url == 'about:blank'
      && tab.openerTabId == undefined 
      && tab.cookieStoreId == defaultCookieStoreId) {
     console.log(`adding ${tab.id} to newTabs`, tab);
