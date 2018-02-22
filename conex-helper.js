@@ -19,6 +19,7 @@ function _refreshSettings() {
       'conex/settings/search-bookmarks',
       'conex/settings/search-history',
       'conex/settings/settings-version',
+      'conex/settings/show-container-selector',
       'conex/settings/show-favicons',
       'conex/settings/tab-moving-allowed',
     ]).then(localSettings => {

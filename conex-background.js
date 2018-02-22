@@ -369,7 +369,7 @@ const hideTabs = async function(tabIds) {
 
 const updateLastCookieStoreId = function(activeInfo) {
   browser.tabs.get(activeInfo.tabId).then(tab => {
-    if(tab.cookieStoreId != lastCookieStoreId && !tab.cookieStoreId.startsWith(privateCookieStorePrefix)) {
+    if(tab.url != 'about:blank' && tab.cookieStoreId != lastCookieStoreId && !tab.cookieStoreId.startsWith(privateCookieStorePrefix)) {
       console.debug(`cookieStoreId changed from ${lastCookieStoreId} -> ${tab.cookieStoreId}`);
       lastCookieStoreId = tab.cookieStoreId;
     }
@@ -454,9 +454,22 @@ const showContainerSelectionOnNewTabs = async function(requestDetails) {
   const tab = browser.tabs.get(requestDetails.tabId);
 
   if (!requestDetails.originUrl && newTabs.has(requestDetails.tabId) && requestDetails.url.startsWith('http')) {
-    console.debug('is new tab', newTabs.has(requestDetails.tabId), requestDetails, (await tab));
-    newTabsUrls.set(requestDetails.tabId, requestDetails.url);
-    return { redirectUrl: browser.extension.getURL("container-selector.html") };
+    if(settings['show-container-selector']) {
+      console.debug('is new tab', newTabs.has(requestDetails.tabId), requestDetails, (await tab));
+      newTabsUrls.set(requestDetails.tabId, requestDetails.url);
+      return { redirectUrl: browser.extension.getURL("container-selector.html") };
+    } else {
+      console.debug('re-opening tab in ', lastCookieStoreId);
+      browser.tabs.create({
+        active: true,
+        openerTabId: Number(requestDetails.tabId),
+        cookieStoreId: lastCookieStoreId,
+        url: requestDetails.url
+      });
+      browser.tabs.remove(Number(requestDetails.tabId));
+
+      return { cancel: true };
+    }
   } else {
     return { cancel: false };
   }
