@@ -41,12 +41,18 @@ function createTabContainerHeaderElement(id, color, name, tabindex, icon, contai
   }
   const elment =
     $e('ul', {id: id, class: color}, [
-        $e('li', {tabindex: tabindex || 1, class: 'section', data_cookie_store: id, title: 'enter: to expand\nctrl-enter: switch to container\nctrl-shift-enter: new tab in container'}, [
-        iconElement,
-        $e('span', { class: 'name', title: 'change to this container (x tabs)', content: name }),
-        $e('img',  { class: `audible-${containsAudibleTab}`, src: 'icons/loudspeaker.svg'}),
-        $e('span', { class: 'tabs-count', content: '(x tabs)'}),
-        $e('span', { class: 'new-tab-button', title: 'open new tab in this container', content: 'new tab'})
+        $e('li', {tabindex: tabindex || 1, class: 'section', data_name: name, data_cookie_store: id, title: 'enter: to expand\nctrl-enter: switch to container\nctrl-shift-enter: new tab in container'}, [
+          $e('div', {class: 'delete-container-confirmation'}, [
+            $e('span', {class: 'confirmation-tabs-count'}),
+            $e('span', {content: 'yes', class: 'yes', title: 'yes, delete container on all its tabs'}),
+            $e('span', {content: 'no', class: 'no', title: "abort mission -- abort mission!"}),
+          ]),
+          iconElement,
+          $e('span', { class: 'name', title: 'change to this container (x tabs)', content: name }),
+          $e('img',  { class: `audible-${containsAudibleTab}`, src: 'icons/loudspeaker.svg'}),
+          $e('span', { class: 'tabs-count', content: '(x tabs)'}),
+          $e('span', { class: 'toolbar new-tab-button', title: 'open new tab in this container', content: '+'}),
+          $e('span', { class: 'toolbar delete-container-button', data_name: name, data_cookie_store: id, title: 'delete this container', content: 'x'})
       ])
     ]);
 
