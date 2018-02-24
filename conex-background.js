@@ -360,7 +360,7 @@ const hideTabs = async function(tabIds) {
         type: 'basic',
         title: 'Configuration setting missing',
         message: 'Tab hiding has to be manually configured in order to work. Please see conex settings for instructions.',
-      })
+      });
       console.info('please activate tab hiding', e);
     });
   }
