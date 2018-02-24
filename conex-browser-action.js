@@ -307,6 +307,7 @@ tabContainerRendering.then(_ => {
     $1('.new-tab-button', section).addEventListener('click', _ => {
       try { clearInterval(focusSetter); } catch (e) { }
       browser.tabs.create({cookieStoreId: section.dataset.cookieStore, active: true});
+      window.close();
     });
 
     $1('.name', section).addEventListener('click', _ => {
