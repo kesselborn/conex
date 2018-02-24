@@ -26,8 +26,12 @@ const keyHandling = function(event) {
       }
       window.close();
     } catch(e){console.error(e);}
-  } else if(event.key == 'Backspace' && document.activeElement.dataset.tabId) { // close tab
-    removeTab(document.activeElement);
+  } else if(event.key == 'Backspace') {
+    if(document.activeElement.dataset.tabId) {
+      removeTab(document.activeElement);
+    } else if(document.activeElement.dataset.cookieStore) {
+      $1('.delete-container-button', event.target).click();
+    }
   } else if(event.key == 'Tab') { // needed to eat the tab event
   } else if(document.activeElement != searchElement) {
     searchElement.focus();
@@ -114,6 +118,7 @@ const updateTabCount = function() {
     tabCntElement.removeChild(tabCntElement.firstChild);
     tabCntElement.appendChild(document.createTextNode(`(${tabCnt} tabs)`));
     $1('.name', tabContainer).title = `change to this container (${tabCnt} tabs)`;
+    $1('.confirmation-tabs-count', tabContainer).innerHTML = `If you remove this container now, <b><em>${tabCnt} tabs will be closed</em></b>. Are you sure you want to remove this container?`;
 
     // hide private browsing tabs section if we don't have any private tabs open
     if(tabCnt == 0 && tabContainer.id == "firefox-private") {
@@ -298,6 +303,17 @@ const onSearchChange = function(event) {
 
 const startTime = Date.now();
 tabContainerRendering.then(_ => {
+  const deleteContainer = (cookieStoreId, name) => {
+    browser.contextualIdentities.remove(cookieStoreId).then(_ => {
+      browser.notifications.create(null, {
+        type: 'basic',
+        title: 'Success',
+        message: `Successfully deleted container ${name}`
+      });
+      window.close();
+    });
+  };
+
   for(const section of $('.section')) {
     $1('.icon', section).addEventListener('click', _ => {
       try { clearInterval(focusSetter); } catch (e) { }
@@ -308,6 +324,33 @@ tabContainerRendering.then(_ => {
       try { clearInterval(focusSetter); } catch (e) { }
       browser.tabs.create({cookieStoreId: section.dataset.cookieStore, active: true});
       window.close();
+    });
+
+    $1('.delete-container-button', section).addEventListener('click', e => {
+      const cookieStoreId = e.target.dataset.cookieStore;
+      const name = e.target.dataset.name;
+      browser.tabs.query({cookieStoreId: cookieStoreId}).then(tabs => {
+        if(tabs.length > 0) {
+          e.target.parentElement.classList.add('confirming');
+        } else {
+          deleteContainer(cookieStoreId, name);
+        }
+      });
+    });
+
+    $1('.no', section).addEventListener('click', e => {
+      e.target.parentElement.parentElement.classList.remove('confirming');
+    });
+
+    $1('.yes', section).addEventListener('click', e => {
+      const cookieStoreId = e.target.parentElement.parentElement.dataset.cookieStore;
+      browser.tabs.query({pinned: false}).then(tabs => {
+        browser.tabs.update(tabs[0].id, {active: true});
+      });
+      browser.tabs.query({cookieStoreId: cookieStoreId}).then(tabs => {
+        browser.tabs.remove(tabs.map(x => x.id));
+        deleteContainer(cookieStoreId, e.target.parentElement.parentElement.dataset.name);
+      });
     });
 
     $1('.name', section).addEventListener('click', _ => {
