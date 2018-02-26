@@ -49,8 +49,9 @@ body, ul {
   margin: 1em 0 0 0;
 }
 
-.audible-true, #browseraction span.bookmark-marker, span.close-button {
+li.section .audible-true, #browseraction span.bookmark-marker, span.close-button {
   float: right;
+  display: inherit;
 }
 
 .audible-undefined, .audible-false, li.tab:hover .audible-true {
