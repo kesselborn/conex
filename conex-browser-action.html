@@ -7,8 +7,25 @@
 </head>
 
 <body id='browseraction'>
-  <form>
+  <form id='search-form'>
     <input tabindex='1' id='search' type='search' autocomplete="off" placeholder="search for title or url"></input>
+    <a id='new-container-button' href="#" title='create new container'>+</a>
+  </form>
+  <form id='new-container-form'>
+    <div id='new-container'>
+      <input id='new-container-name' placeholder='container name' type='text'></input>
+      <select id='color'>
+        <option class='blue' val="blue">&#9679;</option>
+        <option class='turquoise' val='turquoise'>&#9679;</option>
+        <option class='green' val='green'>&#9679;</option>
+        <option class='yellow' val='yellow'>&#9679;</option>
+        <option class='orange' val='orange'>&#9679;</option>
+        <option class='red' val='red'>&#9679;</option>
+        <option class='pink' val='pink'>&#9679;</option>
+        <option class='purple' val='purple'>&#9679;</option>
+      </select>
+      <input type='submit' value='add'></input>
+    </div>
   </form>
   <div id='tabcontainers'></div>
   <div id='bookmarks'></div>
