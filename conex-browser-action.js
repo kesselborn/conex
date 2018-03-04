@@ -3,7 +3,35 @@ const containersTabsMapCreating = bg.getTabsByContainer();
 const tabContainerRendering = renderTabContainers($1('#tabcontainers'));
 let focusSetter;
 
-const keyHandling = function(event) {
+const keyDownHandling = function(event) {
+  //console.debug('keypress', event, document.activeElement);
+  try{ clearInterval(focusSetter); } catch(e) {}
+
+  // disabling shortcut ctrl+ + for search form as it causes some
+  /* if(event.target.id == 'search' && event.ctrlKey && event.key == '+') {
+    showNewContainerUi();
+  } else */ if(document.activeElement.dataset.cookieStore && event.ctrlKey && event.key == '+' ) { // a container section / ctrl+enter+shift
+    browser.tabs.create({cookieStoreId: document.activeElement.dataset.cookieStore, active: true});
+    window.close();
+  } else if(document.activeElement.dataset.cookieStore && event.ctrlKey && event.shiftKey && event.key == 'Enter' ) { // a container section / ctrl+enter+shift
+    browser.tabs.create({cookieStoreId: document.activeElement.dataset.cookieStore, active: true});
+    window.close();
+  } else if(document.activeElement.dataset.cookieStore && (event.key == 'ArrowRight' || event.key == 'ArrowLeft')) { // a container section
+    expandTabContainer(document.activeElement.dataset.cookieStore);
+    return;
+  } else if(event.key == 'Backspace') {
+    if(document.activeElement.dataset.tabId) {
+      removeTab(document.activeElement);
+    } else if(document.activeElement.dataset.cookieStore) {
+      $1('.delete-container-button', event.target).click();
+    }
+  } else if(event.key == 'Enter') {
+    console.error('unhandled active element:', document.activeElement);
+    return false;
+  }
+}
+
+const keyPressHandling = function(event) {
   //console.debug('keypress', event, document.activeElement);
   try{ clearInterval(focusSetter); } catch(e) {}
   const searchElement = $1('#search');
@@ -14,8 +42,6 @@ const keyHandling = function(event) {
         bg.activateTab(document.activeElement.dataset.tabId);
       } else if(document.activeElement.dataset.url) { // a history or bookmark entry
         bg.openContainerSelector(document.activeElement.dataset.url, document.activeElement.dataset.title);
-      } else if(document.activeElement.dataset.cookieStore && event.ctrlKey && event.shiftKey ) { // a container section / ctrl+enter+shift
-        browser.tabs.create({cookieStoreId: document.activeElement.dataset.cookieStore, active: true});
       } else if(document.activeElement.dataset.cookieStore && event.ctrlKey) { // a container section / ctrl+enter
         expandTabContainer(document.activeElement.dataset.cookieStore);
         return;
@@ -23,15 +49,10 @@ const keyHandling = function(event) {
         bg.switchToContainer(document.activeElement.dataset.cookieStore);
       } else {
         console.error('unhandled active element:', document.activeElement);
+        return false;
       }
       window.close();
     } catch(e){console.error(e);}
-  } else if(event.key == 'Backspace') {
-    if(document.activeElement.dataset.tabId) {
-      removeTab(document.activeElement);
-    } else if(document.activeElement.dataset.cookieStore) {
-      $1('.delete-container-button', event.target).click();
-    }
   } else if(event.key == 'Tab') { // needed to eat the tab event
   } else if(document.activeElement != searchElement) {
     searchElement.focus();
@@ -68,7 +89,8 @@ const expandTabContainer = function(cookieStoreId) {
   }
 }
 
-document.body.addEventListener('keypress', keyHandling);
+document.body.addEventListener('keypress', keyPressHandling);
+document.body.addEventListener('keydown', keyDownHandling);
 
 const removeTab = function(element) {
   element.style.opacity = deletedTabOpacity;
@@ -301,19 +323,46 @@ const onSearchChange = function(event) {
   }
 };
 
-const startTime = Date.now();
-tabContainerRendering.then(_ => {
-  const deleteContainer = (cookieStoreId, name) => {
-    browser.contextualIdentities.remove(cookieStoreId).then(_ => {
-      browser.notifications.create(null, {
-        type: 'basic',
-        title: 'Success',
-        message: `Successfully deleted container ${name}`
-      });
-      window.close();
-    });
-  };
+const setupNewContainerElement = async function() {
+  $1('#color').addEventListener('change', e => {
+    try { clearInterval(focusSetter); } catch (e) { };
+    $1('#color').className = e.target.options[e.target.options.selectedIndex].className;
+  });
+  $1('#new-container-name').addEventListener('focus', e => {
+    try { clearInterval(focusSetter); } catch (e) { };
+  });
+  $1('#color').options.selectedIndex = 0;
+  $1('#color').className = $1('#color').options[0].className;
+  $1('#new-container-form').addEventListener('submit', e => {
+    e.stopPropagation();
+    const name = $1('#new-container-name').value;
+    const color = $1('#color').options[$1('#color').options.selectedIndex].className;
 
+    if(name == "") {
+      return;
+    }
+
+    console.debug(`creating new container ${name} with color ${color}`);
+    browser.contextualIdentities.create({
+      name: name,
+      color: color,
+      icon: 'circle'
+    }).then(newContainer => {
+      console.info('successfully created container ', newContainer);
+      bg.switchToContainer(newContainer.cookieStoreId);
+      $1('body').className = '';
+      window.close();
+    }, e => console.error('error creating new container:', e));
+    return false;
+  });
+};
+
+const deleteContainer = (cookieStoreId, name) => {
+  browser.contextualIdentities.remove(cookieStoreId);
+  window.close();
+};
+
+const setupSectionListeners = _ => {
   for(const section of $('.section')) {
     $1('.icon', section).addEventListener('click', _ => {
       try { clearInterval(focusSetter); } catch (e) { }
@@ -358,6 +407,16 @@ tabContainerRendering.then(_ => {
       window.close();
     });
   }
+};
+
+const showNewContainerUi = function() {
+  $1('body').className = 'new-container';
+  $1('#new-container-name').focus();
+};
+
+const startTime = Date.now();
+tabContainerRendering.then(_ => {
+  setupSectionListeners();
 
   containersTabsMapCreating.then(containerTabs => {
       insertTabElements(containerTabs);
@@ -372,4 +431,10 @@ tabContainerRendering.then(_ => {
     try { $1('body').removeEventListener('mousemove', mouseMoveListener); } catch (e) { console.error(e); };
   }
   $1('body').addEventListener('mousemove', mouseMoveListener);
+  $1('#search').addEventListener('blur', function() { try { clearInterval(focusSetter); } catch (e) { }; });
+
+  $1('#new-container-button').addEventListener('click', showNewContainerUi);
+
+  setupNewContainerElement();
+
 }, e => console.error(e));
