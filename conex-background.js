@@ -123,6 +123,7 @@ async function restoreTabContainersBackup(tabContainers, windows) {
 
 async function containerChanged() {
   setupMenus();
+  containerSelectorHTML = createContainerSelectorHTML();
 }
 
 async function setupMenus() {
@@ -490,21 +491,22 @@ const createContainerSelectorHTML = async function() {
   const tabContainers = $1("#tabcontainers");
   await renderTabContainers(tabContainers);
   const src = $1('#main').innerHTML;
+  console.log('xxx', src);
   document.body.removeChild($1('#main'));
 
   return src.replace(/(\r\n|\n|\r)/gm,"");
 }
-const containerSelectorHTML = createContainerSelectorHTML();
+let containerSelectorHTML = createContainerSelectorHTML();
 
 const fillContainerSelector = async function(details) {
   if(details.url == browser.extension.getURL("container-selector.html")) {
     const url = newTabsUrls.get(details.tabId);
     newTabsUrls.delete(details.tabId);
-    
+
     const title = newTabsTitles.get(details.tabId) ? newTabsTitles.get(details.tabId) : '';
     newTabsTitles.delete(details.tabId);
-    
-    browser.tabs.executeScript(details.tabId, {code: 
+
+    browser.tabs.executeScript(details.tabId, {code:
       `const port = browser.runtime.connect(); \
        document.querySelector('#main').innerHTML = '${await containerSelectorHTML}'; \
        document.querySelector('#title').innerHTML = '${title}'; \
@@ -585,7 +587,6 @@ browser.windows.onFocusChanged.addListener(windowId => {
 
 browser.pageAction.onClicked.addListener(openPageActionPopup)
 
-containerChanged();
 interceptRequests();
 browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
   lastCookieStoreId = tabs[0].cookieStoreId;

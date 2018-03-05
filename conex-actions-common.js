@@ -16,6 +16,4 @@ const renderTabContainers = async function(parent) {
         '',
         identitiesWithAudibleContainers.includes(context.cookieStoreId)));
   }
-
-  return;
 }
