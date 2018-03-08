@@ -584,5 +584,7 @@ browser.pageAction.onClicked.addListener(openPageActionPopup)
 
 containerChanged();
 interceptRequests();
+browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
+  lastCookieStoreId = tabs[0].cookieStoreId;
+});
 console.info('conex loaded');
-updateLastCookieStoreId();
