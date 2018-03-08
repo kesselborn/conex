@@ -585,3 +585,4 @@ browser.pageAction.onClicked.addListener(openPageActionPopup)
 containerChanged();
 interceptRequests();
 console.info('conex loaded');
+updateLastCookieStoreId();
