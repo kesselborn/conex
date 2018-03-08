@@ -369,7 +369,10 @@ const hideTabs = async function(tabIds) {
 
 const updateLastCookieStoreId = function(activeInfo) {
   browser.tabs.get(activeInfo.tabId).then(tab => {
-    if(tab.url != 'about:blank' && tab.cookieStoreId != lastCookieStoreId && !tab.cookieStoreId.startsWith(privateCookieStorePrefix)) {
+    console.log('BOO', tab);
+    if((tab.url != 'about:blank' || (tab.url == 'about:blank' && tab.cookieStoreId != defaultCookieStoreId))
+        && tab.cookieStoreId != lastCookieStoreId
+        && !tab.cookieStoreId.startsWith(privateCookieStorePrefix)) {
       console.debug(`cookieStoreId changed from ${lastCookieStoreId} -> ${tab.cookieStoreId}`);
       lastCookieStoreId = tab.cookieStoreId;
     }
@@ -584,4 +587,7 @@ browser.pageAction.onClicked.addListener(openPageActionPopup)
 
 containerChanged();
 interceptRequests();
+browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
+  lastCookieStoreId = tabs[0].cookieStoreId;
+});
 console.info('conex loaded');
