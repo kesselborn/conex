@@ -1,3 +1,6 @@
+
+[![Waffle.io - Columns and their card count](https://badge.waffle.io/kesselborn/conex.svg?columns=all)](https://waffle.io/kesselborn/conex)
+
 <!-- TOC -->
 
 - [Conex](#conex)
