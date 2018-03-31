@@ -4,8 +4,8 @@ const tabContainerRendering = renderTabContainers($1('#tabcontainers'));
 let focusSetter;
 
 const keyDownHandling = function(event) {
-  //console.debug('keypress', event, document.activeElement);
-  try{ clearInterval(focusSetter); } catch(e) {}
+  //console.debug('keydown', event, document.activeElement);
+  try{ clearInterval(focusSetter); } catch(e) { console.error(e); }
 
   // disabling shortcut ctrl+ + for search form as it causes some
   /* if(event.target.id == 'search' && event.ctrlKey && event.key == '+') {
@@ -33,7 +33,7 @@ const keyDownHandling = function(event) {
 
 const keyPressHandling = function(event) {
   //console.debug('keypress', event, document.activeElement);
-  try{ clearInterval(focusSetter); } catch(e) {}
+  try{ clearInterval(focusSetter); } catch(e) { console.error(e); }
   const searchElement = $1('#search');
 
   if(event.key == 'Enter') {
@@ -42,6 +42,8 @@ const keyPressHandling = function(event) {
         bg.activateTab(document.activeElement.dataset.tabId);
       } else if(document.activeElement.dataset.url) { // a history or bookmark entry
         bg.openContainerSelector(document.activeElement.dataset.url, document.activeElement.dataset.title);
+      } else if(document.activeElement.dataset.cookieStore && event.ctrlKey && event.shiftKey ) { // a container section / ctrl+enter+shift
+        browser.tabs.create({cookieStoreId: document.activeElement.dataset.cookieStore, active: true});
       } else if(document.activeElement.dataset.cookieStore && event.ctrlKey) { // a container section / ctrl+enter
         expandTabContainer(document.activeElement.dataset.cookieStore);
         return;
@@ -49,13 +51,14 @@ const keyPressHandling = function(event) {
         bg.switchToContainer(document.activeElement.dataset.cookieStore);
       } else {
         console.error('unhandled active element:', document.activeElement);
-        return false;
       }
       window.close();
     } catch(e){console.error(e);}
+  } else if(event.key == 'Backspace' && document.activeElement.dataset.tabId) { // close tab
+    removeTab(document.activeElement);
   } else if(event.key == 'Tab') { // needed to eat the tab event
   } else if(document.activeElement != searchElement) {
-    searchElement.focus();
+    //searchElement.focus();
     searchElement.value = '';
     if(event.key.length == 1) {
       searchElement.value = event.key;
@@ -115,7 +118,7 @@ const insertTabElements = function(tabContainers) {
       });
 
       $1('.close-button', element).addEventListener('click', function(event) {
-        try{ clearInterval(focusSetter); } catch(e) {}
+        try{ clearInterval(focusSetter); } catch(e) { console.error(e); }
         event.stopPropagation();
         removeTab(element);
         return false;
@@ -220,7 +223,7 @@ const fillHistorySection = function(searchQuery) {
     text: searchQuery,
     maxResults: 30,
     startTime: 0
-  }).then(results => { 
+  }).then(results => {
     renderResults(results, tabContainerHeader);
 
     if ($1('ul', history)) {
@@ -325,11 +328,11 @@ const onSearchChange = function(event) {
 
 const setupNewContainerElement = async function() {
   $1('#color').addEventListener('change', e => {
-    try { clearInterval(focusSetter); } catch (e) { };
+    try { clearInterval(focusSetter); } catch (e) { console.error(e);  };
     $1('#color').className = e.target.options[e.target.options.selectedIndex].className;
   });
   $1('#new-container-name').addEventListener('focus', e => {
-    try { clearInterval(focusSetter); } catch (e) { };
+    try { clearInterval(focusSetter); } catch (e) { console.error(e);  };
   });
   $1('#color').options.selectedIndex = 0;
   $1('#color').className = $1('#color').options[0].className;
@@ -362,15 +365,15 @@ const deleteContainer = (cookieStoreId, name) => {
   window.close();
 };
 
-const setupSectionListeners = _ => {
+const setupSectionListeners = function() {
   for(const section of $('.section')) {
     $1('.icon', section).addEventListener('click', _ => {
-      try { clearInterval(focusSetter); } catch (e) { }
+      try { clearInterval(focusSetter); } catch (e) { console.error(e);  }
       expandTabContainer(section.dataset.cookieStore);
     });
 
     $1('.new-tab-button', section).addEventListener('click', _ => {
-      try { clearInterval(focusSetter); } catch (e) { }
+      try { clearInterval(focusSetter); } catch (e) { console.error(e);  }
       browser.tabs.create({cookieStoreId: section.dataset.cookieStore, active: true});
       window.close();
     });
@@ -427,11 +430,11 @@ tabContainerRendering.then(_ => {
   console.debug("rendering time: ", Date.now() - startTime);
   focusSetter = setInterval(function(){document.getElementById('search').focus()}, 150);
   const mouseMoveListener = function() {
-    try { clearInterval(focusSetter); } catch (e) { };
+    try { clearInterval(focusSetter); } catch (e) { console.error(e);  };
     try { $1('body').removeEventListener('mousemove', mouseMoveListener); } catch (e) { console.error(e); };
   }
   $1('body').addEventListener('mousemove', mouseMoveListener);
-  $1('#search').addEventListener('blur', function() { try { clearInterval(focusSetter); } catch (e) { }; });
+  $1('#search').addEventListener('blur', function() { try { clearInterval(focusSetter); } catch (e) { console.error(e);  }; });
 
   $1('#new-container-button').addEventListener('click', showNewContainerUi);
 

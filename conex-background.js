@@ -491,7 +491,6 @@ const createContainerSelectorHTML = async function() {
   const tabContainers = $1("#tabcontainers");
   await renderTabContainers(tabContainers);
   const src = $1('#main').innerHTML;
-  console.log('xxx', src);
   document.body.removeChild($1('#main'));
 
   return src.replace(/(\r\n|\n|\r)/gm,"");
@@ -500,7 +499,7 @@ let containerSelectorHTML = createContainerSelectorHTML();
 
 const fillContainerSelector = async function(details) {
   if(details.url == browser.extension.getURL("container-selector.html")) {
-    const url = newTabsUrls.get(details.tabId);
+    const url = newTabsUrls.get(details.tabId).replace(/'/g, "\\\'");
     newTabsUrls.delete(details.tabId);
 
     const title = newTabsTitles.get(details.tabId) ? newTabsTitles.get(details.tabId) : '';
