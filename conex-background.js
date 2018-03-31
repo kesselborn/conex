@@ -35,8 +35,8 @@ function closeTab(tabId) {
 
 function newTabInCurrentContainer(url) {
   browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
-    const createProperties = { 
-      cookieStoreId: tabs[0].cookieStoreId 
+    const createProperties = {
+      cookieStoreId: tabs[0].cookieStoreId
     };
     if(url) {
       createProperties['url'] = url

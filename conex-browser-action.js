@@ -300,7 +300,7 @@ const showHideTabContainerHeader = function(searchQuery) {
 const onSearchChange = function(event) {
   let searchQuery = "";
   if(event.type == "paste") {
-    searchQuery = event.clipboardData.getData("text");
+    searchQuery = event.clipboardData.getData("text").toLowerCase();
   } else {
     searchQuery = event.target.value.toLowerCase();
   }
