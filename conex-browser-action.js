@@ -1,11 +1,9 @@
 const deletedTabOpacity = 0.3;
 const containersTabsMapCreating = bg.getTabsByContainer();
 const tabContainerRendering = renderTabContainers($1('#tabcontainers'));
-let focusSetter;
 
 const keyDownHandling = function(event) {
   //console.debug('keydown', event, document.activeElement);
-  try{ clearInterval(focusSetter); } catch(e) { console.error(e); }
 
   if(event.target.id == 'search' && event.ctrlKey && event.key == '+') {
     showNewContainerUi();
@@ -32,7 +30,6 @@ const keyDownHandling = function(event) {
 
 const keyPressHandling = function(event) {
   //console.debug('keypress', event, document.activeElement);
-  try{ clearInterval(focusSetter); } catch(e) { console.error(e); }
   const searchElement = $1('#search');
 
   if(event.key == 'Enter') {
@@ -117,7 +114,6 @@ const insertTabElements = function(tabContainers) {
       });
 
       $1('.close-button', element).addEventListener('click', function(event) {
-        try{ clearInterval(focusSetter); } catch(e) { console.error(e); }
         event.stopPropagation();
         removeTab(element);
         return false;
@@ -327,11 +323,7 @@ const onSearchChange = function(event) {
 
 const setupNewContainerElement = async function() {
   $1('#color').addEventListener('change', e => {
-    try { clearInterval(focusSetter); } catch (e) { console.error(e);  };
     $1('#color').className = e.target.options[e.target.options.selectedIndex].className;
-  });
-  $1('#new-container-name').addEventListener('focus', e => {
-    try { clearInterval(focusSetter); } catch (e) { console.error(e);  };
   });
   $1('#color').options.selectedIndex = 0;
   $1('#color').className = $1('#color').options[0].className;
@@ -367,12 +359,10 @@ const deleteContainer = (cookieStoreId, name) => {
 const setupSectionListeners = function() {
   for(const section of $('.section')) {
     $1('.icon', section).addEventListener('click', _ => {
-      try { clearInterval(focusSetter); } catch (e) { console.error(e);  }
       expandTabContainer(section.dataset.cookieStore);
     });
 
     $1('.new-tab-button', section).addEventListener('click', _ => {
-      try { clearInterval(focusSetter); } catch (e) { console.error(e);  }
       browser.tabs.create({cookieStoreId: section.dataset.cookieStore, active: true});
       window.close();
     });
@@ -427,13 +417,10 @@ tabContainerRendering.then(_ => {
   $1('#search').addEventListener('keyup', onSearchChange);
   $1('#search').addEventListener('paste', onSearchChange);
   console.debug("rendering time: ", Date.now() - startTime);
-  focusSetter = setInterval(function(){document.getElementById('search').focus()}, 150);
   const mouseMoveListener = function() {
-    try { clearInterval(focusSetter); } catch (e) { console.error(e);  };
     try { $1('body').removeEventListener('mousemove', mouseMoveListener); } catch (e) { console.error(e); };
   }
   $1('body').addEventListener('mousemove', mouseMoveListener);
-  $1('#search').addEventListener('blur', function() { try { clearInterval(focusSetter); } catch (e) { console.error(e);  }; });
 
   $1('#new-container-button').addEventListener('click', showNewContainerUi);
 
