@@ -7,10 +7,9 @@ const keyDownHandling = function(event) {
   //console.debug('keydown', event, document.activeElement);
   try{ clearInterval(focusSetter); } catch(e) { console.error(e); }
 
-  // disabling shortcut ctrl+ + for search form as it causes some
-  /* if(event.target.id == 'search' && event.ctrlKey && event.key == '+') {
+  if(event.target.id == 'search' && event.ctrlKey && event.key == '+') {
     showNewContainerUi();
-  } else */ if(document.activeElement.dataset.cookieStore && event.ctrlKey && event.key == '+' ) { // a container section / ctrl+enter+shift
+  } else if(document.activeElement.dataset.cookieStore && event.ctrlKey && event.key == '+' ) { // a container section / ctrl+enter+shift
     browser.tabs.create({cookieStoreId: document.activeElement.dataset.cookieStore, active: true});
     window.close();
   } else if(document.activeElement.dataset.cookieStore && event.ctrlKey && event.shiftKey && event.key == 'Enter' ) { // a container section / ctrl+enter+shift
