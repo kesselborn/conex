@@ -30,10 +30,15 @@ git commit -m "Bump to version ${next_version}" manifest.json versions.json
 git tag v${next_version}
 
 # create signed addon
-#docker run -v ${PWD}:${PWD} -w ${PWD} -e HOME=${PWD} web-ext 
+#docker run -v ${PWD}:${PWD} -w ${PWD} -e HOME=${PWD} web-ext
 web-ext sign --api-key ${WEB_EXT_API_KEY:?"please set WEB_EXT_API_KEY"} \
              --api-secret ${WEB_EXT_API_SECRET:?"please set WEB_EXT_API_SECRET"} \
              --ignore-files tags tabgroups-backup.json tabgroups-backup-small.json web-ext-artifacts *.xpi icons/*.afdesign release versions.json || true
+
+if [ -n "${NO_RELEASE}" ]
+then
+  exit 0
+fi
 
 { git push --tags && git push; } || true
 
@@ -71,6 +76,11 @@ Successfully created release -- edit edit release notes at: https://github.com/$
 
 EOF
 
+if git branch|grep '^* preview$'
+then
+  exit 0
+fi
+
 read -p "release to mozilla as well (y/n)?" -n1 answer
 test "${answer}" == "y" || exit 0
 
@@ -82,7 +92,7 @@ cat manifest.json | jq 'del(.applications.gecko.update_url)' > next_manifest.jso
 mv next_manifest.json manifest.json
 ################ github release upload end
 
-#docker run -v ${PWD}:${PWD} -w ${PWD} -e HOME=${PWD} web-ext 
+#docker run -v ${PWD}:${PWD} -w ${PWD} -e HOME=${PWD} web-ext
 web-ext sign --id '{ec9d70ea-0229-49c0-bbf7-0df9bbccde35}' --api-key ${WEB_EXT_API_KEY:?'please set WEB_EXT_API_KEY'} --api-secret ${WEB_EXT_API_SECRET:?'please set WEB_EXT_API_SECRET'} --ignore-files tags tabgroups-backup.json tabgroups-backup-small.json web-ext-artifacts *.xpi icons/*.afdesign release versions.json || true
 
 git checkout manifest.json
