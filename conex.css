@@ -23,7 +23,19 @@ body, ul {
   align-items: center;
 }
 
-#pageaction span.tabs-count, #pageaction span.new-tab-button, #pageaction span.icon, #container-selector span.tabs-count, #container-selector span.new-tab-button, #container-selector span.icon, #bookmarks span.tabs-count, #bookmarks span.new-tab-button, #bookmarks li.tab span.icon, #history span.tabs-count, #history span.new-tab-button, #history li.tab span.icon, .private span.new-tab-button {
+#bookmarks li.tab span.icon, 
+  #bookmarks span.toolbar, 
+  #bookmarks span.tabs-count, 
+  #container-selector span.icon, 
+  #container-selector span.toolbar, 
+  #container-selector span.tabs-count, 
+  #history li.tab span.icon, 
+  #history span.toolbar, 
+  #history span.tabs-count, 
+  #pageaction span.icon, 
+  #pageaction span.toolbar, 
+  #pageaction span.tabs-count, 
+  .private span.toolbar {
   display: none !important;
 }
 
@@ -37,8 +49,9 @@ body, ul {
   margin: 1em 0 0 0;
 }
 
-.audible-true, #browseraction span.bookmark-marker, span.close-button {
+li.section .audible-true, #browseraction span.bookmark-marker, span.close-button {
   float: right;
+  display: inherit;
 }
 
 .audible-undefined, .audible-false, li.tab:hover .audible-true {
@@ -70,32 +83,91 @@ ul li {
   border-left: solid 5px rgb(235, 235, 236);
 }
 
+select.blue, select option.blue {
+  color: rgb(55, 173, 255);
+}
+
 ul.blue li {
   border-left: solid 5px rgb(55, 173, 255);
+}
+
+select.turquoise, select option.turquoise {
+  color: rgb(0, 199, 154);
 }
 
 ul.turquoise li {
   border-left: solid 5px rgb(0, 199, 154);
 }
 
+select.green, select option.green {
+  color: rgb(81, 205, 0);
+}
+
 ul.green li {
   border-left: solid 5px rgb(81, 205, 0);
+}
+
+select.yellow, select option.yellow {
+  color: rgb(255, 203, 0);
 }
 
 ul.yellow li {
   border-left: solid 5px rgb(255, 203, 0);
 }
 
+select.orange, select option.orange {
+  color: rgb(255, 159, 0);
+}
+
 ul.orange li {
   border-left: solid 5px rgb(255, 159, 0);
+}
+
+.new-container #new-container {
+  display: flex;
+}
+
+#new-container {
+  margin-top: 10px;
+  width: 495px;
+  display: none;
+  justify-content: space-around;
+  align-items: baseline;
+}
+
+#new-container-name, select, #add-container-button {
+  font-size: x-large;
+}
+
+select {
+  text-align: center;
+  height: 2em;
+}
+
+input[type=submit] {
+  height: 3em;
+  align-self: center;
+  display:flex;
+}
+
+select.red, select option.red {
+  color: rgb(255, 97, 61);
 }
 
 ul.red li {
   border-left: solid 5px rgb(255, 97, 61);
 }
 
+select.pink, select option.pink {
+  color: rgb(255, 75, 218);
+}
+
 ul.pink li {
   border-left: solid 5px rgb(255, 75, 218);
+}
+
+select.purple, select option.purple {
+  color: rgb(175, 81, 245);
 }
 
 ul.purple li {
@@ -143,14 +215,37 @@ ul li.tab {
   border-top: 0.5em solid black;
 }
 
-form #search {
+body.new-container #search-form {
+  display: none;
+}
+
+#search-form {
+  width: 490px;
+  margin: 10px 0px 0px 10px;
   background-color: rgb(252, 252, 252);
-  border: 1px solid rgb(252, 252, 252);
+  padding-top: 10px;
+  display: flex;
+  justify-content: space-around;
+}
+
+#search-form #search {
   font-size: large;
   font-weight: lighter;
-  padding-top: 10px;
-  margin: 10px 0px 0px 10px;
-  width: 490px;
+  width: 433px;
+  border: 1px solid rgb(252, 252, 252);
+}
+
+#search-form a {
+  width: 2em;
+  font-size: x-large;
+  color: #000;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+}
+
+#search-form a:hover {
+  background-color: rgb(220, 220, 222);
 }
 
 li {
@@ -184,10 +279,6 @@ li.section>span.icon {
   align-self: flex-start;
 }
 
-li.section>span:hover {
-  background-color: red;
-}
-
 li.section>span.name {
   align-self: auto;
   justify-content: flex-start;
@@ -195,15 +286,23 @@ li.section>span.name {
   padding-left: 0.5em;
 }
 
-li.section>span.new-tab-button, li.section>span.tabs-count {
+li.section>span.tabs-count {
   flex-basis: 5em;
 }
 
-li.section:hover>span.tabs-count, li.section>span.new-tab-button {
+li.section>span.toolbar {
+  flex-basis: 1em;
+  font-size: xx-large;
+  font-weight: 100;
+}
+
+li.section:hover>span.tabs-count,
+  li.section>span.toolbar,
+  li.section.confirming:hover>span.toolbar  {
   display: none;
 }
 
-li.section>span.tabs-count, li.section:hover>span.new-tab-button {
+li.section>span.tabs-count, li.section:hover>span.toolbar {
   display: inherit;
 }
 
@@ -217,6 +316,52 @@ li.tab {
   border-bottom: 1px solid rgb(237, 237, 237);
   padding: 10px;
   width: 480px;
+}
+
+li.section.confirming span, li.section img {
+  display:none; 
+}
+
+.confirming div.delete-container-confirmation {
+  height: 100%;
+  width: 100%;
+  display: flex;
+}
+
+li.section.confirming .delete-container-confirmation span {
+  display: inline-block;
+  padding: 10px;
+}
+
+.delete-container-confirmation {
+  display:none;
+}
+
+.delete-container-confirmation b {
+  font-weight: 900;
+}
+
+.confirming .delete-container-confirmation .no, .confirming .delete-container-confirmation .yes {
+  width: 2em;
+  text-align: center;
+  cursor: pointer;
+}
+
+.confirming .delete-container-confirmation .yes {
+  background-color: rgba(81, 205, 0, 0.5);
+}
+
+.confirming .delete-container-confirmation .yes:hover {
+  background-color: rgba(81, 205, 0, 1);
+}
+
+
+.confirming .delete-container-confirmation .no {
+  background-color: rgb(255, 97, 61, 0.7);
+}
+
+.confirming .delete-container-confirmation .no:hover {
+  background-color: rgb(255, 97, 61, 1);
 }
 
 li.tab:focus, li.tab:hover {

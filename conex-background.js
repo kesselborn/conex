@@ -123,6 +123,7 @@ async function restoreTabContainersBackup(tabContainers, windows) {
 
 async function containerChanged() {
   setupMenus();
+  containerSelectorHTML = createContainerSelectorHTML();
 }
 
 async function setupMenus() {
@@ -360,7 +361,7 @@ const hideTabs = async function(tabIds) {
         type: 'basic',
         title: 'Configuration setting missing',
         message: 'Tab hiding has to be manually configured in order to work. Please see conex settings for instructions.',
-      })
+      });
       console.info('please activate tab hiding', e);
     });
   }
@@ -494,17 +495,17 @@ const createContainerSelectorHTML = async function() {
 
   return src.replace(/(\r\n|\n|\r)/gm,"");
 }
-const containerSelectorHTML = createContainerSelectorHTML();
+let containerSelectorHTML = createContainerSelectorHTML();
 
 const fillContainerSelector = async function(details) {
   if(details.url == browser.extension.getURL("container-selector.html")) {
-    const url = newTabsUrls.get(details.tabId);
+    const url = newTabsUrls.get(details.tabId).replace(/'/g, "\\\'");
     newTabsUrls.delete(details.tabId);
-    
+
     const title = newTabsTitles.get(details.tabId) ? newTabsTitles.get(details.tabId) : '';
     newTabsTitles.delete(details.tabId);
-    
-    browser.tabs.executeScript(details.tabId, {code: 
+
+    browser.tabs.executeScript(details.tabId, {code:
       `const port = browser.runtime.connect(); \
        document.querySelector('#main').innerHTML = '${await containerSelectorHTML}'; \
        document.querySelector('#title').innerHTML = '${title}'; \
@@ -585,8 +586,8 @@ browser.windows.onFocusChanged.addListener(windowId => {
 
 browser.pageAction.onClicked.addListener(openPageActionPopup)
 
-containerChanged();
 interceptRequests();
+setupMenus();
 browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
   lastCookieStoreId = tabs[0].cookieStoreId;
 });

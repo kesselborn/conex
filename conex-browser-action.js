@@ -3,9 +3,37 @@ const containersTabsMapCreating = bg.getTabsByContainer();
 const tabContainerRendering = renderTabContainers($1('#tabcontainers'));
 let focusSetter;
 
-const keyHandling = function(event) {
+const keyDownHandling = function(event) {
+  //console.debug('keydown', event, document.activeElement);
+  try{ clearInterval(focusSetter); } catch(e) { console.error(e); }
+
+  // disabling shortcut ctrl+ + for search form as it causes some
+  /* if(event.target.id == 'search' && event.ctrlKey && event.key == '+') {
+    showNewContainerUi();
+  } else */ if(document.activeElement.dataset.cookieStore && event.ctrlKey && event.key == '+' ) { // a container section / ctrl+enter+shift
+    browser.tabs.create({cookieStoreId: document.activeElement.dataset.cookieStore, active: true});
+    window.close();
+  } else if(document.activeElement.dataset.cookieStore && event.ctrlKey && event.shiftKey && event.key == 'Enter' ) { // a container section / ctrl+enter+shift
+    browser.tabs.create({cookieStoreId: document.activeElement.dataset.cookieStore, active: true});
+    window.close();
+  } else if(document.activeElement.dataset.cookieStore && (event.key == 'ArrowRight' || event.key == 'ArrowLeft')) { // a container section
+    expandTabContainer(document.activeElement.dataset.cookieStore);
+    return;
+  } else if(event.key == 'Backspace') {
+    if(document.activeElement.dataset.tabId) {
+      removeTab(document.activeElement);
+    } else if(document.activeElement.dataset.cookieStore) {
+      $1('.delete-container-button', event.target).click();
+    }
+  } else if(event.key == 'Enter') {
+    console.error('unhandled active element:', document.activeElement);
+    return false;
+  }
+}
+
+const keyPressHandling = function(event) {
   //console.debug('keypress', event, document.activeElement);
-  try{ clearInterval(focusSetter); } catch(e) {}
+  try{ clearInterval(focusSetter); } catch(e) { console.error(e); }
   const searchElement = $1('#search');
 
   if(event.key == 'Enter') {
@@ -30,7 +58,7 @@ const keyHandling = function(event) {
     removeTab(document.activeElement);
   } else if(event.key == 'Tab') { // needed to eat the tab event
   } else if(document.activeElement != searchElement) {
-    searchElement.focus();
+    //searchElement.focus();
     searchElement.value = '';
     if(event.key.length == 1) {
       searchElement.value = event.key;
@@ -64,7 +92,8 @@ const expandTabContainer = function(cookieStoreId) {
   }
 }
 
-document.body.addEventListener('keypress', keyHandling);
+document.body.addEventListener('keypress', keyPressHandling);
+document.body.addEventListener('keydown', keyDownHandling);
 
 const removeTab = function(element) {
   element.style.opacity = deletedTabOpacity;
@@ -89,7 +118,7 @@ const insertTabElements = function(tabContainers) {
       });
 
       $1('.close-button', element).addEventListener('click', function(event) {
-        try{ clearInterval(focusSetter); } catch(e) {}
+        try{ clearInterval(focusSetter); } catch(e) { console.error(e); }
         event.stopPropagation();
         removeTab(element);
         return false;
@@ -114,6 +143,7 @@ const updateTabCount = function() {
     tabCntElement.removeChild(tabCntElement.firstChild);
     tabCntElement.appendChild(document.createTextNode(`(${tabCnt} tabs)`));
     $1('.name', tabContainer).title = `change to this container (${tabCnt} tabs)`;
+    $1('.confirmation-tabs-count', tabContainer).innerHTML = `If you remove this container now, <b><em>${tabCnt} tabs will be closed</em></b>. Are you sure you want to remove this container?`;
 
     // hide private browsing tabs section if we don't have any private tabs open
     if(tabCnt == 0 && tabContainer.id == "firefox-private") {
@@ -193,7 +223,7 @@ const fillHistorySection = function(searchQuery) {
     text: searchQuery,
     maxResults: 30,
     startTime: 0
-  }).then(results => { 
+  }).then(results => {
     renderResults(results, tabContainerHeader);
 
     if ($1('ul', history)) {
@@ -296,17 +326,83 @@ const onSearchChange = function(event) {
   }
 };
 
-const startTime = Date.now();
-tabContainerRendering.then(_ => {
+const setupNewContainerElement = async function() {
+  $1('#color').addEventListener('change', e => {
+    try { clearInterval(focusSetter); } catch (e) { console.error(e);  };
+    $1('#color').className = e.target.options[e.target.options.selectedIndex].className;
+  });
+  $1('#new-container-name').addEventListener('focus', e => {
+    try { clearInterval(focusSetter); } catch (e) { console.error(e);  };
+  });
+  $1('#color').options.selectedIndex = 0;
+  $1('#color').className = $1('#color').options[0].className;
+  $1('#new-container-form').addEventListener('submit', e => {
+    e.stopPropagation();
+    const name = $1('#new-container-name').value;
+    const color = $1('#color').options[$1('#color').options.selectedIndex].className;
+
+    if(name == "") {
+      return;
+    }
+
+    console.debug(`creating new container ${name} with color ${color}`);
+    browser.contextualIdentities.create({
+      name: name,
+      color: color,
+      icon: 'circle'
+    }).then(newContainer => {
+      console.info('successfully created container ', newContainer);
+      bg.switchToContainer(newContainer.cookieStoreId);
+      $1('body').className = '';
+      window.close();
+    }, e => console.error('error creating new container:', e));
+    return false;
+  });
+};
+
+const deleteContainer = (cookieStoreId, name) => {
+  browser.contextualIdentities.remove(cookieStoreId);
+  window.close();
+};
+
+const setupSectionListeners = function() {
   for(const section of $('.section')) {
     $1('.icon', section).addEventListener('click', _ => {
-      try { clearInterval(focusSetter); } catch (e) { }
+      try { clearInterval(focusSetter); } catch (e) { console.error(e);  }
       expandTabContainer(section.dataset.cookieStore);
     });
 
     $1('.new-tab-button', section).addEventListener('click', _ => {
-      try { clearInterval(focusSetter); } catch (e) { }
+      try { clearInterval(focusSetter); } catch (e) { console.error(e);  }
       browser.tabs.create({cookieStoreId: section.dataset.cookieStore, active: true});
+      window.close();
+    });
+
+    $1('.delete-container-button', section).addEventListener('click', e => {
+      const cookieStoreId = e.target.dataset.cookieStore;
+      const name = e.target.dataset.name;
+      browser.tabs.query({cookieStoreId: cookieStoreId}).then(tabs => {
+        if(tabs.length > 0) {
+          e.target.parentElement.classList.add('confirming');
+        } else {
+          deleteContainer(cookieStoreId, name);
+        }
+      });
+    });
+
+    $1('.no', section).addEventListener('click', e => {
+      e.target.parentElement.parentElement.classList.remove('confirming');
+    });
+
+    $1('.yes', section).addEventListener('click', e => {
+      const cookieStoreId = e.target.parentElement.parentElement.dataset.cookieStore;
+      browser.tabs.query({pinned: false}).then(tabs => {
+        browser.tabs.update(tabs[0].id, {active: true});
+      });
+      browser.tabs.query({cookieStoreId: cookieStoreId}).then(tabs => {
+        browser.tabs.remove(tabs.map(x => x.id));
+        deleteContainer(cookieStoreId, e.target.parentElement.parentElement.dataset.name);
+      });
     });
 
     $1('.name', section).addEventListener('click', _ => {
@@ -314,6 +410,16 @@ tabContainerRendering.then(_ => {
       window.close();
     });
   }
+};
+
+const showNewContainerUi = function() {
+  $1('body').className = 'new-container';
+  $1('#new-container-name').focus();
+};
+
+const startTime = Date.now();
+tabContainerRendering.then(_ => {
+  setupSectionListeners();
 
   containersTabsMapCreating.then(containerTabs => {
       insertTabElements(containerTabs);
@@ -324,8 +430,14 @@ tabContainerRendering.then(_ => {
   console.debug("rendering time: ", Date.now() - startTime);
   focusSetter = setInterval(function(){document.getElementById('search').focus()}, 150);
   const mouseMoveListener = function() {
-    try { clearInterval(focusSetter); } catch (e) { };
+    try { clearInterval(focusSetter); } catch (e) { console.error(e);  };
     try { $1('body').removeEventListener('mousemove', mouseMoveListener); } catch (e) { console.error(e); };
   }
   $1('body').addEventListener('mousemove', mouseMoveListener);
+  $1('#search').addEventListener('blur', function() { try { clearInterval(focusSetter); } catch (e) { console.error(e);  }; });
+
+  $1('#new-container-button').addEventListener('click', showNewContainerUi);
+
+  setupNewContainerElement();
+
 }, e => console.error(e));

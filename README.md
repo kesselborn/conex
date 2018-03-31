@@ -25,7 +25,7 @@ This addon tries to replace some functionality from the discontinued *TabGroups*
 
 ## Enable tab hiding
 
-Conex uses a feature which only exists in Firefox >= 59.0a1 updated after the 19th of January 2018. 
+Conex uses a feature which only in the Firefox Beta and Nightly versions.
 
 At the moment, tab hiding has to be enabled manually: In the location bar, type in `about:config`, filter for `extensions.webextensions.tabhide.enabled` and set the value to `true`.
 
