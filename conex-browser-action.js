@@ -57,7 +57,7 @@ const keyPressHandling = function(event) {
     removeTab(document.activeElement);
   } else if(event.key == 'Tab') { // needed to eat the tab event
   } else if(document.activeElement != searchElement) {
-    //searchElement.focus();
+    searchElement.focus();
     searchElement.value = '';
     if(event.key.length == 1) {
       searchElement.value = event.key;
