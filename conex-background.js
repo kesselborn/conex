@@ -370,7 +370,6 @@ const hideTabs = async function(tabIds) {
 
 const updateLastCookieStoreId = function(activeInfo) {
   browser.tabs.get(activeInfo.tabId).then(tab => {
-    console.log('BOO', tab);
     if((tab.url != 'about:blank' || (tab.url == 'about:blank' && tab.cookieStoreId != defaultCookieStoreId))
         && tab.cookieStoreId != lastCookieStoreId
         && !tab.cookieStoreId.startsWith(privateCookieStorePrefix)) {
