@@ -587,6 +587,7 @@ browser.windows.onFocusChanged.addListener(windowId => {
 browser.pageAction.onClicked.addListener(openPageActionPopup)
 
 interceptRequests();
+setupMenus();
 browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
   lastCookieStoreId = tabs[0].cookieStoreId;
 });
