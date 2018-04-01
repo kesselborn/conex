@@ -181,7 +181,7 @@ const updateTabCount = function() {
     tabCntElement.removeChild(tabCntElement.firstChild);
     tabCntElement.appendChild(document.createTextNode(`(${tabCnt} tabs)`));
     $1('.name', tabContainer).title = `change to this container (${tabCnt} tabs)`;
-    $1('.confirmation-tabs-count', tabContainer).innerHTML = `If you remove this container now, <b><em>${tabCnt} tabs will be closed</em></b>. Are you sure you want to remove this container?`;
+    $1('.confirmation-tabs-count', tabContainer).innerHTML = tabContainer.id == 'firefox-default' ? `Are you sure you want to close all <b><em>${tabCnt} tabs in the default container</em></b> ?` : `If you remove this container now, <b><em>${tabCnt} tabs will be closed</em></b>. Are you sure you want to remove this container?`;
 
     // hide private browsing tabs section if we don't have any private tabs open
     if(tabCnt == 0 && tabContainer.id == "firefox-private") {

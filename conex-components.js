@@ -39,6 +39,8 @@ function createTabContainerHeaderElement(id, color, name, tabindex, icon, contai
   if(color == "bookmarks" || color == "history") {
     iconElement = $e('span', {class: 'icon'}, [$e('span', { class: `icon-${color}`, content: icon || ' ' })]);
   }
+  const tooltip = id == 'firefox-default' ? 'close all tabs' : 'delete this container';
+
   const elment =
     $e('ul', {id: id, class: color}, [
         $e('li', {tabindex: tabindex || 1, class: 'section', data_name: name, data_cookie_store: id, title: 'enter: to expand\nctrl-enter: switch to container\nctrl-shift-enter: new tab in container'}, [
@@ -52,7 +54,7 @@ function createTabContainerHeaderElement(id, color, name, tabindex, icon, contai
           $e('img',  { class: `audible-${containsAudibleTab}`, src: 'icons/loudspeaker.svg'}),
           $e('span', { class: 'tabs-count', content: '(x tabs)'}),
           $e('span', { class: 'toolbar new-tab-button', title: 'open new tab in this container', content: '+'}),
-          $e('span', { class: 'toolbar delete-container-button', data_name: name, data_cookie_store: id, title: 'delete this container', content: 'x'})
+          $e('span', { class: 'toolbar delete-container-button', data_name: name, data_cookie_store: id, title: tooltip, content: 'x'})
       ])
     ]);
 
