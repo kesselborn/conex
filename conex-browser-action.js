@@ -23,7 +23,7 @@ const keyDownHandling = function(event) {
       $1('.delete-container-button', event.target).click();
     }
   } else if(event.key == 'Enter') {
-    console.error('unhandled active element:', document.activeElement);
+    console.error('unhandled keydown active element:', document.activeElement);
     return false;
   }
 }
@@ -45,8 +45,20 @@ const keyPressHandling = function(event) {
         return;
       } else if(document.activeElement.dataset.cookieStore) { // a container section
         bg.switchToContainer(document.activeElement.dataset.cookieStore);
+      } else if(document.activeElement.id == 'search') { // enter in search form == activate first shown container or tab
+        for(const e of $('li')) {
+          if(e.style.display != 'none' && e.dataset.tabId) {
+            console.log('activateTab', e.dataset.tabId, e);
+            bg.activateTab(e.dataset.tabId);
+            break;
+          } else if(e.style.display != 'none' && e.className == 'section' && e.tabIndex != "-1") {
+            console.log(`expandTabContainer (tabindex: ${e.tabIndex})`, e.dataset.cookieStore, e);
+            bg.switchToContainer(e.dataset.cookieStore);
+            break;
+          }
+        }
       } else {
-        console.error('unhandled active element:', document.activeElement);
+        console.error('unhandled keypress active element:', document.activeElement);
       }
       window.close();
     } catch(e){console.error(e);}
