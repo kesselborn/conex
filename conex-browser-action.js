@@ -2,6 +2,13 @@ const deletedTabOpacity = 0.3;
 const containersTabsMapCreating = bg.getTabsByContainer();
 const tabContainerRendering = renderTabContainers($1('#tabcontainers'));
 
+const newContainerKeyPress = function(event) {
+  if(event.key == 'Enter') {
+    $1('#new-container-form').submit();
+    event.stopPropagation();
+  }
+};
+
 const keyDownHandling = function(event) {
   //console.debug('keydown', event, document.activeElement);
 
@@ -456,6 +463,7 @@ tabContainerRendering.then(_ => {
       insertTabElements(containerTabs);
   }, e => console.error(e));
 
+  $1('#new-container-form').addEventListener('keypress', newContainerKeyPress);
   $1('#search').addEventListener('keyup', onSearchChange);
   $1('#search').addEventListener('paste', onSearchChange);
   console.debug("rendering time: ", Date.now() - startTime);
