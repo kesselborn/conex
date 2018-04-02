@@ -36,7 +36,7 @@ const keyPressHandling = function(event) {
     let prevElement = searchElement;
 
     for(e of $('li')) {
-      if(e.tabIndex && e.tabIndex != '-1' && e.style.display != 'none') {
+      if(e.dataset.match == 'true' && e.style.display != 'none') {
         if(e == document.activeElement) {
           prevElement.focus()
           break;
@@ -49,7 +49,7 @@ const keyPressHandling = function(event) {
     let foundActiveElement = document.activeElement == searchElement || document.activeElement == $1('body');
 
     for(e of $('li')) {
-      if(e.tabIndex && e.tabIndex != '-1' && e.style.display != 'none') {
+      if(e.dataset.match == 'true' && e.style.display != 'none') {
         if(e == document.activeElement) {
           foundActiveElement = true;
         } else {
@@ -79,8 +79,8 @@ const keyPressHandling = function(event) {
             console.log('activateTab', e.dataset.tabId, e);
             bg.activateTab(e.dataset.tabId);
             break;
-          } else if(e.style.display != 'none' && e.className == 'section' && e.tabIndex != "-1") {
-            console.log(`expandTabContainer (tabindex: ${e.tabIndex})`, e.dataset.cookieStore, e);
+          } else if(e.style.display != 'none' && e.className == 'section' && e.dataset.match == 'true') {
+            console.log('expandTabContainer', e.dataset.cookieStore, e);
             bg.switchToContainer(e.dataset.cookieStore);
             break;
           }
@@ -195,7 +195,6 @@ const resetPopup = function() {
   { const bookmarks = $1('#bookmarks ul'); if(bookmarks) { bookmarks.remove(); }}
   for(ul of $('#tabcontainers ul')) {
     ul.style.display = '';
-    ul.querySelector('li.section').tabIndex = 1;
 
     {
       const arrowDown = $1('.arrow-down', ul);
@@ -318,11 +317,11 @@ const showHideTabContainerHeader = function(searchQuery) {
 
     if(match) { // don't hide header if it matches the current search
       ul.style.display = '';
-      tabContainerHeader.tabIndex = 1;
+      tabContainerHeader.dataset.match = 'true';
       continue;
     }
 
-    tabContainerHeader.tabIndex = -1; // section should not be selectable when we have search results
+    tabContainerHeader.dataset.match = 'false'; // section should not be selectable when we have search results
 
     {
       const arrowDown = $1('.arrow-right', tabContainerHeader);

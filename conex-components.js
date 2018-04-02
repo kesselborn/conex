@@ -43,7 +43,7 @@ function createTabContainerHeaderElement(id, color, name, tabindex, icon, contai
 
   const elment =
     $e('ul', {id: id, class: color}, [
-        $e('li', {tabindex: tabindex || 1, class: 'section', data_name: name, data_cookie_store: id, title: 'enter: to expand\nctrl-enter: switch to container\nctrl-shift-enter: new tab in container'}, [
+        $e('li', {tabindex: tabindex || 1, class: 'section', data_match: 'true', data_name: name, data_cookie_store: id, title: 'enter: to expand\nctrl-enter: switch to container\nctrl-shift-enter: new tab in container'}, [
           $e('div', {class: 'delete-container-confirmation'}, [
             $e('span', {class: 'confirmation-tabs-count'}),
             $e('span', {content: 'yes', class: 'yes', title: 'yes, delete container on all its tabs'}),
@@ -108,7 +108,7 @@ const renderEntry = function(url, title, id, favIconUrl, drawBookmarkIcon, drawA
   }
 
   const element =
-    $e('li', {tabindex: 1, class: elClass, data_title: title.toLowerCase(), data_url: url, data_tab_id: id,
+    $e('li', {tabindex: 1, class: elClass, data_match: 'true', data_title: title.toLowerCase(), data_url: url, data_tab_id: id,
               style: 'display:none', title: tooltip } ,[
       $e('div', {}, [
         thumbnailElement,
