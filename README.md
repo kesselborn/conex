@@ -5,8 +5,7 @@
 
 - [Conex](#conex)
     - [Differences to tabgroups](#differences-to-tabgroups)
-    - [Enable tab hiding](#enable-tab-hiding)
-        - [Old experimental version](#old-experimental-version)
+    - [Compatibility](#compatibility)
     - [Installation](#installation)
     - [Getting back my last tab group session](#getting-back-my-last-tab-group-session)
     - [Necessary addon permissions](#necessary-addon-permissions)
@@ -19,24 +18,17 @@ This addon tries to replace some functionality from the discontinued *TabGroups*
 ## Differences to tabgroups
 
 - it lacks the big "Manage my TabGroups" overview window
-- tab groups are implemented via containers
+- conex uses containers for groupding tabs
 - the quick search contains thumbnail of the results
-- the quick search includes bookmarks and history
+- the quick search optionally includes bookmarks and history
 
-## Enable tab hiding
+## Compatibility
 
-Conex uses a feature which only in the Firefox Beta and Nightly versions.
+**Conex uses features which are only available in the FirefoxBeta and FirefoxNightly** releases (tab hiding, keyboard shortcut rebinding).
 
 At the moment, tab hiding has to be enabled manually: In the location bar, type in `about:config`, filter for `extensions.webextensions.tabhide.enabled` and set the value to `true`.
 
-### Old experimental version
-
-If you used the old experimental Conex version, please uninstall the `hidetabsexperiment`  and change the following settings in `about:config`:
-
-- `xpinstall.signatures.required`: `true`
-- `extensions.legacy.enabled`: `false`
-
-
+Due to the missing features and the requirement for enabling tab hiding manually, **conex is still labeled as experimental and incompatible with the normal, stable version of Firefox**
 ## Installation
 
 Just install from the [official mozilla addons page](https://addons.mozilla.org/en-us/firefox/addon/conex)

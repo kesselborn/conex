@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "author": "kesselborn",
-  "description": "A tabgroup'esque successor for Firefox 60.0a1 and later",
+  "description": "A tabgroup'esque successor for Firefox Quantum (FirefoxBeta and FirefoxNightly only at the moment)",
   "homepage_url": "https://github.com/kesselborn/conex",
   "name": "Conex",
   "version": "0.7.4",
@@ -42,7 +42,7 @@
       "19": "icons/icon_error_19.png",
       "38": "icons/icon_error_38.png"
     },
-    "default_title": "re-open to tab in other container (Ctrl+Shift+E / Cmd+Shift+E (mac))"
+    "default_title": "re-open to tab in other container"
   },
   "background": {
     "scripts": [
