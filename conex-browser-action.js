@@ -81,6 +81,8 @@ const keyPressHandling = function(event) {
       } else if(document.activeElement.dataset.cookieStore) { // a container section
         bg.switchToContainer(document.activeElement.dataset.cookieStore);
       } else if(document.activeElement.id == 'search') { // enter in search form == activate first shown container or tab
+        let candidate = undefined; // if we enter a section, remember this section but try to find a matching tab in this section first
+
         for(const e of $('li')) {
           if(e.style.display != 'none' && e.dataset.tabId) {
             if(e.dataset.tabId == 0) { // history or bookmark entry
@@ -92,9 +94,16 @@ const keyPressHandling = function(event) {
             }
             break;
           } else if(e.style.display != 'none' && e.className == 'section' && e.dataset.match == 'true') {
+            if(candidate) {
+              console.log('switchToContainer', e.dataset.cookieStore, e);
+              bg.switchToContainer(candidate);
+              break;
+            }
+            candidate = e.dataset.cookieStore;
+          }
+          if(candidate) {
             console.log('switchToContainer', e.dataset.cookieStore, e);
-            bg.switchToContainer(e.dataset.cookieStore);
-            break;
+            bg.switchToContainer(candidate);
           }
         }
       } else {
