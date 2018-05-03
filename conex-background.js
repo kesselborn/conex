@@ -185,7 +185,6 @@ async function switchToContainer(cookieStoreId) {
   if (tabs.length == 0) {
     browser.tabs.create({ cookieStoreId: cookieStoreId, active: true });
   } else {
-
     const lastAccessedTabs = tabs.sort((a, b) => b.lastAccessed - a.lastAccessed);
 
     // Try to switch to an unpinned tab, as switching a to pinned tab

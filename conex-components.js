@@ -40,10 +40,11 @@ function createTabContainerHeaderElement(id, color, name, tabindex, icon, contai
     iconElement = $e('span', {class: 'icon'}, [$e('span', { class: `icon-${color}`, content: icon || ' ' })]);
   }
   const tooltip = id == 'firefox-default' ? 'close all tabs' : 'delete this container';
+  const data_match = id == '' ? 'false' : 'true';
 
   const elment =
     $e('ul', {id: id, class: color}, [
-        $e('li', {tabindex: tabindex || 1, class: 'section', data_match: 'true', data_name: name, data_cookie_store: id, title: 'enter: to expand\nctrl-enter: switch to container\nctrl-shift-enter: new tab in container'}, [
+        $e('li', {tabindex: tabindex || 1, class: 'section', data_match: data_match, data_name: name, data_cookie_store: id, title: 'enter: to expand\nctrl-enter: switch to container\nctrl-shift-enter: new tab in container'}, [
           $e('div', {class: 'delete-container-confirmation'}, [
             $e('span', {class: 'confirmation-tabs-count'}),
             $e('span', {content: 'yes', class: 'yes', title: 'yes, delete container on all its tabs'}),

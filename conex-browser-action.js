@@ -83,11 +83,16 @@ const keyPressHandling = function(event) {
       } else if(document.activeElement.id == 'search') { // enter in search form == activate first shown container or tab
         for(const e of $('li')) {
           if(e.style.display != 'none' && e.dataset.tabId) {
-            console.log('activateTab', e.dataset.tabId, e);
-            bg.activateTab(e.dataset.tabId);
+            if(e.dataset.tabId == 0) { // history or bookmark entry
+              console.log('restoringTab', e.dataset.url, e);
+              bg.openContainerSelector(e.dataset.url, e.dataset.title);
+            } else {                   // a tab that is open
+              console.log('activateTab', e.dataset.tabId, e);
+              bg.activateTab(e.dataset.tabId);
+            }
             break;
           } else if(e.style.display != 'none' && e.className == 'section' && e.dataset.match == 'true') {
-            console.log('expandTabContainer', e.dataset.cookieStore, e);
+            console.log('switchToContainer', e.dataset.cookieStore, e);
             bg.switchToContainer(e.dataset.cookieStore);
             break;
           }
