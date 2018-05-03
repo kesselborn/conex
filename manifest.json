@@ -4,7 +4,7 @@
   "description": "A tabgroup'esque successor for Firefox Quantum (FirefoxBeta and FirefoxNightly only at the moment)",
   "homepage_url": "https://github.com/kesselborn/conex",
   "name": "Conex",
-  "version": "0.7.8",
+  "version": "0.7.9",
   "browser_action": {
     "default_title": "Conex (CTRL+<space>)",
     "browser_style": false,
