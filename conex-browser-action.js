@@ -21,7 +21,7 @@ const keyDownHandling = function(event) {
     browser.tabs.create({cookieStoreId: document.activeElement.dataset.cookieStore, active: true});
     window.close();
   } else if(document.activeElement.dataset.cookieStore && (event.key == 'ArrowRight' || event.key == 'ArrowLeft')) { // a container section
-    expandTabContainer(document.activeElement.dataset.cookieStore);
+    toggleExpandTabContainer(document.activeElement.dataset.cookieStore);
     return;
   } else if(event.key == 'Backspace') {
     if(document.activeElement.dataset.tabId) {
@@ -76,7 +76,7 @@ const keyPressHandling = function(event) {
       } else if(document.activeElement.dataset.cookieStore && event.ctrlKey && event.shiftKey ) { // a container section / ctrl+enter+shift
         browser.tabs.create({cookieStoreId: document.activeElement.dataset.cookieStore, active: true});
       } else if(document.activeElement.dataset.cookieStore && event.ctrlKey) { // a container section / ctrl+enter
-        expandTabContainer(document.activeElement.dataset.cookieStore);
+        toggleExpandTabContainer(document.activeElement.dataset.cookieStore);
         return;
       } else if(document.activeElement.dataset.cookieStore) { // a container section
         bg.switchToContainer(document.activeElement.dataset.cookieStore);
@@ -117,30 +117,32 @@ const keyPressHandling = function(event) {
   }
 };
 
-const expandTabContainer = function(cookieStoreId) {
-  resetPopup();
-  for(const element of $('li.tab')) {
-    element.style.display = 'none';
-  }
-
+const toggleExpandTabContainer = function(cookieStoreId) {
   const tabContainer = $1(`ul#${cookieStoreId}`);
-  if(tabContainer.dataset.expanded != "true") {
-    $1('.arrow-right', tabContainer).className = 'arrow-down';
+  if(tabContainer.dataset.expanded == "true") {
+    {
+      const e =  $1('.arrow-down', tabContainer);
+      if(e) { e.className = 'arrow-right'; }
+    }
+    for(const element of $(`ul#${cookieStoreId} li.tab`)) {
+      element.style.display = 'none';
+    }
+    tabContainer.dataset.expanded = 'false';
+  } else {
+    {
+      const e = $1('.arrow-right', tabContainer);
+      if(e) { e.className = 'arrow-down'; }
+    }
     for(const element of $(`ul#${cookieStoreId} li.tab`)) {
       const thumbnailElement = $1('.image', element);
       if(thumbnailElement && thumbnailElement.dataset.bgSet == 'false') {
         setBgImage(thumbnailElement, element.dataset.url);
       }
-      element.style.display = element.style.display == 'none' ? '' : 'none';
+      element.style.display = element.dataset.match == 'true' ? '' : 'none';
     }
-    tabContainer.dataset.expanded = true;
-  } else {
-    {
-      const e =  $1('.arrow-down', tabContainer);
-      if(e) { e.className = 'arrow-right'; }
-    }
-    tabContainer.dataset.expanded = false;
+    tabContainer.dataset.expanded = 'true';
   }
+
 }
 
 document.body.addEventListener('keypress', keyPressHandling);
@@ -313,6 +315,7 @@ const showHideTabEntries = function(searchQuery) {
         }
       }
       element.style.display = match ? '' : 'none';
+      element.dataset.match = match;
     }
   }
 };
@@ -330,23 +333,24 @@ const showHideTabContainerHeader = function(searchQuery) {
     if(match) { // don't hide header if it matches the current search
       ul.style.display = '';
       tabContainerHeader.dataset.match = 'true';
-      continue;
-    }
-
-    tabContainerHeader.dataset.match = 'false'; // section should not be selectable when we have search results
-
-    {
-      const arrowDown = $1('.arrow-right', tabContainerHeader);
-      if(arrowDown) {
-        arrowDown.className = 'arrow-down';
-      }
-    }
-
-    // hide sections that don't have tabs that match the search
-    if(Array.from(ul.querySelectorAll('li.tab')).filter(li => li.style.display != 'none') == 0) {
-      ul.style.display = 'none';
     } else {
-      ul.style.display = '';
+      ul.dataset.expanded = 'true';
+
+      {
+        const arrowDown = $1('.arrow-right', tabContainerHeader);
+        if(arrowDown) {
+          arrowDown.className = 'arrow-down';
+        }
+      }
+
+      // hide sections that don't have tabs that match the search
+      if(Array.from(ul.querySelectorAll('li.tab')).filter(li => li.style.display != 'none') == 0) {
+        ul.style.display = 'none';
+        tabContainerHeader.dataset.match = 'false';
+      } else {
+        ul.style.display = '';
+        tabContainerHeader.dataset.match = 'true';
+      }
     }
   }
 };
@@ -413,7 +417,7 @@ const deleteContainer = (cookieStoreId, name) => {
 const setupSectionListeners = function() {
   for(const section of $('.section')) {
     $1('.icon', section).addEventListener('click', _ => {
-      expandTabContainer(section.dataset.cookieStore);
+      toggleExpandTabContainer(section.dataset.cookieStore);
     });
 
     $1('.new-tab-button', section).addEventListener('click', _ => {

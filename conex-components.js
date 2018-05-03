@@ -43,7 +43,7 @@ function createTabContainerHeaderElement(id, color, name, tabindex, icon, contai
   const data_match = id == '' ? 'false' : 'true';
 
   const elment =
-    $e('ul', {id: id, class: color}, [
+    $e('ul', {id: id, data_expanded: 'false', class: color}, [
         $e('li', {tabindex: tabindex || 1, class: 'section', data_match: data_match, data_name: name, data_cookie_store: id, title: 'enter: to expand\nctrl-enter: switch to container\nctrl-shift-enter: new tab in container'}, [
           $e('div', {class: 'delete-container-confirmation'}, [
             $e('span', {class: 'confirmation-tabs-count'}),
