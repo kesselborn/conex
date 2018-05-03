@@ -92,19 +92,21 @@ const keyPressHandling = function(event) {
               console.log('activateTab', e.dataset.tabId, e);
               bg.activateTab(e.dataset.tabId);
             }
+            candidate = undefined;
             break;
           } else if(e.style.display != 'none' && e.className == 'section' && e.dataset.match == 'true') {
             if(candidate) {
-              console.log('switchToContainer', e.dataset.cookieStore, e);
+              console.log('switchToContainer', candidate);
               bg.switchToContainer(candidate);
+              candidate = undefined;
               break;
             }
             candidate = e.dataset.cookieStore;
           }
-          if(candidate) {
-            console.log('switchToContainer', e.dataset.cookieStore, e);
-            bg.switchToContainer(candidate);
-          }
+        }
+        if(candidate) {
+          console.log('switchToContainer', candidate);
+          bg.switchToContainer(candidate);
         }
       } else {
         console.error('unhandled keypress active element:', document.activeElement);
