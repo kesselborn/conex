@@ -22,13 +22,6 @@ This addon tries to replace some functionality from the discontinued *TabGroups*
 - the quick search contains thumbnail of the results
 - the quick search optionally includes bookmarks and history
 
-## Compatibility
-
-**Conex uses features which are only available in the FirefoxBeta and FirefoxNightly** releases (tab hiding, keyboard shortcut rebinding).
-
-At the moment, tab hiding has to be enabled manually: In the location bar, type in `about:config`, filter for `extensions.webextensions.tabhide.enabled` and set the value to `true`.
-
-Due to the missing features and the requirement for enabling tab hiding manually, **conex is still labeled as experimental and incompatible with the normal, stable version of Firefox**
 ## Installation
 
 Just install from the [official mozilla addons page](https://addons.mozilla.org/en-us/firefox/addon/conex)
