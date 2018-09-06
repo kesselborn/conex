@@ -452,20 +452,27 @@ const handleSettingsMigration = async function(details) {
 }
 
 const showContainerSelectionOnNewTabs = async function(requestDetails) {
-  const tab = browser.tabs.get(requestDetails.tabId);
+  const tab = await browser.tabs.get(requestDetails.tabId);
 
   if (!requestDetails.originUrl && newTabs.has(requestDetails.tabId) && requestDetails.url.startsWith('http')) {
     if(settings['show-container-selector']) {
-      console.debug('is new tab', newTabs.has(requestDetails.tabId), requestDetails, (await tab));
+      console.debug('is new tab', newTabs.has(requestDetails.tabId), requestDetails, tab);
       newTabsUrls.set(requestDetails.tabId, requestDetails.url);
       return { redirectUrl: browser.extension.getURL("container-selector.html") };
     } else {
       console.debug('re-opening tab in ', lastCookieStoreId);
+      # should probably copy all the properties of tab, and alter only the cookieStoreId
       browser.tabs.create({
-        active: true,
+        // update container related tab information
         openerTabId: Number(requestDetails.tabId),
         cookieStoreId: lastCookieStoreId,
-        url: requestDetails.url
+        // preserve existing tab information
+        active: tab.active,
+        index: tab.index,
+        openInReaderMode: tab.isInReaderMode,
+        pinned: tab.pinned,
+        url: tab.url,
+        windowId: tab.windowId
       });
       browser.tabs.remove(Number(requestDetails.tabId));
 
