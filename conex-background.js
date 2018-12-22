@@ -478,9 +478,9 @@ const showContainerSelectionOnNewTabs = async function(requestDetails) {
 const createContainerSelectorHTML = async function() {
   const main = document.body.appendChild($e('div', {id: 'main'}, [
     $e('h2', { id: 'title' }),
-    $e('tt', { id: 'url' }),
     $e('span', {content: 'open in:'}),
-    $e('div', {id: 'tabcontainers'})
+    $e('div', {id: 'tabcontainers'}),
+    $e('tt', { id: 'url' })
   ]));
 
   document.body.appendChild(main);
