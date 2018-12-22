@@ -123,7 +123,6 @@ async function restoreTabContainersBackup(tabContainers, windows) {
 
 async function containerChanged() {
   setupMenus();
-  containerSelectorHTML = createContainerSelectorHTML();
 }
 
 async function setupMenus() {
@@ -247,124 +246,124 @@ async function openContainerSelector(url, title) {
 }
 
 //////////////////////////////////// end of exported functions (again: es6 features not supported yet
-  const menuId = function(s) {
-    return `menu_id_for_${s}`;
-  }
+const menuId = function(s) {
+  return `menu_id_for_${s}`;
+}
 
-  const openInDifferentContainer = function(cookieStoreId, tab) {
-    const tabProperties = {
-      active: true,
-      cookieStoreId: cookieStoreId,
-      index: tab.index+1
-    };
-
-    if(tab.url != 'about:newtab' && tab.url != 'about:blank') {
-      tabProperties.url = tab.url;
-    }
-
-    browser.tabs.create(tabProperties);
-    browser.tabs.remove(tab.id);
-  }
-
-
-  const createMissingTabContainers = async function(tabContainers) {
-    const colors = ["blue", "turquoise", "green", "yellow", "orange", "red", "pink", "purple"];
-
-    const identities = await browser.contextualIdentities.query({});
-
-    const nameCookieStoreIdMap = new Map(identities.map(identity => [identity.name.toLowerCase(), identity.cookieStoreId]));
-    const promises = [];
-
-    for(const tabContainer of tabContainers) {
-      if(!nameCookieStoreIdMap.get(tabContainer.toLowerCase())) {
-        console.info(`creating tab container ${tabContainer}`);
-        const newIdentity = {name: tabContainer, icon: 'circle', color: colors[Math.floor(Math.random() * (8 - 0)) + 0]};
-        const identity = await browser.contextualIdentities.create(newIdentity);
-
-        nameCookieStoreIdMap.set(identity.name.toLowerCase(), identity.cookieStoreId);
-      }
-    }
-
-    return nameCookieStoreIdMap;
+const openInDifferentContainer = function(cookieStoreId, tab) {
+  const tabProperties = {
+    active: true,
+    cookieStoreId: cookieStoreId,
+    index: tab.index+1
   };
 
-  const openPageActionPopup = function(tab) {
-    if(settings['tab-moving-allowed']) {
-      browser.pageAction.show(tab.id);
+  if(tab.url != 'about:newtab' && tab.url != 'about:blank') {
+    tabProperties.url = tab.url;
+  }
+
+  browser.tabs.create(tabProperties);
+  browser.tabs.remove(tab.id);
+}
+
+
+const createMissingTabContainers = async function(tabContainers) {
+  const colors = ["blue", "turquoise", "green", "yellow", "orange", "red", "pink", "purple"];
+
+  const identities = await browser.contextualIdentities.query({});
+
+  const nameCookieStoreIdMap = new Map(identities.map(identity => [identity.name.toLowerCase(), identity.cookieStoreId]));
+  const promises = [];
+
+  for(const tabContainer of tabContainers) {
+    if(!nameCookieStoreIdMap.get(tabContainer.toLowerCase())) {
+      console.info(`creating tab container ${tabContainer}`);
+      const newIdentity = {name: tabContainer, icon: 'circle', color: colors[Math.floor(Math.random() * (8 - 0)) + 0]};
+      const identity = await browser.contextualIdentities.create(newIdentity);
+
+      nameCookieStoreIdMap.set(identity.name.toLowerCase(), identity.cookieStoreId);
     }
   }
 
-  const isBlessedUrl = function(url) {
-    return url.startsWith('http') || url.startsWith('about:blank') || url.startsWith('about:newtab');
+  return nameCookieStoreIdMap;
+};
+
+const openPageActionPopup = function(tab) {
+  if(settings['tab-moving-allowed']) {
+    browser.pageAction.show(tab.id);
+  }
+}
+
+const isBlessedUrl = function(url) {
+  return url.startsWith('http') || url.startsWith('about:blank') || url.startsWith('about:newtab');
+}
+
+const showHideMoveTabActions = async function(tabId) {
+  await readSettings;
+  const tab = browser.tabs.get(tabId);
+  const identities = browser.contextualIdentities.query({});
+
+  const enableContextMenu = async function(enable) {
+    for(identity of (await identities)) {
+      browser.menus.update(menuId(identity.cookieStoreId), { enabled: enable });
+    }
+  };
+
+  const showMoveTabMenu = async function() {
+    //enableContextMenu(isBlessedUrl((await tab).url));
+    url = (await tab).url;
+    if (isBlessedUrl(url)) {
+      browser.pageAction.setIcon({
+        tabId: tabId,
+        path: { 19: 'icons/icon_19.png', 38: 'icons/icon_38.png', 48: 'icons/icon_48.png' }
+      });
+      browser.pageAction.setPopup({ tabId: (await tab).id, popup: "conex-page-action.html" });
+      browser.pageAction.show(tabId);
+    }
+  };
+
+  if((await tab).cookieStoreId.startsWith(privateCookieStorePrefix)) {
+    browser.pageAction.hide(tabId);
+    enableContextMenu(false);
+    // temporary workaround: until https://bugzilla.mozilla.org/show_bug.cgi?id=1329304 is fixed disable browser action
+    browser.browserAction.disable(tabId);
+    return;
   }
 
-  const showHideMoveTabActions = async function(tabId) {
-    await readSettings;
-    const tab = browser.tabs.get(tabId);
-    const identities = browser.contextualIdentities.query({});
-
-    const enableContextMenu = async function(enable) {
-      for(identity of (await identities)) {
-        browser.menus.update(menuId(identity.cookieStoreId), { enabled: enable });
-      }
-    };
-
-    const showMoveTabMenu = async function() {
-      //enableContextMenu(isBlessedUrl((await tab).url));
-      url = (await tab).url;
-      if (isBlessedUrl(url)) {
-        browser.pageAction.setIcon({
-          tabId: tabId,
-          path: { 19: 'icons/icon_19.png', 38: 'icons/icon_38.png', 48: 'icons/icon_48.png' }
-        });
-        browser.pageAction.setPopup({ tabId: (await tab).id, popup: "conex-page-action.html" });
-        browser.pageAction.show(tabId);
-      }
-    };
-
-    if((await tab).cookieStoreId.startsWith(privateCookieStorePrefix)) {
-      browser.pageAction.hide(tabId);
-      enableContextMenu(false);
-      // temporary workaround: until https://bugzilla.mozilla.org/show_bug.cgi?id=1329304 is fixed disable browser action
-      browser.browserAction.disable(tabId);
-      return;
-    }
-
-    if((await tab).url.startsWith('about:blank') || (await tab).url.startsWith('about:newtab')) {
-      showMoveTabMenu();
-      return;
-    }
-
-    if(!settings['tab-moving-allowed']) {
-      browser.pageAction.hide(tabId);
-      return;
-    }
-
+  if((await tab).url.startsWith('about:blank') || (await tab).url.startsWith('about:newtab')) {
     showMoveTabMenu();
-  };
-
-  const showTabs = async function(tabIds) {
-    browser.tabs.show(tabIds);
+    return;
   }
 
-  const hideTabs = async function(tabIds) {
-    if(tabIds.length == 0) {
-      return;
+  if(!settings['tab-moving-allowed']) {
+    browser.pageAction.hide(tabId);
+    return;
+  }
+
+  showMoveTabMenu();
+};
+
+const showTabs = async function(tabIds) {
+  browser.tabs.show(tabIds);
+}
+
+const hideTabs = async function(tabIds) {
+  if(tabIds.length == 0) {
+    return;
+  }
+
+  browser.tabs.hide(tabIds);
+}
+
+const updateLastCookieStoreId = function(activeInfo) {
+  browser.tabs.get(activeInfo.tabId).then(tab => {
+    if((tab.url != 'about:blank' || (tab.url == 'about:blank' && tab.cookieStoreId != defaultCookieStoreId))
+      && tab.cookieStoreId != lastCookieStoreId
+      && !tab.cookieStoreId.startsWith(privateCookieStorePrefix)) {
+      console.debug(`cookieStoreId changed from ${lastCookieStoreId} -> ${tab.cookieStoreId}`);
+      lastCookieStoreId = tab.cookieStoreId;
     }
-
-    browser.tabs.hide(tabIds);
-  }
-
-  const updateLastCookieStoreId = function(activeInfo) {
-    browser.tabs.get(activeInfo.tabId).then(tab => {
-      if((tab.url != 'about:blank' || (tab.url == 'about:blank' && tab.cookieStoreId != defaultCookieStoreId))
-        && tab.cookieStoreId != lastCookieStoreId
-        && !tab.cookieStoreId.startsWith(privateCookieStorePrefix)) {
-        console.debug(`cookieStoreId changed from ${lastCookieStoreId} -> ${tab.cookieStoreId}`);
-        lastCookieStoreId = tab.cookieStoreId;
-      }
-    }, e => console.error(e));
-  };
+  }, e => console.error(e));
+};
 
 const storeScreenshot = async function(tabId, changeInfo, tab) {
   await readSettings;
@@ -486,13 +485,12 @@ const createContainerSelectorHTML = async function() {
 
   document.body.appendChild(main);
   const tabContainers = $1("#tabcontainers");
-  await renderTabContainers(tabContainers);
+  await renderTabContainers(tabContainers, lastCookieStoreId);
   const src = $1('#main').innerHTML;
   document.body.removeChild($1('#main'));
 
   return src.replace(/(\r\n|\n|\r)/gm,"");
 }
-let containerSelectorHTML = createContainerSelectorHTML();
 
 const fillContainerSelector = async function(details) {
   if(details.url == browser.extension.getURL("container-selector.html")) {
@@ -504,7 +502,7 @@ const fillContainerSelector = async function(details) {
 
     browser.tabs.executeScript(details.tabId, {code:
       `const port = browser.runtime.connect(); \
-      document.querySelector('#main').innerHTML = '${await containerSelectorHTML}'; \
+      document.querySelector('#main').innerHTML = '${await createContainerSelectorHTML()}'; \
       document.querySelector('#title').innerHTML = '${title}'; \
       document.querySelector('#url').innerHTML = '${url}'; \
       document.title = '${url}'; \
@@ -565,9 +563,9 @@ browser.runtime.onInstalled.addListener(handleSettingsMigration);
 browser.webNavigation.onCompleted.addListener(fillContainerSelector);
 
 browser.tabs.onCreated.addListener(tab => {
-  if(tab.url == 'about:newtab' 
+  if(tab.url == 'about:newtab'
     && tab.openerTabId == undefined
-    && tab.cookieStoreId == defaultCookieStoreId 
+    && tab.cookieStoreId == defaultCookieStoreId
     && lastCookieStoreId != defaultCookieStoreId) {
     openInDifferentContainer(lastCookieStoreId, tab);
   }
@@ -575,7 +573,7 @@ browser.tabs.onCreated.addListener(tab => {
 
 browser.tabs.onCreated.addListener(tab => {
   if(tab.url == 'about:blank'
-    && tab.openerTabId == undefined 
+    && tab.openerTabId == undefined
     && tab.cookieStoreId == defaultCookieStoreId) {
     newTabs.add(tab.id);
   }
