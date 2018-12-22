@@ -519,15 +519,42 @@ const fillContainerSelector = async function(details) {
   }
 }
 
+const openIncognito = async function(url) {
+  const windows = await browser.windows.getAll();
+  for(const window of windows) {
+    if(window.incognito) {
+      await browser.windows.update(window.id, {focused: true});
+      try {
+        await browser.tabs.create({
+          active: true,
+          url: url,
+          windowId: window.id});
+        console.debug("incognito tab created");
+      } catch(e) { console.error("error creating new tab: ", e) };
+      return;
+    }
+  }
+
+  try {
+  browser.windows.create({
+    url: url,
+    incognito: true
+  })} catch(e) { console.error("error creating private window: ", e)};
+}
+
 browser.runtime.onConnect.addListener(function(p){
   p.onMessage.addListener(function(msg) {
-    browser.tabs.create({
-      active: true,
-      openerTabId: Number(msg.tabId),
-      cookieStoreId: msg.container,
-      url: msg.url
-    });
-    browser.tabs.remove(Number(msg.tabId));
+    if(msg.container == "firefox-private") {
+      openIncognito(msg.url).then(browser.tabs.remove(Number(msg.tabId)));
+    } else {
+      browser.tabs.create({
+        active: true,
+        openerTabId: Number(msg.tabId),
+        cookieStoreId: msg.container,
+        url: msg.url
+      }).then(_ => browser.tabs.remove(Number(msg.tabId)),
+        e => console.error("error creating new tab: ", e));
+    }
   });
 });
 
