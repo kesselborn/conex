@@ -125,14 +125,18 @@ const renderEntry = function(url, title, id, favIconUrl, drawBookmarkIcon, drawA
       ]),
     ]);
 
-  if (bg.settings['show-favicons'] && favIconUrl && favIconUrl.startsWith('http')) {
-    fetch(favIconUrl, { method: "GET", }).then(res => {
-      if (res.ok) {
-        $1('img', element).src = favIconUrl;
-      } else {
-        console.error(`error fetching favicon for ${favIconUrl} -- response was`, res);
-      }
-    }, e => console.error(`error fetching ${favIconUrl}: ${e}`));
+  if (bg.settings['show-favicons'] && favIconUrl) {
+    if(favIconUrl.startsWith('http')) {
+      fetch(favIconUrl, { method: "GET", }).then(res => {
+        if (res.ok) {
+          $1('img', element).src = favIconUrl;
+        } else {
+          console.error(`error fetching favicon for ${favIconUrl} -- response was`, res);
+        }
+      }, e => console.error(`error fetching ${favIconUrl}: ${e}`));
+    } else if(favIconUrl.startsWith('data:image')) {
+      $1('img', element).src = favIconUrl;
+    }
   }
 
   return element;
