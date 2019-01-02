@@ -453,7 +453,8 @@ const handleSettingsMigration = async function(details) {
 const showContainerSelectionOnNewTabs = async function(requestDetails) {
   const tab = browser.tabs.get(requestDetails.tabId);
 
-  if (!requestDetails.originUrl && newTabs.has(requestDetails.tabId) && requestDetails.url.startsWith('http')) {
+  if ((!requestDetails.originUrl || requestDetails.originUrl == browser.extension.getURL("")) && 
+       newTabs.has(requestDetails.tabId) && requestDetails.url.startsWith('http')) {
     if(settings['show-container-selector']) {
       console.debug('is new tab', newTabs.has(requestDetails.tabId), requestDetails, (await tab));
       newTabsUrls.set(requestDetails.tabId, requestDetails.url);
