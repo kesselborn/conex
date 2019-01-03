@@ -564,7 +564,8 @@ browser.runtime.onInstalled.addListener(handleSettingsMigration);
 browser.webNavigation.onCompleted.addListener(fillContainerSelector);
 
 browser.tabs.onCreated.addListener(tab => {
-  if(tab.url == 'about:newtab'
+  if((tab.url == 'about:newtab' || tab.url == 'about:blank')
+    && tab.title.indexOf('about:') < 0
     && tab.openerTabId == undefined
     && tab.cookieStoreId == defaultCookieStoreId
     && lastCookieStoreId != defaultCookieStoreId) {
