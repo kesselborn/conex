@@ -468,15 +468,11 @@ const setupSectionListeners = function() {
       e.target.parentElement.parentElement.classList.remove('confirming');
     });
 
-    const deleteContainerWithTabs = function(dataset) {
+    const deleteContainerWithTabs = async function(dataset) {
       const cookieStoreId = dataset.cookieStore;
-      browser.tabs.query({pinned: false}).then(tabs => {
-        browser.tabs.update(tabs[0].id, {active: true});
-      });
-      browser.tabs.query({cookieStoreId: cookieStoreId}).then(tabs => {
-        browser.tabs.remove(tabs.map(x => x.id));
-        deleteContainer(cookieStoreId, dataset.name);
-      });
+      const containerTabs = await browser.tabs.query({cookieStoreId: cookieStoreId});
+      await browser.tabs.remove(containerTabs.map(x => x.id));
+      deleteContainer(cookieStoreId, dataset.name);
     }
 
     $1('.yes', section).addEventListener('click', e => {
