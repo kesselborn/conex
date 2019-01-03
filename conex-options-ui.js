@@ -241,14 +241,6 @@ browser.contextualIdentities.query({}).then(identities => {
   }
 }, e => console.error(e));
 
-function showHideTabContainersMovingDetails() {
-  $1('#moving-tabs-explanation').style.display = 'block';
-  $1('#moving-tabs-explanation').scrollIntoView(); // necessary when embedded in about:addons page
-  return false;
-}
-
-$1('#show-hide-tab-containers-moving-details-link').addEventListener('click', showHideTabContainersMovingDetails);
-
 var handlePermission = function(setting, value) {
   return new Promise((resolve, reject) => {
     const mapping = {
@@ -291,7 +283,6 @@ readSettings.then(_ => {
       checkbox.checked = 'checked';
     }
   }
-  bg.setupMenus();
 });
 
 let permissionQueryOpen = false;
@@ -350,7 +341,5 @@ for(const element of $('input[type=checkbox]')) {
         handlePermissionResult(success);
       });
     }
-
-    bg.setupMenus();
   });
 }

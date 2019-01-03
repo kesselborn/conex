@@ -46,21 +46,6 @@ function newTabInCurrentContainer(url) {
   }, e => console.error(e));
 }
 
-function openActiveTabInDifferentContainer(cookieStoreId) {
-  if(!cookieStoreId.startsWith(privateCookieStorePrefix)) {
-    console.debug(`cookieStoreId changed from ${lastCookieStoreId} -> ${cookieStoreId}`);
-    lastCookieStoreId = cookieStoreId;
-    browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
-      const activeTab = tabs[0];
-      if(isBlessedUrl(activeTab.url)) {
-        openInDifferentContainer(cookieStoreId, activeTab);
-      } else {
-        console.error(`not re-opening current tab in new container as it's not a http(s) url (url is: ${activeTab.url})`);
-      }
-    }, e=> console.error(e));
-  }
-}
-
 async function getTabsByContainer() {
   await readSettings;
   const containersTabsMap = {};
@@ -117,64 +102,6 @@ async function restoreTabContainersBackup(tabContainers, windows) {
 
       browser.tabs.onUpdated.addListener(onUpdatedHandler);
       console.info(`creating tab ${tab.url} in container ${(await newTab).cookieStoreId} (cookieStoreId: ${cookieStoreId})`);
-    }
-  }
-}
-
-async function containerChanged() {
-  setupMenus();
-}
-
-async function setupMenus() {
-  await readSettings;
-  await browser.menus.removeAll();
-  const identitiesQuery = browser.contextualIdentities.query({});
-
-  browser.menus.create({
-    id: "settings",
-    title: "Conex settings",
-    onclick: function() {browser.runtime.openOptionsPage(); },
-    contexts: ["browser_action", "page_action"]
-  });
-
-  if(settings['tab-moving-allowed']) {
-    browser.menus.create({
-      id: 'headline',
-      enabled: false,
-      title: "re-open current tab in ...",
-      contexts: ["page", "tab"],
-    });
-    browser.menus.create({
-      id: 'separator',
-      type: 'separator',
-      contexts: ["page", "tab"],
-    });
-
-    //const identities = [{cookieStoreId: 'firefox-default', color: 'default', name: 'default'}]
-    //  .concat((await identitiesQuery).sort((a,b) => a.name.toLowerCase() > b.name.toLowerCase()));
-    const identities = (await identitiesQuery).sort((a,b) => a.name.toLowerCase() > b.name.toLowerCase());
-
-    for(const identity of identities) {
-      browser.menus.create({
-        id: menuId(identity.cookieStoreId),
-        title: `${identity.name}`,
-        contexts: ["page", "tab"],
-        icons: { "16": `icons/${identity.color}_dot.svg` },
-        onclick: function(menuDetails, tab) {
-          console.info(`move tab to ${identity.cookieStoreId}`, {menuDetails: menuDetails, tab: tab}); 
-          browser.tabs.create({
-            active: tab.active, 
-            cookieStoreId: identity.cookieStoreId, 
-            url: tab.url, 
-            openerTabId: tab.id}).then(_ => browser.tabs.remove(tab.id));
-
-          if(tab.active) {
-            showContainerTabsOnly(identity.cookieStoreId);
-          } else {
-            showContainerTabsOnly(tab.cookieStoreId);
-          }
-        }
-      });
     }
   }
 }
@@ -287,60 +214,9 @@ const createMissingTabContainers = async function(tabContainers) {
   return nameCookieStoreIdMap;
 };
 
-const openPageActionPopup = function(tab) {
-  if(settings['tab-moving-allowed']) {
-    browser.pageAction.show(tab.id);
-  }
-}
-
 const isBlessedUrl = function(url) {
   return url.startsWith('http') || url.startsWith('about:blank') || url.startsWith('about:newtab');
 }
-
-const showHideMoveTabActions = async function(tabId) {
-  await readSettings;
-  const tab = browser.tabs.get(tabId);
-  const identities = browser.contextualIdentities.query({});
-
-  const enableContextMenu = async function(enable) {
-    for(identity of (await identities)) {
-      browser.menus.update(menuId(identity.cookieStoreId), { enabled: enable });
-    }
-  };
-
-  const showMoveTabMenu = async function() {
-    //enableContextMenu(isBlessedUrl((await tab).url));
-    url = (await tab).url;
-    if (isBlessedUrl(url)) {
-      browser.pageAction.setIcon({
-        tabId: tabId,
-        path: { 19: 'icons/icon_19.png', 38: 'icons/icon_38.png', 48: 'icons/icon_48.png' }
-      });
-      browser.pageAction.setPopup({ tabId: (await tab).id, popup: "conex-page-action.html" });
-      browser.pageAction.show(tabId);
-    }
-  };
-
-  if((await tab).cookieStoreId.startsWith(privateCookieStorePrefix)) {
-    browser.pageAction.hide(tabId);
-    enableContextMenu(false);
-    // temporary workaround: until https://bugzilla.mozilla.org/show_bug.cgi?id=1329304 is fixed disable browser action
-    browser.browserAction.disable(tabId);
-    return;
-  }
-
-  if((await tab).url.startsWith('about:blank') || (await tab).url.startsWith('about:newtab')) {
-    showMoveTabMenu();
-    return;
-  }
-
-  if(!settings['tab-moving-allowed']) {
-    browser.pageAction.hide(tabId);
-    return;
-  }
-
-  showMoveTabMenu();
-};
 
 const showTabs = async function(tabIds) {
   browser.tabs.show(tabIds);
@@ -380,20 +256,6 @@ const storeScreenshot = async function(tabId, changeInfo, tab) {
   }
 };
 
-const openExternalLinksInCurrentContainer = async function(details) {
-  await readSettings;
-  const tab = browser.tabs.get(details.tabId);
-
-  if(lastCookieStoreId != defaultCookieStoreId 
-    && (await tab).cookieStoreId == defaultCookieStoreId 
-    && details.url.startsWith('http')) {
-    if(settings['tab-moving-allowed']) {
-      console.info(`opening ${details.url} in current container`);
-      openInDifferentContainer(lastCookieStoreId, {id: (await tab).id, index: (await tab).index, url: details.url});
-    }
-  }
-}
-
 const handleSettingsMigration = async function(details) {
   await readSettings;
   const currentVersion = 3;
@@ -403,7 +265,7 @@ const handleSettingsMigration = async function(details) {
 
   // old setting or first install: open the setting page
   if (settings['settings-version'] == undefined) {
-    const settings = ['create-thumbnail', 'hide-tabs', 'search-bookmarks', 'search-history', 'tab-moving-allowed'];
+    const settings = ['create-thumbnail', 'hide-tabs', 'search-bookmarks', 'search-history'];
     for(let setting of settings) {
       const settingId = 'conex/settings/' + setting;
       console.debug(`setting ${settingId} to false`);
@@ -559,7 +421,6 @@ browser.runtime.onConnect.addListener(function(p){
 
 /////////////////////////// setup listeners
 browser.runtime.onInstalled.addListener(handleSettingsMigration);
-//browser.webNavigation.onBeforeNavigate.addListener(openExternalLinksInCurrentContainer);
 
 browser.webNavigation.onCompleted.addListener(fillContainerSelector);
 
@@ -582,7 +443,6 @@ browser.tabs.onCreated.addListener(tab => {
 
 browser.tabs.onUpdated.addListener(tab => newTabs.delete(tab.id));
 
-browser.tabs.onActivated.addListener(activeInfo => { showHideMoveTabActions(activeInfo.tabId)});
 browser.tabs.onActivated.addListener(updateLastCookieStoreId);
 
 browser.tabs.onActivated.addListener(function(activeInfo) {
@@ -590,27 +450,12 @@ browser.tabs.onActivated.addListener(function(activeInfo) {
 });
 
 browser.tabs.onUpdated.addListener(storeScreenshot);
-browser.tabs.onUpdated.addListener(showHideMoveTabActions);
-browser.tabs.onActivated.addListener(activeInfo => showHideMoveTabActions(activeInfo.tabId));
 
-browser.contextualIdentities.onUpdated.addListener(_ => containerChanged());
-browser.contextualIdentities.onCreated.addListener(_ => containerChanged());
-browser.contextualIdentities.onRemoved.addListener(_ => containerChanged());
-
-browser.windows.onFocusChanged.addListener(windowId => {
-  if(windowId != browser.windows.WINDOW_ID_NONE) {
-    browser.tabs.query({active: true, windowId: windowId}).then(tab => {
-      if(tab.length > 0) {
-        showHideMoveTabActions(tab[0].id);
-      }
-    }, e => console.error(e));
-  }
-});
-
-browser.pageAction.onClicked.addListener(openPageActionPopup)
 
 interceptRequests();
-setupMenus();
+browser.menus.create({ id: "settings", title: "Conex settings", onclick: function() {browser.runtime.openOptionsPage(); },
+                     contexts: ["browser_action"]});
+
 browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
   lastCookieStoreId = tabs[0].cookieStoreId;
 });

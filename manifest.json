@@ -24,25 +24,12 @@
       "suggested_key": {
         "default": "MacCtrl+Space"
       }
-    },
-    "_execute_page_action": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+E"
-      }
     }
   },
   "options_ui": {
     "page": "conex-options-ui.html",
     "browser_style": false,
     "open_in_tab": true
-  },
-  "page_action": {
-    "browser_style": true,
-    "default_icon": {
-      "19": "icons/icon_error_19.png",
-      "38": "icons/icon_error_38.png"
-    },
-    "default_title": "re-open to tab in other container"
   },
   "background": {
     "scripts": [
