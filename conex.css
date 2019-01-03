@@ -7,17 +7,6 @@ body, ul {
   overflow-x: hidden
 }
 
-#pageaction h2 {
-  width: 200px;
-  padding: 0.5em 0 0 0;
-  font-size: small;
-  text-align: center !important;
-}
-
-#pageaction li {
-  width: 200px;
-}
-
 #container-selector, #container-selector #main {
   display: flex;
   flex-direction: column;
@@ -33,9 +22,6 @@ body, ul {
   #history li.tab span.icon, 
   #history span.toolbar, 
   #history span.tabs-count, 
-  #pageaction span.icon, 
-  #pageaction span.toolbar, 
-  #pageaction span.tabs-count, 
   .private span.toolbar {
   display: none !important;
 }

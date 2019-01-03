@@ -21,10 +21,9 @@ function _refreshSettings() {
       'conex/settings/settings-version',
       'conex/settings/show-container-selector',
       'conex/settings/show-favicons',
-      'conex/settings/tab-moving-allowed',
     ]).then(localSettings => {
       for (const key in localSettings) {
-        // conex/settings/tab-moving-allowed -> tab-moving-allowed
+        // conex/settings/create-thumbnail -> create-thumbnail
         const id = key.split('/')[key.split('/').length - 1];
         settings[id] = localSettings[key];
       }

@@ -15,12 +15,6 @@
         </div>
 
         <div class='switch'>
-          <input id='tab-moving-allowed' class='option-toggle option-toggle-round' type='checkbox'>
-          <label for='tab-moving-allowed'></label>
-          <span class='checkbox-label'>enable moving tabs between containers (<em>this will potentially leak data between containers</em> <a id='show-hide-tab-containers-moving-details-link' href='javascript:false;'>details</a>)</span>
-        </div>
-
-        <div class='switch'>
           <input id='create-thumbnail' class='option-toggle option-toggle-round' type='checkbox'>
           <label for='create-thumbnail'></label>
           <span class='checkbox-label'>create tab thumbnails (disable if you have many open tabs (like > 1000))</span>
@@ -37,13 +31,13 @@
           <label for='search-bookmarks'></label>
           <span class='checkbox-label'>include bookmarks in search</span>
         </div>
-         
+
         <div class='switch'>
           <input id='search-history' class='option-toggle option-toggle-round' type='checkbox'>
           <label for='search-history'></label>
           <span class='checkbox-label'>include history in search</span>
         </div>
-         
+
         <div class='switch'>
           <input id='show-container-selector' class='option-toggle option-toggle-round' type='checkbox'>
           <label for='show-container-selector'></label>
@@ -65,14 +59,6 @@
             </tt>
           </span>
           <span>open Conex popup</span>
-        </li>
-        <li>
-          <span class="keys">
-            <tt>
-              <input id='_execute_page_action' title='focus and type shortcut you want to configure' readonly="1" class='keyboard-shortcut' type='text' value=''/>
-            </tt>
-          </span>
-          <span>move tab to another container</span>
         </li>
         <li><span class="keys"><tt>Ctrl-T / CMD-T</tt></span>open new tab in current container</li>
       </ul>
@@ -101,34 +87,6 @@
         <input id="file-picker" type="file"/>
         Select TabGroup backup file
       </label>
-    </div>
-
-    <div none" id="moving-tabs-explanation">
-      <h2>Privacy concerns when moving tabs between containers</h2>
-      <a name="moving-tabs-explanation"></a>
-      <p>Moving one URL from one container to another has the ability to increase tracking across containers.</p>
-      <h3>Explanation</h3>
-      <p>Essentially you turn containers into a organisational tool rather than a privacy one. If you imagine that when visiting websites you always wear the clothing, containers give you different clothing to wear.  These disguises containers work by clearing what websites know about you, which works really well in stopping adverts from following you around the internet.</p>
-      <p>When you transfer one URL to another container you risk that website knowing about both of your disguises.</p>
-      <p>The URL itself can leak information about your previous container or the website could make the correlation that you have visited it twice with the same browser fingerprint but without the same cookies.</p>
-      <p>Containers don’t currently solve browser fingerprinting which is a technique where websites essentially monitor the hardware and OS that you have (graphics rendering, sound and performance). Containers add ambiguity in that fingerprinting isn’t perfect either. However the more you cross that boundary the bigger the risk you are in for this correlation.</p>
-      <p>URLs themselves also contain parameters like session id’s or google analytic campaigns that could be unique to you. There isn’t any simple way to filter these out without breaking pages also.</p>
-      <h3>Other info</h3>
-      <p>Implementing this would also increase the issues <a href="https://jotter.jonathankingston.co.uk/blog/2017/04/04/containers-assignment/#the-ability-to-csrf-yourself">issue 1</a> and <a href="https://jotter.jonathankingston.co.uk/blog/2017/04/04/containers-assignment/#the-inability-to-grasp-why-containers-are-isolated">issue 3</a> here.</p>
-      <h3>Example risk</h3>
-      <p>Take for example that obscure YouTube video you wanted to look at, it turns out maybe only 5 people visit it a day. It would be clear to YouTube that you crossed a container boundary when you switched the URL over to your personal container to login.</p>
-      <p>Once a website can link the histories for two containers, imagine anything you have done in the previous container potentially known to the website. So if you visited a medical site, financial advise, shopping, adult sites or just something about your child's next school play they might gain access to all of that.</p>
-      <h3>Frequently asked questions</h3>
-      <blockquote>
-        <p>I'm not quite sure why this is so hard to switch containers per navigation then?</p>
-      </blockquote>
-      <p>Because the web has many features which makes this hard like <code>window.opener</code> this would also indeed break OAuth as previously mentioned. If you wanted opener to work across containers it is a privacy issue.</p>
-      <p>The window change requires a lot more security checking etc that will require additional work. <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1323873">Bugzilla change</a>.</p>
-      <p>This enhancement would allow assignment to stay within the same tab and clean history navigations. It doesn't however solve migrating a site from one container to another.</p>
-      <h3>Think we are wrong?</h3>
-      <p>If you think we are wrong about this, we <strong>really</strong> would like to solve this issue without the privacy impact. Please let us know if you think it is possible!</p>
-      <p>You can raise an issue on Github or contact us at <a href="mailto:containers@mozilla.com">containers@mozilla.com</a></p>
-      <hr/>
     </div>
 
     <script type="text/javascript" src="conex-helper.js"></script>
