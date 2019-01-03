@@ -3,10 +3,6 @@ const containersTabsMapCreating = bg.getTabsByContainer();
 const tabContainerRendering = renderTabContainers($1('#tabcontainers'));
 
 const newContainerKeyPress = function(event) {
-  if(event.key == 'Enter') {
-    $1('#new-container-form').submit();
-    event.stopPropagation();
-  }
 };
 
 const keyDownHandling = function(event) {
@@ -14,7 +10,7 @@ const keyDownHandling = function(event) {
 
   if(event.target.id == 'search' && event.ctrlKey && event.key == '+') {
     showNewContainerUi();
-  } else if(document.activeElement.dataset.cookieStore && event.ctrlKey && event.key == '+' ) { // a container section / ctrl+enter+shift
+  } else if(document.activeElement.dataset.cookieStore && event.ctrlKey && event.key == '+' ) { // a container section / ctrl+'+'
     browser.tabs.create({cookieStoreId: document.activeElement.dataset.cookieStore, active: true});
     window.close();
   } else if(document.activeElement.dataset.cookieStore && event.ctrlKey && event.shiftKey && event.key == 'Enter' ) { // a container section / ctrl+enter+shift
@@ -396,6 +392,30 @@ const onSearchChange = function(event) {
   }
 };
 
+const createNewContainer = function() {
+  const name = $1('#new-container-name').value;
+  const color = $1('#color').options[$1('#color').options.selectedIndex].className;
+
+  if(name == "") {
+    return;
+  }
+
+  console.debug(`creating new container ${name} with color ${color}`);
+  browser.contextualIdentities.create({
+    name: name,
+    color: color,
+    icon: 'circle'
+  }).then(newContainer => {
+    console.info('successfully created container ', newContainer);
+    console.log('GOTCHA2000');
+    bg.switchToContainer(newContainer.cookieStoreId);
+    console.log('GOTCHA2001');
+    $1('body').className = '';
+    window.close();
+  }, e => console.error('error creating new container:', e));
+  console.log('GOTCHA2002');
+};
+
 const setupNewContainerElement = async function() {
   $1('#color').addEventListener('change', e => {
     $1('#color').className = e.target.options[e.target.options.selectedIndex].className;
@@ -403,26 +423,7 @@ const setupNewContainerElement = async function() {
   $1('#color').options.selectedIndex = 0;
   $1('#color').className = $1('#color').options[0].className;
   $1('#new-container-form').addEventListener('submit', e => {
-    e.stopPropagation();
-    const name = $1('#new-container-name').value;
-    const color = $1('#color').options[$1('#color').options.selectedIndex].className;
-
-    if(name == "") {
-      return;
-    }
-
-    console.debug(`creating new container ${name} with color ${color}`);
-    browser.contextualIdentities.create({
-      name: name,
-      color: color,
-      icon: 'circle'
-    }).then(newContainer => {
-      console.info('successfully created container ', newContainer);
-      bg.switchToContainer(newContainer.cookieStoreId);
-      $1('body').className = '';
-      window.close();
-    }, e => console.error('error creating new container:', e));
-    return false;
+    createNewContainer();
   });
 };
 
@@ -499,7 +500,12 @@ tabContainerRendering.then(_ => {
       insertTabElements(containerTabs);
   }, e => console.error(e));
 
-  $1('#new-container-form').addEventListener('keypress', newContainerKeyPress);
+  $1('#new-container-form').addEventListener('keypress', e => {
+    if(e.key == 'Enter') {
+      createNewContainer();
+    }
+  });
+
   $1('#search').addEventListener('keyup', onSearchChange);
   $1('#search').addEventListener('paste', onSearchChange);
   console.debug("rendering time: ", Date.now() - startTime);
