@@ -24,10 +24,16 @@ const keyDownHandling = function(event) {
     toggleExpandTabContainer(document.activeElement.dataset.cookieStore);
     return;
   } else if(event.key == 'Backspace') {
-    if(document.activeElement.dataset.tabId) {
+    if(document.activeElement.dataset.tabId) { // delete tab
       removeTab(document.activeElement);
-    } else if(document.activeElement.dataset.cookieStore) {
-      $1('.delete-container-button', event.target).click();
+    } else if(document.activeElement.dataset.cookieStore) { // delete container
+      if(event.shiftKey) {
+        const doubleClickEvent = document.createEvent('MouseEvents');
+        doubleClickEvent.initEvent('dblclick', true, true);
+        $1('.delete-container-button', event.target).dispatchEvent(doubleClickEvent);
+      } else {
+        $1('.delete-container-button', event.target).click();
+      }
     }
   } else if(event.key == 'Enter') {
     console.error('unhandled keydown active element:', document.activeElement);
@@ -436,31 +442,45 @@ const setupSectionListeners = function() {
       window.close();
     });
 
-    $1('.delete-container-button', section).addEventListener('click', e => {
+    const deleteContainerHandler = function(e, force) {
       const cookieStoreId = e.target.dataset.cookieStore;
       const name = e.target.dataset.name;
       browser.tabs.query({cookieStoreId: cookieStoreId}).then(tabs => {
-        if(tabs.length > 0) {
+        if(tabs.length > 0 && !force) {
           e.target.parentElement.classList.add('confirming');
+        } else if(tabs.length > 0 && force) {
+          deleteContainerWithTabs(e.target.parentElement.dataset);
         } else {
           deleteContainer(cookieStoreId, name);
         }
       });
+    };
+
+    $1('.delete-container-button', section).addEventListener('click', e => {
+      deleteContainerHandler(e, false);
+    });
+
+    $1('.delete-container-button', section).addEventListener('dblclick', e => {
+      deleteContainerHandler(e, true);
     });
 
     $1('.no', section).addEventListener('click', e => {
       e.target.parentElement.parentElement.classList.remove('confirming');
     });
 
-    $1('.yes', section).addEventListener('click', e => {
-      const cookieStoreId = e.target.parentElement.parentElement.dataset.cookieStore;
+    const deleteContainerWithTabs = function(dataset) {
+      const cookieStoreId = dataset.cookieStore;
       browser.tabs.query({pinned: false}).then(tabs => {
         browser.tabs.update(tabs[0].id, {active: true});
       });
       browser.tabs.query({cookieStoreId: cookieStoreId}).then(tabs => {
         browser.tabs.remove(tabs.map(x => x.id));
-        deleteContainer(cookieStoreId, e.target.parentElement.parentElement.dataset.name);
+        deleteContainer(cookieStoreId, dataset.name);
       });
+    }
+
+    $1('.yes', section).addEventListener('click', e => {
+      deleteContainerWithTabs(e.target.parentElement.parentElement.dataset);
     });
 
     $1('.name', section).addEventListener('click', _ => {
