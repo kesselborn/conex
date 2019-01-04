@@ -441,6 +441,12 @@ browser.tabs.onCreated.addListener(tab => {
   }
 });
 
+browser.windows.onFocusChanged.addListener(windowId => {
+  browser.tabs.query({active: true, windowId: windowId}).then(tabs => {
+    lastCookieStoreId = tabs[0].cookieStoreId;
+  });
+});
+
 browser.tabs.onUpdated.addListener(tab => newTabs.delete(tab.id));
 browser.tabs.onActivated.addListener(updateLastCookieStoreId);
 browser.tabs.onActivated.addListener(function(activeInfo) {
