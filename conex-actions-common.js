@@ -2,6 +2,7 @@ const renderTabContainers = async function(parent, topContainer) {
   const tabs = browser.tabs.query({audible: true});
   const identities = browser.contextualIdentities.query({});
 
+  const newContainerMode = (await browser.browserAction.getBadgeText({})) == 'new';
   browser.browserAction.setBadgeText({text: ''});
   const identitiesWithAudibleContainers = (await tabs).map(x => x.cookieStoreId);
 
@@ -29,4 +30,6 @@ const renderTabContainers = async function(parent, topContainer) {
           identitiesWithAudibleContainers.includes(context.cookieStoreId)));
     }
   }
+
+  return newContainerMode;
 }

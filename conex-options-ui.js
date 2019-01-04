@@ -111,7 +111,12 @@ Key combinations must consist of two or three keys:
     the letters A-Z
     the numbers 0-9
     the function keys F1-F12
-    Comma, Period, Home, End, PageUp, PageDown, Space, Insert, Delete, Up, Down, Left, Right`);
+    Comma, Period, Home, End, PageUp, PageDown, Space, Insert, Delete, Up, Down, Left, Right
+          
+NOTE: if a key-combination triggers a different action, you will not create a new Shortcut -- but
+      re-assigning does work (try for example Alt+S).
+          
+`);
         e.target.blur();
       }
     });

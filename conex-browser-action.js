@@ -493,7 +493,11 @@ const showNewContainerUi = function() {
 };
 
 const startTime = Date.now();
-tabContainerRendering.then(_ => {
+tabContainerRendering.then(newContainerMode => {
+  if(newContainerMode) {
+    showNewContainerUi();
+  }
+
   setupSectionListeners();
 
   containersTabsMapCreating.then(containerTabs => {

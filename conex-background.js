@@ -315,7 +315,7 @@ const handleSettingsMigration = async function(details) {
 const showContainerSelectionOnNewTabs = async function(requestDetails) {
   const tab = browser.tabs.get(requestDetails.tabId);
 
-  if ((!requestDetails.originUrl || requestDetails.originUrl == browser.extension.getURL("")) && 
+  if ((!requestDetails.originUrl || requestDetails.originUrl == browser.extension.getURL("")) &&
        newTabs.has(requestDetails.tabId) && requestDetails.url.startsWith('http')) {
     if(settings['show-container-selector']) {
       console.debug('is new tab', newTabs.has(requestDetails.tabId), requestDetails, (await tab));
@@ -442,15 +442,12 @@ browser.tabs.onCreated.addListener(tab => {
 });
 
 browser.tabs.onUpdated.addListener(tab => newTabs.delete(tab.id));
-
 browser.tabs.onActivated.addListener(updateLastCookieStoreId);
-
 browser.tabs.onActivated.addListener(function(activeInfo) {
   showCurrentContainerTabsOnly(activeInfo.tabId);
 });
 
 browser.tabs.onUpdated.addListener(storeScreenshot);
-
 
 interceptRequests();
 browser.menus.create({ id: "settings", title: "Conex settings", onclick: function() {browser.runtime.openOptionsPage(); },
@@ -459,4 +456,13 @@ browser.menus.create({ id: "settings", title: "Conex settings", onclick: functio
 browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
   lastCookieStoreId = tabs[0].cookieStoreId;
 });
+
+browser.commands.onCommand.addListener(function(command) {
+  console.debug("command called", command);
+  if(command == "new-container") {
+    browser.browserAction.setBadgeText({text: "new"});
+    browser.browserAction.openPopup();
+  }
+});
+
 console.info('conex loaded');

@@ -24,6 +24,11 @@
       "suggested_key": {
         "default": "MacCtrl+Space"
       }
+    },
+    "new-container": {
+      "suggested_key": {
+        "default": "Alt+Shift+N"
+      }
     }
   },
   "options_ui": {
