@@ -11,8 +11,11 @@ const keyDownHandling = function(event) {
   if(event.target.id == 'search' && event.ctrlKey && event.key == '+') {
     showNewContainerUi();
   } else if(document.activeElement.dataset.cookieStore && event.ctrlKey && event.key == '+' ) { // a container section / ctrl+'+'
-    browser.tabs.create({cookieStoreId: document.activeElement.dataset.cookieStore, active: true});
-    window.close();
+    browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
+      browser.tabs.create({cookieStoreId: document.activeElement.dataset.cookieStore, active: true, openerTabId: tabs[0].id }).then(
+        _ => window.close(),
+        e => console.error('error creating new tab: ', e));
+    }, e => console.error('error getting current tab: ', e));
   } else if(document.activeElement.dataset.cookieStore && event.ctrlKey && event.shiftKey && event.key == 'Enter' ) { // a container section / ctrl+enter+shift
     browser.tabs.create({cookieStoreId: document.activeElement.dataset.cookieStore, active: true});
     window.close();
@@ -407,13 +410,10 @@ const createNewContainer = function() {
     icon: 'circle'
   }).then(newContainer => {
     console.info('successfully created container ', newContainer);
-    console.log('GOTCHA2000');
     bg.switchToContainer(newContainer.cookieStoreId);
-    console.log('GOTCHA2001');
     $1('body').className = '';
     window.close();
   }, e => console.error('error creating new container:', e));
-  console.log('GOTCHA2002');
 };
 
 const setupNewContainerElement = async function() {
@@ -439,8 +439,12 @@ const setupSectionListeners = function() {
     });
 
     $1('.new-tab-button', section).addEventListener('click', _ => {
-      browser.tabs.create({cookieStoreId: section.dataset.cookieStore, active: true});
-      window.close();
+      browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
+        browser.tabs.create({cookieStoreId: section.dataset.cookieStore, active: true, openerTabId: tabs[0].id }).then(
+          _ => window.close(),
+          e => console.error('error creating new tab: ', e)
+        );
+      }, e => console.error('error getting current tab: ', e));
     });
 
     const deleteContainerHandler = function(e, force) {
