@@ -107,9 +107,10 @@ async function restoreTabContainersBackup(tabContainers, windows) {
 }
 
 async function switchToContainer(cookieStoreId) {
-  const tabs = await browser.tabs.query({ cookieStoreId: cookieStoreId });
+  const tabs = await browser.tabs.query({windowId: browser.windows.WINDOW_ID_CURRENT, cookieStoreId: cookieStoreId});
   if (tabs.length == 0) {
-    browser.tabs.create({ cookieStoreId: cookieStoreId, active: true });
+    const openerTab = (await browser.tabs.query({windowId: browser.windows.WINDOW_ID_CURRENT}))[0];
+    browser.tabs.create({ openerTabId: openerTab.id, cookieStoreId: cookieStoreId, active: true });
   } else {
     const lastAccessedTabs = tabs.sort((a, b) => b.lastAccessed - a.lastAccessed);
 
