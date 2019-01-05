@@ -322,9 +322,9 @@ const showContainerSelectionOnNewTabs = async function(requestDetails) {
       newTabsUrls.set(requestDetails.tabId, requestDetails.url);
       return { redirectUrl: browser.extension.getURL("container-selector.html") };
     } else {
-      console.debug('re-opening tab in ', lastCookieStoreId);
+      console.debug('re-opening tab in ', lastCookieStoreId, (await tab));
       browser.tabs.create({
-        active: true,
+        active: (await tab).active,
         openerTabId: Number(requestDetails.tabId),
         cookieStoreId: lastCookieStoreId,
         url: requestDetails.url
