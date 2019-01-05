@@ -2,8 +2,6 @@ const deletedTabOpacity = 0.3;
 const containersTabsMapCreating = bg.getTabsByContainer();
 const tabContainerRendering = renderTabContainers($1('#tabcontainers'));
 
-const newContainerKeyPress = function(event) {
-};
 
 const keyDownHandling = function(event) {
   //console.debug('keydown', event, document.activeElement);
@@ -11,11 +9,7 @@ const keyDownHandling = function(event) {
   if(event.target.id == 'search' && event.ctrlKey && event.key == '+') {
     showNewContainerUi();
   } else if(document.activeElement.dataset.cookieStore && event.ctrlKey && event.key == '+' ) { // a container section / ctrl+'+'
-    browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
-      browser.tabs.create({cookieStoreId: document.activeElement.dataset.cookieStore, active: true, openerTabId: tabs[0].id }).then(
-        _ => window.close(),
-        e => console.error('error creating new tab: ', e));
-    }, e => console.error('error getting current tab: ', e));
+    newTabInContainer(document.activeElement.dataset.cookieStore);
   } else if(document.activeElement.dataset.cookieStore && event.ctrlKey && event.shiftKey && event.key == 'Enter' ) { // a container section / ctrl+enter+shift
     browser.tabs.create({cookieStoreId: document.activeElement.dataset.cookieStore, active: true});
     window.close();
@@ -131,6 +125,14 @@ const keyPressHandling = function(event) {
       searchElement.value = event.key;
     }
   }
+};
+
+const newTabInContainer = function(cookieStoreId) {
+  browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
+    browser.tabs.create({cookieStoreId: cookieStoreId, active: true, openerTabId: tabs[0].id }).then(
+      _ => window.close(),
+      e => console.error('error creating new tab: ', e));
+  }, e => console.error('error getting current tab: ', e));
 };
 
 const toggleExpandTabContainer = function(cookieStoreId) {
@@ -439,12 +441,7 @@ const setupSectionListeners = function() {
     });
 
     $1('.new-tab-button', section).addEventListener('click', _ => {
-      browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
-        browser.tabs.create({cookieStoreId: section.dataset.cookieStore, active: true, openerTabId: tabs[0].id }).then(
-          _ => window.close(),
-          e => console.error('error creating new tab: ', e)
-        );
-      }, e => console.error('error getting current tab: ', e));
+      newTabInContainer(section.dataset.cookieStore);
     });
 
     const deleteContainerHandler = function(e, force) {
