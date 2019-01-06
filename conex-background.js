@@ -35,8 +35,9 @@ function closeTab(tabId) {
 
 function newTabInCurrentContainer(url) {
   browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
+    cookieStoreId = tabs.length > 0 ? tabs[0].cookieStoreId : defaultCookieStoreId;
     const createProperties = {
-      cookieStoreId: tabs[0].cookieStoreId
+      cookieStoreId: cookieStoreId
     };
     if(url) {
       createProperties['url'] = url
@@ -109,8 +110,12 @@ async function restoreTabContainersBackup(tabContainers, windows) {
 async function switchToContainer(cookieStoreId) {
   const tabs = await browser.tabs.query({windowId: browser.windows.WINDOW_ID_CURRENT, cookieStoreId: cookieStoreId});
   if (tabs.length == 0) {
-    const openerTab = (await browser.tabs.query({windowId: browser.windows.WINDOW_ID_CURRENT}))[0];
-    browser.tabs.create({ openerTabId: openerTab.id, cookieStoreId: cookieStoreId, active: true });
+    const allTabs = await browser.tabs.query({windowId: browser.windows.WINDOW_ID_CURRENT});
+    if(allTabs.length > 0) {
+      browser.tabs.create({ openerTabId: allTabs[0].id, cookieStoreId: cookieStoreId, active: true });
+    } else {
+      console.error("did not find any active tab in window with id: ", browser.windows.WINDOW_ID_CURRENT);
+    }
   } else {
     const lastAccessedTabs = tabs.sort((a, b) => b.lastAccessed - a.lastAccessed);
 
@@ -444,7 +449,9 @@ browser.tabs.onCreated.addListener(tab => {
 
 browser.windows.onFocusChanged.addListener(windowId => {
   browser.tabs.query({active: true, windowId: windowId}).then(tabs => {
-    lastCookieStoreId = tabs[0].cookieStoreId;
+    if(tabs.length > 0) {
+      lastCookieStoreId = tabs[0].cookieStoreId;
+    }
   });
 });
 
@@ -461,7 +468,9 @@ browser.menus.create({ id: "settings", title: "Conex settings", onclick: functio
                      contexts: ["browser_action"]});
 
 browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
-  lastCookieStoreId = tabs[0].cookieStoreId;
+  if(tabs.length > 0) {
+    lastCookieStoreId = tabs[0].cookieStoreId;
+  }
 });
 
 browser.commands.onCommand.addListener(function(command) {

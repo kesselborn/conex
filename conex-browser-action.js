@@ -129,9 +129,13 @@ const keyPressHandling = function(event) {
 
 const newTabInContainer = function(cookieStoreId) {
   browser.tabs.query({active: true, windowId: browser.windows.WINDOW_ID_CURRENT}).then(tabs => {
+    if(tabs.length > 0) {
     browser.tabs.create({cookieStoreId: cookieStoreId, active: true, openerTabId: tabs[0].id }).then(
       _ => window.close(),
       e => console.error('error creating new tab: ', e));
+    } else {
+      console.error("did not find any active tab in window with id: ", browser.windows.WINDOW_ID_CURRENT);
+    }
   }, e => console.error('error getting current tab: ', e));
 };
 

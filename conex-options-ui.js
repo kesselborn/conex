@@ -320,8 +320,12 @@ for(const element of $('input[type=checkbox]')) {
         handlePermission(event.target.id, value).then(success => {
           if(success) {
             browser.tabs.query({ active: true, windowId: browser.windows.WINDOW_ID_CURRENT }).then(tabs => {
-              const activeTab = tabs[0];
-              bg.showCurrentContainerTabsOnly(activeTab.id);
+              if(tabs.length > 0) {
+                const activeTab = tabs[0];
+                bg.showCurrentContainerTabsOnly(activeTab.id);
+              } else {
+                console.error("did not find any active tab in window with id: ", browser.windows.WINDOW_ID_CURRENT);
+              }
             });
           }
           handlePermissionResult(success);
