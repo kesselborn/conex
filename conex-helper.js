@@ -21,6 +21,7 @@ function _refreshSettings() {
       'conex/settings/settings-version',
       'conex/settings/show-container-selector',
       'conex/settings/show-favicons',
+      'conex/settings/close-reopened-tabs',
     ]).then(localSettings => {
       for (const key in localSettings) {
         // conex/settings/create-thumbnail -> create-thumbnail

@@ -264,7 +264,7 @@ const storeScreenshot = async function(tabId, changeInfo, tab) {
 
 const handleSettingsMigration = async function(details) {
   await readSettings;
-  const currentVersion = 3;
+  const currentVersion = 4;
   if(settings['settings-version'] == currentVersion) {
     return;
   }
@@ -306,6 +306,16 @@ const handleSettingsMigration = async function(details) {
       console.error(`error persisting settings: ${e}`)
     }
   }
+
+  // setting version 3: no notifications necessary anymore
+  if(settings['settings-version'] == 3) {
+    try {
+      await browser.storage.local.set({ 'conex/settings/settings-version': currentVersion });
+    } catch(e) {
+      console.error(`error persisting settings: ${e}`)
+    }
+  }
+
 
   try {
     await browser.storage.local.set({ 'conex/settings/settings-version': currentVersion });
@@ -390,6 +400,27 @@ const fillContainerSelector = async function(details) {
   }
 }
 
+const closeIfReopened = async function(tab) {
+  if(!settings['close-reopened-tabs']) {
+    return;
+  }
+
+  const title = tab.title;
+  const index = tab.index;
+  const potentialOpenerIndex = index - 1;
+
+  try {
+    const potentialOpeners = await browser.tabs.query({index: potentialOpenerIndex});
+    if(potentialOpeners.length > 0) {
+      if(potentialOpeners[0].url.includes(title)) {
+        console.info("detected re-opening of", potentialOpeners[0], " ... closing original tab");
+        await browser.tabs.remove(potentialOpeners[0].id);
+        showCurrentContainerTabsOnly(tab.id);
+      }
+    }
+  } catch(e) { console.error("error closing reopened tab:", e); }
+}
+
 const openIncognito = async function(url) {
   const windows = await browser.windows.getAll();
   for(const window of windows) {
@@ -435,18 +466,19 @@ browser.runtime.onInstalled.addListener(handleSettingsMigration);
 browser.webNavigation.onCompleted.addListener(fillContainerSelector);
 
 browser.tabs.onCreated.addListener(tab => {
-  if(tab.url == 'about:newtab'
-    && tab.openerTabId == undefined
-    && tab.cookieStoreId == defaultCookieStoreId
-    && lastCookieStoreId != defaultCookieStoreId) {
+  if(tab.url == 'about:newtab' && tab.openerTabId == undefined && tab.cookieStoreId == defaultCookieStoreId && lastCookieStoreId != defaultCookieStoreId) {
     openInDifferentContainer(lastCookieStoreId, tab);
   }
 });
 
 browser.tabs.onCreated.addListener(tab => {
-  if(tab.url == 'about:blank'
-    && tab.openerTabId == undefined
-    && tab.cookieStoreId == defaultCookieStoreId) {
+  if(tab.url == 'about:blank') {
+    closeIfReopened(tab);
+  }
+});
+
+browser.tabs.onCreated.addListener(tab => {
+  if(tab.url == 'about:blank' && tab.openerTabId == undefined && tab.cookieStoreId == defaultCookieStoreId) {
     newTabs.add(tab.id);
   }
 });
