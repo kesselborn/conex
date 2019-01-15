@@ -319,6 +319,10 @@ const handleSettingsMigration = async function(details) {
 }
 
 const showContainerSelectionOnNewTabs = async function(requestDetails) {
+  if(requestDetails.tabId < 0) {
+    return;
+  }
+
   const tab = browser.tabs.get(requestDetails.tabId);
 
   if ((!requestDetails.originUrl || requestDetails.originUrl == browser.extension.getURL("")) &&
