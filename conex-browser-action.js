@@ -5,8 +5,39 @@ const tabContainerRendering = renderTabContainers($1('#tabcontainers'));
 
 const keyDownHandling = function(event) {
   //console.debug('keydown', event, document.activeElement);
+  const searchElement = $1('#search');
 
-  if(event.target.id == 'search' && event.ctrlKey && event.key == '+') {
+  if(event.key == 'ArrowUp') {
+    console.debug('arrowup');
+    let prevElement = searchElement;
+
+    for(e of $('li')) {
+      if(e.dataset.match == 'true' && e.style.display != 'none') {
+        if(e == document.activeElement) {
+          prevElement.focus()
+          break;
+        } else {
+          prevElement = e;
+        }
+      }
+    }
+  } else if(event.key == 'ArrowDown') {
+    console.debug('arrowdown');
+    let foundActiveElement = document.activeElement == searchElement || document.activeElement == $1('body');
+
+    for(e of $('li')) {
+      if(e.dataset.match == 'true' && e.style.display != 'none') {
+        if(e == document.activeElement) {
+          foundActiveElement = true;
+        } else {
+          if(foundActiveElement) {
+            e.focus();
+            break;
+          }
+        }
+      }
+    }
+  } else if(event.target.id == 'search' && event.ctrlKey && event.key == '+') {
     showNewContainerUi();
   } else if(document.activeElement.dataset.cookieStore && event.ctrlKey && event.key == '+' ) { // a container section / ctrl+'+'
     newTabInContainer(document.activeElement.dataset.cookieStore);
@@ -38,35 +69,7 @@ const keyPressHandling = function(event) {
   //console.debug('keypress', event, document.activeElement);
   const searchElement = $1('#search');
 
-  if(event.key == 'ArrowUp') {
-    let prevElement = searchElement;
-
-    for(e of $('li')) {
-      if(e.dataset.match == 'true' && e.style.display != 'none') {
-        if(e == document.activeElement) {
-          prevElement.focus()
-          break;
-        } else {
-          prevElement = e;
-        }
-      }
-    }
-  } else if(event.key == 'ArrowDown') {
-    let foundActiveElement = document.activeElement == searchElement || document.activeElement == $1('body');
-
-    for(e of $('li')) {
-      if(e.dataset.match == 'true' && e.style.display != 'none') {
-        if(e == document.activeElement) {
-          foundActiveElement = true;
-        } else {
-          if(foundActiveElement) {
-            e.focus();
-            break;
-          }
-        }
-      }
-    }
-  } else if(event.key == 'Enter') {
+  if(event.key == 'Enter') {
     try {
       if(document.activeElement.dataset.tabId && document.activeElement.dataset.tabId > 0) { // a normal tab
         bg.activateTab(document.activeElement.dataset.tabId);
