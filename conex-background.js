@@ -247,17 +247,17 @@ const updateLastCookieStoreId = function(activeInfo) {
   }, e => console.error(e));
 };
 
-const storeScreenshot = async function(tabId, changeInfo, tab) {
+const storeScreenshot = async function(details) {
   await readSettings;
+  const tab = await browser.tabs.get(details.tabId);
+
   if(settings['create-thumbnail']) {
-    if (changeInfo.status == 'complete' && tab.url != 'about:blank' && tab.url != 'about:newtab') {
-      try {
-        const imageData = await browser.tabs.captureVisibleTab(null, { format: 'jpeg', quality: imageQuality });
-        await browser.storage.local.set({ [cleanUrl(tab.url)]: { thumbnail: imageData, favicon: tab.favIconUrl } });
-        console.debug('succesfully created thumbnail for', cleanUrl(tab.url));
-      } catch(e) {
-        console.error('error creating tab screenshot:', e);
-      }
+    try {
+      const imageData = await browser.tabs.captureTab(tab.id, { format: 'jpeg', quality: imageQuality });
+      await browser.storage.local.set({ [cleanUrl(tab.url)]: { thumbnail: imageData, favicon: tab.favIconUrl } });
+      console.debug('succesfully created thumbnail for', cleanUrl(tab.url));
+    } catch(e) {
+      console.error('error creating tab screenshot:', e);
     }
   }
 };
@@ -497,7 +497,7 @@ browser.tabs.onActivated.addListener(function(activeInfo) {
   showCurrentContainerTabsOnly(activeInfo.tabId);
 });
 
-browser.tabs.onUpdated.addListener(storeScreenshot);
+browser.webNavigation.onCompleted.addListener(storeScreenshot);
 
 interceptRequests();
 browser.menus.create({ id: "settings", title: "Conex settings", onclick: function() {browser.runtime.openOptionsPage(); },
