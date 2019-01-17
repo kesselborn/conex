@@ -428,7 +428,7 @@ const closeIfReopened = async function(tab) {
         showCurrentContainerTabsOnly(tab.id);
       }
     }
-  } catch(e) { console.error("error closing reopened tab:", e); }
+  } catch(e) { console.debug(`error closing reopened tab with index: ${potentialOpenerIndex}, url: ${title}: ${e}`); }
 }
 
 const openIncognito = async function(url) {
