@@ -50,8 +50,9 @@ LOCAL_ASSET=web-ext-artifacts/conex-${next_version}-an+fx.xpi
 repo=$(git remote get-url origin|cut -d: -f2|sed 's/\.git$//g')
 
 release_notes_file=$(mktemp /tmp/release_notes.XXXXXX)
-echo "release notes for github:" > ${release_notes_file}
+echo -e "release notes for github:\n$(git log --format=%B -n 1 HEAD^1)\n\n$(git log --format=%B -n 1 HEAD)" > ${release_notes_file}
 vi ${release_notes_file} || true
+(set -x; cat release_notes_file|pbcopy)
 release_notes=$(cat ${release_notes_file} | while read l; do echo -n "$l\\n"; done)
 release_body="{\"tag_name\":\"${VERSION}\",\"name\":\"${VERSION}\",\"body\":\"${release_notes}\",\"draft\":false,\"prerelease\":false}"
 rm -f ${release_notes_file}
