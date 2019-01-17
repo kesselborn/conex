@@ -90,7 +90,7 @@ const keyPressHandling = function(event) {
               console.log('restoringTab', e.dataset.url, e);
               bg.openContainerSelector(e.dataset.url, e.dataset.title);
             } else {                   // a tab that is open
-              console.log('activateTab', e.dataset.tabId, e);
+              console.log(`activateTab ${e.dataset.tabId}`, e);
               bg.activateTab(e.dataset.tabId);
             }
             candidate = undefined;

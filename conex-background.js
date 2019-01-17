@@ -244,16 +244,14 @@ const updateLastCookieStoreId = function(activeInfo) {
       console.debug(`cookieStoreId changed from ${lastCookieStoreId} -> ${tab.cookieStoreId}`);
       lastCookieStoreId = tab.cookieStoreId;
     }
-  }, e => console.error(e));
+  }, e => console.error(`error setting cookieStoreId: ${e}`));
 };
 
-const storeScreenshot = async function(tabId, changeInfo) {
-  if(changeInfo.status != "complete") {
+const storeScreenshot = async function(tabId, changeInfo, tab) {
+  if(changeInfo.status != "complete" || tab.url == 'about:blank') {
     return;
   }
   readSettings;
-
-  const tab = await browser.tabs.get(tabId);
   const cleanedUrl = cleanUrl(tab.url);
 
   try {
