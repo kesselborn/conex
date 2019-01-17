@@ -248,7 +248,7 @@ const updateLastCookieStoreId = function(activeInfo) {
 };
 
 const storeScreenshot = async function(tabId, changeInfo, tab) {
-  if(changeInfo.status != "complete" || tab.url == 'about:blank') {
+  if(changeInfo.status != "complete" || tab.url == 'about:blank' || tab.url == browser.extension.getURL('container-selector.html')) {
     return;
   }
   readSettings;
