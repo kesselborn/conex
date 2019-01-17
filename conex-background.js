@@ -419,6 +419,10 @@ const closeIfReopened = async function(tab) {
   const index = tab.index;
   const potentialOpenerIndex = index - 1;
 
+  if(potentialOpenerIndex < 0) {
+    return;
+  }
+
   try {
     const potentialOpeners = await browser.tabs.query({index: potentialOpenerIndex});
     if(potentialOpeners.length > 0) {
