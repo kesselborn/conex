@@ -158,7 +158,7 @@ async function showContainerTabsOnly(cookieStoreId) {
   const visibleTabs = allTabs.filter(t => t.cookieStoreId == cookieStoreId).map(t => t.id);
   const hiddenTabs = allTabs.filter(t => t.cookieStoreId != cookieStoreId).map(t => t.id);
 
-  console.debug('visible tabs', visibleTabs, 'hidden tabs', hiddenTabs);
+  // console.debug('visible tabs', visibleTabs, 'hidden tabs', hiddenTabs);
 
   try {
     showTabs(visibleTabs);
