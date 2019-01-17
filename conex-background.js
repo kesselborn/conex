@@ -257,11 +257,11 @@ const storeScreenshot = async function(tabId, changeInfo, tab) {
   try {
     let imageData = null;
     if(settings['create-thumbnail']) {
-      console.debug(`capturing tab for ${cleanUrl}`);
+      console.debug(`capturing tab for ${cleanedUrl}`);
       imageData = await browser.tabs.captureTab(tab.id, { format: 'jpeg', quality: imageQuality });
     }
     if(settings['show-favicons'] || settings['create-thumbnail']) {
-      console.debug(`   storing captured image for tab for ${cleanUrl}`);
+      console.debug(`   storing captured image for tab for ${cleanedUrl}`);
       await browser.storage.local.set({ [cleanedUrl]: { thumbnail: imageData, favicon: tab.favIconUrl } });
       console.debug(`   succesfully created thumbnail for ${cleanedUrl}`);
     }
