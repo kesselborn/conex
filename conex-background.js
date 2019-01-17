@@ -247,18 +247,28 @@ const updateLastCookieStoreId = function(activeInfo) {
   }, e => console.error(e));
 };
 
-const storeScreenshot = async function(details) {
-  await readSettings;
-  const tab = await browser.tabs.get(details.tabId);
+const storeScreenshot = async function(tabId, changeInfo) {
+  if(changeInfo.status != "complete") {
+    return;
+  }
+  readSettings;
 
-  if(settings['create-thumbnail']) {
-    try {
-      const imageData = await browser.tabs.captureTab(tab.id, { format: 'jpeg', quality: imageQuality });
-      await browser.storage.local.set({ [cleanUrl(tab.url)]: { thumbnail: imageData, favicon: tab.favIconUrl } });
-      console.debug('succesfully created thumbnail for', cleanUrl(tab.url));
-    } catch(e) {
-      console.error('error creating tab screenshot:', e);
+  const tab = await browser.tabs.get(tabId);
+  const cleanedUrl = cleanUrl(tab.url);
+
+  try {
+    let imageData = null;
+    if(settings['create-thumbnail']) {
+      imageData = await browser.tabs.captureTab(tab.id, { format: 'jpeg', quality: imageQuality });
     }
+    if(settings['show-favicons'] || settings['create-thumbnail']) {
+      browser.storage.local.set({ [cleanedUrl]: { thumbnail: imageData, favicon: tab.favIconUrl } });
+      console.debug(`succesfully created thumbnail for ${cleanedUrl}`);
+    }
+    const favIconKey = `favicon:${cleanedUrl.split("/")[0]}`;
+    browser.storage.local.set({ [favIconKey]: { favicon: tab.favIconUrl } });
+  } catch(e) {
+    console.error(`error creating tab screenshot: ${e}`);
   }
 };
 
@@ -497,7 +507,7 @@ browser.tabs.onActivated.addListener(function(activeInfo) {
   showCurrentContainerTabsOnly(activeInfo.tabId);
 });
 
-browser.webNavigation.onCompleted.addListener(storeScreenshot);
+browser.tabs.onUpdated.addListener(storeScreenshot);
 
 interceptRequests();
 browser.menus.create({ id: "settings", title: "Conex settings", onclick: function() {browser.runtime.openOptionsPage(); },

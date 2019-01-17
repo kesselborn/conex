@@ -125,20 +125,50 @@ const renderEntry = function(url, title, id, favIconUrl, drawBookmarkIcon, drawA
       ]),
     ]);
 
-  if (bg.settings['show-favicons'] && favIconUrl) {
-    if(favIconUrl.startsWith('http')) {
-      fetch(favIconUrl, { method: "GET", }).then(res => {
-        if (res.ok) {
-          $1('img', element).src = favIconUrl;
-        } else {
-          console.error(`error fetching favicon for ${favIconUrl} -- response was`, res);
-        }
-      }, e => console.error(`error fetching ${favIconUrl}: ${e}`));
-    } else if(favIconUrl.startsWith('data:image')) {
-      $1('img', element).src = favIconUrl;
-    }
+  if (bg.settings['show-favicons']) {
+    const imgElement = $1('img', element)
+    setFavIcon(url, favIconUrl, imgElement);
   }
 
   return element;
+}
+
+const setFavIcon = async function(url, favIconUrl, imgElement) {
+  const defaultFavIconUrl = './favicon.ico';
+  if(favIconUrl && favIconUrl.startsWith('data:image')) {
+    imgElement.src = favIconUrl;
+    return;
+  }
+
+  const cleanedUrl = cleanUrl(url);
+  try {
+    const cache = await browser.storage.local.get(cleanedUrl);
+    if (cache[cleanedUrl] && cache[cleanedUrl].favicon) {
+      imgElement.src = cache[cleanedUrl].favicon;
+      return;
+    }
+  } catch(e) { console.debug(`error cache for ${url}: ${e}`); }
+
+  const favIconKey = `favicon:${cleanedUrl.split("/")[0]}`;
+  try {
+    const cache = await browser.storage.local.get(favIconKey);
+    if (cache[favIconKey] && cache[favIconKey].favicon) {
+      imgElement.src = cache[favIconKey].favicon;
+      return;
+    }
+  } catch(e) { console.debug(`error cache for ${url}: ${e}`); }
+
+  if(favIconUrl && favIconUrl.startsWith('http')) {
+    try {
+      const res = await fetch(favIconUrl, { method: "GET", });
+      if (res.ok) {
+        imgElement.src = favIconUrl;
+        return;
+      }
+    } catch(e) { console.debug(`error getting favicon ${favIconUrl}`); }
+  }
+
+  imgElement.src = defaultFavIconUrl;
+  await browser.storage.local.set({ [favIconKey]: { favicon: defaultFavIconUrl } });
 }
 

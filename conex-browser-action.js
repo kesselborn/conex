@@ -60,7 +60,6 @@ const keyDownHandling = function(event) {
       }
     }
   } else if(event.key == 'Enter') {
-    console.error('unhandled keydown active element:', document.activeElement);
     return false;
   }
 }
