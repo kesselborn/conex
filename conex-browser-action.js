@@ -184,6 +184,9 @@ const insertTabElements = function(tabContainers) {
     const ul = $1(`#${tabContainer}`);
     if(!ul) {
       console.error(`couldn't find tab container with id ${tabContainer}`);
+      for(const element of tabContainers[tabContainer]) {
+        console.debug(`  tab in non-existing container: ${element.dataset.url}`, element);
+      }
       continue;
     }
 
