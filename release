@@ -1,89 +1,87 @@
 #!/bin/bash -e
 # (export VERSION=0.0.15; git reset --hard HEAD^; git tag -d v${VERSION}; git push origin :v${VERSION}; git push -f)
-
-if git status|grep modified
+if [ -z "${PROD_ONLY}" ]
 then
-  echo "please commit changes first"
-  exit 1
-fi
+  if git status|grep modified
+  then
+    echo "please commit changes first"
+    exit 1
+  fi
 
-test -n "${WEB_EXT_API_KEY:?"please set WEB_EXT_API_KEY"}"
-test -n "${WEB_EXT_API_SECRET:?"please set WEB_EXT_API_SECRET"}"
-test -n "${GITHUB_TOKEN:?please set GITHUB_TOKEN env var}"
+  test -n "${WEB_EXT_API_KEY:?"please set WEB_EXT_API_KEY"}"
+  test -n "${WEB_EXT_API_SECRET:?"please set WEB_EXT_API_SECRET"}"
+  test -n "${GITHUB_TOKEN:?please set GITHUB_TOKEN env var}"
 
-current_version=$(cat manifest.json |jq -r ".version")
-next_patch_version=$(( $(echo ${current_version}|sed -E "s/([0-9]+)\.([0-9]+)\.([0-9]+)/\3/") + 1 ))
-next_version=$(echo ${current_version}|sed -E "s/([0-9]+)\.([0-9]+)\.([0-9]+)/\1.\2.${next_patch_version}/")
+  current_version=$(cat manifest.json |jq -r ".version")
+  next_patch_version=$(( $(echo ${current_version}|sed -E "s/([0-9]+)\.([0-9]+)\.([0-9]+)/\3/") + 1 ))
+  next_version=$(echo ${current_version}|sed -E "s/([0-9]+)\.([0-9]+)\.([0-9]+)/\1.\2.${next_patch_version}/")
 
-read -p "current version is ${current_version} ... next version (${next_version}): " next_version_user
-next_version=${next_version_user:-${next_version}}
+  read -p "current version is ${current_version} ... next version (${next_version}): " next_version_user
+  next_version=${next_version_user:-${next_version}}
 
-# bump version in manifest.json
-sed -i "" -e "s/: \"${current_version}\"/: \"${next_version}\"/" manifest.json
+  # bump version in manifest.json
+  sed -i "" -e "s/: \"${current_version}\"/: \"${next_version}\"/" manifest.json
 
-# add new release to versions.json
-jq ".addons.\"{cad4f60e-e46e-4d66-8c11-e09194d4df7d}\".updates += [{\"version\":\"${next_version}\", \"update_link\": \"https://github.com/kesselborn/conex/releases/download/v${next_version}/conex-${next_version}-an.fx.xpi\"}]" versions.json > next_versions.json
-mv next_versions.json versions.json
+  # add new release to versions.json
+  jq ".addons.\"{cad4f60e-e46e-4d66-8c11-e09194d4df7d}\".updates += [{\"version\":\"${next_version}\", \"update_link\": \"https://github.com/kesselborn/conex/releases/download/v${next_version}/conex-${next_version}-an.fx.xpi\"}]" versions.json > next_versions.json
+  mv next_versions.json versions.json
 
-# commit version bumps and create new tag
-git commit -m "Bump to version ${next_version}" manifest.json versions.json
-git tag v${next_version}
+  # commit version bumps and create new tag
+  git commit -m "Bump to version ${next_version}" manifest.json versions.json
+  git tag v${next_version}
 
-# create signed addon
-#docker run -v ${PWD}:${PWD} -w ${PWD} -e HOME=${PWD} web-ext
-web-ext sign --api-key ${WEB_EXT_API_KEY:?"please set WEB_EXT_API_KEY"} \
-             --api-secret ${WEB_EXT_API_SECRET:?"please set WEB_EXT_API_SECRET"} \
-             --ignore-files example-sessions tags tabgroups-backup.json tabgroups-backup-small.json web-ext-artifacts *.xpi icons/*.afdesign release versions.json || true
+  # create signed addon
+  #docker run -v ${PWD}:${PWD} -w ${PWD} -e HOME=${PWD} web-ext
+  web-ext sign --api-key ${WEB_EXT_API_KEY:?"please set WEB_EXT_API_KEY"} \
+               --api-secret ${WEB_EXT_API_SECRET:?"please set WEB_EXT_API_SECRET"} \
+               --ignore-files example-sessions tags tabgroups-backup.json tabgroups-backup-small.json web-ext-artifacts *.xpi icons/*.afdesign release versions.json || true
 
-if [ -n "${NO_RELEASE}" ]
-then
-  exit 0
-fi
+  if [ -n "${NO_RELEASE}" ]
+  then
+    exit 0
+  fi
 
-{ git push --tags && git push; } || true
+  { git push --tags && git push; } || true
 
-################ github release upload
-AUTH="Authorization: token ${GITHUB_TOKEN:?please set GITHUB_TOKEN env var}"
-VERSION=v${next_version}
-LOCAL_ASSET=web-ext-artifacts/conex-${next_version}-an+fx.xpi
+  ################ github release upload
+  AUTH="Authorization: token ${GITHUB_TOKEN:?please set GITHUB_TOKEN env var}"
+  VERSION=v${next_version}
+  LOCAL_ASSET=web-ext-artifacts/conex-${next_version}-an+fx.xpi
 
-repo=$(git remote get-url origin|cut -d: -f2|sed 's/\.git$//g')
+  repo=$(git remote get-url origin|cut -d: -f2|sed 's/\.git$//g')
 
-release_notes_file=$(mktemp /tmp/release_notes.XXXXXX)
-echo -e "release notes for github:\n$(git log --format=%B -n 1 HEAD^1)\n\n$(git log --format=%B -n 1 HEAD)" > ${release_notes_file}
-vi ${release_notes_file} || true
-(set -x; cat release_notes_file|pbcopy)
-release_notes=$(cat ${release_notes_file} | while read l; do echo -n "$l\\n"; done)
-release_body="{\"tag_name\":\"${VERSION}\",\"name\":\"${VERSION}\",\"body\":\"${release_notes}\",\"draft\":false,\"prerelease\":false}"
-rm -f ${release_notes_file}
+  release_notes_file=$(mktemp /tmp/release_notes.XXXXXX)
+  echo -e "release notes for github:\n$(git log --format=%B -n 1 HEAD^1)\n\n$(git log --format=%B -n 1 HEAD)" > ${release_notes_file}
+  vi ${release_notes_file} || true
+  (set -x; cat release_notes_file|pbcopy)
+  release_notes=$(cat ${release_notes_file} | while read l; do echo -n "$l\\n"; done)
+  release_body="{\"tag_name\":\"${VERSION}\",\"name\":\"${VERSION}\",\"body\":\"${release_notes}\",\"draft\":false,\"prerelease\":false}"
+  rm -f ${release_notes_file}
 
-response=$(set -x; curl -ifL -H"Accept: application/vnd.github.v3+json" -H"${AUTH}" -XPOST -d "${release_body}" https://api.github.com/repos/${repo}/releases) \
-  || { echo "Error: does the release already exist? Check https://github.com/${repo}/releases/tag/${VERSION}"; exit 1; }
+  response=$(set -x; curl -ifL -H"Accept: application/vnd.github.v3+json" -H"${AUTH}" -XPOST -d "${release_body}" https://api.github.com/repos/${repo}/releases) \
+    || { echo "Error: does the release already exist? Check https://github.com/${repo}/releases/tag/${VERSION}"; exit 1; }
 
-upload_url=$(echo ${response}|sed -E 's/.*"upload_url": "([^"]+)".*/\1/g'|cut -d{ -f1)
+  upload_url=$(echo ${response}|sed -E 's/.*"upload_url": "([^"]+)".*/\1/g'|cut -d{ -f1)
 
-echo "Uploading asset... $LOCAL_ASSET" >&2
+  echo "Uploading asset... $LOCAL_ASSET" >&2
 
-curl -L# --data-binary @"${LOCAL_ASSET}" \
-         -H "Content-Type: application/x-xpinstall" \
-         -H"Accept: application/vnd.github.v3+json" -H"${AUTH}" \
-         -XPOST ${upload_url}?name=$(basename $LOCAL_ASSET)
+  curl -L# --data-binary @"${LOCAL_ASSET}" \
+           -H "Content-Type: application/x-xpinstall" \
+           -H"Accept: application/vnd.github.v3+json" -H"${AUTH}" \
+           -XPOST ${upload_url}?name=$(basename $LOCAL_ASSET)
 
-cat<<EOF
+  cat<<EOF
 
 
-Successfully created release -- edit edit release notes at: https://github.com/${repo}/releases/edit/${VERSION}
+  Successfully created release -- edit edit release notes at: https://github.com/${repo}/releases/edit/${VERSION}
 
 
 EOF
+  ################ github release upload end
 
-if git branch|grep '^* preview$'
-then
-  exit 0
+  read -p "release to mozilla as well (y/n)?" -n1 answer
+  test "${answer}" == "y" || exit 0
 fi
-
-read -p "release to mozilla as well (y/n)?" -n1 answer
-test "${answer}" == "y" || exit 0
 
 echo "release notes:"
 echo "${release_notes}"
@@ -91,7 +89,6 @@ echo "${release_notes}"
 # remove github update url from manifest
 cat manifest.json | jq 'del(.applications.gecko.update_url)' > next_manifest.json
 mv next_manifest.json manifest.json
-################ github release upload end
 
 #docker run -v ${PWD}:${PWD} -w ${PWD} -e HOME=${PWD} web-ext
 web-ext sign --id '{ec9d70ea-0229-49c0-bbf7-0df9bbccde35}' --api-key ${WEB_EXT_API_KEY:?'please set WEB_EXT_API_KEY'} --api-secret ${WEB_EXT_API_SECRET:?'please set WEB_EXT_API_SECRET'} --ignore-files example-sessions tags tabgroups-backup.json tabgroups-backup-small.json web-ext-artifacts *.xpi icons/*.afdesign release versions.json || true
