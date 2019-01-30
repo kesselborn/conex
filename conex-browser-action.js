@@ -183,9 +183,10 @@ const insertTabElements = function(tabContainers) {
   for(tabContainer in tabContainers) {
     const ul = $1(`#${tabContainer}`);
     if(!ul) {
-      console.error(`couldn't find tab container with id ${tabContainer}`);
+      console.error(`couldn't find tab container with id ${tabContainer} -- closing all tabs from this container`);
       for(const element of tabContainers[tabContainer]) {
-        console.debug(`  tab in non-existing container: ${element.dataset.url}`, element);
+        console.debug(`  closing tab from non-existing container: ${element.dataset.url}`);
+        bg.closeTab(element.dataset.tabId);
       }
       continue;
     }
