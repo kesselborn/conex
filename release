@@ -87,7 +87,7 @@ echo "release notes:"
 echo "${release_notes}"
 
 # remove github update url from manifest
-cat manifest.json | jq 'del(.applications.gecko.update_url)' > next_manifest.json
+cat manifest.json | jq 'del(.applications.gecko.update_url)' | jq '.name = "Conex"'> next_manifest.json
 mv next_manifest.json manifest.json
 
 #docker run -v ${PWD}:${PWD} -w ${PWD} -e HOME=${PWD} web-ext
