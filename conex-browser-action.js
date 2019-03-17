@@ -1,7 +1,11 @@
-const deletedTabOpacity = 0.3;
-const containersTabsMapCreating = bg.getTabsByContainer();
-const tabContainerRendering = renderTabContainers($1('#tabcontainers'));
+import {$e, createTabContainerHeaderElement, createHistoryOrBookmarkElement} from "./conex-components.js";
+import {$1, renderTabContainers} from "./conex-helper.js";
 
+var bg = browser.extension.getBackgroundPage();
+
+const deletedTabOpacity = 0.3;
+const containersTabsMapCreating = bg.exported.getTabsByContainer();
+const tabContainerRendering = renderTabContainers($1('#tabcontainers'));
 
 const keyDownHandling = function(event) {
   //console.debug('keydown', event, document.activeElement);
@@ -183,11 +187,7 @@ const insertTabElements = function(tabContainers) {
   for(tabContainer in tabContainers) {
     const ul = $1(`#${tabContainer}`);
     if(!ul) {
-      console.error(`couldn't find tab container with id ${tabContainer} -- closing all tabs from this container`);
-      for(const element of tabContainers[tabContainer]) {
-        console.debug(`  closing tab from non-existing container: ${element.dataset.url}`);
-        bg.closeTab(element.dataset.tabId);
-      }
+      console.error(`couldn't find tab container with id ${tabContainer}`);
       continue;
     }
 
@@ -533,4 +533,4 @@ tabContainerRendering.then(newContainerMode => {
 
   setupNewContainerElement();
 
-}, e => console.error(e));
+}, e => console.error(`error setting up crap: ${e}`));
