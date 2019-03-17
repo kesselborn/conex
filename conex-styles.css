@@ -1,0 +1,213 @@
+/* general setup */
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Helvetica, Arial, Sans-Serif;
+  font-size: smaller;
+  font-weight: lighter;
+}
+
+input[type=submit], input[type=radio] {
+  display: none;
+}
+
+/* variables */
+
+:root {
+  --height: 40px;
+  --action-width: 30px;
+}
+
+/* label (grid cells) styling */
+
+form label {
+  height: 100%;
+  display: grid;
+  align-items: center;
+  cursor: pointer;
+}
+
+/***************** tab item ******************/
+
+/* grid setup */
+
+form.tab-item {
+  display: grid;
+  grid-gap: 5px;
+  grid-template-columns: 90px auto var(--action-width);
+  grid-template-areas: "thumbnail content close";
+  height: var(--height);
+  border-left: 2px solid;
+  align-items: center;
+  padding: 5px 20px 5px 5px;
+}
+
+.tab-thumbnail { grid-area: thumbnail; }
+.tab-favicon { grid-area: thumbnail; }
+.tab-content { grid-area: content; }
+.tab-close { grid-area: close; }
+
+/* focus / hover styles */
+
+tab-item:focus form.tab-item, form.tab-item:hover {
+  background-color: rgb(232, 232, 232);
+}
+
+tab-item:focus img, form.tab-item:hover img {
+  opacity: 0.5;
+}
+
+/* label contents */
+
+.thumbnail-image {
+  height: var(--height);
+  width: auto;
+}
+
+.favicon-image {
+  height: 15px;
+  width: auto;
+  align-self: end;
+}
+
+.tab-url {
+  color: rgb(152, 152, 152);
+}
+
+.tab-close {
+  display: none;
+  width: 1em;
+  height: 1em;
+  font-size: x-large;
+  place-content: center;
+  place-self: center;
+  border: 1px solid rgb(208, 208, 208);
+  border-radius: 6px;
+}
+
+.tab-close {
+  display: none;
+}
+
+form.tab-item:hover .tab-close {
+  display: inherit;
+}
+
+.tab-close:hover, .tab-close:focus {
+  background-color: rgb(208, 208, 208);
+}
+
+/* colors */
+
+.blue-marker {
+  border-left-color: rgb(55, 173, 255) !important;
+}
+
+container-item.collapsed tab-item {
+  display: none;
+}
+
+/***************** container item ******************/
+
+form.container-item {
+  display: grid;
+  grid-gap: 5px;
+  grid-template-columns: var(--action-width) auto var(--action-width) var(--action-width);
+  grid-template-areas: "expand focus new-tab close-container";
+  height: var(--height);
+  border-left: 5px solid;
+  align-items: center;
+  padding: 5px 20px 5px 5px;
+}
+
+.container-expander, .container-collapser  {
+  grid-area: expand;
+}
+
+.container-focus {
+  grid-area: focus;
+}
+
+.container-tab-count {
+  grid-column-start: new-tab;
+  grid-column-end: close-container;
+}
+
+.container-new-tab {
+  grid-area: new-tab;
+}
+
+.container-close-container {
+  grid-area: close-container;
+}
+
+/* focus / hover styles */
+
+container-item:focus form.container-item, form.container-item:hover {
+  background-color: rgb(232, 232, 232);
+}
+
+.container-expander, .container-collapser {
+  place-content: center;
+}
+
+.container-expander:hover, .container-collapser:hover {
+  background-color: rgb(208, 208, 208);
+}
+
+form.container-item:hover .container-expander, form.container-item:hover .container-collapser,
+container-item:focus .container-expander, container-item:focus .container-collapser {
+  border: 1px solid rgb(208, 208, 208);
+  border-radius: 6px;
+}
+
+.container-tab-count {
+  display: inherit;
+}
+
+container-item:focus .container-tab-count, form.container-item:hover .container-tab-count {
+  display: none;
+}
+
+.container-new-tab, .container-close-container {
+  display: none;
+}
+
+container-item:focus      .container-new-tab,
+form.container-item:hover .container-new-tab,
+container-item:focus      .container-close-container,
+form.container-item:hover .container-close-container {
+  display: inherit;
+}
+
+.container-collapser {
+  display: none;
+}
+
+.container-close-container, .container-new-tab {
+  font-size: x-large;
+  width: 1em;
+  height: 1em;
+  font-size: x-large;
+  place-content: center;
+  place-self: center;
+  border: 1px solid rgb(208, 208, 208);
+  border-radius: 6px;
+}
+
+.container-close-container:hover, .container-new-tab:hover {
+  background-color: rgb(208, 208, 208);
+}
+
+container-item.collapsed label.container-expander, container-item label.container-collapser {
+  display: grid;
+}
+
+container-item.collapsed label.container-collapser, container-item label.container-expander {
+  display: none;
+}
+
+.container-new-tab {
+  font-weight: lighter;
+}
