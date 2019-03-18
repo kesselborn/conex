@@ -52,14 +52,16 @@ class TabItem extends HTMLElement {
         case "Backspace": $1('input[value=close-tab]', this).checked = true; break;
         default:          this.continueSearch(e); return;
       }
-      $1('form', this).dispatchEvent((new Event('change')));
+      this.form.dispatchEvent((new Event('change')));
     });
 
     this.form.addEventListener("change", e => {
-      switch($1('input[name=action]:checked').value) {
+      e.stopPropagation();
+      e.preventDefault();
+      switch($1('input[name=action]:checked', this).value) {
         case 'focus-tab': this.focusTab(); break; 
         case 'close-tab': this.closeTab(); break;
-        default: console.error('unknown action: ', $1('input[name=action]:checked'));  break;
+        default: console.error('unknown action: ', $1('input[name=action]:checked', this));  break;
       }
     });
   }
