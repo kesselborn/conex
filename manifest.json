@@ -36,6 +36,12 @@
     "browser_style": false,
     "open_in_tab": true
   },
+  "sidebar_action": {
+    "default_title": "conex",
+    "default_panel": "conex-sidebar.html",
+    "browser_style": false,
+    "default_icon": "icons/icon_48.png"
+  },
   "background": {
     "page": "conex-background.html"
   },
