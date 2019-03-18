@@ -1,7 +1,7 @@
 import {$, $1, $e} from './conex-helper.js'
 
 const containerItem = (data) => `
- <form class="container-item blue-marker" action="">
+ <form class="container-item ${data.color}-marker" action="">
    <input type="hidden" name="container-id" value="${data.containerId}">
 
    <input title="expand container" type="radio" id="container-id-${data.containerId}-expand" name="action" value="expand-container">

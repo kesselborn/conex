@@ -1,7 +1,7 @@
 import {$, $1, $e} from './conex-helper.js'
 
 const tabItem = (data) => `
-  <form class="tab-item ${data.color}" action="">
+  <form class="tab-item ${data.color}-marker" action="">
     <input type="hidden" name="tab-id" value="${data.tabId}"/>
     <input title="show tab" type="radio" id="tabid-${data.tabId}-title" name="action" value="focus-tab"/>
     <label title="show tab" class="tab-thumbnail" for="tabid-${data.tabId}-title">
