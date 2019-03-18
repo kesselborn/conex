@@ -28,6 +28,9 @@ const containerItem = (data) => `
 export class ContainerItem extends HTMLElement {
   constructor() {
     super();
+  }
+
+  connectedCallback() {
     this.ignoredKeyDownKeys = ['Tab'];
     const d = {color: this.getAttribute('color'),
               containerId: this.getAttribute('container-id'),
@@ -38,15 +41,6 @@ export class ContainerItem extends HTMLElement {
     e.innerHTML = containerItem(d);
     this.prepend(e);
     const form = $1('form', this);
-
-    form.addEventListener("change", e => {
-      console.debug('form onchange', $1('input[name=action]:checked').value);
-      switch($1('input[name=action]:checked').value) {
-        case "collapse-container": this.classList.add('collapsed'); break;
-        case "expand-container": this.classList.remove('collapsed'); break; 
-        default: console.error('unknown action: ', $1('input[name=action]:checked'));  break;
-      }
-    });
 
     this.addEventListener("focus", e => console.debug('focused', this));
     this.addEventListener('click', e => this.focus());
@@ -60,15 +54,30 @@ export class ContainerItem extends HTMLElement {
       e.preventDefault();
       
       switch (e.key) {
-        case "ArrowUp":    this.focusLastTabOfPreviousContainer(); break;
-        case "ArrowDown":  this.focusFirstTab(); break;
-        // case "Enter":     this.toggleExpand(); break;
-        case "ArrowLeft":  this.toggleExpand(); break;
-        case "ArrowRight": this.toggleExpand(); break;
-        default:           this.continueSearch(e);
+        // case 'Enter':     this.toggleExpand(); break;
+        case '+':          $1('input[value=new-tab]', this).checked = true; break;
+        case 'ArrowDown':  this.focusFirstTab(); return;
+        case 'ArrowLeft':  $1('input[value=collapse-container]', this).checked = true; break;
+        case 'ArrowRight': $1('input[value=expand-container]', this).checked = true; break;
+        case 'ArrowUp':    this.focusLastTabOfPreviousContainer(); break;
+        case 'Backspace':  $1('input[value=close-container]', this).checked = true; break;
+        case 'Enter':      $1('input[value=focus-container]', this).checked = true; break;
+        default:           this.continueSearch(e); return; 
+      }
+      $1('form', this).dispatchEvent((new Event('change')));
+    });
+
+    form.addEventListener("change", e => {
+      switch($1('input[name=action]:checked').value) {
+        case 'close-container': this.closeContainer(); break; 
+        case 'collapse-container': this.collapseContainer(); break;
+        case 'expand-container': this.expandContainer(); break; 
+        case 'focus-container': this.focusContainer(); break; 
+        case 'new-tab': this.newContainerTab(); break; 
+        default: console.error('unknown action: ', $1('input[name=action]:checked'));  break;
       }
     });
-    console.debug('constructed <container-item>', this);
+    console.debug(this);
   }
 
   focusFirstTab() {
@@ -87,21 +96,30 @@ export class ContainerItem extends HTMLElement {
     }
   }
 
-  toggleExpand(e) {
-    if(this.classList.contains('collapsed')) {
-      $1('input[value=expand-container]', this).checked = true;
-    } else {
-      $1('input[value=collapse-container]', this).checked = true;
-    }
-    $1('form.container-item', this).dispatchEvent((new Event('change')));
+  collapseContainer() {
+    console.debug('collapse container');
+    this.classList.add('collapsed')
+  }
+
+  expandContainer() {
+    console.debug('expand container');
+    this.classList.remove('collapsed')
+  }
+
+  focusContainer() {
+    console.debug('focus container');
+  }
+
+  newContainerTab() {
+    console.debug('new container tab');
+  }
+
+  closeContainer() {
+    console.debug('close container');
   }
 
   continueSearch(e) {
     console.debug('continue search placeholder for:', e);
-  }
-
-  connectedCallback() {
-    console.debug('tab-titem connected');
   }
 
   disconnectedCallback() {

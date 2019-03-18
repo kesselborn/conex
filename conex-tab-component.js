@@ -23,6 +23,9 @@ const tabItem = (data) => `
 class TabItem extends HTMLElement {
   constructor() {
     super();
+  }
+
+  connectedCallback() {
     this.ignoredKeyDownKeys = ['Tab'];
     const d = {color: this.getAttribute('color'),
               tabId: this.getAttribute('tab-id'),
@@ -34,12 +37,6 @@ class TabItem extends HTMLElement {
     this.innerHTML = tabItem(d);
     this.form = $1('form', this);
 
-    this.form.addEventListener("change", e => {
-      console.debug('form onchange', $1('input[name=action]:checked').value);
-      e.stopPropagation();
-      e.preventDefault();
-    });
-
     this.addEventListener("keydown", e => {
       console.debug('tab-item keydown', e);
       if(this.ignoredKeyDownKeys.includes(e.key)) {
@@ -49,11 +46,20 @@ class TabItem extends HTMLElement {
       e.preventDefault();
 
       switch (e.key) {
-        case "ArrowUp":   this.focusPreviousTabOrContainer(); break;
-        case "ArrowDown": this.focusNextTabOrContainer(); break;
-        case "Enter":     this.showTab(d.tabId); break;
-        case "Backspace": this.closeTab(d.tabId); break;
-        default:          this.continueSearch(e);
+        case "ArrowUp":   this.focusPreviousTabOrContainer(); return;
+        case "ArrowDown": this.focusNextTabOrContainer(); return;
+        case "Enter":     $1('input[value=focus-tab]', this).checked = true; break;
+        case "Backspace": $1('input[value=close-tab]', this).checked = true; break;
+        default:          this.continueSearch(e); return;
+      }
+      $1('form', this).dispatchEvent((new Event('change')));
+    });
+
+    this.form.addEventListener("change", e => {
+      switch($1('input[name=action]:checked').value) {
+        case 'focus-tab': this.focusTab(); break; 
+        case 'close-tab': this.closeTab(); break;
+        default: console.error('unknown action: ', $1('input[name=action]:checked'));  break;
       }
     });
   }
@@ -62,14 +68,13 @@ class TabItem extends HTMLElement {
     console.debug('continue search placeholder for:', e);
   }
 
-  showTab(tabId) {
-    $1('input[value=focus-tab]', this).checked = true;
-    $1('form', this).dispatchEvent((new Event('change')));
+  focusTab() {
+    console.debug('show tab');
+    
   }
 
-  closeTab(tabId) {
-    $1('input[value=close-tab]', this).checked = true;
-    $1('form', this).dispatchEvent((new Event('change')));
+  closeTab() {
+    console.debug('close tab');
   }
 
   focusNextTabOrContainer() {
@@ -96,10 +101,6 @@ class TabItem extends HTMLElement {
     } while (elem.style.display == "none");
 
     elem.focus();
-  }
-
-  connectedCallback() {
-    console.debug('tab-titem connected');
   }
 
   disconnectedCallback() {
