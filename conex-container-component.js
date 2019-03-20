@@ -25,21 +25,72 @@ const containerItem = (data) => `
  </form>
 `;
 
-export class ContainerItem extends HTMLElement {
+class ContainerItem extends HTMLElement {
   constructor() {
     super();
+
+    this.focusFirstTab = function () {
+      try {
+        $1('tab-item', this).focus();
+      } catch (e) {
+        console.warn('could not find tab item in container', this, ': ', e);
+      }
+    }
+
+    this.focusLastTabOfPreviousContainer = function () {
+      try {
+        Array.from($('tab-item', this.previousElementSibling)).pop().focus();
+      } catch (e) {
+        console.warn('error focusing the last tab item of the previous container: ', e);
+      }
+    }
+
+    this.collapseContainer = function () {
+      console.debug('collapse container');
+      this.classList.add('collapsed')
+    }
+
+    this.expandContainer = function () {
+      console.debug('xxx expand container');
+      this.classList.remove('collapsed')
+      this.color = 'orange';
+    }
+
+    this.focusContainer = function () {
+      console.debug('focus container');
+    }
+
+    this.newContainerTab = function () {
+      console.debug('new container tab');
+    }
+
+    this.closeContainer = function () {
+      console.debug('close container');
+    }
+  }
+
+  get color() {
+    return this.getAttribute('color');
+  }
+
+  set color(val) {
+    console.debug('color set');
+    this.setAttribute('color', val);
   }
 
   connectedCallback() {
+    console.debug('container-item connected');
     this.ignoredKeyDownKeys = ['Tab'];
     const d = {color: this.getAttribute('color'),
               containerId: this.getAttribute('container-id'),
               containerName: this.getAttribute('container-name'),
               tabCnt: this.getAttribute('tab-cnt')};
 
-    const e = document.createElement("div");
-    e.innerHTML = containerItem(d);
-    this.prepend(e);
+    if(!$1('.container-item')) {
+      const e = document.createElement("div");
+      e.innerHTML = containerItem(d);
+      this.prepend(e);
+    }
     const form = $1('form', this);
 
     this.addEventListener("focus", e => console.debug('focused', this));
@@ -67,8 +118,9 @@ export class ContainerItem extends HTMLElement {
       $1('form', this).dispatchEvent((new Event('change')));
     });
 
+    const that = this;
     form.addEventListener("change", e => {
-      switch($1('input[name=action]:checked').value) {
+      switch($1('input[name=action]:checked', that).value) {
         case 'close-container': this.closeContainer(); break; 
         case 'collapse-container': this.collapseContainer(); break;
         case 'expand-container': this.expandContainer(); break; 
@@ -77,57 +129,27 @@ export class ContainerItem extends HTMLElement {
         default: console.error('unknown action: ', $1('input[name=action]:checked'));  break;
       }
     });
-    console.debug(this);
   }
 
-  focusFirstTab() {
-    try {
-      $1('tab-item', this).focus();
-    } catch(e) {
-      console.warn('could not find tab item in container', this, ': ', e);
-    }
-  }
-
-  focusLastTabOfPreviousContainer() {
-    try {
-      Array.from($('tab-item', this.previousElementSibling)).pop().focus();
-    } catch(e) {
-      console.warn('error focusing the last tab item of the previous container: ', e);
-    }
-  }
-
-  collapseContainer() {
-    console.debug('collapse container');
-    this.classList.add('collapsed')
-  }
-
-  expandContainer() {
-    console.debug('expand container');
-    this.classList.remove('collapsed')
-  }
-
-  focusContainer() {
-    console.debug('focus container');
-  }
-
-  newContainerTab() {
-    console.debug('new container tab');
-  }
-
-  closeContainer() {
-    console.debug('close container');
-  }
 
   continueSearch(e) {
     console.debug('continue search placeholder for:', e);
   }
 
   disconnectedCallback() {
-    console.debug('tab-item disconnnected');
+    console.debug('container-item disconnnected');
   }
 
   adoptedCallback() {
-    console.debug('tab-item adopted');
+    console.debug('container-item adopted');
+  }
+
+  static get observedAttributes() {
+    return ['color'];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    console.debug(`attribute ${name} changed: ${oldValue} -> ${newValue}`);
   }
 };
 window.customElements.define('container-item', ContainerItem);

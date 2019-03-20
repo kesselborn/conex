@@ -1,10 +1,9 @@
 import {createTabComponent} from "./conex-tab-component.js";
-import {createContainerComponent, ContainerItem} from "./conex-container-component.js";
+import {createContainerComponent} from "./conex-container-component.js";
 
-const bg = browser.extension.getBackgroundPage();
+const bg = window.browser.extension.getBackgroundPage();
 
 document.addEventListener("DOMContentLoaded", function(event) {
-  console.debug(`${bg}`);
   document.body.appendChild(bg.getConexDom());
 });
 

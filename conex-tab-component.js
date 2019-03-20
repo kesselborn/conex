@@ -23,6 +23,44 @@ const tabItem = (data) => `
 class TabItem extends HTMLElement {
   constructor() {
     super();
+
+    this.focusTab = function () {
+      console.debug('show tab');
+    }
+
+    this.continueSearch = function (e) {
+      console.debug('continue search placeholder for:', e);
+    }
+
+    this.closeTab = function () {
+      console.debug('close tab');
+    }
+
+    this.focusNextTabOrContainer = function () {
+      let elem = this;
+      do {
+        elem = elem.nextElementSibling;
+        if (elem == null) {
+          this.parentElement.nextElementSibling && this.parentElement.nextElementSibling.focus();
+          return;
+        }
+      } while (elem.style.display == "none");
+
+      elem.focus();
+    }
+
+    this.focusPreviousTabOrContainer = function () {
+      let elem = this;
+      do {
+        elem = elem.previousElementSibling;
+        if (elem.nodeName != 'TAB-ITEM') {
+          this.parentElement.focus();
+          return;
+        }
+      } while (elem.style.display == "none");
+
+      elem.focus();
+    }
   }
 
   connectedCallback() {
@@ -35,7 +73,7 @@ class TabItem extends HTMLElement {
               url: this.getAttribute('url')}
 
     this.innerHTML = tabItem(d);
-    this.form = $1('form', this);
+    const form = $1('form', this);
 
     this.addEventListener("keydown", e => {
       console.debug('tab-item keydown', e);
@@ -55,7 +93,7 @@ class TabItem extends HTMLElement {
       this.form.dispatchEvent((new Event('change')));
     });
 
-    this.form.addEventListener("change", e => {
+    form.addEventListener("change", e => {
       e.stopPropagation();
       e.preventDefault();
       switch($1('input[name=action]:checked', this).value) {
@@ -66,44 +104,6 @@ class TabItem extends HTMLElement {
     });
   }
 
-  continueSearch(e) {
-    console.debug('continue search placeholder for:', e);
-  }
-
-  focusTab() {
-    console.debug('show tab');
-    
-  }
-
-  closeTab() {
-    console.debug('close tab');
-  }
-
-  focusNextTabOrContainer() {
-    let elem = this;
-    do {
-      elem = elem.nextElementSibling;
-      if (elem == null) {
-        this.parentElement.nextElementSibling && this.parentElement.nextElementSibling.focus();
-        return;
-      }
-    } while (elem.style.display == "none");
-
-    elem.focus();
-  }
-
-  focusPreviousTabOrContainer() {
-    let elem = this;
-    do {
-      elem = elem.previousElementSibling;
-      if (elem.nodeName != 'TAB-ITEM') {
-        this.parentElement.focus();
-        return;
-      }
-    } while (elem.style.display == "none");
-
-    elem.focus();
-  }
 
   disconnectedCallback() {
     console.debug('tab-item disconnnected');

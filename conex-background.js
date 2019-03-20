@@ -1,8 +1,8 @@
 import {createTabComponent} from "./conex-tab-component.js";
-import {createContainerComponent, ContainerItem} from "./conex-container-component.js";
+import {createContainerComponent} from "./conex-container-component.js";
 
-function getConexDom() {
-  return document.body.firstChild.cloneNode(true);
+window.getConexDom = function() {
+  return document.body.firstElementChild.cloneNode(true);
 }
 
 document.addEventListener("DOMContentLoaded", function(event) {
