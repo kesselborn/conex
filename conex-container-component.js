@@ -51,7 +51,6 @@ class ContainerItem extends HTMLElement {
     }
 
     this.expandContainer = function () {
-      console.debug('xxx expand container');
       this.classList.remove('collapsed')
       this.color = 'orange';
     }
@@ -155,7 +154,7 @@ class ContainerItem extends HTMLElement {
 window.customElements.define('container-item', ContainerItem);
 
 // <container-item tabindex='1' color="blue" container-id="1" container-name="banking" tab-cnt="42">
-export const createContainerComponent = function(containerId, containerName, tabIndex, color) {
+export const createContainerComponent = function(tabIndex, containerId, containerName, color) {
   return $e('container-item', {tabindex: tabIndex,
                          container_id: containerId,
                          container_name: containerName,
