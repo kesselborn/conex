@@ -1,0 +1,76 @@
+form.tab-item {
+    display: grid;
+    grid-gap: 5px;
+    grid-template-columns: 90px auto;
+    grid-template-areas: "thumbnail content";
+    height: var(--height);
+    border-left: 2px solid;
+    align-items: center;
+    padding: 5px 20px 5px 5px;
+}
+
+.tab-thumbnail {
+    grid-area: thumbnail;
+}
+
+.tab-favicon {
+    grid-area: thumbnail;
+}
+
+.tab-content {
+    grid-area: content;
+}
+
+.tab-close {
+    grid-area: close;
+}
+
+/* label contents */
+.thumbnail-image {
+    height: var(--height);
+    width: auto;
+}
+
+.favicon-image {
+    height: 15px;
+    width: auto;
+    align-self: end;
+}
+
+.tab-url {
+    color: rgb(152, 152, 152);
+}
+
+.tab-close {
+    display: none;
+    width: 1em;
+    height: 1em;
+    font-size: x-large;
+    place-content: center;
+    place-self: center;
+    border: 1px solid rgb(208, 208, 208);
+    border-radius: 6px;
+}
+
+container-item.collapsed tab-item {
+    display: none;
+}
+
+form.tab-item:hover .tab-close {
+    display: inherit;
+}
+
+.tab-close:hover, .tab-close:focus {
+    background-color: rgb(208, 208, 208);
+}
+
+/* focus / hover styles */
+tab-item:focus form.tab-item, form.tab-item:hover {
+    background-color: rgb(232, 232, 232);
+    grid-template-columns: 90px auto var(--action-width);
+    grid-template-areas: "thumbnail content close";
+}
+
+tab-item:focus img, form.tab-item:hover img {
+    opacity: 0.5;
+}
