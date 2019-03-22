@@ -8,6 +8,12 @@ body {
   font-weight: lighter;
 }
 
+div {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 input[type=submit], input[type=radio] {
   display: none;
 }
