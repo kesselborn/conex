@@ -29,40 +29,54 @@ class ContainerItem extends HTMLElement {
   constructor() {
     super();
 
+    this.visible = function(){
+      return window.getComputedStyle(this) != "none";
+    }
+
     this.focusFirstTab = function () {
-      try {
-        $1('tab-item', this).focus();
-      } catch (_) {
-        try {
-          console.debug('empty container ... jumping to next one', this);
-          this.nextElementSibling.focus();
-        } catch {
-          console.debug('could not find next item to focus ... seems as if I am at the end of the list', this);
+      for (const tabItem of $('tab-item', this)) {
+        if (tabItem.visible()) {
+          tabItem.focus();
+          return
         }
+      }
+      try {
+        console.debug('empty container or all tabs are hidden ... jumping to next container', this);
+        this.nextElementSibling.focus();
+      } catch {
+        console.debug('could not find next item to focus ... seems as if I am at the end of the list', this);
       }
     }
 
     this.focusLastTabOfPreviousContainer = function () {
-      try {
-        Array.from($('tab-item', this.previousElementSibling)).pop().focus();
-      } catch (e) {
-        try {
-          console.debug('empty container ... jumping to previous one', this, e);
-          this.previousElementSibling.focus();
-        } catch (_) {
-          console.debug('error focusing the last tab item of the previous container ... seems as if I am at the top', this);
+      for (const tabItem of Array.from($('tab-item', this.previousElementSibling)).reverse()) {
+        if (tabItem.visible()) {
+          tabItem.focus();
+          return
         }
+      }
+      try {
+        console.debug('empty container or all tabs are hidden ... jumping to previous container', this);
+        this.previousElementSibling.focus();
+      } catch (e) {
+        console.debug('error focusing the last tab item of the previous container ... seems as if I am at the top', e, this);
       }
     }
 
     this.collapseContainer = function () {
-      console.debug('collapse container');
-      this.classList.add('collapsed')
+      if(!this.classList.contains('collapsed')) {
+        this.classList.add('collapsed')
+      } else {
+        this.previousElementSibling.focus();
+      }
     }
 
     this.expandContainer = function () {
-      this.classList.remove('collapsed')
-      this.color = 'orange';
+      if(this.classList.contains('collapsed')) {
+        this.classList.remove('collapsed')
+      } else {
+        this.nextElementSibling.focus();
+      }
     }
 
     this.focusContainer = function () {
@@ -89,7 +103,6 @@ class ContainerItem extends HTMLElement {
 
   connectedCallback() {
     console.debug('container-item connected');
-    this.ignoredKeyDownKeys = ['Tab'];
     const d = {color: this.getAttribute('color'),
               containerId: this.getAttribute('container-id'),
               containerName: this.getAttribute('container-name'),
@@ -107,9 +120,6 @@ class ContainerItem extends HTMLElement {
 
     this.addEventListener("keydown", e => {
       console.debug('container-item keydown', e.target);
-      if(this.ignoredKeyDownKeys.includes(e.key)) {
-        return;
-      }
       e.stopPropagation();
       e.preventDefault();
       
@@ -117,6 +127,7 @@ class ContainerItem extends HTMLElement {
         // keyboard shortcuts instead of hovering with the mouse
         case 'ArrowDown':  this.focusFirstTab(); return;
         case 'ArrowUp':    this.focusLastTabOfPreviousContainer(); return;
+        case "Tab":        e.shiftKey ? this.focusLastTabOfPreviousContainer() : this.focusFirstTab(); return;
         default:           this.continueSearch(e); return; 
 
         // keyboard shortcuts instead of clicking the mouse
@@ -166,11 +177,11 @@ class ContainerItem extends HTMLElement {
 window.customElements.define('container-item', ContainerItem);
 
 // <container-item tabindex='1' color="blue" container-id="1" container-name="banking" tab-cnt="42">
-export const createContainerComponent = function(tabIndex, containerId, containerName, color) {
-  return $e('container-item', {tabindex: tabIndex,
-                         container_id: containerId,
-                         container_name: containerName,
-                         color: color});
+export const createContainerComponent = function(containerId, containerName, color) {
+  return $e('container-item', {tabindex: 0,
+                               container_id: containerId,
+                               container_name: containerName,
+                               color: color});
 }
   
 console.debug('conex-container-component.js successfully loaded');

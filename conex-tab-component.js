@@ -36,6 +36,10 @@ class TabItem extends HTMLElement {
       console.debug('close tab');
     }
 
+    this.visible = function(){
+      return window.getComputedStyle(this).display != "none";
+    }
+
     this.focusNextTabOrContainer = function () {
       let elem = this;
       do {
@@ -44,7 +48,7 @@ class TabItem extends HTMLElement {
           this.parentElement.nextElementSibling && this.parentElement.nextElementSibling.focus();
           return;
         }
-      } while (elem.style.display == "none");
+      } while(!elem.visible());
 
       elem.focus();
     }
@@ -57,14 +61,13 @@ class TabItem extends HTMLElement {
           this.parentElement.focus();
           return;
         }
-      } while (elem.style.display == "none");
+      } while (!elem.visible());
 
       elem.focus();
     }
   }
 
   connectedCallback() {
-    this.ignoredKeyDownKeys = ['Tab'];
     const d = {color: this.getAttribute('color'),
               tabId: this.getAttribute('tab-id'),
               thumbnail: this.getAttribute('thumbnail'),
@@ -79,9 +82,6 @@ class TabItem extends HTMLElement {
 
     this.addEventListener("keydown", e => {
       console.debug('tab-item keydown', e);
-      if(this.ignoredKeyDownKeys.includes(e.key)) {
-        return;
-      }
       e.stopPropagation();
       e.preventDefault();
 
@@ -89,6 +89,9 @@ class TabItem extends HTMLElement {
         // keyboard shortcuts instead of clicking the mouse
         case "ArrowUp":   this.focusPreviousTabOrContainer(); return;
         case "ArrowDown": this.focusNextTabOrContainer(); return;
+        case "Tab":       e.shiftKey ? this.focusPreviousTabOrContainer() : this.focusNextTabOrContainer(); return;
+        case "ArrowLeft": this.parentElement.focus(); return;
+        case "ArrowRight":this.parentElement.nextElementSibling.focus(); return;
         default:          this.continueSearch(e); return;
 
         // keyboard shortcuts instead of hovering with the mouse
@@ -142,13 +145,13 @@ class TabItem extends HTMLElement {
 
 window.customElements.define('tab-item', TabItem);
 
-// <tab-item tabindex='2' color='blue-marker' tab-id='42' thumbnail='./thumbnail.jpg' favicon='./favicon.ico' tab-title='0 this is a wonderful title' url='heise.de/artikel/golang'></tab-item>
-export const createTabComponent = function(tabId, tabIndex, tabTitle, url, color, thumbnail, favicon) {
+// <tab-item color='blue-marker' tab-id='42' thumbnail='./thumbnail.jpg' favicon='./favicon.ico' tab-title='0 this is a wonderful title' url='heise.de/artikel/golang'></tab-item>
+export const createTabComponent = function(tabId, tabTitle, url, color, thumbnail, favicon) {
   if(!favicon ||
       favicon.startsWith('chrome://')) {
     favicon = './favicon-placeholder.png';
   }
-  return $e('tab-item', {tabindex: tabIndex,
+  return $e('tab-item', {tabindex: 0,
                          draggable: true,
                          tab_id: tabId,
                          tab_title: tabTitle || "...",
