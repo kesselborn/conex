@@ -3,19 +3,19 @@ import {$, $1, $e} from './conex-helper.js'
 const tabItem = (data) => `
   <form class="tab-item ${data.color}-marker" action="">
     <input type="hidden" name="tab-id" value="${data.tabId}"/>
-    <input title="show tab" type="radio" id="tabid-${data.tabId}-title" name="action" value="focus-tab"/>
-    <label title="show tab" class="tab-thumbnail" for="tabid-${data.tabId}-title">
+    <input title="show tab${data.tooltipText}" type="radio" id="tabid-${data.tabId}-title" name="action" value="focus-tab"/>
+    <label title="show tab${data.tooltipText}" class="tab-thumbnail" for="tabid-${data.tabId}-title">
       <img class="thumbnail-image" src="${data.thumbnail}" alt="thumbnail" width="200"/>
     </label>
-    <label title="show tab" class="tab-favicon" for="tabid-${data.tabId}-title">
+    <label title="show tab${data.tooltipText}" class="tab-favicon" for="tabid-${data.tabId}-title">
       <img class="favicon-image" alt="favicon" src="${data.favicon}" />
     </label>
-    <label title="show tab" class="tab-content" for="tabid-${data.tabId}-title">
+    <label title="show tab${data.tooltipText}" class="tab-content" for="tabid-${data.tabId}-title">
         <div class="tab-title">${data.title}</div>
         <div class="tab-url">${data.url}</div>
     </label>
-    <input title="close tab" type="radio" id="tabid-${data.tabId}-close-tab" name="action" value="close-tab"/>
-    <label title="close tab" class="tab-close" for="tabid-${data.tabId}-close-tab">&#9587;</label>
+    <input title="close tab${data.tooltipText}" type="radio" id="tabid-${data.tabId}-close-tab" name="action" value="close-tab"/>
+    <label title="close tab${data.tooltipText}" class="tab-close" for="tabid-${data.tabId}-close-tab">&#9587;</label>
     <input type="submit"/>
   </form>
 `;
@@ -72,6 +72,8 @@ class TabItem extends HTMLElement {
               title: this.getAttribute('tab-title'),
               url: this.getAttribute('url')}
 
+    d.tooltipText = `\n\n${d.title.substr(0,120)}${d.title.length > 120 ? "..." : ""}\n${d.url.length > 500 ? `${d.url.substr(0,100)}...` : d.url}`;
+
     this.innerHTML = tabItem(d);
     const form = $1('form', this);
 
@@ -84,13 +86,16 @@ class TabItem extends HTMLElement {
       e.preventDefault();
 
       switch (e.key) {
+        // keyboard shortcuts instead of clicking the mouse
         case "ArrowUp":   this.focusPreviousTabOrContainer(); return;
         case "ArrowDown": this.focusNextTabOrContainer(); return;
+        default:          this.continueSearch(e); return;
+
+        // keyboard shortcuts instead of hovering with the mouse
         case "Enter":     $1('input[value=focus-tab]', this).checked = true; break;
         case "Backspace": $1('input[value=close-tab]', this).checked = true; break;
-        default:          this.continueSearch(e); return;
       }
-      this.form.dispatchEvent((new Event('change')));
+      form.dispatchEvent((new Event('change')));
     });
 
     form.addEventListener("change", e => {
@@ -102,6 +107,27 @@ class TabItem extends HTMLElement {
         default: console.error('unknown action: ', $1('input[name=action]:checked', this));  break;
       }
     });
+
+//    this.addEventListener('dragstart', function(event) {
+//      event.dataTransfer.setData('text', this.id);
+//    });
+//
+//    this.addEventListener('dragenter', function(event) {
+//      console.debug('dragenter', this);
+//      event.preventDefault();
+//    });
+//    this.addEventListener('dragover', function(event) {
+//      event.preventDefault();
+//    });
+//    this.addEventListener('drop', function(event) {
+//      event.preventDefault();
+//    });
+//    this.addEventListener('dragleave', function(event) {
+//      if(event.target == form) {
+//        this.classList.remove('dragging');
+//      }
+//      console.info('dragleave', event.target);
+//    });
   }
 
 
@@ -117,14 +143,19 @@ class TabItem extends HTMLElement {
 window.customElements.define('tab-item', TabItem);
 
 // <tab-item tabindex='2' color='blue-marker' tab-id='42' thumbnail='./thumbnail.jpg' favicon='./favicon.ico' tab-title='0 this is a wonderful title' url='heise.de/artikel/golang'></tab-item>
-export const createTabComponent = function(tabId, tabIndex, tabTitle, url, color) {
+export const createTabComponent = function(tabId, tabIndex, tabTitle, url, color, thumbnail, favicon) {
+  if(!favicon ||
+      favicon.startsWith('chrome://')) {
+    favicon = './favicon-placeholder.png';
+  }
   return $e('tab-item', {tabindex: tabIndex,
+                         draggable: true,
                          tab_id: tabId,
                          tab_title: tabTitle || "...",
                          url: url,
                          color: color,
-                         thumbnail: './thumbnail-placeholder.jpg',
-                         favicon: './favicon-placeholder.ico'});
+                         thumbnail: thumbnail,
+                         favicon: favicon});
 }
 
 console.debug('conex-tab-component.js successfully loaded');

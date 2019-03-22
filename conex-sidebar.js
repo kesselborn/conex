@@ -4,9 +4,7 @@ import {createContainerComponent} from "./conex-container-component.js";
 const bg = window.browser.extension.getBackgroundPage();
 
 document.addEventListener("DOMContentLoaded", function(event) {
-  setTimeout(function() {
-    document.body.appendChild(bg.getConexDom());
-  }, 2000);
+  bg.initializingConex.then(getDomTree => document.body.firstElementChild.replaceWith(getDomTree()), e => console.error(e));
 });
 
-console.debug('conex-background.js loaded');
+console.debug('conex-sidebar.js loaded');

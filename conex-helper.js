@@ -1,8 +1,14 @@
+console._debug = console.debug;
+console.debug = function() {
+  if(!console.debugging) return;
+  console._debug.apply(this, arguments);
+};
+
 // alias for document.querySelectorAll
-export const $ = function(s, parent){ return (parent || document).querySelectorAll(s); };
+export const $ = function(s, parent){ return (parent || window.document).querySelectorAll(s); };
 
 // alias for document.querySelector
-export const $1 = function(s, parent){ return (parent || document).querySelector(s); };
+export const $1 = function(s, parent){ return (parent || window.document).querySelector(s); };
 
 // creates a dom element, can contain children; attributes contains a map of the elements attributes
 // with 'content' being a special attribute representing the text node's content; underscores in
@@ -21,7 +27,7 @@ export const $e = function(name, attributes, children) {
   const e = window.document.createElement(name);
   for(const key in attributes) {
     if(key == 'content') {
-      e.appendChild(document.createTextNode(attributes[key]));
+      e.appendChild(window.document.createTextNode(attributes[key]));
     } else {
       e.setAttribute(key.replace(/_/g, '-'), attributes[key]);
     }

@@ -41,8 +41,8 @@ form label {
 form.tab-item {
   display: grid;
   grid-gap: 5px;
-  grid-template-columns: 90px auto var(--action-width);
-  grid-template-areas: "thumbnail content close";
+  grid-template-columns: 90px auto;
+  grid-template-areas: "thumbnail content";
   height: var(--height);
   border-left: 2px solid;
   align-items: center;
@@ -58,10 +58,16 @@ form.tab-item {
 
 tab-item:focus form.tab-item, form.tab-item:hover {
   background-color: rgb(232, 232, 232);
+  grid-template-columns: 90px auto var(--action-width);
+  grid-template-areas: "thumbnail content close";
 }
 
 tab-item:focus img, form.tab-item:hover img {
   opacity: 0.5;
+}
+
+tab-item:-moz-drag-over, tab-item.dragging  {
+  background-color:red !important;
 }
 
 /* label contents */
@@ -115,6 +121,9 @@ container-item.collapsed tab-item {
 }
 
 /***************** container item ******************/
+container-item {
+  display:grid;
+}
 
 form.container-item {
   display: grid;
@@ -217,3 +226,7 @@ container-item.collapsed label.container-collapser, container-item label.contain
 .container-new-tab {
   font-weight: lighter;
 }
+
+.order1 { order: 1; }
+.order2 { order: 2; }
+.order3 { order: 3; }

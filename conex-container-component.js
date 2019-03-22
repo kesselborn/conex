@@ -32,8 +32,13 @@ class ContainerItem extends HTMLElement {
     this.focusFirstTab = function () {
       try {
         $1('tab-item', this).focus();
-      } catch (e) {
-        console.warn('could not find tab item in container', this, ': ', e);
+      } catch (_) {
+        try {
+          console.debug('empty container ... jumping to next one', this);
+          this.nextElementSibling.focus();
+        } catch {
+          console.debug('could not find next item to focus ... seems as if I am at the end of the list', this);
+        }
       }
     }
 
@@ -41,7 +46,12 @@ class ContainerItem extends HTMLElement {
       try {
         Array.from($('tab-item', this.previousElementSibling)).pop().focus();
       } catch (e) {
-        console.warn('error focusing the last tab item of the previous container: ', e);
+        try {
+          console.debug('empty container ... jumping to previous one', this, e);
+          this.previousElementSibling.focus();
+        } catch (_) {
+          console.debug('error focusing the last tab item of the previous container ... seems as if I am at the top', this);
+        }
       }
     }
 
@@ -85,13 +95,13 @@ class ContainerItem extends HTMLElement {
               containerName: this.getAttribute('container-name'),
               tabCnt: this.getAttribute('tab-cnt')};
 
-    if(!$1('.container-item')) {
+    if(!$1('.container-item', this)) {
       const e = document.createElement("div");
       e.innerHTML = containerItem(d);
       this.prepend(e);
     }
     const form = $1('form', this);
-
+    
     this.addEventListener("focus", e => console.debug('focused', this));
     this.addEventListener('click', e => this.focus());
 
@@ -104,15 +114,17 @@ class ContainerItem extends HTMLElement {
       e.preventDefault();
       
       switch (e.key) {
-        // case 'Enter':     this.toggleExpand(); break;
-        case '+':          $1('input[value=new-tab]', this).checked = true; break;
+        // keyboard shortcuts instead of hovering with the mouse
         case 'ArrowDown':  this.focusFirstTab(); return;
+        case 'ArrowUp':    this.focusLastTabOfPreviousContainer(); return;
+        default:           this.continueSearch(e); return; 
+
+        // keyboard shortcuts instead of clicking the mouse
+        case '+':          $1('input[value=new-tab]', this).checked = true; break;
         case 'ArrowLeft':  $1('input[value=collapse-container]', this).checked = true; break;
         case 'ArrowRight': $1('input[value=expand-container]', this).checked = true; break;
-        case 'ArrowUp':    this.focusLastTabOfPreviousContainer(); break;
         case 'Backspace':  $1('input[value=close-container]', this).checked = true; break;
         case 'Enter':      $1('input[value=focus-container]', this).checked = true; break;
-        default:           this.continueSearch(e); return; 
       }
       $1('form', this).dispatchEvent((new Event('change')));
     });
