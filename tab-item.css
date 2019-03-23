@@ -1,12 +1,22 @@
 form.tab-item {
     display: grid;
     grid-gap: 5px;
-    grid-template-columns: 90px auto;
+    grid-template-columns: var(--thumbnail-width) auto;
     grid-template-areas: "thumbnail content";
     height: var(--height);
     border-left: 2px solid;
     align-items: center;
     padding: 5px 20px 5px 5px;
+}
+
+tab-item:focus form.tab-item, form.tab-item:hover {
+    background-color: var(--hover-item-bg-color);
+    grid-template-columns: var(--thumbnail-width) auto var(--action-width);
+    grid-template-areas: "thumbnail content close";
+}
+
+tab-item:focus img, form.tab-item:hover img {
+    opacity: 0.5;
 }
 
 .tab-thumbnail {
@@ -26,6 +36,7 @@ form.tab-item {
 }
 
 /* label contents */
+
 .thumbnail-image {
     height: var(--height);
     width: auto;
@@ -48,7 +59,7 @@ form.tab-item {
     font-size: x-large;
     place-content: center;
     place-self: center;
-    border: 1px solid rgb(208, 208, 208);
+    border: 1px solid var(--hover-button-bg-color);
     border-radius: 6px;
 }
 
@@ -61,16 +72,5 @@ form.tab-item:hover .tab-close {
 }
 
 .tab-close:hover, .tab-close:focus {
-    background-color: rgb(208, 208, 208);
-}
-
-/* focus / hover styles */
-tab-item:focus form.tab-item, form.tab-item:hover {
-    background-color: rgb(232, 232, 232);
-    grid-template-columns: 90px auto var(--action-width);
-    grid-template-areas: "thumbnail content close";
-}
-
-tab-item:focus img, form.tab-item:hover img {
-    opacity: 0.5;
+    background-color: var(--hover-button-bg-color);
 }

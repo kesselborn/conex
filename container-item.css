@@ -49,7 +49,7 @@ form.container-item {
   font-size: x-large;
   place-content: center;
   place-self: center;
-  border: 1px solid rgb(208, 208, 208);
+  border: 1px solid var(--hover-button-bg-color);
   border-radius: 6px;
 }
 
@@ -63,16 +63,16 @@ container-item.collapsed label.container-expander, container-item label.containe
 
 /* focus / hover styles */
 container-item:focus form.container-item, form.container-item:hover {
-  background-color: rgb(232, 232, 232);
+  background-color: var(--hover-item-bg-color);
 }
 
 .container-close-container:hover, .container-new-tab:hover,
     .container-expander:hover, .container-collapser:hover {
-  background-color: rgb(208, 208, 208);
+  background-color: var(--hover-button-bg-color);
 }
 
 form.container-item:hover .container-expander, form.container-item:hover .container-collapser,
 container-item:focus .container-expander, container-item:focus .container-collapser {
-  border: 1px solid rgb(208, 208, 208);
+  border: 1px solid var(--hover-button-bg-color);
   border-radius: 6px;
 }

@@ -4,9 +4,13 @@
 @import "container-item.css";
 
 :root {
-  --height: 40px;
   --action-width: 30px;
+  --height: 40px;
+  --thumbnail-width: 60px;
+  --hover-item-bg-color: rgb(232, 232, 232);
+  --hover-button-bg-color: rgb(208, 208, 208);
 }
+
 /* variables */
 body {
   margin: 0;
