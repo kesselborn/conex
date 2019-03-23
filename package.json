@@ -1,0 +1,26 @@
+{
+  "name": "conex",
+  "version": "1.0.0",
+  "description": "[![Waffle.io - Columns and their card count](https://badge.waffle.io/kesselborn/conex.svg?columns=all)](https://waffle.io/kesselborn/conex)",
+  "main": "conex-actions-common.js",
+  "dependencies": {
+    "lit-html": "^1.0.0",
+    "to": "^0.2.9",
+    "update": "^0.7.4",
+    "web-ext": "^2.9.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kesselborn/conex.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kesselborn/conex/issues"
+  },
+  "homepage": "https://github.com/kesselborn/conex#readme"
+}

@@ -24,15 +24,15 @@ class TabItem extends HTMLElement {
   constructor() {
     super();
 
-    this.focusTab = function () {
+    this.focusTab = function() {
       console.debug("show tab");
     };
 
-    this.continueSearch = function (e) {
+    this.continueSearch = function(e) {
       console.debug("continue search placeholder for:", e);
     };
 
-    this.closeTab = function () {
+    this.closeTab = function() {
       console.debug("close tab");
     };
 
@@ -40,7 +40,7 @@ class TabItem extends HTMLElement {
       return window.getComputedStyle(this).display !== "none";
     };
 
-    this.focusNextTabOrContainer = function () {
+    this.focusNextTabOrContainer = function() {
       let elem = null;
 
       do {
@@ -54,7 +54,7 @@ class TabItem extends HTMLElement {
       elem.focus();
     };
 
-    this.focusPreviousTabOrContainer = function () {
+    this.focusPreviousTabOrContainer = function() {
       let elem = null;
 
       do {
@@ -79,7 +79,8 @@ class TabItem extends HTMLElement {
       url: this.getAttribute("url")
     };
 
-    d.tooltipText = ["\n\n", d.title.substr(0, 120), d.title.length > 120 ? "..." : "", "\n", d.url.length > 500 ? d.url.substr(0,100) + "..." : d.url].join("");
+    // eslint-disable-next-line no-magic-numbers
+    d.tooltipText = ["\n\n", d.title.substr(0, 120), d.title.length > 120 ? "..." : "", "\n", d.url.length > 500 ? `${d.url.substr(0, 100)}...` : d.url].join("");
 
     this.innerHTML = tabItem(d);
     const form = $1("form", this);
@@ -150,20 +151,20 @@ class TabItem extends HTMLElement {
 window.customElements.define("tab-item", TabItem);
 
 // <tab-item color="blue-marker" tab-id="42" thumbnail="./thumbnail.jpg" favicon="./favicon.ico" tab-title="0 this is a wonderful title" url="heise.de/artikel/golang"></tab-item>
-export const createTabComponent = function(tabId, tabTitle, url, color, thumbnail, favicon) {
-  if(!favicon ||
-      favicon.startsWith("chrome://")) {
+export const createTabComponent = function(tabId, tabTitle, url, color, thumbnail, faviconIn) {
+  let favicon = faviconIn;
+  if(!favicon || favicon.startsWith("chrome://")) {
     favicon = "./favicon-placeholder.png";
   }
   return $e("tab-item", {
-    color: color,
+    color,
     draggable: true,
-    favicon: favicon,
+    favicon,
     tab_id: tabId,
     tab_title: tabTitle || "...",
     tabindex: 0,
-    thumbnail: thumbnail,
-    url: url
+    thumbnail,
+    url
   });
 };
 
