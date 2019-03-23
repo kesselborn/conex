@@ -1,7 +1,7 @@
-import {resizeImage} from './conex-resize-image.js';
-import {$, $1, $e} from './conex-helper.js';
-import {createTabComponent} from "./conex-tab-component.js";
+import {$e} from './conex-helper.js';
 import {createContainerComponent} from "./conex-container-component.js";
+import {createTabComponent} from "./conex-tab-component.js";
+import {resizeImage} from './conex-resize-image.js';
 console.debugging = true;
 
 
@@ -20,6 +20,15 @@ const getConexDom = function() {
   return document.body.firstElementChild.cloneNode(true);
 };
 
+async function createThumbnail(tab) {
+  try {
+    console.debug(`creating thumbnail for ${tab.url}`);
+    const screenshot = await browser.tabs.captureTab(tab.id, { format: 'jpeg', quality: 20 });
+    const thumbnailElement = await resizeImage($e('img', { src: screenshot, style: 'border:solid red 1px;' }), 300, 200);
+    return thumbnailElement.src;
+  } catch (e) { console.error(`error creating thumbnail of ${tab.url}: `, e); }
+}
+
 async function initializeBackgroundHtml() {
   const d = document.createElement('div');
   const containers = await browser.contextualIdentities.query({});
@@ -29,6 +38,7 @@ async function initializeBackgroundHtml() {
     console.debug(`container ${container.name}`);
     const tabs = browser.tabs.query({cookieStoreId: container.cookieStoreId});
     const c = d.appendChild(createContainerComponent(container.cookieStoreId, container.name, container.color));
+    
     for(const tab of (await tabs)) {
       console.debug(`   tab ${tab.title}`);
       const thumbnail = await createThumbnail(tab);
@@ -44,15 +54,6 @@ async function initializeBackgroundHtml() {
 document.addEventListener("DOMContentLoaded", function(event) {
   initializeBackgroundHtml();
 });
-
-async function createThumbnail(tab) {
-  try {
-    console.debug(`creating thumbnail for ${tab.url}`);
-    const screenshot = await browser.tabs.captureTab(tab.id, { format: 'jpeg', quality: 20 });
-    const thumbnailElement = await resizeImage($e('img', { src: screenshot, style: 'border:solid red 1px;' }), 300, 200);
-    return thumbnailElement.src;
-  } catch (e) { console.error(`error creating thumbnail of ${tab.url}: `, e); }
-}
 
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if(changeInfo.status == 'complete') {

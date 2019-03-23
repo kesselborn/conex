@@ -1,4 +1,4 @@
-import {$, $1, $e} from "./conex-helper.js";
+import {$1, $e} from "./conex-helper.js";
 
 const tabItem = (data) => `
   <form class="tab-item ${data.color}-marker" action="">
@@ -36,15 +36,16 @@ class TabItem extends HTMLElement {
       console.debug("close tab");
     };
 
-    this.visible = function(){
-      return window.getComputedStyle(this).display != "none";
+    this.visible = function() {
+      return window.getComputedStyle(this).display !== "none";
     };
 
     this.focusNextTabOrContainer = function () {
-      let elem = this;
+      let elem = null;
+
       do {
-        elem = elem.nextElementSibling;
-        if (elem == null) {
+        elem = (elem || this).nextElementSibling;
+        if (elem === null) {
           if(this.parentElement.nextElementSibling) { this.parentElement.nextElementSibling.focus(); }
           return;
         }
@@ -54,10 +55,11 @@ class TabItem extends HTMLElement {
     };
 
     this.focusPreviousTabOrContainer = function () {
-      let elem = this;
+      let elem = null;
+
       do {
-        elem = elem.previousElementSibling;
-        if (elem.nodeName != "TAB-ITEM") {
+        elem = (elem || this).previousElementSibling;
+        if (elem.nodeName !== "TAB-ITEM") {
           this.parentElement.focus();
           return;
         }
@@ -68,14 +70,16 @@ class TabItem extends HTMLElement {
   }
 
   connectedCallback() {
-    const d = {color: this.getAttribute("color"),
-              tabId: this.getAttribute("tab-id"),
-              thumbnail: this.getAttribute("thumbnail"),
-              favicon: this.getAttribute("favicon"),
-              title: this.getAttribute("tab-title"),
-              url: this.getAttribute("url")};
+    const d = {
+      color: this.getAttribute("color"),
+      favicon: this.getAttribute("favicon"),
+      tabId: this.getAttribute("tab-id"),
+      thumbnail: this.getAttribute("thumbnail"),
+      title: this.getAttribute("tab-title"),
+      url: this.getAttribute("url")
+    };
 
-    d.tooltipText = ["\n\n", d.title.substr(0,120), d.title.length > 120 ? "..." : "", "\n", d.url.length > 500 ? d.url.substr(0,100) + "..." : d.url].join("");
+    d.tooltipText = ["\n\n", d.title.substr(0, 120), d.title.length > 120 ? "..." : "", "\n", d.url.length > 500 ? d.url.substr(0,100) + "..." : d.url].join("");
 
     this.innerHTML = tabItem(d);
     const form = $1("form", this);
@@ -87,18 +91,18 @@ class TabItem extends HTMLElement {
 
       switch (e.key) {
         // keyboard shortcuts instead of clicking the mouse
-        case "ArrowUp":   this.focusPreviousTabOrContainer(); return;
+        case "ArrowUp": this.focusPreviousTabOrContainer(); return;
         case "ArrowDown": this.focusNextTabOrContainer(); return;
-        case "Tab":       if(e.shiftKey) this.focusPreviousTabOrContainer(); else this.focusNextTabOrContainer(); return;
+        case "Tab": if(e.shiftKey) this.focusPreviousTabOrContainer(); else this.focusNextTabOrContainer(); return;
         case "ArrowLeft": this.parentElement.focus(); return;
-        case "ArrowRight":this.parentElement.nextElementSibling.focus(); return;
-        default:          this.continueSearch(e); return;
+        case "ArrowRight": this.parentElement.nextElementSibling.focus(); return;
+        default: this.continueSearch(e); return;
 
         // keyboard shortcuts instead of hovering with the mouse
-        case "Enter":     $1("input[value=focus-tab]", this).checked = true; break;
+        case "Enter": $1("input[value=focus-tab]", this).checked = true; break;
         case "Backspace": $1("input[value=close-tab]", this).checked = true; break;
       }
-      form.dispatchEvent((new Event("change")));
+      form.dispatchEvent(new Event("change"));
     });
 
     form.addEventListener("change", e => {
@@ -107,7 +111,7 @@ class TabItem extends HTMLElement {
       switch($1("input[name=action]:checked", this).value) {
         case "focus-tab": this.focusTab(); break;
         case "close-tab": this.closeTab(); break;
-        default: console.error("unknown action: ", $1("input[name=action]:checked", this));  break;
+        default: console.error("unknown action: ", $1("input[name=action]:checked", this)); break;
       }
     });
 
@@ -143,7 +147,7 @@ class TabItem extends HTMLElement {
   }
 }
 
-window.customElements.define('tab-item', TabItem);
+window.customElements.define("tab-item", TabItem);
 
 // <tab-item color="blue-marker" tab-id="42" thumbnail="./thumbnail.jpg" favicon="./favicon.ico" tab-title="0 this is a wonderful title" url="heise.de/artikel/golang"></tab-item>
 export const createTabComponent = function(tabId, tabTitle, url, color, thumbnail, favicon) {
@@ -151,14 +155,16 @@ export const createTabComponent = function(tabId, tabTitle, url, color, thumbnai
       favicon.startsWith("chrome://")) {
     favicon = "./favicon-placeholder.png";
   }
-  return $e("tab-item", {tabindex: 0,
-                         draggable: true,
-                         tab_id: tabId,
-                         tab_title: tabTitle || "...",
-                         url: url,
-                         color: color,
-                         thumbnail: thumbnail,
-                         favicon: favicon});
+  return $e("tab-item", {
+    color: color,
+    draggable: true,
+    favicon: favicon,
+    tab_id: tabId,
+    tab_title: tabTitle || "...",
+    tabindex: 0,
+    thumbnail: thumbnail,
+    url: url
+  });
 };
 
 console.debug("conex-tab-component.js successfully loaded");

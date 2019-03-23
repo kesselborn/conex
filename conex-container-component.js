@@ -64,10 +64,10 @@ class ContainerItem extends HTMLElement {
     };
 
     this.collapseContainer = function() {
-      if(!this.classList.contains('collapsed')) {
-        this.classList.add('collapsed');
-      } else {
+      if(this.classList.contains('collapsed')) {
         this.previousElementSibling.focus();
+      } else {
+        this.classList.add('collapsed');
       }
     };
 
@@ -105,15 +105,15 @@ class ContainerItem extends HTMLElement {
       this.prepend(e);
     }
     const form = $1('form', this);
-    
-    this.addEventListener("focus", e => console.debug('focused', this));
-    this.addEventListener('click', e => this.focus());
+
+    this.addEventListener("focus", () => console.debug('focused', this));
+    this.addEventListener('click', () => this.focus());
 
     this.addEventListener("keydown", e => {
       console.debug('container-item keydown', e.target);
       e.stopPropagation();
       e.preventDefault();
-      
+
       switch (e.key) {
         // keyboard shortcuts instead of hovering with the mouse
         case 'ArrowDown':  this.focusFirstTab(); return;
