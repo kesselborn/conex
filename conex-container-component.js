@@ -1,4 +1,4 @@
-import {$, $1, $e} from './conex-helper.js'
+import {$, $1, $e} from './conex-helper.js';
 
 const containerItem = (data) => `
  <form class="container-item ${data.color}-marker" action="">
@@ -31,28 +31,28 @@ class ContainerItem extends HTMLElement {
 
     this.visible = function(){
       return window.getComputedStyle(this) != "none";
-    }
+    };
 
     this.focusFirstTab = function () {
       for (const tabItem of $('tab-item', this)) {
         if (tabItem.visible()) {
           tabItem.focus();
-          return
+          return;
         }
       }
       try {
         console.debug('empty container or all tabs are hidden ... jumping to next container', this);
         this.nextElementSibling.focus();
-      } catch {
+      } catch(_) {
         console.debug('could not find next item to focus ... seems as if I am at the end of the list', this);
       }
-    }
+    };
 
     this.focusLastTabOfPreviousContainer = function () {
       for (const tabItem of Array.from($('tab-item', this.previousElementSibling)).reverse()) {
         if (tabItem.visible()) {
           tabItem.focus();
-          return
+          return;
         }
       }
       try {
@@ -61,44 +61,35 @@ class ContainerItem extends HTMLElement {
       } catch (e) {
         console.debug('error focusing the last tab item of the previous container ... seems as if I am at the top', e, this);
       }
-    }
+    };
 
-    this.collapseContainer = function () {
+    this.collapseContainer = function() {
       if(!this.classList.contains('collapsed')) {
-        this.classList.add('collapsed')
+        this.classList.add('collapsed');
       } else {
         this.previousElementSibling.focus();
       }
-    }
+    };
 
-    this.expandContainer = function () {
+    this.expandContainer = function() {
       if(this.classList.contains('collapsed')) {
-        this.classList.remove('collapsed')
+        this.classList.remove('collapsed');
       } else {
         this.nextElementSibling.focus();
       }
-    }
+    };
 
-    this.focusContainer = function () {
+    this.focusContainer = function() {
       console.debug('focus container');
-    }
+    };
 
-    this.newContainerTab = function () {
+    this.newContainerTab = function() {
       console.debug('new container tab');
-    }
+    };
 
-    this.closeContainer = function () {
+    this.closeContainer = function() {
       console.debug('close container');
-    }
-  }
-
-  get color() {
-    return this.getAttribute('color');
-  }
-
-  set color(val) {
-    console.debug('color set');
-    this.setAttribute('color', val);
+    };
   }
 
   connectedCallback() {
@@ -127,7 +118,7 @@ class ContainerItem extends HTMLElement {
         // keyboard shortcuts instead of hovering with the mouse
         case 'ArrowDown':  this.focusFirstTab(); return;
         case 'ArrowUp':    this.focusLastTabOfPreviousContainer(); return;
-        case "Tab":        e.shiftKey ? this.focusLastTabOfPreviousContainer() : this.focusFirstTab(); return;
+        case "Tab":        if(e.shiftKey) this.focusLastTabOfPreviousContainer(); else this.focusFirstTab(); return;
         default:           this.continueSearch(e); return; 
 
         // keyboard shortcuts instead of clicking the mouse
@@ -173,7 +164,7 @@ class ContainerItem extends HTMLElement {
   attributeChangedCallback(name, oldValue, newValue) {
     console.debug(`attribute ${name} changed: ${oldValue} -> ${newValue}`);
   }
-};
+}
 window.customElements.define('container-item', ContainerItem);
 
 // <container-item tabindex='1' color="blue" container-id="1" container-name="banking" tab-cnt="42">
@@ -182,6 +173,6 @@ export const createContainerComponent = function(containerId, containerName, col
                                container_id: containerId,
                                container_name: containerName,
                                color: color});
-}
+};
   
 console.debug('conex-container-component.js successfully loaded');

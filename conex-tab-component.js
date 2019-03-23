@@ -1,4 +1,4 @@
-import {$, $1, $e} from './conex-helper.js'
+import {$, $1, $e} from "./conex-helper.js";
 
 const tabItem = (data) => `
   <form class="tab-item ${data.color}-marker" action="">
@@ -25,63 +25,63 @@ class TabItem extends HTMLElement {
     super();
 
     this.focusTab = function () {
-      console.debug('show tab');
-    }
+      console.debug("show tab");
+    };
 
     this.continueSearch = function (e) {
-      console.debug('continue search placeholder for:', e);
-    }
+      console.debug("continue search placeholder for:", e);
+    };
 
     this.closeTab = function () {
-      console.debug('close tab');
-    }
+      console.debug("close tab");
+    };
 
     this.visible = function(){
       return window.getComputedStyle(this).display != "none";
-    }
+    };
 
     this.focusNextTabOrContainer = function () {
       let elem = this;
       do {
         elem = elem.nextElementSibling;
         if (elem == null) {
-          this.parentElement.nextElementSibling && this.parentElement.nextElementSibling.focus();
+          if(this.parentElement.nextElementSibling) { this.parentElement.nextElementSibling.focus(); }
           return;
         }
       } while(!elem.visible());
 
       elem.focus();
-    }
+    };
 
     this.focusPreviousTabOrContainer = function () {
       let elem = this;
       do {
         elem = elem.previousElementSibling;
-        if (elem.nodeName != 'TAB-ITEM') {
+        if (elem.nodeName != "TAB-ITEM") {
           this.parentElement.focus();
           return;
         }
       } while (!elem.visible());
 
       elem.focus();
-    }
+    };
   }
 
   connectedCallback() {
-    const d = {color: this.getAttribute('color'),
-              tabId: this.getAttribute('tab-id'),
-              thumbnail: this.getAttribute('thumbnail'),
-              favicon: this.getAttribute('favicon'),
-              title: this.getAttribute('tab-title'),
-              url: this.getAttribute('url')}
+    const d = {color: this.getAttribute("color"),
+              tabId: this.getAttribute("tab-id"),
+              thumbnail: this.getAttribute("thumbnail"),
+              favicon: this.getAttribute("favicon"),
+              title: this.getAttribute("tab-title"),
+              url: this.getAttribute("url")};
 
-    d.tooltipText = `\n\n${d.title.substr(0,120)}${d.title.length > 120 ? "..." : ""}\n${d.url.length > 500 ? `${d.url.substr(0,100)}...` : d.url}`;
+    d.tooltipText = ["\n\n", d.title.substr(0,120), d.title.length > 120 ? "..." : "", "\n", d.url.length > 500 ? d.url.substr(0,100) + "..." : d.url].join("");
 
     this.innerHTML = tabItem(d);
-    const form = $1('form', this);
+    const form = $1("form", this);
 
     this.addEventListener("keydown", e => {
-      console.debug('tab-item keydown', e);
+      console.debug("tab-item keydown", e);
       e.stopPropagation();
       e.preventDefault();
 
@@ -89,69 +89,69 @@ class TabItem extends HTMLElement {
         // keyboard shortcuts instead of clicking the mouse
         case "ArrowUp":   this.focusPreviousTabOrContainer(); return;
         case "ArrowDown": this.focusNextTabOrContainer(); return;
-        case "Tab":       e.shiftKey ? this.focusPreviousTabOrContainer() : this.focusNextTabOrContainer(); return;
+        case "Tab":       if(e.shiftKey) this.focusPreviousTabOrContainer(); else this.focusNextTabOrContainer(); return;
         case "ArrowLeft": this.parentElement.focus(); return;
         case "ArrowRight":this.parentElement.nextElementSibling.focus(); return;
         default:          this.continueSearch(e); return;
 
         // keyboard shortcuts instead of hovering with the mouse
-        case "Enter":     $1('input[value=focus-tab]', this).checked = true; break;
-        case "Backspace": $1('input[value=close-tab]', this).checked = true; break;
+        case "Enter":     $1("input[value=focus-tab]", this).checked = true; break;
+        case "Backspace": $1("input[value=close-tab]", this).checked = true; break;
       }
-      form.dispatchEvent((new Event('change')));
+      form.dispatchEvent((new Event("change")));
     });
 
     form.addEventListener("change", e => {
       e.stopPropagation();
       e.preventDefault();
-      switch($1('input[name=action]:checked', this).value) {
-        case 'focus-tab': this.focusTab(); break; 
-        case 'close-tab': this.closeTab(); break;
-        default: console.error('unknown action: ', $1('input[name=action]:checked', this));  break;
+      switch($1("input[name=action]:checked", this).value) {
+        case "focus-tab": this.focusTab(); break;
+        case "close-tab": this.closeTab(); break;
+        default: console.error("unknown action: ", $1("input[name=action]:checked", this));  break;
       }
     });
 
-//    this.addEventListener('dragstart', function(event) {
-//      event.dataTransfer.setData('text', this.id);
+//    this.addEventListener("dragstart", function(event) {
+//      event.dataTransfer.setData("text", this.id);
 //    });
 //
-//    this.addEventListener('dragenter', function(event) {
-//      console.debug('dragenter', this);
+//    this.addEventListener("dragenter", function(event) {
+//      console.debug("dragenter", this);
 //      event.preventDefault();
 //    });
-//    this.addEventListener('dragover', function(event) {
+//    this.addEventListener("dragover", function(event) {
 //      event.preventDefault();
 //    });
-//    this.addEventListener('drop', function(event) {
+//    this.addEventListener("drop", function(event) {
 //      event.preventDefault();
 //    });
-//    this.addEventListener('dragleave', function(event) {
+//    this.addEventListener("dragleave", function(event) {
 //      if(event.target == form) {
-//        this.classList.remove('dragging');
+//        this.classList.remove("dragging");
 //      }
-//      console.info('dragleave', event.target);
+//      console.info("dragleave", event.target);
 //    });
   }
 
 
   disconnectedCallback() {
-    console.debug('tab-item disconnnected');
+    console.debug("tab-item disconnnected");
   }
 
   adoptedCallback() {
-    console.debug('tab-item adopted');
+    console.debug("tab-item adopted");
   }
-};
+}
 
 window.customElements.define('tab-item', TabItem);
 
-// <tab-item color='blue-marker' tab-id='42' thumbnail='./thumbnail.jpg' favicon='./favicon.ico' tab-title='0 this is a wonderful title' url='heise.de/artikel/golang'></tab-item>
+// <tab-item color="blue-marker" tab-id="42" thumbnail="./thumbnail.jpg" favicon="./favicon.ico" tab-title="0 this is a wonderful title" url="heise.de/artikel/golang"></tab-item>
 export const createTabComponent = function(tabId, tabTitle, url, color, thumbnail, favicon) {
   if(!favicon ||
-      favicon.startsWith('chrome://')) {
-    favicon = './favicon-placeholder.png';
+      favicon.startsWith("chrome://")) {
+    favicon = "./favicon-placeholder.png";
   }
-  return $e('tab-item', {tabindex: 0,
+  return $e("tab-item", {tabindex: 0,
                          draggable: true,
                          tab_id: tabId,
                          tab_title: tabTitle || "...",
@@ -159,6 +159,6 @@ export const createTabComponent = function(tabId, tabTitle, url, color, thumbnai
                          color: color,
                          thumbnail: thumbnail,
                          favicon: favicon});
-}
+};
 
-console.debug('conex-tab-component.js successfully loaded');
+console.debug("conex-tab-component.js successfully loaded");

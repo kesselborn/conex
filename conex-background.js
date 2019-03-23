@@ -1,5 +1,5 @@
-import {resizeImage} from './conex-resize-image.js'
-import {$, $1, $e} from './conex-helper.js'
+import {resizeImage} from './conex-resize-image.js';
+import {$, $1, $e} from './conex-helper.js';
 import {createTabComponent} from "./conex-tab-component.js";
 import {createContainerComponent} from "./conex-container-component.js";
 console.debugging = true;
@@ -18,7 +18,7 @@ window.initializingConex = new Promise((resolve, reject) => {
 
 const getConexDom = function() {
   return document.body.firstElementChild.cloneNode(true);
-}
+};
 
 async function initializeBackgroundHtml() {
   const d = document.createElement('div');
@@ -37,7 +37,7 @@ async function initializeBackgroundHtml() {
   }
 
   document.body.firstElementChild.replaceWith(d);
-  document.body.firstElementChild.focus;
+  document.body.firstElementChild.focus();
   initialized = true;
 }
 
@@ -56,7 +56,7 @@ async function createThumbnail(tab) {
 
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if(changeInfo.status == 'complete') {
-    createThumbnail(tab)
+    createThumbnail(tab);
   }
 }, { properties: ['status'] });
 
