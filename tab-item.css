@@ -38,8 +38,8 @@ tab-item:focus img, form.tab-item:hover img {
 /* label contents */
 
 .thumbnail-image {
-    height: var(--height);
-    width: auto;
+    max-height: var(--height);
+    max-width: var(--thumbnail-width);
 }
 
 .favicon-image {
