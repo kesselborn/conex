@@ -29,8 +29,8 @@ class TabItem extends HTMLElement {
       console.debug("show tab");
     };
 
-    this.continueSearch = function(e) {
-      console.debug("continue search placeholder for:", e);
+    this.continueSearch = function() {
+      console.debug("continue search");
     };
 
     this.closeTab = function() {
