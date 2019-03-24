@@ -141,6 +141,7 @@ class ContainerItem extends HTMLElement {
         case "new-tab": this.newContainerTab(); break;
         default: console.error("unknown action: ", $1("input[name=action]:checked")); break;
       }
+      form.reset();
     });
   }
 
