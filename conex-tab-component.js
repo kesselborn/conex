@@ -25,6 +25,7 @@ class TabItem extends HTMLElement {
     super();
 
     this.focusTab = function() {
+      window.browser.tabs.update(this.tabId, {active: true});
       console.debug("show tab");
     };
 
@@ -70,19 +71,31 @@ class TabItem extends HTMLElement {
   }
 
   connectedCallback() {
-    const d = {
-      color: this.getAttribute("color"),
-      favicon: this.getAttribute("favicon"),
-      tabId: this.getAttribute("tab-id"),
-      thumbnail: this.getAttribute("thumbnail"),
-      title: this.getAttribute("tab-title"),
-      url: this.getAttribute("url")
-    };
+    this.browser = window.browser;
+    this.color = this.getAttribute("color");
+    this.favicon = this.getAttribute("favicon");
+    this.tabId = parseInt(this.getAttribute("tab-id"), 10);
+    this.thumbnail = this.getAttribute("thumbnail");
+    this.title = this.getAttribute("tab-title");
+    this.url = this.getAttribute("url");
 
     // eslint-disable-next-line no-magic-numbers
-    d.tooltipText = ["\n\n", d.title.substr(0, 120), d.title.length > 120 ? "..." : "", "\n", d.url.length > 500 ? `${d.url.substr(0, 100)}...` : d.url].join("");
+    const tooltipText = [
+      "\n\n",
+      this.title.substr(0, 120),
+      this.title.length > 120 ? "..." : "", "\n",
+      this.url.length > 500 ? `${this.url.substr(0, 100)}...` : this.url
+    ].join("");
 
-    this.innerHTML = tabItem(d);
+    this.innerHTML = tabItem({
+      color: this.color,
+      favicon: this.favicon,
+      tabId: this.tabId,
+      thumbnail: this.thumbnail,
+      title: this.title,
+      tooltipText,
+      url: this.url
+    });
     const form = $1("form", this);
 
     this.addEventListener("keydown", e => {
@@ -114,6 +127,7 @@ class TabItem extends HTMLElement {
         case "close-tab": this.closeTab(); break;
         default: console.error("unknown action: ", $1("input[name=action]:checked", this)); break;
       }
+      form.reset();
     });
 
 //    this.addEventListener("dragstart", function(event) {
