@@ -80,7 +80,7 @@ rules:
   lines-between-class-members:
     - error
     - always
-  max-classes-per-file: error
+  # max-classes-per-file: error
   max-depth: error
   max-len: 'off'
   max-lines: error
@@ -97,7 +97,7 @@ rules:
   newline-per-chained-call: error
   no-alert: error
   no-array-constructor: error
-  no-async-promise-executor: error
+  #no-async-promise-executor: error
   no-await-in-loop: error
   no-bitwise: error
   no-buffer-constructor: error
@@ -127,7 +127,7 @@ rules:
   no-lonely-if: error
   no-loop-func: error
   no-magic-numbers: 'off'
-  no-misleading-character-class: error
+  #no-misleading-character-class: error
   no-mixed-operators: error
   no-mixed-requires: error
   no-multi-assign: error
@@ -178,7 +178,7 @@ rules:
   no-unused-expressions: error
   no-use-before-define: error
   no-useless-call: error
-  no-useless-catch: error
+  #no-useless-catch: error
   no-useless-computed-key: error
   no-useless-concat: error
   no-useless-constructor: error
@@ -205,9 +205,9 @@ rules:
   prefer-arrow-callback: error
   prefer-const: error
   prefer-destructuring: error
-  prefer-named-capture-group: error
+  #prefer-named-capture-group: error
   prefer-numeric-literals: error
-  prefer-object-spread: error
+  #prefer-object-spread: error
   prefer-promise-reject-errors: error
   prefer-reflect: error
   prefer-rest-params: error
@@ -216,10 +216,10 @@ rules:
   quote-props: 'off'
   quotes: warn
   radix: error
-  require-atomic-updates: error
+  #require-atomic-updates: error
   require-await: error
   require-jsdoc: 'off'
-  require-unicode-regexp: error
+  #require-unicode-regexp: error
   rest-spread-spacing: error
   semi: error
   semi-spacing:

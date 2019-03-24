@@ -168,7 +168,7 @@ window.customElements.define("tab-item", TabItem);
 export const createTabComponent = function(tabId, tabTitle, url, color, thumbnail, faviconIn) {
   let favicon = faviconIn;
   if(!favicon || favicon.startsWith("chrome://")) {
-    favicon = "./favicon-placeholder.png";
+    favicon = "./transparent.png";
   }
   return $e("tab-item", {
     color,

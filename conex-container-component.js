@@ -94,10 +94,12 @@ class ContainerItem extends HTMLElement {
 
   connectedCallback() {
     console.debug("container-item connected");
-    const d = {color: this.getAttribute("color"),
-              containerId: this.getAttribute("container-id"),
-              containerName: this.getAttribute("container-name"),
-              tabCnt: this.getAttribute("tab-cnt")};
+    const d = {
+      color: this.getAttribute("color"),
+      containerId: this.getAttribute("container-id"),
+      containerName: this.getAttribute("container-name"),
+      tabCnt: this.getAttribute("tab-cnt")
+    };
 
     if(!$1(".container-item", this)) {
       const e = document.createElement("div");
