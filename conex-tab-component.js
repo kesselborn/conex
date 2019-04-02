@@ -1,5 +1,7 @@
 import {$1, $e} from "./conex-helper.js";
 
+const placeholderImage = "./transparent.png";
+
 const tabItem = (data) => `
   <form class="tab-item ${data.color}-marker" action="">
     <input type="hidden" name="tab-id" value="${data.tabId}"/>
@@ -68,6 +70,16 @@ class TabItem extends HTMLElement {
 
       elem.focus();
     };
+
+    this.updateThumbnail = function() {
+      window.getThumbnail(this.tabId, this.url).then(thumbnail => {
+        console.log(`got thumbnail for ${this.url}`);
+        const img = $1("img.thumbnail-image", this);
+        if(img) {
+          img.src = thumbnail;
+        }
+      }, e => console.error(`error getting cached thumbnail: ${e}`));
+    };
   }
 
   connectedCallback() {
@@ -130,6 +142,11 @@ class TabItem extends HTMLElement {
       form.reset();
     });
 
+    const img = $1("img.thumbnail-image", this);
+    if(img.src !== placeholderImage) {
+      this.updateThumbnail();
+    }
+
 //    this.addEventListener("dragstart", function(event) {
 //      event.dataTransfer.setData("text", this.id);
 //    });
@@ -165,22 +182,25 @@ class TabItem extends HTMLElement {
 window.customElements.define("tab-item", TabItem);
 
 // <tab-item color="blue-marker" tab-id="42" thumbnail="./thumbnail.jpg" favicon="./favicon.ico" tab-title="0 this is a wonderful title" url="heise.de/artikel/golang"></tab-item>
-export const createTabComponent = function(tabId, tabTitle, url, color, thumbnail, faviconIn) {
+export const createTabComponent = function(tabId, tabTitle, url, color, faviconIn, thumbnail) {
   let favicon = faviconIn;
   if(!favicon || favicon.startsWith("chrome://")) {
-    favicon = "./transparent.png";
+    favicon = placeholderImage;
   }
 
-  return $e("tab-item", {
+  const tabElement = $e("tab-item", {
     color,
     draggable: true,
     favicon,
     tab_id: tabId,
     tab_title: tabTitle || "...",
     tabindex: 0,
-    thumbnail: thumbnail || "./transparent.png",
+    thumbnail: thumbnail || placeholderImage,
     url
   });
+
+  return tabElement;
 };
+
 
 console.debug("conex-tab-component.js successfully loaded");

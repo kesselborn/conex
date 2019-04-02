@@ -3,6 +3,7 @@ import "./conex-container-component.js";
 import {$1} from "./conex-helper.js";
 
 const bg = window.browser.extension.getBackgroundPage();
+window.getThumbnail = bg.window.getThumbnail;
 
 document.addEventListener("DOMContentLoaded", () => {
   const startupLoop = setInterval(() => {
