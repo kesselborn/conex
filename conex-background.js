@@ -1,9 +1,11 @@
+// import "./pica.js";
+
 import {$e} from "./conex-helper.js";
 import {createContainerComponent} from "./conex-container-component.js";
 import {createTabComponent} from "./conex-tab-component.js";
 import {resizeImage} from "./conex-resize-image.js";
-console.debugging = true;
 
+console.debugging = true;
 
 let initialized = false;
 
@@ -24,17 +26,25 @@ const createThumbnail = async function(tab) {
   let thumbnailElement = null;
   try {
     console.debug(`creating thumbnail for ${tab.url}`);
+    let start = Date.now();
     const screenshot = await browser.tabs.captureTab(tab.id, {
       format: "jpeg",
       quality: 20
     });
+    let end = Date.now();
+    console.log(`screenshot took ${end - start}ms`);
 
+    start = Date.now();
     thumbnailElement = await resizeImage($e("img", {
       src: screenshot,
       style: "border:solid red 1px;"
     }), 300, 200);
-
-  } catch (e) { console.error(`error creating thumbnail of ${tab.url}: `, e); }
+    end = Date.now();
+    console.log(`resize took ${end - start}ms`);
+  } catch (e) {
+    console.error(`error creating thumbnail of ${tab.url}: `, e);
+    return null;
+  }
 
   return thumbnailElement.src;
 };
@@ -53,6 +63,7 @@ const initializeBackgroundHtml = async function() {
     const tabs = browser.tabs.query({cookieStoreId: container.cookieStoreId});
     const c = d.appendChild(createContainerComponent(container.cookieStoreId, container.name, container.color));
 
+    // todo: asynchronize this
     // eslint-disable-next-line no-await-in-loop
     for(const tab of await tabs) {
       console.debug(`   tab ${tab.title}`);
