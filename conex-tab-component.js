@@ -170,6 +170,7 @@ export const createTabComponent = function(tabId, tabTitle, url, color, thumbnai
   if(!favicon || favicon.startsWith("chrome://")) {
     favicon = "./transparent.png";
   }
+
   return $e("tab-item", {
     color,
     draggable: true,
@@ -177,7 +178,7 @@ export const createTabComponent = function(tabId, tabTitle, url, color, thumbnai
     tab_id: tabId,
     tab_title: tabTitle || "...",
     tabindex: 0,
-    thumbnail,
+    thumbnail: thumbnail || "./transparent.png",
     url
   });
 };
