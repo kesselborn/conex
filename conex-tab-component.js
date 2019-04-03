@@ -26,24 +26,22 @@ class TabItem extends HTMLElement {
   constructor() {
     super();
 
-    this.focusTab = function() {
+    this.focusTab = () => {
       window.browser.tabs.update(this.tabId, {active: true});
       console.debug("show tab");
     };
 
-    this.continueSearch = function() {
+    this.continueSearch = () => {
       console.debug("continue search");
     };
 
-    this.closeTab = function() {
+    this.closeTab = () => {
       console.debug("close tab");
     };
 
-    this.visible = function() {
-      return window.getComputedStyle(this).display !== "none";
-    };
+    this.visible = () => window.getComputedStyle(this).display !== "none";
 
-    this.focusNextTabOrContainer = function() {
+    this.focusNextTabOrContainer = () => {
       let elem = null;
 
       do {
@@ -57,7 +55,7 @@ class TabItem extends HTMLElement {
       elem.focus();
     };
 
-    this.focusPreviousTabOrContainer = function() {
+    this.focusPreviousTabOrContainer = () => {
       let elem = null;
 
       do {
@@ -71,7 +69,7 @@ class TabItem extends HTMLElement {
       elem.focus();
     };
 
-    this.updateThumbnail = function() {
+    this.updateThumbnail = () => {
       window.getThumbnail(this.tabId, this.url).then(thumbnail => {
         console.log(`got thumbnail for ${this.url}`);
         const img = $1("img.thumbnail-image", this);
@@ -182,7 +180,7 @@ class TabItem extends HTMLElement {
 window.customElements.define("tab-item", TabItem);
 
 // <tab-item color="blue-marker" tab-id="42" thumbnail="./thumbnail.jpg" favicon="./favicon.ico" tab-title="0 this is a wonderful title" url="heise.de/artikel/golang"></tab-item>
-export const createTabComponent = function(tabId, tabTitle, url, color, faviconIn, thumbnail) {
+export const createTabComponent = (tabId, tabTitle, url, color, faviconIn, thumbnail) => {
   let favicon = faviconIn;
   if(!favicon || favicon.startsWith("chrome://")) {
     favicon = placeholderImage;

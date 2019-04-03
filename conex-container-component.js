@@ -29,11 +29,9 @@ class ContainerItem extends HTMLElement {
   constructor() {
     super();
 
-    this.visible = function() {
-      return window.getComputedStyle(this) !== "none";
-    };
+    this.visible = () => window.getComputedStyle(this) !== "none";
 
-    this.focusFirstTab = function() {
+    this.focusFirstTab = () => {
       for (const tabItem of $("tab-item", this)) {
         if (tabItem.visible()) {
           tabItem.focus();
@@ -48,7 +46,7 @@ class ContainerItem extends HTMLElement {
       }
     };
 
-    this.focusLastTabOfPreviousContainer = function() {
+    this.focusLastTabOfPreviousContainer = () => {
       for (const tabItem of Array.from($("tab-item", this.previousElementSibling)).reverse()) {
         if (tabItem.visible()) {
           tabItem.focus();
@@ -63,7 +61,7 @@ class ContainerItem extends HTMLElement {
       }
     };
 
-    this.collapseContainer = function() {
+    this.collapseContainer = () => {
       if(this.classList.contains("collapsed")) {
         this.previousElementSibling.focus();
       } else {
@@ -71,7 +69,7 @@ class ContainerItem extends HTMLElement {
       }
     };
 
-    this.expandContainer = function() {
+    this.expandContainer = () => {
       if(this.classList.contains("collapsed")) {
         this.classList.remove("collapsed");
       } else {
@@ -79,15 +77,15 @@ class ContainerItem extends HTMLElement {
       }
     };
 
-    this.focusContainer = function() {
+    this.focusContainer = () => {
       console.debug("focus container");
     };
 
-    this.newContainerTab = function() {
+    this.newContainerTab = () => {
       console.debug("new container tab");
     };
 
-    this.closeContainer = function() {
+    this.closeContainer = () => {
       console.debug("close container");
     };
   }
@@ -171,13 +169,11 @@ class ContainerItem extends HTMLElement {
 window.customElements.define("container-item", ContainerItem);
 
 // <container-item tabindex='1' color="blue" container-id="1" container-name="banking" tab-cnt="42">
-export const createContainerComponent = function(containerId, containerName, color) {
-  return $e("container-item", {
-    color,
-    container_id: containerId,
-    container_name: containerName,
-    tabindex: 0
-  });
-};
+export const createContainerComponent = (containerId, containerName, color) => $e("container-item", {
+  color,
+  container_id: containerId,
+  container_name: containerName,
+  tabindex: 0
+});
 
 console.debug("conex-container-component.js successfully loaded");

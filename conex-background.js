@@ -5,9 +5,7 @@ import {getThumbnail} from "./conex-thumbnail.js";
 console.debugging = true;
 let initialized = false;
 
-const getConexDom = function() {
-  return document.body.firstElementChild.cloneNode(true);
-};
+const getConexDom = () => document.body.firstElementChild.cloneNode(true);
 
 window.getThumbnail = getThumbnail;
 
@@ -20,7 +18,7 @@ window.initializingConex = new Promise((resolve) => {
     }, 100);
 });
 
-const initializeBackgroundHtml = async function() {
+const initializeBackgroundHtml = async() => {
   const d = document.createElement("div");
   const containers = await browser.contextualIdentities.query({});
   containers.unshift({
