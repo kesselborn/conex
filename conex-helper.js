@@ -1,7 +1,7 @@
 console.origDebug = console.debug;
 
 console.debug = function(...args) {
-  if(!console.debugging) return;
+  if (!console.debugging) return;
   Reflect.apply(console.origDebug, this, args);
 };
 
@@ -27,15 +27,15 @@ export const $1 = function(s, parent) { return (parent || window.document).query
 export const $e = function(name, attributes, children) {
   const e = window.document.createElement(name);
 
-  for(const key in attributes) {
-    if(key === "content") {
+  for (const key in attributes) {
+    if (key === "content") {
       e.appendChild(window.document.createTextNode(attributes[key]));
     } else {
       e.setAttribute(key.replace(/_/ug, "-"), attributes[key]);
     }
   }
 
-  for(const child of children || []) {
+  for (const child of children || []) {
     e.appendChild(child);
   }
 

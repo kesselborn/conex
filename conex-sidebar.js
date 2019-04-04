@@ -7,7 +7,7 @@ window.getThumbnail = bg.window.getThumbnail;
 
 document.addEventListener("DOMContentLoaded", () => {
   const startupLoop = setInterval(() => {
-    if(bg.initializingConex) {
+    if (bg.initializingConex) {
       bg.initializingConex.then(
         getDomTree => {
           document.body.firstElementChild.replaceWith(getDomTree());

@@ -1,6 +1,6 @@
-import { $e } from "./conex-helper.js";
+import {$e} from "./conex-helper.js";
 
-const resizeImage = async (screenshot, width, height) => {
+const resizeImage = async(screenshot, width, height) => {
   const canvas = window.document.createElement("canvas");
   const context = canvas.getContext("2d");
 
@@ -40,7 +40,7 @@ const sleep = (delay) => new Promise(resolve => {
   setTimeout(() => resolve(), delay);
 });
 
-const createThumbnail = async (tabId) => {
+const createThumbnail = async(tabId) => {
   let thumbnailElement = null;
   let screenshot = null;
 

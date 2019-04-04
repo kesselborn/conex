@@ -10,12 +10,12 @@ const getConexDom = () => document.body.firstElementChild.cloneNode(true);
 window.getThumbnail = getThumbnail;
 
 window.initializingConex = new Promise((resolve) => {
-    const domTreeTimer = setInterval(() => {
-      if (initialized) {
-        clearInterval(domTreeTimer);
-        resolve(getConexDom);
-      }
-    }, 100);
+  const domTreeTimer = setInterval(() => {
+    if (initialized) {
+      clearInterval(domTreeTimer);
+      resolve(getConexDom);
+    }
+  }, 100);
 });
 
 const initializeBackgroundHtml = async() => {
@@ -32,13 +32,13 @@ const initializeBackgroundHtml = async() => {
     name: "private"
   });
 
-  for(const container of containers) {
+  for (const container of containers) {
     console.debug(`container ${container.name}`);
     const tabs = browser.tabs.query({cookieStoreId: container.cookieStoreId});
     const c = d.appendChild(createContainerComponent(container.cookieStoreId, container.name, container.color));
 
     // eslint-disable-next-line no-await-in-loop
-    for(const tab of await tabs) {
+    for (const tab of await tabs) {
       console.debug(`   tab ${tab.title}`);
       c.appendChild(createTabComponent(tab.id, tab.title, tab.url, container.color, tab.favIconUrl, null));
     }

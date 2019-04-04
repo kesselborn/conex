@@ -2,7 +2,6 @@
 @import "ordering.css";
 @import "tab-item.css";
 @import "container-item.css";
-
 :root {
   --action-width: 30px;
   --height: 40px;
@@ -12,6 +11,7 @@
 }
 
 /* variables */
+
 body {
   margin: 0;
   padding: 0;
@@ -31,6 +31,7 @@ input[type=submit], input[type=radio] {
 }
 
 /* label (grid cells) styling */
+
 form label {
   height: 100%;
   display: grid;

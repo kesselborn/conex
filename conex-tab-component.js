@@ -1,23 +1,23 @@
 import {$1, $e} from "./conex-helper.js";
 
-const placeholderImage = "./transparent.png";
+const placeholderImage = browser.runtime.getURL("transparent.png");
 
 const tabItem = (data) => `
   <form class="tab-item ${data.color}-marker" action="">
     <input type="hidden" name="tab-id" value="${data.tabId}"/>
-    <input title="show tab${data.tooltipText}" type="radio" id="tabid-${data.tabId}-title" name="action" value="focus-tab"/>
-    <label title="show tab${data.tooltipText}" class="tab-thumbnail" for="tabid-${data.tabId}-title">
-      <img class="thumbnail-image" src="${data.thumbnail}" alt="thumbnail" width="200"/>
+    <input title="show tab" type="radio" id="tabid-${data.tabId}-title" name="action" value="focus-tab"/>
+    <label title="show tab" class="tab-thumbnail" for="tabid-${data.tabId}-title">
+      <img class="thumbnail-image" src="${data.thumbnail}" width="200"/>
     </label>
-    <label title="show tab${data.tooltipText}" class="tab-favicon" for="tabid-${data.tabId}-title">
-      <img class="favicon-image" alt="favicon" src="${data.favicon}" />
+    <label title="show tab" class="tab-favicon" for="tabid-${data.tabId}-title">
+      <img class="favicon-image" src="${data.favicon}" />
     </label>
-    <label title="show tab${data.tooltipText}" class="tab-content" for="tabid-${data.tabId}-title">
+    <label title="show tab" class="tab-content" for="tabid-${data.tabId}-title">
         <div class="tab-title">${data.title}</div>
         <div class="tab-url">${data.url}</div>
     </label>
-    <input title="close tab${data.tooltipText}" type="radio" id="tabid-${data.tabId}-close-tab" name="action" value="close-tab"/>
-    <label title="close tab${data.tooltipText}" class="tab-close" for="tabid-${data.tabId}-close-tab">&#9587;</label>
+    <input title="close tab" type="radio" id="tabid-${data.tabId}-close-tab" name="action" value="close-tab"/>
+    <label title="close tab" class="tab-close" for="tabid-${data.tabId}-close-tab">&#9587;</label>
     <input type="submit"/>
   </form>
 `;
@@ -36,7 +36,7 @@ class TabItem extends HTMLElement {
     };
 
     this.closeTab = () => {
-      console.debug("close tab");
+      window.browser.tabs.remove(this.tabId);
     };
 
     this.visible = () => window.getComputedStyle(this).display !== "none";
@@ -47,12 +47,16 @@ class TabItem extends HTMLElement {
       do {
         elem = (elem || this).nextElementSibling;
         if (elem === null) {
-          if(this.parentElement.nextElementSibling) { this.parentElement.nextElementSibling.focus(); }
+          if (this.parentElement.nextElementSibling) { this.parentElement.nextElementSibling.focus(); }
           return;
         }
-      } while(!elem.visible());
+      } while (!elem.visible());
 
       elem.focus();
+    };
+
+    this.setOrder = (index) => {
+      this.style.order = index;
     };
 
     this.focusPreviousTabOrContainer = () => {
@@ -73,11 +77,40 @@ class TabItem extends HTMLElement {
       window.getThumbnail(this.tabId, this.url).then(thumbnail => {
         console.log(`got thumbnail for ${this.url}`);
         const img = $1("img.thumbnail-image", this);
-        if(img) {
+        if (img) {
           img.src = thumbnail;
         }
       }, e => console.error(`error getting cached thumbnail: ${e}`));
     };
+
+    // eslint-disable-next-line no-unused-vars
+    this.onUpdated = (tabId, newValues, tab) => {
+      if (tabId !== this.tabId) return;
+      // if(newValues.attention)
+      // if(newValues.audible)
+      if (newValues.favIconUrl) $1(".favicon-image", this).src = newValues.favIconUrl;
+      // if(newValues.mutedInfo)
+      // if(newValues.pinned)
+      if (newValues.status === "loading") $1("img.thumbnail-image", this).src = placeholderImage;
+
+      if (newValues.title) {
+        $1(".tab-title", this).innerText = newValues.title;
+        this.title = newValues.title;
+        this.title = newValues.title;
+      }
+
+      if (newValues.url) {
+        $1(".tab-url", this).innerText = newValues.url;
+        this.url = newValues.url;
+        this.setAttribute("url", newValues.url);
+      }
+
+      // this needs to be at the bottom as it depends on changes to url
+      if (newValues.status === "complete") {
+        this.updateThumbnail();
+      }
+    };
+
   }
 
   connectedCallback() {
@@ -89,21 +122,12 @@ class TabItem extends HTMLElement {
     this.title = this.getAttribute("tab-title");
     this.url = this.getAttribute("url");
 
-    // eslint-disable-next-line no-magic-numbers
-    const tooltipText = [
-      "\n\n",
-      this.title.substr(0, 120),
-      this.title.length > 120 ? "..." : "", "\n",
-      this.url.length > 500 ? `${this.url.substr(0, 100)}...` : this.url
-    ].join("");
-
     this.innerHTML = tabItem({
       color: this.color,
       favicon: this.favicon,
       tabId: this.tabId,
       thumbnail: this.thumbnail,
       title: this.title,
-      tooltipText,
       url: this.url
     });
     const form = $1("form", this);
@@ -117,7 +141,7 @@ class TabItem extends HTMLElement {
         // keyboard shortcuts instead of clicking the mouse
         case "ArrowUp": this.focusPreviousTabOrContainer(); return;
         case "ArrowDown": this.focusNextTabOrContainer(); return;
-        case "Tab": if(e.shiftKey) this.focusPreviousTabOrContainer(); else this.focusNextTabOrContainer(); return;
+        case "Tab": if (e.shiftKey) this.focusPreviousTabOrContainer(); else this.focusNextTabOrContainer(); return;
         case "ArrowLeft": this.parentElement.focus(); return;
         case "ArrowRight": this.parentElement.nextElementSibling.focus(); return;
         default: this.continueSearch(e); return;
@@ -132,7 +156,7 @@ class TabItem extends HTMLElement {
     form.addEventListener("change", e => {
       e.stopPropagation();
       e.preventDefault();
-      switch($1("input[name=action]:checked", this).value) {
+      switch ($1("input[name=action]:checked", this).value) {
         case "focus-tab": this.focusTab(); break;
         case "close-tab": this.closeTab(); break;
         default: console.error("unknown action: ", $1("input[name=action]:checked", this)); break;
@@ -141,30 +165,48 @@ class TabItem extends HTMLElement {
     });
 
     const img = $1("img.thumbnail-image", this);
-    if(img.src !== placeholderImage) {
-      this.updateThumbnail();
+    if (img.src === placeholderImage && this.url !== "about:blank") {
+      window.browser.tabs.get(this.tabId).then(tab => {
+        if (!tab.discarded) {
+          this.updateThumbnail();
+        }
+      });
     }
 
-//    this.addEventListener("dragstart", function(event) {
-//      event.dataTransfer.setData("text", this.id);
-//    });
-//
-//    this.addEventListener("dragenter", function(event) {
-//      console.debug("dragenter", this);
-//      event.preventDefault();
-//    });
-//    this.addEventListener("dragover", function(event) {
-//      event.preventDefault();
-//    });
-//    this.addEventListener("drop", function(event) {
-//      event.preventDefault();
-//    });
-//    this.addEventListener("dragleave", function(event) {
-//      if(event.target == form) {
-//        this.classList.remove("dragging");
-//      }
-//      console.info("dragleave", event.target);
-//    });
+    browser.tabs.onUpdated.addListener(this.onUpdated);
+    browser.tabs.onRemoved.addListener(tabId => {
+      if (tabId === this.tabId) {
+        this.parentElement.updateTabCnt();
+        try {
+          this.nextElementSibling.focus();
+          // eslint-disable-next-line no-empty
+        } catch (_) { }
+
+        this.remove();
+      }
+    });
+
+
+    //    this.addEventListener("dragstart", function(event) {
+    //      event.dataTransfer.setData("text", this.id);
+    //    });
+    //
+    //    this.addEventListener("dragenter", function(event) {
+    //      console.debug("dragenter", this);
+    //      event.preventDefault();
+    //    });
+    //    this.addEventListener("dragover", function(event) {
+    //      event.preventDefault();
+    //    });
+    //    this.addEventListener("drop", function(event) {
+    //      event.preventDefault();
+    //    });
+    //    this.addEventListener("dragleave", function(event) {
+    //      if(event.target == form) {
+    //        this.classList.remove("dragging");
+    //      }
+    //      console.info("dragleave", event.target);
+    //    });
   }
 
 
@@ -182,7 +224,7 @@ window.customElements.define("tab-item", TabItem);
 // <tab-item color="blue-marker" tab-id="42" thumbnail="./thumbnail.jpg" favicon="./favicon.ico" tab-title="0 this is a wonderful title" url="heise.de/artikel/golang"></tab-item>
 export const createTabComponent = (tabId, tabTitle, url, color, faviconIn, thumbnail) => {
   let favicon = faviconIn;
-  if(!favicon || favicon.startsWith("chrome://")) {
+  if (!favicon || favicon.startsWith("chrome://")) {
     favicon = placeholderImage;
   }
 

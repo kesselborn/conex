@@ -1,4 +1,5 @@
 import {$, $1, $e} from "./conex-helper.js";
+import {createTabComponent} from "./conex-tab-component.js";
 
 const containerItem = (data) => `
  <form class="container-item ${data.color}-marker" action="">
@@ -12,7 +13,7 @@ const containerItem = (data) => `
 
    <input title="change to container" type="radio" id="container-id-${data.containerId}-name" name="action" value="focus-container">
    <label title="change to container" class="container-focus" for="container-id-${data.containerId}-name">${data.containerName}</label>
-   <label title="change to container" class="container-tab-count" for="container-id-${data.containerId}-name">(999 tabs)</label>
+   <label title="change to container" class="container-tab-count" for="container-id-${data.containerId}-name">(1000 tabs)</label>
 
    <input title="new tab in container" type="radio" id="container-id-${data.containerId}-new-tab" name="action" value="new-tab">
    <label title="new tab in container" class="container-new-tab" for="container-id-${data.containerId}-new-tab">&#65291;</label>
@@ -41,7 +42,7 @@ class ContainerItem extends HTMLElement {
       try {
         console.debug("empty container or all tabs are hidden ... jumping to next container", this);
         this.nextElementSibling.focus();
-      } catch(_) {
+      } catch (_) {
         console.debug("could not find next item to focus ... seems as if I am at the end of the list", this);
       }
     };
@@ -62,7 +63,7 @@ class ContainerItem extends HTMLElement {
     };
 
     this.collapseContainer = () => {
-      if(this.classList.contains("collapsed")) {
+      if (this.classList.contains("collapsed")) {
         this.previousElementSibling.focus();
       } else {
         this.classList.add("collapsed");
@@ -70,7 +71,7 @@ class ContainerItem extends HTMLElement {
     };
 
     this.expandContainer = () => {
-      if(this.classList.contains("collapsed")) {
+      if (this.classList.contains("collapsed")) {
         this.classList.remove("collapsed");
       } else {
         this.nextElementSibling.focus();
@@ -85,23 +86,57 @@ class ContainerItem extends HTMLElement {
       console.debug("new container tab");
     };
 
+    this.updateTabCnt = () => {
+      // there can be race-conditions here, so let's skip one step
+      // in the event loop and count tab-items after that
+      setTimeout(() => {
+        this.tabCnt = $("tab-item", this).length;
+        this.setAttribute("tab-cnt", this.tabCnt);
+        $1(".container-tab-count", this).innerText = `(${this.tabCnt} tabs)`;
+        this.blur();
+      }, 0);
+    };
+
     this.closeContainer = () => {
       console.debug("close container");
+      this.updateTabCnt();
     };
+
+    this.onTabCreated = (tab) => {
+      if (tab.cookieStoreId !== this.containerId) return;
+      this.appendChild(createTabComponent(tab.id, tab.title, tab.url, this.color, tab.favIconUrl));
+      this.updateTabCnt();
+    };
+
+    this.sortTabs = async(t) => {
+      if (t.cookieStoreId !== this.containerId) return;
+      const tabs = await window.browser.tabs.query({cookieStoreId: this.containerId});
+      console.log("sorted tab");
+
+      for (const tab of tabs.sort((a, b) => a.index < b.index)) {
+        console.log(`setting ${tab.id} to ${tab.index}`);
+        $1(`tab-item[tab-id="${tab.id}"]`, this).setOrder(tab.index);
+      }
+    };
+
+
   }
 
   connectedCallback() {
     console.debug("container-item connected");
-    const d = {
-      color: this.getAttribute("color"),
-      containerId: this.getAttribute("container-id"),
-      containerName: this.getAttribute("container-name"),
-      tabCnt: this.getAttribute("tab-cnt")
-    };
+    this.color = this.getAttribute("color");
+    this.containerId = this.getAttribute("container-id");
+    this.containerName = this.getAttribute("container-name");
+    this.tabCnt = this.getAttribute("tab-cnt");
 
-    if(!$1(".container-item", this)) {
+    if (!$1(".container-item", this)) {
       const e = document.createElement("div");
-      e.innerHTML = containerItem(d);
+      e.innerHTML = containerItem({
+        color: this.color,
+        containerId: this.containerId,
+        containerName: this.containerName,
+        tabCnt: this.tabCnt
+      });
       this.prepend(e);
     }
     const form = $1("form", this);
@@ -118,7 +153,7 @@ class ContainerItem extends HTMLElement {
         // keyboard shortcuts instead of hovering with the mouse
         case "ArrowDown": this.focusFirstTab(); return;
         case "ArrowUp": this.focusLastTabOfPreviousContainer(); return;
-        case "Tab": if(e.shiftKey) this.focusLastTabOfPreviousContainer(); else this.focusFirstTab(); return;
+        case "Tab": if (e.shiftKey) this.focusLastTabOfPreviousContainer(); else this.focusFirstTab(); return;
         default: this.continueSearch(e); return;
 
         // keyboard shortcuts instead of clicking the mouse
@@ -133,7 +168,7 @@ class ContainerItem extends HTMLElement {
 
     const that = this;
     form.addEventListener("change", () => {
-      switch($1("input[name=action]:checked", that).value) {
+      switch ($1("input[name=action]:checked", that).value) {
         case "close-container": this.closeContainer(); break;
         case "collapse-container": this.collapseContainer(); break;
         case "expand-container": this.expandContainer(); break;
@@ -143,6 +178,10 @@ class ContainerItem extends HTMLElement {
       }
       form.reset();
     });
+
+    browser.tabs.onCreated.addListener(this.onTabCreated);
+    browser.tabs.onCreated.addListener(this.sortTabs);
+    this.updateTabCnt();
   }
 
 
