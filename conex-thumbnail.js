@@ -1,50 +1,50 @@
-import {$e} from "./conex-helper.js";
+import { $e } from "./conex-helper.js";
 
-const resizeImage = async(screenshot, width, height) => {
-    const canvas = window.document.createElement("canvas");
-    const context = canvas.getContext("2d");
+const resizeImage = async (screenshot, width, height) => {
+  const canvas = window.document.createElement("canvas");
+  const context = canvas.getContext("2d");
 
-    // sometimes, the image element is not fully created yet
-    await new Promise((resolve, reject) => {
-        const maxTries = 50;
-        const delay = 50;
-        let cnt = 0;
-        const timer = setInterval(() => {
-            cnt += 1;
-            if(cnt > maxTries) {
-                reject(new Error("something wrong here: screenshot image never got valid geometry ... giving up"));
-            }
-            if(screenshot.width !== 0 && screenshot.height !== 0) {
-                clearInterval(timer);
-                resolve();
-            }
-        }, delay);
-    });
+  // sometimes, the image element is not fully created yet
+  await new Promise((resolve, reject) => {
+    const maxTries = 50;
+    const delay = 50;
+    let cnt = 0;
+    const timer = setInterval(() => {
+      cnt += 1;
+      if (cnt > maxTries) {
+        reject(new Error("something wrong here: screenshot image never got valid geometry ... giving up"));
+      }
+      if (screenshot.width !== 0 && screenshot.height !== 0) {
+        clearInterval(timer);
+        resolve();
+      }
+    }, delay);
+  });
 
-    if(screenshot.width / width > screenshot.height / height) {
-        canvas.width = width;
-        canvas.height = screenshot.height * width / screenshot.width;
-    } else {
-        canvas.height = height;
-        canvas.width = screenshot.width * height / screenshot.height;
-    }
+  if (screenshot.width / width > screenshot.height / height) {
+    canvas.width = width;
+    canvas.height = screenshot.height * width / screenshot.width;
+  } else {
+    canvas.height = height;
+    canvas.width = screenshot.width * height / screenshot.height;
+  }
 
-    context.drawImage(screenshot, 0, 0, canvas.width, canvas.height);
+  context.drawImage(screenshot, 0, 0, canvas.width, canvas.height);
 
-    const thumbnail = new Image();
-    thumbnail.src = canvas.toDataURL("image/jpeg");
-    return thumbnail;
+  const thumbnail = new Image();
+  thumbnail.src = canvas.toDataURL("image/jpeg");
+  return thumbnail;
 };
 
 const sleep = (delay) => new Promise(resolve => {
-    setTimeout(() => resolve(), delay);
-  });
+  setTimeout(() => resolve(), delay);
+});
 
-const createThumbnail = async(tabId) => {
+const createThumbnail = async (tabId) => {
   let thumbnailElement = null;
   let screenshot = null;
 
-for(let i = 0; i < 20; i += 1) {
+  for (let i = 0; i < 20; i += 1) {
     try {
       console.debug(`creating thumbnail for tab #${tabId}`);
       const start = Date.now();
@@ -62,7 +62,7 @@ for(let i = 0; i < 20; i += 1) {
         // if more than 90 percent of the image is equal to that pattern, try to take
         // capture again
         const screenshotWithoutEmptyScreenshotPattern = screenshot.replace(/(AooooAKKKKACiiig){50}/g, "");
-        if(screenshot.length / screenshotWithoutEmptyScreenshotPattern.length > 10) {
+        if (screenshot.length / screenshotWithoutEmptyScreenshotPattern.length > 10) {
           // eslint-disable-next-line no-await-in-loop
           await sleep(1500);
           throw new Error("captured tag before page was rendered ... will repeat");
