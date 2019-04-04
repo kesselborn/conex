@@ -36,27 +36,56 @@ const resizeImage = async(screenshot, width, height) => {
     return thumbnail;
 };
 
+const sleep = (delay) => new Promise(resolve => {
+    setTimeout(() => resolve(), delay);
+  });
+
 const createThumbnail = async(tabId) => {
   let thumbnailElement = null;
-  try {
-    console.debug(`creating thumbnail for tab #${tabId}`);
-    let start = Date.now();
-    const screenshot = await browser.tabs.captureTab(tabId, {
-      format: "jpeg",
-      quality: 20
-    });
-    let end = Date.now();
-    console.log(`screenshot took ${end - start}ms`);
+  let screenshot = null;
 
-    start = Date.now();
+for(let i = 0; i < 20; i += 1) {
+    try {
+      console.debug(`creating thumbnail for tab #${tabId}`);
+      const start = Date.now();
+      // eslint-disable-next-line no-await-in-loop
+      screenshot = await browser.tabs.captureTab(tabId, {
+        format: "jpeg",
+        quality: 20
+      });
+      const end = Date.now();
+      console.debug(`screenshot took ${end - start}ms`);
+      {
+        // poor man's fix when screenshot gets taken before rendering is finished
+        // this only works, if the assumption is correct, that all those pages look
+        // more or less the same (a big gray area)
+        // if more than 90 percent of the image is equal to that pattern, try to take
+        // capture again
+        const screenshotWithoutEmptyScreenshotPattern = screenshot.replace(/(AooooAKKKKACiiig){50}/g, "");
+        if(screenshot.length / screenshotWithoutEmptyScreenshotPattern.length > 10) {
+          // eslint-disable-next-line no-await-in-loop
+          await sleep(1500);
+          throw new Error("captured tag before page was rendered ... will repeat");
+        }
+      }
+      break;
+    } catch (e) {
+      console.error(`error capturing tab #${tabId}: `, e);
+    }
+    // eslint-disable-next-line no-await-in-loop
+    await sleep(1000);
+  }
+
+  try {
+    const start = Date.now();
     thumbnailElement = await resizeImage($e("img", {
       src: screenshot,
       style: "border:solid red 1px;"
     }), 300, 200);
-    end = Date.now();
-    console.log(`resize took ${end - start}ms`);
+    const end = Date.now();
+    console.debug(`resize took ${end - start}ms`);
   } catch (e) {
-    console.error(`error creating thumbnail for tab #${tabId}: `, e);
+    console.error(`error resizing thumbnail for tab #${tabId}: `, e);
     return null;
   }
 
