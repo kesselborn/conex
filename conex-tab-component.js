@@ -1,6 +1,4 @@
-import {$1, $e} from "./conex-helper.js";
-
-const placeholderImage = browser.runtime.getURL("transparent.png");
+import {$1, $e, placeholderImage} from "./conex-helper.js";
 
 const tabItem = (data) => `
   <form class="tab-item ${data.color}-marker" action="">
@@ -23,98 +21,131 @@ const tabItem = (data) => `
 `;
 
 class TabItem extends HTMLElement {
-  constructor() {
-    super();
+  constructor(_self) {
+    const self = super(_self);
 
-    this.focusTab = () => {
-      window.browser.tabs.update(this.tabId, {active: true});
-      console.debug("show tab");
-    };
+    for (const method of Array.from([
+      "closeTab",
+      "continueSearch",
+      "focusNextTabOrContainer",
+      "focusPreviousTabOrContainer",
+      "focusTab",
+      "onUpdated",
+      "updateThumbnail",
+      "visible"
+    ])) {
+      self[method] = self[method].bind(this);
+    }
 
-    this.continueSearch = () => {
-      console.debug("continue search");
-    };
+    for (const property of Array.from(["order"])) {
+      const uppercasedPropertyName = property.replace(/^\w/, c => c.toUpperCase());
+      const setterName = `set${uppercasedPropertyName}`;
+      const getterName = `get${uppercasedPropertyName}`;
 
-    this.closeTab = () => {
-      window.browser.tabs.remove(this.tabId);
-    };
-
-    this.visible = () => window.getComputedStyle(this).display !== "none";
-
-    this.focusNextTabOrContainer = () => {
-      let elem = null;
-
-      do {
-        elem = (elem || this).nextElementSibling;
-        if (elem === null) {
-          if (this.parentElement.nextElementSibling) { this.parentElement.nextElementSibling.focus(); }
-          return;
-        }
-      } while (!elem.visible());
-
-      elem.focus();
-    };
-
-    this.setOrder = (index) => {
-      this.style.order = index;
-    };
-
-    this.focusPreviousTabOrContainer = () => {
-      let elem = null;
-
-      do {
-        elem = (elem || this).previousElementSibling;
-        if (elem.nodeName !== "TAB-ITEM") {
-          this.parentElement.focus();
-          return;
-        }
-      } while (!elem.visible());
-
-      elem.focus();
-    };
-
-    this.updateThumbnail = () => {
-      window.getThumbnail(this.tabId, this.url).then(thumbnail => {
-        console.log(`got thumbnail for ${this.url}`);
-        const img = $1("img.thumbnail-image", this);
-        if (img) {
-          img.src = thumbnail;
-        }
-      }, e => console.error(`error getting cached thumbnail: ${e}`));
-    };
-
-    // eslint-disable-next-line no-unused-vars
-    this.onUpdated = (tabId, newValues, tab) => {
-      if (tabId !== this.tabId) return;
-      // if(newValues.attention)
-      // if(newValues.audible)
-      if (newValues.favIconUrl) $1(".favicon-image", this).src = newValues.favIconUrl;
-      // if(newValues.mutedInfo)
-      // if(newValues.pinned)
-      if (newValues.status === "loading") $1("img.thumbnail-image", this).src = placeholderImage;
-
-      if (newValues.title) {
-        $1(".tab-title", this).innerText = newValues.title;
-        this.title = newValues.title;
-        this.title = newValues.title;
-      }
-
-      if (newValues.url) {
-        $1(".tab-url", this).innerText = newValues.url;
-        this.url = newValues.url;
-        this.setAttribute("url", newValues.url);
-      }
-
-      // this needs to be at the bottom as it depends on changes to url
-      if (newValues.status === "complete") {
-        this.updateThumbnail();
-      }
-    };
-
+      self[setterName] = self[setterName].bind(this);
+      self[getterName] = self[getterName].bind(this);
+      Reflect.defineProperty(this, property, {
+        get: self[getterName],
+        set: self[setterName]
+      });
+    }
   }
 
+  closeTab() {
+    window.browser.tabs.remove(this.tabId);
+  }
+
+  continueSearch() {
+    console.debug("continue search");
+  }
+
+  focusNextTabOrContainer() {
+    const nextTab = $1(`tab-item[style*="order: ${this.order + 1};"]`, this.parentElement);
+
+    if (nextTab) {
+      if(nextTab.visible()) {
+        nextTab.focus();
+      } else {
+        nextTab.focusNextTabOrContainer();
+      }
+      return;
+    }
+
+    if (this.parentElement.nextElementSibling) { this.parentElement.nextElementSibling.focus(); }
+  }
+
+  focusPreviousTabOrContainer() {
+    if (this.order === 0) {
+      this.parentElement.focus();
+      return;
+    }
+
+    const prevTab = $1(`tab-item[style*="order: ${this.order - 1};"]`, this.parentElement);
+    if(prevTab.visible()) {
+      prevTab.focus();
+    } else {
+      prevTab.focusPreviousTabOrContainer();
+    }
+  }
+
+  focusTab() {
+    window.browser.tabs.update(this.tabId, {active: true});
+    console.debug("show tab");
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  onUpdated(tabId, newValues, tab) {
+    if (tabId !== this.tabId) return;
+    // if(newValues.attention)
+    // if(newValues.audible)
+    if (newValues.favIconUrl) $1(".favicon-image", this).src = newValues.favIconUrl;
+    // if(newValues.mutedInfo)
+    // if(newValues.pinned)
+    if (newValues.status === "loading") $1("img.thumbnail-image", this).src = placeholderImage;
+
+    if (newValues.title) {
+      $1(".tab-title", this).innerText = newValues.title;
+      this.title = newValues.title;
+      this.title = newValues.title;
+    }
+
+    if (newValues.url) {
+      $1(".tab-url", this).innerText = newValues.url;
+      this.url = newValues.url;
+      this.setAttribute("url", newValues.url);
+    }
+
+    // this needs to be at the bottom as it depends on changes to url
+    if (newValues.status === "complete" && tab.url !== "about:blank") {
+      this.updateThumbnail();
+    }
+  }
+
+  updateThumbnail() {
+    window.getThumbnail(this.tabId, this.url).then(thumbnail => {
+      console.debug(`got thumbnail for ${this.url}`);
+      const img = $1("img.thumbnail-image", this);
+      if (img) {
+        img.src = thumbnail;
+      }
+    }, e => console.error(`error getting cached thumbnail: ${e}`));
+  }
+
+  visible() {
+    return window.getComputedStyle(this).display !== "none";
+  }
+
+  // property methods
+  setOrder(index) {
+    this.style.order = index;
+  }
+
+  getOrder() {
+    return parseInt(this.style.order, 10);
+  }
+
+  // predefined methods
   connectedCallback() {
-    this.browser = window.browser;
     this.color = this.getAttribute("color");
     this.favicon = this.getAttribute("favicon");
     this.tabId = parseInt(this.getAttribute("tab-id"), 10);
@@ -122,14 +153,16 @@ class TabItem extends HTMLElement {
     this.title = this.getAttribute("tab-title");
     this.url = this.getAttribute("url");
 
-    this.innerHTML = tabItem({
-      color: this.color,
-      favicon: this.favicon,
-      tabId: this.tabId,
-      thumbnail: this.thumbnail,
-      title: this.title,
-      url: this.url
-    });
+    if (!$1("form", this)) {
+      this.innerHTML = tabItem({
+        color: this.color,
+        favicon: this.favicon,
+        tabId: this.tabId,
+        thumbnail: this.thumbnail,
+        title: this.title,
+        url: this.url
+      });
+    }
     const form = $1("form", this);
 
     this.addEventListener("keydown", e => {
@@ -170,9 +203,9 @@ class TabItem extends HTMLElement {
         if (!tab.discarded) {
           this.updateThumbnail();
         }
+
       });
     }
-
     browser.tabs.onUpdated.addListener(this.onUpdated);
     browser.tabs.onRemoved.addListener(tabId => {
       if (tabId === this.tabId) {
@@ -185,7 +218,6 @@ class TabItem extends HTMLElement {
         this.remove();
       }
     });
-
 
     //    this.addEventListener("dragstart", function(event) {
     //      event.dataTransfer.setData("text", this.id);
@@ -208,7 +240,6 @@ class TabItem extends HTMLElement {
     //      console.info("dragleave", event.target);
     //    });
   }
-
 
   disconnectedCallback() {
     console.debug("tab-item disconnnected");
@@ -241,6 +272,5 @@ export const createTabComponent = (tabId, tabTitle, url, color, faviconIn, thumb
 
   return tabElement;
 };
-
 
 console.debug("conex-tab-component.js successfully loaded");

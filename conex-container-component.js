@@ -27,101 +27,137 @@ const containerItem = (data) => `
 `;
 
 class ContainerItem extends HTMLElement {
-  constructor() {
-    super();
+  constructor(_self) {
+    const self = super(_self);
 
-    this.visible = () => window.getComputedStyle(this) !== "none";
-
-    this.focusFirstTab = () => {
-      for (const tabItem of $("tab-item", this)) {
-        if (tabItem.visible()) {
-          tabItem.focus();
-          return;
-        }
-      }
-      try {
-        console.debug("empty container or all tabs are hidden ... jumping to next container", this);
-        this.nextElementSibling.focus();
-      } catch (_) {
-        console.debug("could not find next item to focus ... seems as if I am at the end of the list", this);
-      }
-    };
-
-    this.focusLastTabOfPreviousContainer = () => {
-      for (const tabItem of Array.from($("tab-item", this.previousElementSibling)).reverse()) {
-        if (tabItem.visible()) {
-          tabItem.focus();
-          return;
-        }
-      }
-      try {
-        console.debug("empty container or all tabs are hidden ... jumping to previous container", this);
-        this.previousElementSibling.focus();
-      } catch (e) {
-        console.debug("error focusing the last tab item of the previous container ... seems as if I am at the top", e, this);
-      }
-    };
-
-    this.collapseContainer = () => {
-      if (this.classList.contains("collapsed")) {
-        this.previousElementSibling.focus();
-      } else {
-        this.classList.add("collapsed");
-      }
-    };
-
-    this.expandContainer = () => {
-      if (this.classList.contains("collapsed")) {
-        this.classList.remove("collapsed");
-      } else {
-        this.nextElementSibling.focus();
-      }
-    };
-
-    this.focusContainer = () => {
-      console.debug("focus container");
-    };
-
-    this.newContainerTab = () => {
-      console.debug("new container tab");
-    };
-
-    this.updateTabCnt = () => {
-      // there can be race-conditions here, so let's skip one step
-      // in the event loop and count tab-items after that
-      setTimeout(() => {
-        this.tabCnt = $("tab-item", this).length;
-        this.setAttribute("tab-cnt", this.tabCnt);
-        $1(".container-tab-count", this).innerText = `(${this.tabCnt} tabs)`;
-        this.blur();
-      }, 0);
-    };
-
-    this.closeContainer = () => {
-      console.debug("close container");
-      this.updateTabCnt();
-    };
-
-    this.onTabCreated = (tab) => {
-      if (tab.cookieStoreId !== this.containerId) return;
-      this.appendChild(createTabComponent(tab.id, tab.title, tab.url, this.color, tab.favIconUrl));
-      this.updateTabCnt();
-    };
-
-    this.sortTabs = async(t) => {
-      if (t.cookieStoreId !== this.containerId) return;
-      const tabs = await window.browser.tabs.query({cookieStoreId: this.containerId});
-      console.log("sorted tab");
-
-      for (const tab of tabs.sort((a, b) => a.index < b.index)) {
-        console.log(`setting ${tab.id} to ${tab.index}`);
-        $1(`tab-item[tab-id="${tab.id}"]`, this).setOrder(tab.index);
-      }
-    };
-
-
+    for(const method of Array.from([
+      "closeContainer",
+      "collapseContainer",
+      "continueSearch",
+      "expandContainer",
+      "focusContainer",
+      "focusFirstTab",
+      "focusLastTabOfPreviousContainer",
+      "getLastTab",
+      "newContainerTab",
+      "onTabCreated",
+      "sortTabs",
+      "updateTabCnt",
+      "visible"
+    ])) {
+      self[method] = self[method].bind(this);
+    }
   }
 
+  closeContainer() {
+    console.debug("close container");
+    this.updateTabCnt();
+  }
+
+  collapseContainer() {
+    if (this.classList.contains("collapsed")) {
+      // for keyboard navigation: pressing '<-' collapses the container, second time jumps to previous container
+      this.previousElementSibling.focus();
+    } else {
+      this.classList.add("collapsed");
+    }
+  }
+
+  continueSearch(e) {
+    console.debug("continue search placeholder for:", e);
+  }
+
+  expandContainer() {
+    if (this.classList.contains("collapsed")) {
+      this.classList.remove("collapsed");
+    } else {
+      // for keyboard navigation: pressing '->' expands the container, second time jumps to next container
+      this.nextElementSibling.focus();
+    }
+  }
+
+  focusContainer() {
+    console.debug("focus container");
+  }
+
+  focusFirstTab() {
+    const firstTab = $1("tab-item[style*='order: 0']", this);
+    if (firstTab) {
+      firstTab.focus();
+      return;
+    }
+    try {
+      console.debug("empty container or all tabs are hidden ... jumping to next container", this);
+      this.nextElementSibling.focus();
+    } catch (_) {
+      console.debug("could not find next item to focus ... seems as if I am at the end of the list", this);
+    }
+  }
+
+  focusLastTabOfPreviousContainer() {
+    if(this.previousElementSibling) {
+      const lastTabOfPreviousContainer = this.previousElementSibling.getLastTab();
+      if(lastTabOfPreviousContainer) {
+        lastTabOfPreviousContainer.focus();
+        return;
+      }
+      this.previousElementSibling.focus();
+    }
+  }
+
+  getLastTab() {
+    return $1(`tab-item[style*="order: ${this.tabCnt - 1};"]`, this);
+  }
+
+  newContainerTab() {
+    console.debug("new container tab");
+  }
+
+  onTabCreated(tab) {
+    if (tab.cookieStoreId !== this.containerId) return;
+    this.appendChild(createTabComponent(tab.id, tab.title, tab.url, this.color, tab.favIconUrl));
+    this.updateTabCnt();
+  }
+
+  async sortTabs(cookieStoreId) {
+    const containerId = this.getAttribute("container-id");
+    if (cookieStoreId && cookieStoreId !== containerId) return;
+
+    const tabs = await window.browser.tabs.query({cookieStoreId: containerId});
+    let sortedTabs = null;
+    switch (window.settings.order) {
+      case "lru":
+        sortedTabs = tabs.sort((a, b) => a.lastAccessed < b.lastAccessed);
+        break;
+      case "index":
+      default: sortedTabs = tabs.sort((a, b) => a.index < b.index);
+    }
+
+    for (let i = 0; i < sortedTabs.length; i += 1) {
+      try {
+        $1(`tab-item[tab-id="${sortedTabs[i].id}"]`, this).order = i;
+      } catch (e) {
+        console.error(`error sorting tabs in ${cookieStoreId}: index: ${i}, tab ${sortedTabs[i]}: ${e}`);
+      }
+    }
+  }
+
+  updateTabCnt() {
+    // there can be race-conditions here, so let's skip one step
+    // in the event loop and count tab-items after that
+    setTimeout(() => {
+      this.tabCnt = $("tab-item", this).length;
+      this.setAttribute("tab-cnt", this.tabCnt);
+      $1(".container-tab-count", this).innerText = `(${this.tabCnt} tabs)`;
+      this.blur();
+    }, 0);
+  }
+
+  visible() {
+    return window.getComputedStyle(this) !== "none";
+  }
+
+  // predefined methods
   connectedCallback() {
     console.debug("container-item connected");
     this.color = this.getAttribute("color");
@@ -180,13 +216,14 @@ class ContainerItem extends HTMLElement {
     });
 
     browser.tabs.onCreated.addListener(this.onTabCreated);
-    browser.tabs.onCreated.addListener(this.sortTabs);
+    browser.tabs.onCreated.addListener((tab) => this.sortTabs(tab.cookieStoreId));
+    browser.tabs.onActivated.addListener((activeInfo) => {
+      browser.tabs.get(activeInfo.tabId).then(tab => {
+        this.sortTabs(tab.cookieStoreId);
+      });
+    });
+
     this.updateTabCnt();
-  }
-
-
-  continueSearch(e) {
-    console.debug("continue search placeholder for:", e);
   }
 
   disconnectedCallback() {

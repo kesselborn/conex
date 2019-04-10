@@ -1,5 +1,5 @@
 container-item {
-  display:grid;
+  display: grid;
 }
 
 form.container-item {
@@ -13,32 +13,40 @@ form.container-item {
   padding: 5px 20px 5px 5px;
 }
 
-.container-expander        { grid-area: expand; }
-.container-collapser       { grid-area: expand; }
-.container-focus           { grid-area: focus; }
-.container-new-tab         { grid-area: new-tab; }
-.container-close-container { grid-area: close-container; }
-.container-tab-count       { grid-column-start: new-tab; grid-column-end: close-container; }
+.container-expander {
+  grid-area: expand;
+}
+
+.container-collapser {
+  grid-area: expand;
+}
+
+.container-focus {
+  grid-area: focus;
+}
+
+.container-new-tab {
+  grid-area: new-tab;
+}
+
+.container-close-container {
+  grid-area: close-container;
+}
+
+.container-tab-count {
+  grid-column-start: new-tab;
+  grid-column-end: close-container;
+}
 
 .container-expander, .container-collapser {
   place-content: center;
 }
 
-.container-tab-count,
-    container-item:focus      .container-close-container,
-    container-item:focus      .container-new-tab,
-    form.container-item:hover .container-close-container,
-    form.container-item:hover .container-new-tab {
+.container-tab-count, container-item:focus .container-close-container, container-item:focus .container-new-tab, form.container-item:hover .container-close-container, form.container-item:hover .container-new-tab {
   display: inherit;
 }
 
-.container-close-container,
-    .container-collapser,
-    .container-new-tab,
-    container-item label.container-expander,
-    container-item.collapsed label.container-collapser,
-    container-item:focus .container-tab-count,
-    form.container-item:hover .container-tab-count {
+.container-close-container, .container-collapser, .container-new-tab, container-item label.container-expander, container-item.collapsed label.container-collapser, container-item:focus .container-tab-count, form.container-item:hover .container-tab-count {
   display: none;
 }
 
@@ -62,17 +70,16 @@ container-item.collapsed label.container-expander, container-item label.containe
 }
 
 /* focus / hover styles */
+
 container-item:focus form.container-item, form.container-item:hover {
   background-color: var(--hover-item-bg-color);
 }
 
-.container-close-container:hover, .container-new-tab:hover,
-    .container-expander:hover, .container-collapser:hover {
+.container-close-container:hover, .container-new-tab:hover, .container-expander:hover, .container-collapser:hover {
   background-color: var(--hover-button-bg-color);
 }
 
-form.container-item:hover .container-expander, form.container-item:hover .container-collapser,
-container-item:focus .container-expander, container-item:focus .container-collapser {
+form.container-item:hover .container-expander, form.container-item:hover .container-collapser, container-item:focus .container-expander, container-item:focus .container-collapser {
   border: 1px solid var(--hover-button-bg-color);
   border-radius: 6px;
 }

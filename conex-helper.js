@@ -5,6 +5,8 @@ console.debug = function(...args) {
   Reflect.apply(console.origDebug, this, args);
 };
 
+export const placeholderImage = browser.runtime.getURL("transparent.png");
+
 // alias for document.querySelectorAll
 export const $ = function(s, parent) { return (parent || window.document).querySelectorAll(s); };
 

@@ -54,7 +54,6 @@ const createThumbnail = async(tabId) => {
         quality: 20
       });
       const end = Date.now();
-      console.debug(`screenshot took ${end - start}ms`);
       {
         // poor man's fix when screenshot gets taken before rendering is finished
         // this only works, if the assumption is correct, that all those pages look
@@ -65,12 +64,19 @@ const createThumbnail = async(tabId) => {
         if (screenshot.length / screenshotWithoutEmptyScreenshotPattern.length > 10) {
           // eslint-disable-next-line no-await-in-loop
           await sleep(1500);
-          throw new Error("captured tag before page was rendered ... will repeat");
+          const e = new Error("captured tag before page was rendered ... will repeat");
+          e.name = "BlankScreenshot";
+          throw e;
         }
       }
+      console.debug(`screenshot took ${end - start}ms`);
       break;
     } catch (e) {
-      console.error(`error capturing tab #${tabId}: `, e);
+      if(e.name === "BlankScreenshot") {
+        console.warn(e);
+      } else {
+        console.error(`error capturing tab #${tabId}: `, e);
+      }
     }
     // eslint-disable-next-line no-await-in-loop
     await sleep(1000);
@@ -97,6 +103,7 @@ export const getThumbnail = (tabId, tabUrl) => {
   const key = `${tabId}-${tabUrl}`;
   let thumbnailPromise = thumbnailsWip.get(key);
   if (!thumbnailPromise) {
+    console.debug(`putting thumbnail key ${key} in cache`);
     thumbnailPromise = createThumbnail(tabId);
     thumbnailsWip.set(key, thumbnailPromise);
 
