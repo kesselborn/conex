@@ -5,8 +5,9 @@ form.tab-item {
     grid-template-areas: "thumbnail content";
     height: var(--height);
     border-left: 2px solid;
+    border-bottom: 1px solid var(--hover-item-bg-color);
     align-items: center;
-    padding: 5px 20px 5px 5px;
+    padding: 10px 20px 10px 5px;
 }
 
 tab-item:focus form.tab-item, form.tab-item:hover {
@@ -40,6 +41,7 @@ tab-item:focus img, form.tab-item:hover img {
 .thumbnail-image {
     max-height: var(--height);
     max-width: var(--thumbnail-width);
+    border: 1px solid var(--hover-item-bg-color);
 }
 
 .favicon-image {
