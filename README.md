@@ -18,7 +18,7 @@ This addon tries to replace some functionality from the discontinued *TabGroups*
 ## Differences to tabgroups
 
 - it lacks the big "Manage my TabGroups" overview window
-- conex uses containers for groupding tabs
+- conex uses containers for grouping tabs
 - the quick search contains thumbnail of the results
 - the quick search optionally includes bookmarks and history
 
