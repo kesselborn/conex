@@ -165,6 +165,7 @@ class TabItem extends HTMLElement {
     }
     const form = $1("form", this);
 
+    // todo: central event handling
     this.addEventListener("keydown", e => {
       console.debug("tab-item keydown", e);
       e.stopPropagation();
@@ -206,7 +207,9 @@ class TabItem extends HTMLElement {
 
       });
     }
+    // todo: central event handling ?
     browser.tabs.onUpdated.addListener(this.onUpdated);
+    // todo: central event handling ?
     browser.tabs.onRemoved.addListener(tabId => {
       if (tabId === this.tabId) {
         this.parentElement.updateTabCnt();

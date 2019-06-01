@@ -180,6 +180,7 @@ class ContainerItem extends HTMLElement {
     this.addEventListener("focus", () => console.debug("focused", this));
     this.addEventListener("click", () => this.focus());
 
+    // todo: central event handling
     this.addEventListener("keydown", e => {
       console.debug("container-item keydown", e.target);
       e.stopPropagation();
