@@ -1,13 +1,15 @@
 import {$e} from "./conex-helper.js";
 
+
 const resizeImage = async(screenshot, width, height) => {
   const canvas = window.document.createElement("canvas");
   const context = canvas.getContext("2d");
 
-  // sometimes, the image element is not fully created yet
+  // race condition prevention: sometimes, the image element is not fully created yet
   await new Promise((resolve, reject) => {
     const maxTries = 50;
-    const delay = 50;
+    const intervalDelay = 50;
+
     let cnt = 0;
     const timer = setInterval(() => {
       cnt += 1;
@@ -18,7 +20,7 @@ const resizeImage = async(screenshot, width, height) => {
         clearInterval(timer);
         resolve();
       }
-    }, delay);
+    }, intervalDelay);
   });
 
   if (screenshot.width / width > screenshot.height / height) {
@@ -40,13 +42,20 @@ const sleep = (delay) => new Promise(resolve => {
   setTimeout(() => resolve(), delay);
 });
 
+// tODO: background tabs bei heise haben falsche thumbnails
 const createThumbnail = async(tabId) => {
+  const tab = browser.tabs.get(tabId);
   let thumbnailElement = null;
   let screenshot = null;
+  let thumbnailCreated = false;
 
-  for (let i = 0; i < 20; i += 1) {
+  const maxTries = 20;
+  const intervalDelay = 1000;
+
+  for (let i = 0; i < maxTries; i += 1) {
     try {
-      console.debug(`creating thumbnail for tab #${tabId}`);
+      // eslint-disable-next-line no-await-in-loop
+      console.debug(`creating thumbnail for tab ${(await tab).url}`);
       const start = Date.now();
       // eslint-disable-next-line no-await-in-loop
       screenshot = await browser.tabs.captureTab(tabId, {
@@ -70,16 +79,22 @@ const createThumbnail = async(tabId) => {
         }
       }
       console.debug(`screenshot took ${end - start}ms`);
+      thumbnailCreated = true;
       break;
     } catch (e) {
-      if(e.name === "BlankScreenshot") {
-        console.warn(e);
+      if (e.name === "BlankScreenshot") {
+        console.warn(`got what I think was a blank screenshot ... trying again in ${intervalDelay}ms`);
       } else {
         console.error(`error capturing tab #${tabId}: `, e);
       }
     }
     // eslint-disable-next-line no-await-in-loop
-    await sleep(1000);
+    await sleep(intervalDelay);
+  }
+  if (!thumbnailCreated) {
+    const e = new Error("creating tab thumbnail failed too often -- giving up");
+    e.name = "TooManyThumbnailFails";
+    throw e;
   }
 
   try {
@@ -107,19 +122,11 @@ export const getThumbnail = (tabId, tabUrl) => {
     thumbnailPromise = createThumbnail(tabId);
     thumbnailsWip.set(key, thumbnailPromise);
 
-    // if there is no thumbnail after 10 seconds, delete it from this list
-    // ... tab could be closed before thumbnail was done for example
-    const deleteOnTimeout = setTimeout(() => {
-      console.info(`thumbnail for tab ${key} was never created`);
-      thumbnailsWip.delete(key);
-    }, 10000);
-
-    thumbnailPromise.then(() => {
-      clearTimeout(deleteOnTimeout);
-
-      // keep this promise for another 10 seconds
-      setTimeout(() => thumbnailsWip.delete(key), 10000);
-    });
+    thumbnailPromise.then(
+      // cache for 10 seconds to share between sidebar, browser action and background
+      () => setTimeout(() => thumbnailsWip.delete(key), 10000),
+      e => console.error(`error creating thumbnail: ${e}`)
+    );
   }
 
   return thumbnailPromise;
