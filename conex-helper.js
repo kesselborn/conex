@@ -1,9 +1,7 @@
-console.origDebug = console.debug;
-
-console.debug = function(...args) {
-  if (!console.debugging) return;
-  Reflect.apply(console.origDebug, this, args);
-};
+// eslint-disable-next-line no-empty-function
+console.debugBak = console.debug;
+// eslint-disable-next-line no-empty-function
+// console.debug = function() {};
 
 export const placeholderImage = browser.runtime.getURL("transparent.png");
 
