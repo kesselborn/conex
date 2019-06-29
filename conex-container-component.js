@@ -122,11 +122,12 @@ class ContainerItem extends HTMLElement {
     this.updateTabCnt();
   }
 
+  // todo: implement more sorting strategies
+  // todo: make sorting accessible in ui
   async sortTabs(cookieStoreId) {
-    const containerId = this.getAttribute("container-id");
-    if (cookieStoreId && cookieStoreId !== containerId) return;
+    if (cookieStoreId && cookieStoreId !== this.containerId) return;
 
-    const tabs = await window.browser.tabs.query({cookieStoreId: containerId});
+    const tabs = await window.browser.tabs.query({cookieStoreId: this.containerId});
     let sortedTabs = null;
     switch (window.settings.order) {
       case "lru":
