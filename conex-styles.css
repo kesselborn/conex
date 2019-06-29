@@ -1,21 +1,20 @@
 @import "colors.css";
-@import "ordering.css";
-@import "tab-item.css";
 @import "container-item.css";
+@import "ordering.css";
+@import "search-bar.css";
+@import "tab-item.css";
 
 :root {
   --action-width: 30px;
   --height: 40px;
   --thumbnail-width: 60px;
+  --container-bg-color: rgb(232, 232, 232);
+  --hover-container-bg-color: rgb(220, 220, 220);
   --hover-item-bg-color: rgb(232, 232, 232);
   --hover-button-bg-color: rgb(208, 208, 208);
 }
 
 /* variables */
-
-input:focus {
-  background-color: red;
-}
 
 body {
   margin: 0;

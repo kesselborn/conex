@@ -1,4 +1,5 @@
-import {$} from "./conex-helper.js";
+import "./conex-search-bar.js";
+import {$, $1} from "./conex-helper.js";
 import {createContainerItem} from "./conex-container-item.js";
 import {createTabItem} from "./conex-tab-item.js";
 import {getThumbnail} from "./conex-thumbnail.js";
@@ -30,7 +31,7 @@ window.initializingConex = new Promise((resolve) => {
 });
 
 const initializeBackgroundHtml = async() => {
-  const d = document.createElement("div");
+  const containerList = $1("div#containers", document.body).cloneNode(false);
   const containers = await browser.contextualIdentities.query({});
 
   // add default container at the beginning ...
@@ -50,7 +51,7 @@ const initializeBackgroundHtml = async() => {
   for (const container of containers) {
     console.debug(`creating container element ${container.name}`);
     const tabs = browser.tabs.query({cookieStoreId: container.cookieStoreId});
-    const c = d.appendChild(createContainerItem(container.cookieStoreId, container.name, container.color));
+    const c = containerList.appendChild(createContainerItem(container.cookieStoreId, container.name, container.color));
 
     // eslint-disable-next-line no-await-in-loop
     for(const tab of await tabs) {
@@ -60,8 +61,8 @@ const initializeBackgroundHtml = async() => {
     c.sortTabItems();
   }
 
-  document.body.firstElementChild.replaceWith(d);
-  document.body.firstElementChild.focus();
+  $1("div#containers").replaceWith(containerList);
+  $1("div#containers").focus();
   initialized = true;
 };
 
