@@ -11,6 +11,7 @@ form.container-item {
   border-left: 5px solid;
   align-items: center;
   padding: 5px 20px 5px 5px;
+  background-color: var(--container-bg-color);
 }
 
 .container-expander {
@@ -72,7 +73,7 @@ container-item.collapsed label.container-expander, container-item label.containe
 /* focus / hover styles */
 
 container-item:focus form.container-item, form.container-item:hover {
-  background-color: var(--hover-item-bg-color);
+  background-color: var(--hover-container-bg-color);
 }
 
 .container-close-container:hover, .container-new-tab:hover, .container-expander:hover, .container-collapser:hover {
