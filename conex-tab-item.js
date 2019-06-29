@@ -56,6 +56,9 @@ class TabItem extends HTMLElement {
 
   closeTab() {
     window.browser.tabs.remove(this.tabId);
+    if(this.body.tabRemovedCallback) {
+      this.body.tabRemovedCallback();
+    }
   }
 
   continueSearch() {

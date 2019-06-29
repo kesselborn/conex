@@ -114,6 +114,10 @@ class ContainerItem extends HTMLElement {
       active: true,
       cookieStoreId: this.containerId
     }).catch(e => `error creating new tab for container ${this.containerId}: ${e}`);
+
+    if(this.body.tabCreatedCallback) {
+      this.body.tabCreatedCallback();
+    }
   }
 
   onTabCreated(tab) {
@@ -162,6 +166,7 @@ class ContainerItem extends HTMLElement {
   // predefined methods
   connectedCallback() {
     console.debug("container-item connected");
+    this.body = this.parentElement.parentElement.parentElement;
     this.color = this.getAttribute("color");
     this.containerId = this.getAttribute("container-id");
     this.containerName = this.getAttribute("container-name");
