@@ -6,10 +6,10 @@
 export const placeholderImage = browser.runtime.getURL("transparent.png");
 
 // alias for document.querySelectorAll
-export const $ = function(s, parent) { return (parent || window.document).querySelectorAll(s); };
+export const $ = (s, parent) => (parent || window.document).querySelectorAll(s);
 
 // alias for document.querySelector
-export const $1 = function(s, parent) { return (parent || window.document).querySelector(s); };
+export const $1 = (s, parent) => (parent || window.document).querySelector(s);
 
 // creates a dom element, can contain children; attributes contains a map of the elements attributes
 // with 'content' being a special attribute representing the text node's content; underscores in
@@ -24,7 +24,7 @@ export const $1 = function(s, parent) { return (parent || window.document).query
 //
 // <div class='foo'><span class='bar1' data-foo='bar'>baz1</span><span class='bar2'>baz2</span></div>
 //
-export const $e = function(name, attributes, children) {
+export const $e = (name, attributes, children) => {
   const e = window.document.createElement(name);
 
   for (const key in attributes) {
@@ -42,8 +42,7 @@ export const $e = function(name, attributes, children) {
   return e;
 };
 
-export const getConexDom = function(backgroundPage) {
-  return () => {
+export const getConexDom = backgroundPage => () => {
     const startupLoop = setInterval(() => {
       if (backgroundPage.initializingConex) {
         backgroundPage.initializingConex.then(
@@ -60,10 +59,9 @@ export const getConexDom = function(backgroundPage) {
       }
     }, 100);
   };
-};
 
 
-// const cleanUrl = function(url) {
+// const cleanUrl = url => {
 //   return url.replace('http://','').replace('https://','').toLowerCase();
 // };
 //

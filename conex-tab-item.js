@@ -230,21 +230,21 @@ class TabItem extends HTMLElement {
       }
     });
 
-    //    this.addEventListener("dragstart", function(event) {
+    //    this.addEventListener("dragstart", event => {
     //      event.dataTransfer.setData("text", this.id);
     //    });
     //
-    //    this.addEventListener("dragenter", function(event) {
+    //    this.addEventListener("dragenter", event => {
     //      console.debug("dragenter", this);
     //      event.preventDefault();
     //    });
-    //    this.addEventListener("dragover", function(event) {
+    //    this.addEventListener("dragover", event => {
     //      event.preventDefault();
     //    });
-    //    this.addEventListener("drop", function(event) {
+    //    this.addEventListener("drop", event => {
     //      event.preventDefault();
     //    });
-    //    this.addEventListener("dragleave", function(event) {
+    //    this.addEventListener("dragleave", event => {
     //      if(event.target == form) {
     //        this.classList.remove("dragging");
     //      }
