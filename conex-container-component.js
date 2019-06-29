@@ -181,7 +181,6 @@ class ContainerItem extends HTMLElement {
     }
     const form = $1("form", this);
 
-    this.addEventListener("focus", () => console.debug("focused", this));
     this.addEventListener("click", () => this.focus());
 
     // todo: central event handling
