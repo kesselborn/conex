@@ -44,7 +44,6 @@ const sleep = (delay) => new Promise(resolve => {
 
 // tODO: background tabs bei heise haben falsche thumbnails
 const createThumbnail = async(tabId) => {
-  const tab = browser.tabs.get(tabId);
   let thumbnailElement = null;
   let screenshot = null;
   let thumbnailCreated = false;
@@ -54,8 +53,6 @@ const createThumbnail = async(tabId) => {
 
   for (let i = 0; i < maxTries; i += 1) {
     try {
-      // eslint-disable-next-line no-await-in-loop
-      console.debug(`creating thumbnail for tab ${(await tab).url}`);
       const start = Date.now();
       // eslint-disable-next-line no-await-in-loop
       screenshot = await browser.tabs.captureTab(tabId, {
@@ -63,6 +60,7 @@ const createThumbnail = async(tabId) => {
         quality: 20
       });
       const end = Date.now();
+
       {
         // poor man's fix when screenshot gets taken before rendering is finished
         // this only works, if the assumption is correct, that all those pages look
@@ -78,6 +76,7 @@ const createThumbnail = async(tabId) => {
           throw e;
         }
       }
+
       console.debug(`screenshot took ${end - start}ms`);
       thumbnailCreated = true;
       break;
@@ -115,16 +114,22 @@ const createThumbnail = async(tabId) => {
 
 const thumbnailsWip = new Map();
 export const getThumbnail = (tabId, tabUrl) => {
+  const thumbnailCacheDuration = 10000;
   const key = `${tabId}-${tabUrl}`;
   let thumbnailPromise = thumbnailsWip.get(key);
-  if (!thumbnailPromise) {
-    console.debug(`putting thumbnail key ${key} in cache`);
+  if (thumbnailPromise) {
+    console.debug(`using cached thumbnail with key ${key}`);
+  } else {
+    console.debug(`creating thumbnail with key ${key} (caching it for ${thumbnailCacheDuration / 1000}s)`);
     thumbnailPromise = createThumbnail(tabId);
     thumbnailsWip.set(key, thumbnailPromise);
 
     thumbnailPromise.then(
       // cache for 10 seconds to share between sidebar, browser action and background
-      () => setTimeout(() => thumbnailsWip.delete(key), 10000),
+      () => setTimeout(() => {
+        console.debug(`deleting thumbnail cache with key ${key}`);
+        thumbnailsWip.delete(key);
+      }, 10000),
       e => console.error(`error creating thumbnail: ${e}`)
     );
   }

@@ -3,7 +3,6 @@ import {createContainerItem} from "./conex-container-item.js";
 import {createTabItem} from "./conex-tab-item.js";
 import {getThumbnail} from "./conex-thumbnail.js";
 
-console.debugging = true;
 let initialized = false;
 
 const getConexDom = () => {
@@ -58,7 +57,7 @@ const initializeBackgroundHtml = async() => {
       console.debug(`   creating tab element ${tab.title}`);
       c.appendChild(createTabItem(tab.id, tab.title, tab.url, container.color, tab.favIconUrl, null));
     }
-    c.sortTabs();
+    c.sortTabItems();
   }
 
   document.body.firstElementChild.replaceWith(d);
@@ -67,7 +66,11 @@ const initializeBackgroundHtml = async() => {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  initializeBackgroundHtml();
+  try {
+    initializeBackgroundHtml();
+  } catch(e) {
+    console.error(`error initializing background page: ${e}`);
+  }
 });
 
 console.debug("conex-background.js loaded");

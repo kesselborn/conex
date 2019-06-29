@@ -31,17 +31,17 @@ class ContainerItem extends HTMLElement {
     const self = super(_self);
 
     for(const method of Array.from([
+      "activateFirstContainerTab",
       "closeContainer",
-      "collapseContainer",
+      "collapseContainerItem",
       "continueSearch",
-      "expandContainer",
-      "focusContainer",
-      "focusFirstTab",
-      "focusLastTabOfPreviousContainer",
-      "getLastTab",
-      "newContainerTab",
+      "createNewTab",
+      "expandContainerItem",
+      "focusFirstTabItem",
+      "focusLastTabItemOfPreviousContainer",
+      "getLastTabItem",
       "onTabCreated",
-      "sortTabs",
+      "sortTabItems",
       "updateTabCnt",
       "visible"
     ])) {
@@ -54,7 +54,7 @@ class ContainerItem extends HTMLElement {
     this.updateTabCnt();
   }
 
-  collapseContainer() {
+  collapseContainerItem() {
     if (this.classList.contains("collapsed")) {
       // for keyboard navigation: pressing '<-' collapses the container, second time jumps to previous container
       this.previousElementSibling.focus();
@@ -67,7 +67,7 @@ class ContainerItem extends HTMLElement {
     console.debug("continue search placeholder for:", e);
   }
 
-  expandContainer() {
+  expandContainerItem() {
     if (this.classList.contains("collapsed")) {
       this.classList.remove("collapsed");
     } else {
@@ -76,11 +76,11 @@ class ContainerItem extends HTMLElement {
     }
   }
 
-  focusContainer() {
+  activateFirstContainerTab() {
     console.debug("focus container");
   }
 
-  focusFirstTab() {
+  focusFirstTabItem() {
     const firstTab = $1("tab-item[style*='order: 0']", this);
     if (firstTab) {
       firstTab.focus();
@@ -94,9 +94,9 @@ class ContainerItem extends HTMLElement {
     }
   }
 
-  focusLastTabOfPreviousContainer() {
+  focusLastTabItemOfPreviousContainer() {
     if(this.previousElementSibling) {
-      const lastTabOfPreviousContainer = this.previousElementSibling.getLastTab();
+      const lastTabOfPreviousContainer = this.previousElementSibling.getLastTabItem();
       if(lastTabOfPreviousContainer) {
         lastTabOfPreviousContainer.focus();
         return;
@@ -105,11 +105,11 @@ class ContainerItem extends HTMLElement {
     }
   }
 
-  getLastTab() {
+  getLastTabItem() {
     return $1(`tab-item[style*="order: ${this.tabCnt - 1};"]`, this);
   }
 
-  newContainerTab() {
+  createNewTab() {
     browser.tabs.create({
       active: true,
       cookieStoreId: this.containerId
@@ -124,7 +124,7 @@ class ContainerItem extends HTMLElement {
 
   // todo: implement more sorting strategies
   // todo: make sorting accessible in ui
-  async sortTabs(cookieStoreId) {
+  async sortTabItems(cookieStoreId) {
     if (cookieStoreId && cookieStoreId !== this.containerId) return;
 
     const tabs = await window.browser.tabs.query({cookieStoreId: this.containerId});
@@ -141,7 +141,7 @@ class ContainerItem extends HTMLElement {
       try {
         $1(`tab-item[tab-id="${sortedTabs[i].id}"]`, this).order = i;
       } catch (e) {
-        console.error(`error sorting tabs in ${cookieStoreId}: index: ${i}, tab ${sortedTabs[i]}: ${e}`);
+        console.debug(`error sorting tabs in ${cookieStoreId}: index: ${i}, tab ${sortedTabs[i]}: ${e}`);
       }
     }
   }
@@ -191,9 +191,9 @@ class ContainerItem extends HTMLElement {
 
       switch (e.key) {
         // keyboard shortcuts instead of hovering with the mouse
-        case "ArrowDown": this.focusFirstTab(); return;
-        case "ArrowUp": this.focusLastTabOfPreviousContainer(); return;
-        case "Tab": if (e.shiftKey) this.focusLastTabOfPreviousContainer(); else this.focusFirstTab(); return;
+        case "ArrowDown": this.focusFirstTabItem(); return;
+        case "ArrowUp": this.focusLastTabItemOfPreviousContainer(); return;
+        case "Tab": if (e.shiftKey) this.focusLastTabItemOfPreviousContainer(); else this.focusFirstTabItem(); return;
         default: this.continueSearch(e); return;
 
         // keyboard shortcuts instead of clicking the mouse
@@ -210,20 +210,20 @@ class ContainerItem extends HTMLElement {
     form.addEventListener("change", () => {
       switch ($1("input[name=action]:checked", that).value) {
         case "close-container": this.closeContainer(); break;
-        case "collapse-container": this.collapseContainer(); break;
-        case "expand-container": this.expandContainer(); break;
-        case "focus-container": this.focusContainer(); break;
-        case "new-tab": this.newContainerTab(); break;
+        case "collapse-container": this.collapseContainerItem(); break;
+        case "expand-container": this.expandContainerItem(); break;
+        case "focus-container": this.activateFirstContainerTab(); break;
+        case "new-tab": this.createNewTab(); break;
         default: console.error("unknown action: ", $1("input[name=action]:checked")); break;
       }
       form.reset();
     });
 
     browser.tabs.onCreated.addListener(this.onTabCreated);
-    browser.tabs.onCreated.addListener((tab) => this.sortTabs(tab.cookieStoreId));
+    browser.tabs.onCreated.addListener((tab) => this.sortTabItems(tab.cookieStoreId));
     browser.tabs.onActivated.addListener((activeInfo) => {
       browser.tabs.get(activeInfo.tabId).then(tab => {
-        this.sortTabs(tab.cookieStoreId);
+        this.sortTabItems(tab.cookieStoreId);
       });
     });
 

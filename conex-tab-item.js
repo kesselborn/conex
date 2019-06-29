@@ -24,12 +24,13 @@ class TabItem extends HTMLElement {
   constructor(_self) {
     const self = super(_self);
 
+    // bind methods correctly
     for (const method of Array.from([
+      "activateTab",
       "closeTab",
       "continueSearch",
-      "focusNextTabOrContainer",
-      "focusPreviousTabOrContainer",
-      "focusTab",
+      "focusNextTabItem",
+      "focusPrevTabItem",
       "onUpdated",
       "updateThumbnail",
       "visible"
@@ -37,6 +38,7 @@ class TabItem extends HTMLElement {
       self[method] = self[method].bind(this);
     }
 
+    // bind setters and getters
     for (const property of Array.from(["order"])) {
       const uppercasedPropertyName = property.replace(/^\w/, c => c.toUpperCase());
       const setterName = `set${uppercasedPropertyName}`;
@@ -59,14 +61,14 @@ class TabItem extends HTMLElement {
     console.debug("continue search");
   }
 
-  focusNextTabOrContainer() {
-    const nextTab = $1(`tab-item[style*="order: ${this.order + 1};"]`, this.parentElement);
+  focusNextTabItem() {
+    const nextTabItem = $1(`tab-item[style*="order: ${this.order + 1};"]`, this.parentElement);
 
-    if (nextTab) {
-      if(nextTab.visible()) {
-        nextTab.focus();
+    if (nextTabItem) {
+      if(nextTabItem.visible()) {
+        nextTabItem.focus();
       } else {
-        nextTab.focusNextTabOrContainer();
+        nextTabItem.focusNextTabItem();
       }
       return;
     }
@@ -74,7 +76,7 @@ class TabItem extends HTMLElement {
     if (this.parentElement.nextElementSibling) { this.parentElement.nextElementSibling.focus(); }
   }
 
-  focusPreviousTabOrContainer() {
+  focusPrevTabItem() {
     if (this.order === 0) {
       this.parentElement.focus();
       return;
@@ -84,11 +86,11 @@ class TabItem extends HTMLElement {
     if(prevTab.visible()) {
       prevTab.focus();
     } else {
-      prevTab.focusPreviousTabOrContainer();
+      prevTab.focusPrevTabItem();
     }
   }
 
-  focusTab() {
+  activateTab() {
     window.browser.tabs.update(this.tabId, {active: true}).then(
       () => console.debug(`showing tab ${this.tabId}`),
       e => console.error(`error focusing tab ${this.tabId}: ${e}`)
@@ -175,9 +177,9 @@ class TabItem extends HTMLElement {
 
       switch (e.key) {
         // keyboard shortcuts instead of clicking the mouse
-        case "ArrowUp": this.focusPreviousTabOrContainer(); return;
-        case "ArrowDown": this.focusNextTabOrContainer(); return;
-        case "Tab": if (e.shiftKey) this.focusPreviousTabOrContainer(); else this.focusNextTabOrContainer(); return;
+        case "ArrowUp": this.focusPrevTabItem(); return;
+        case "ArrowDown": this.focusNextTabItem(); return;
+        case "Tab": if (e.shiftKey) this.focusPrevTabItem(); else this.focusNextTabItem(); return;
         case "ArrowLeft": this.parentElement.focus(); return;
         case "ArrowRight": this.parentElement.nextElementSibling.focus(); return;
         default: this.continueSearch(e); return;
@@ -193,7 +195,7 @@ class TabItem extends HTMLElement {
       e.stopPropagation();
       e.preventDefault();
       switch ($1("input[name=action]:checked", this).value) {
-        case "focus-tab": this.focusTab(); break;
+        case "focus-tab": this.activateTab(); break;
         case "close-tab": this.closeTab(); break;
         default: console.error("unknown action: ", $1("input[name=action]:checked", this)); break;
       }
@@ -247,11 +249,11 @@ class TabItem extends HTMLElement {
   }
 
   disconnectedCallback() {
-    console.debug("tab-item disconnnected");
+    console.debug(`tab-item id:${this.tabId} url:${this.url} disconnnected`);
   }
 
   adoptedCallback() {
-    console.debug("tab-item adopted");
+    console.debug(`tab-item id:${this.tabId} url:${this.url} adopted`);
   }
 }
 
