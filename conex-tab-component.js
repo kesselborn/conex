@@ -89,8 +89,10 @@ class TabItem extends HTMLElement {
   }
 
   focusTab() {
-    window.browser.tabs.update(this.tabId, {active: true});
-    console.debug("show tab");
+    window.browser.tabs.update(this.tabId, {active: true}).then(
+      () => console.debug(`showing tab ${this.tabId}`),
+      e => console.error(`error focusing tab ${this.tabId}: ${e}`)
+    );
   }
 
   // eslint-disable-next-line no-unused-vars
