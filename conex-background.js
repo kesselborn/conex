@@ -1,6 +1,6 @@
 import {$} from "./conex-helper.js";
-import {createContainerComponent} from "./conex-container-component.js";
-import {createTabComponent} from "./conex-tab-component.js";
+import {createContainerItem} from "./conex-container-item.js";
+import {createTabItem} from "./conex-tab-item.js";
 import {getThumbnail} from "./conex-thumbnail.js";
 
 console.debugging = true;
@@ -51,12 +51,12 @@ const initializeBackgroundHtml = async() => {
   for (const container of containers) {
     console.debug(`creating container element ${container.name}`);
     const tabs = browser.tabs.query({cookieStoreId: container.cookieStoreId});
-    const c = d.appendChild(createContainerComponent(container.cookieStoreId, container.name, container.color));
+    const c = d.appendChild(createContainerItem(container.cookieStoreId, container.name, container.color));
 
     // eslint-disable-next-line no-await-in-loop
     for(const tab of await tabs) {
       console.debug(`   creating tab element ${tab.title}`);
-      c.appendChild(createTabComponent(tab.id, tab.title, tab.url, container.color, tab.favIconUrl, null));
+      c.appendChild(createTabItem(tab.id, tab.title, tab.url, container.color, tab.favIconUrl, null));
     }
     c.sortTabs();
   }

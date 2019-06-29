@@ -1,5 +1,5 @@
 import {$, $1, $e} from "./conex-helper.js";
-import {createTabComponent} from "./conex-tab-component.js";
+import {createTabItem} from "./conex-tab-item.js";
 
 const containerItem = (data) => `
  <form class="container-item ${data.color}-marker" action="">
@@ -118,7 +118,7 @@ class ContainerItem extends HTMLElement {
 
   onTabCreated(tab) {
     if (tab.cookieStoreId !== this.containerId) return;
-    this.appendChild(createTabComponent(tab.id, tab.title, tab.url, this.color, tab.favIconUrl));
+    this.appendChild(createTabItem(tab.id, tab.title, tab.url, this.color, tab.favIconUrl));
     this.updateTabCnt();
   }
 
@@ -249,11 +249,11 @@ class ContainerItem extends HTMLElement {
 window.customElements.define("container-item", ContainerItem);
 
 // <container-item tabindex='1' color="blue" container-id="1" container-name="banking" tab-cnt="42">
-export const createContainerComponent = (containerId, containerName, color) => $e("container-item", {
+export const createContainerItem = (containerId, containerName, color) => $e("container-item", {
   color,
   container_id: containerId,
   container_name: containerName,
   tabindex: 0
 });
 
-console.debug("conex-container-component.js successfully loaded");
+console.debug("conex-container-item.js successfully loaded");

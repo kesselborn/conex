@@ -258,7 +258,7 @@ class TabItem extends HTMLElement {
 window.customElements.define("tab-item", TabItem);
 
 // <tab-item color="blue-marker" tab-id="42" thumbnail="./thumbnail.jpg" favicon="./favicon.ico" tab-title="0 this is a wonderful title" url="heise.de/artikel/golang"></tab-item>
-export const createTabComponent = (tabId, tabTitle, url, color, faviconIn, thumbnail) => {
+export const createTabItem = (tabId, tabTitle, url, color, faviconIn, thumbnail) => {
   let favicon = faviconIn;
   if (!favicon || favicon.startsWith("chrome://")) {
     favicon = placeholderImage;
@@ -278,4 +278,4 @@ export const createTabComponent = (tabId, tabTitle, url, color, faviconIn, thumb
   return tabElement;
 };
 
-console.debug("conex-tab-component.js successfully loaded");
+console.debug("conex-tab-item.js successfully loaded");
