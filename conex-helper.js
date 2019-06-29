@@ -42,6 +42,27 @@ export const $e = function(name, attributes, children) {
   return e;
 };
 
+export const getConexDom = function(backgroundPage) {
+  return () => {
+    const startupLoop = setInterval(() => {
+      if (backgroundPage.initializingConex) {
+        backgroundPage.initializingConex.then(
+          getDomTree => {
+            window.getThumbnail = backgroundPage.window.getThumbnail;
+            window.settings = backgroundPage.window.settings;
+            document.body.firstElementChild.replaceWith(getDomTree());
+          },
+          e => console.error(e)
+        );
+        clearInterval(startupLoop);
+      } else {
+        console.debug("waiting for background page to be initialized");
+      }
+    }, 100);
+  };
+};
+
+
 // const cleanUrl = function(url) {
 //   return url.replace('http://','').replace('https://','').toLowerCase();
 // };
