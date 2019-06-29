@@ -95,6 +95,9 @@ class TabItem extends HTMLElement {
       () => console.debug(`showing tab ${this.tabId}`),
       e => console.error(`error focusing tab ${this.tabId}: ${e}`)
     );
+    if(this.body.tabActivatedCallback) {
+      this.body.tabActivatedCallback();
+    }
   }
 
   // eslint-disable-next-line no-unused-vars
@@ -150,6 +153,7 @@ class TabItem extends HTMLElement {
 
   // predefined methods
   connectedCallback() {
+    this.body = this.parentElement.parentElement.parentElement.parentElement;
     this.color = this.getAttribute("color");
     this.favicon = this.getAttribute("favicon");
     this.tabId = parseInt(this.getAttribute("tab-id"), 10);
