@@ -1,7 +1,7 @@
+// todo: make debugging a setting
 // eslint-disable-next-line no-empty-function
-console.debugBak = console.debug;
-// eslint-disable-next-line no-empty-function
-// console.debug = function() {};
+// console.origDebug = console.debug;
+// console.debug = () => {};
 
 export const placeholderImage = browser.runtime.getURL("transparent.png");
 
