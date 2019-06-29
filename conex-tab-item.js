@@ -103,11 +103,11 @@ class TabItem extends HTMLElement {
   // eslint-disable-next-line no-unused-vars
   onUpdated(tabId, newValues, tab) {
     if (tabId !== this.tabId) return;
-    // if(newValues.attention)
-    // if(newValues.audible)
+    // todo: if(newValues.attention)
+    // todo: if(newValues.audible)
     if (newValues.favIconUrl) $1(".favicon-image", this).src = newValues.favIconUrl;
-    // if(newValues.mutedInfo)
-    // if(newValues.pinned)
+    // todo: if(newValues.mutedInfo)
+    // todo: if(newValues.pinned)
     if (newValues.status === "loading") $1("img.thumbnail-image", this).src = placeholderImage;
 
     if (newValues.title) {
