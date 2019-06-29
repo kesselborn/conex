@@ -31,6 +31,7 @@ class TabItem extends HTMLElement {
       "continueSearch",
       "focusNextTabItem",
       "focusPrevTabItem",
+      "onRemoved",
       "onUpdated",
       "updateThumbnail",
       "visible"
@@ -95,12 +96,23 @@ class TabItem extends HTMLElement {
       () => console.debug(`showing tab ${this.tabId}`),
       e => console.error(`error focusing tab ${this.tabId}: ${e}`)
     );
+
     if(this.body.tabActivatedCallback) {
       this.body.tabActivatedCallback();
     }
   }
 
   // eslint-disable-next-line no-unused-vars
+  onRemoved(tabId) {
+    this.parentElement.updateTabCnt();
+    try {
+      this.nextElementSibling.focus();
+      // eslint-disable-next-line no-empty
+    } catch (_) { }
+
+    this.remove();
+  }
+
   onUpdated(tabId, newValues, tab) {
     if (tabId !== this.tabId) return;
     // todo: if(newValues.attention)
@@ -215,20 +227,6 @@ class TabItem extends HTMLElement {
 
       });
     }
-    // todo: central event handling ?
-    browser.tabs.onUpdated.addListener(this.onUpdated);
-    // todo: central event handling ?
-    browser.tabs.onRemoved.addListener(tabId => {
-      if (tabId === this.tabId) {
-        this.parentElement.updateTabCnt();
-        try {
-          this.nextElementSibling.focus();
-          // eslint-disable-next-line no-empty
-        } catch (_) { }
-
-        this.remove();
-      }
-    });
 
     //    this.addEventListener("dragstart", event => {
     //      event.dataTransfer.setData("text", this.id);

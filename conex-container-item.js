@@ -124,9 +124,7 @@ class ContainerItem extends HTMLElement {
 
   // todo: implement more sorting strategies
   // todo: make sorting accessible in ui
-  async sortTabItems(cookieStoreId) {
-    if (cookieStoreId && cookieStoreId !== this.containerId) return;
-
+  async sortTabItems() {
     const tabs = await window.browser.tabs.query({cookieStoreId: this.containerId});
     let sortedTabs = null;
     switch (window.settings.order) {
@@ -141,7 +139,7 @@ class ContainerItem extends HTMLElement {
       try {
         $1(`tab-item[tab-id="${sortedTabs[i].id}"]`, this).order = i;
       } catch (e) {
-        console.debug(`error sorting tabs in ${cookieStoreId}: index: ${i}, tab ${sortedTabs[i]}: ${e}`);
+        console.debug(`error sorting tabs in ${this.containerId}: index: ${i}, tab ${sortedTabs[i]}: ${e}`);
       }
     }
   }
@@ -217,14 +215,6 @@ class ContainerItem extends HTMLElement {
         default: console.error("unknown action: ", $1("input[name=action]:checked")); break;
       }
       form.reset();
-    });
-
-    browser.tabs.onCreated.addListener(this.onTabCreated);
-    browser.tabs.onCreated.addListener((tab) => this.sortTabItems(tab.cookieStoreId));
-    browser.tabs.onActivated.addListener((activeInfo) => {
-      browser.tabs.get(activeInfo.tabId).then(tab => {
-        this.sortTabItems(tab.cookieStoreId);
-      });
     });
 
     this.updateTabCnt();
