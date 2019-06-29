@@ -110,7 +110,10 @@ class ContainerItem extends HTMLElement {
   }
 
   newContainerTab() {
-    console.debug("new container tab");
+    browser.tabs.create({
+      active: true,
+      cookieStoreId: this.containerId
+    }).catch(e => `error creating new tab for container ${this.containerId}: ${e}`);
   }
 
   onTabCreated(tab) {
