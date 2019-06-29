@@ -11,6 +11,6 @@ search-bar input[type=search] {
     height: 100%;
     font-size: x-large;
     font-weight: 100;
-    border: 0px solid black;
+    border-width: 0px;
 }
 
