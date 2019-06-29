@@ -33,11 +33,15 @@ window.initializingConex = new Promise((resolve) => {
 const initializeBackgroundHtml = async() => {
   const d = document.createElement("div");
   const containers = await browser.contextualIdentities.query({});
+
+  // add default container at the beginning ...
   containers.unshift({
     color: "blue",
     cookieStoreId: "firefox-default",
     name: "default"
   });
+
+  // ... and the private container at the very end of the container list
   containers.push({
     color: "private",
     cookieStoreId: "firefox-private",
@@ -45,13 +49,13 @@ const initializeBackgroundHtml = async() => {
   });
 
   for (const container of containers) {
-    console.debug(`container ${container.name}`);
+    console.debug(`creating container element ${container.name}`);
     const tabs = browser.tabs.query({cookieStoreId: container.cookieStoreId});
     const c = d.appendChild(createContainerComponent(container.cookieStoreId, container.name, container.color));
 
     // eslint-disable-next-line no-await-in-loop
     for(const tab of await tabs) {
-      console.debug(`   tab ${tab.title}`);
+      console.debug(`   creating tab element ${tab.title}`);
       c.appendChild(createTabComponent(tab.id, tab.title, tab.url, container.color, tab.favIconUrl, null));
     }
     c.sortTabs();
@@ -65,11 +69,5 @@ const initializeBackgroundHtml = async() => {
 document.addEventListener("DOMContentLoaded", () => {
   initializeBackgroundHtml();
 });
-
-// browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-//   if(changeInfo.status === "complete") {
-//     createThumbnail(tab);
-//   }
-// }, {properties: ["status"]});
 
 console.debug("conex-background.js loaded");
