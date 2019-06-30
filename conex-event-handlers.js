@@ -9,7 +9,15 @@ export const tabActivated = activeInfo => {
     browser.tabs.get(activeInfo.tabId).then(tab => {
         const containerItem = $1(`container-item[container-id='${tab.cookieStoreId}']`);
         containerItem.sortTabItems(tab.cookieStoreId);
+
+        // todo: better a function on tab-item component?
+        const activeTabItem = $1("tab-item.active");
+        if (activeTabItem) {
+            activeTabItem.classList.remove("active");
+        }
+        $1(`tab-item[tab-id="${tab.id}"]`).classList.add("active");
     });
+
 };
 
 export const tabUpdated = (tabId, changeInfo, tab) => {
