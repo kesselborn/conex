@@ -29,8 +29,9 @@ class TabItem extends HTMLElement {
       "activateTab",
       "closeTab",
       "continueSearch",
-      "focusNextTabItem",
-      "focusPrevTabItem",
+      "handleArrowDown",
+      "handleArrowUp",
+      "handleKeyDown",
       "onRemoved",
       "onUpdated",
       "updateThumbnail",
@@ -65,14 +66,37 @@ class TabItem extends HTMLElement {
     console.debug("continue search");
   }
 
-  focusNextTabItem() {
+  // handles key events for tab items ... return false if event was handled
+  // return true if it still needs to be handled
+  handleKeyDown(e) {
+    const form = $1("form", this);
+    console.debug("tab-item keydown", e);
+
+    switch (e.key) {
+      // keyboard shortcuts instead of clicking the mouse
+      case "ArrowUp": this.handleArrowUp(); return false;
+      case "ArrowDown": this.handleArrowDown(); return false;
+      case "Tab": if (e.shiftKey) this.handleArrowUp(); else this.handleArrowDown(); return false;
+      case "ArrowLeft": this.parentElement.focus(); return false;
+      case "ArrowRight": this.parentElement.nextElementSibling.focus(); return false;
+      default: return true;
+
+      // keyboard shortcuts instead of hovering with the mouse
+      case "Enter": $1("input[value=focus-tab]", this).checked = true; break;
+      case "Backspace": $1("input[value=close-tab]", this).checked = true; break;
+    }
+    form.dispatchEvent(new Event("change"));
+    return false;
+  }
+
+  handleArrowDown() {
     const nextTabItem = $1(`tab-item[style*="order: ${this.order + 1};"]`, this.parentElement);
 
     if (nextTabItem) {
       if(nextTabItem.visible()) {
         nextTabItem.focus();
       } else {
-        nextTabItem.focusNextTabItem();
+        nextTabItem.handleArrowDown();
       }
       return;
     }
@@ -80,7 +104,7 @@ class TabItem extends HTMLElement {
     if (this.parentElement.nextElementSibling) { this.parentElement.nextElementSibling.focus(); }
   }
 
-  focusPrevTabItem() {
+  handleArrowUp() {
     if (this.order === 0) {
       this.parentElement.focus();
       return;
@@ -90,7 +114,7 @@ class TabItem extends HTMLElement {
     if(prevTab.visible()) {
       prevTab.focus();
     } else {
-      prevTab.focusPrevTabItem();
+      prevTab.handleArrowUp();
     }
   }
 
@@ -186,30 +210,8 @@ class TabItem extends HTMLElement {
         url: this.url
       });
     }
+
     const form = $1("form", this);
-
-    // todo: central event handling
-    this.addEventListener("keydown", e => {
-      console.debug("tab-item keydown", e);
-      e.stopPropagation();
-      e.preventDefault();
-
-      switch (e.key) {
-        // keyboard shortcuts instead of clicking the mouse
-        case "ArrowUp": this.focusPrevTabItem(); return;
-        case "ArrowDown": this.focusNextTabItem(); return;
-        case "Tab": if (e.shiftKey) this.focusPrevTabItem(); else this.focusNextTabItem(); return;
-        case "ArrowLeft": this.parentElement.focus(); return;
-        case "ArrowRight": this.parentElement.nextElementSibling.focus(); return;
-        default: this.continueSearch(e); return;
-
-        // keyboard shortcuts instead of hovering with the mouse
-        case "Enter": $1("input[value=focus-tab]", this).checked = true; break;
-        case "Backspace": $1("input[value=close-tab]", this).checked = true; break;
-      }
-      form.dispatchEvent(new Event("change"));
-    });
-
     form.addEventListener("change", e => {
       e.stopPropagation();
       e.preventDefault();

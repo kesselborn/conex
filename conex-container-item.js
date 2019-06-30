@@ -37,9 +37,11 @@ class ContainerItem extends HTMLElement {
       "continueSearch",
       "createNewTab",
       "expandContainerItem",
-      "focusFirstTabItem",
-      "focusLastTabItemOfPreviousContainer",
       "getLastTabItem",
+      "isCollapsed",
+      "handleArrowDown",
+      "handleArrowUp",
+      "handleKeyDown",
       "onTabCreated",
       "sortTabItems",
       "updateTabCnt",
@@ -54,10 +56,14 @@ class ContainerItem extends HTMLElement {
     this.updateTabCnt();
   }
 
+  isCollapsed() {
+    return this.classList.contains("collapsed");
+  }
+
   collapseContainerItem() {
-    if (this.classList.contains("collapsed")) {
+    if (this.isCollapsed()) {
       // for keyboard navigation: pressing '<-' collapses the container, second time jumps to previous container
-      this.previousElementSibling.focus();
+      if(this.previousElementSibling) this.previousElementSibling.focus();
     } else {
       this.classList.add("collapsed");
     }
@@ -72,7 +78,8 @@ class ContainerItem extends HTMLElement {
       this.classList.remove("collapsed");
     } else {
       // for keyboard navigation: pressing '->' expands the container, second time jumps to next container
-      this.nextElementSibling.focus();
+      // eslint-disable-next-line no-lonely-if
+      if(this.nextElementSibling) this.nextElementSibling.focus();
     }
   }
 
@@ -80,29 +87,56 @@ class ContainerItem extends HTMLElement {
     console.debug("focus container");
   }
 
-  focusFirstTabItem() {
-    const firstTab = $1("tab-item[style*='order: 0']", this);
-    if (firstTab) {
-      firstTab.focus();
-      return;
+  // handles key events for container items ... return false if event was handled
+  // return true if it still needs to be handled
+  handleKeyDown(e) {
+    switch (e.key) {
+      // keyboard shortcuts instead of hovering with the mouse
+      case "ArrowDown": this.handleArrowDown(); return false;
+      case "ArrowUp": return !this.handleArrowUp();
+      case "Tab": if (e.shiftKey) return !this.handleArrowUp(); return !this.handleArrowDown();
+      default: return true;
+
+      // keyboard shortcuts instead of clicking the mouse
+      case "+": $1("input[value=new-tab]", this).checked = true; break;
+      case "ArrowLeft": $1("input[value=collapse-container]", this).checked = true; break;
+      case "ArrowRight": $1("input[value=expand-container]", this).checked = true; break;
+      case "Backspace": $1("input[value=close-container]", this).checked = true; break;
+      case "Enter": $1("input[value=focus-container]", this).checked = true; break;
     }
+    $1("form", this).dispatchEvent(new Event("change"));
+    return false;
+  }
+
+  handleArrowDown() {
+    const firstTab = $1("tab-item[style*='order: 0']", this);
+    if (!this.isCollapsed() && firstTab) {
+      firstTab.focus();
+      return true;
+    }
+
     try {
       console.debug("empty container or all tabs are hidden ... jumping to next container", this);
       this.nextElementSibling.focus();
+      return true;
     } catch (_) {
       console.debug("could not find next item to focus ... seems as if I am at the end of the list", this);
+      return false;
     }
   }
 
-  focusLastTabItemOfPreviousContainer() {
+  handleArrowUp() {
     if(this.previousElementSibling) {
       const lastTabOfPreviousContainer = this.previousElementSibling.getLastTabItem();
-      if(lastTabOfPreviousContainer) {
+      if(!this.previousElementSibling.isCollapsed() && lastTabOfPreviousContainer) {
         lastTabOfPreviousContainer.focus();
-        return;
+        return true;
       }
       this.previousElementSibling.focus();
+      return true;
     }
+
+    return false;
   }
 
   getLastTabItem() {
@@ -128,8 +162,8 @@ class ContainerItem extends HTMLElement {
 
   // todo: implement more sorting strategies
   // todo: make sorting accessible in ui
-  async sortTabItems() {
-    const tabs = await window.browser.tabs.query({cookieStoreId: this.containerId});
+  async sortTabItems(cookieStoreId) {
+    const tabs = await window.browser.tabs.query({cookieStoreId});
     let sortedTabs = null;
     switch (window.settings.order) {
       case "lru":
@@ -143,7 +177,7 @@ class ContainerItem extends HTMLElement {
       try {
         $1(`tab-item[tab-id="${sortedTabs[i].id}"]`, this).order = i;
       } catch (e) {
-        console.debug(`error sorting tabs in ${this.containerId}: index: ${i}, tab ${sortedTabs[i]}: ${e}`);
+        console.debug(`error sorting tabs in ${cookieStoreId}: index: ${i}, tab ${sortedTabs[i]}: ${e}`);
       }
     }
   }
@@ -185,29 +219,6 @@ class ContainerItem extends HTMLElement {
     const form = $1("form", this);
 
     this.addEventListener("click", () => this.focus());
-
-    // todo: central event handling
-    this.addEventListener("keydown", e => {
-      console.debug("container-item keydown", e.target);
-      e.stopPropagation();
-      e.preventDefault();
-
-      switch (e.key) {
-        // keyboard shortcuts instead of hovering with the mouse
-        case "ArrowDown": this.focusFirstTabItem(); return;
-        case "ArrowUp": this.focusLastTabItemOfPreviousContainer(); return;
-        case "Tab": if (e.shiftKey) this.focusLastTabItemOfPreviousContainer(); else this.focusFirstTabItem(); return;
-        default: this.continueSearch(e); return;
-
-        // keyboard shortcuts instead of clicking the mouse
-        case "+": $1("input[value=new-tab]", this).checked = true; break;
-        case "ArrowLeft": $1("input[value=collapse-container]", this).checked = true; break;
-        case "ArrowRight": $1("input[value=expand-container]", this).checked = true; break;
-        case "Backspace": $1("input[value=close-container]", this).checked = true; break;
-        case "Enter": $1("input[value=focus-container]", this).checked = true; break;
-      }
-      $1("form", this).dispatchEvent(new Event("change"));
-    });
 
     const that = this;
     form.addEventListener("change", () => {

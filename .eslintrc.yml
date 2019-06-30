@@ -191,9 +191,7 @@ rules:
   no-with: error
   nonblock-statement-body-position: error
   object-curly-newline: error
-  object-curly-spacing:
-    - error
-    - never
+  object-curly-spacing: 1
   object-property-newline: error
   object-shorthand: ["error", "always"]
   one-var: 'off'

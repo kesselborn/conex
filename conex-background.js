@@ -64,7 +64,7 @@ const initializeBackgroundHtml = async() => {
       console.debug(`   creating tab element ${tab.title}`);
       c.appendChild(createTabItem(tab.id, tab.title, tab.url, container.color, tab.favIconUrl, null));
     }
-    c.sortTabItems();
+    c.sortTabItems(container.cookieStoreId);
   }
 
   $1("div#containers").replaceWith(containerList);

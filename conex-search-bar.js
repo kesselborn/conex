@@ -1,9 +1,9 @@
 import {$1} from "./conex-helper.js";
 
 const searchBar = () => `
-  <form class="search" action="">
-    <input title="search for tab url or title" autocomplete="off" id="search-term" type="search" name="search-term" placeholder="search for tab url or title"/>
-    <input type="submit"/>
+  <form tabindex="-1" class="search" action="">
+    <input tabindex="-1" autofocus title="search for tab url or title" autocomplete="off" id="search-term" type="search" name="search-term" placeholder="search for tab url or title"/>
+    <input tabindex="-1" type="submit"/>
   </form>
 `;
 
@@ -13,12 +13,37 @@ class SearchBar extends HTMLElement {
 
     // bind methods correctly
     for (const method of Array.from([
-      "focusFirstContainer",
-      "reset",
+      "handleArrowDown",
+      "handleKeyDown",
       "search"
     ])) {
       self[method] = self[method].bind(this);
     }
+  }
+
+  // handles key events for the search bar ... return false if event was handled
+  // return true if it still needs to be handled
+  handleKeyDown(e) {
+    switch (e.key) {
+      // keyboard shortcuts instead of clicking the mouse
+      case "ArrowDown": this.handleArrowDown(); break;
+      case "Tab": if (!e.shiftKey) this.handleArrowDown(); break;
+      case "Enter": break;
+
+      default: {
+        $1("form", this).dispatchEvent(new Event("change"));
+        if(e.originalEvent) {
+          this.fireEvent(e.originalEvent.eventType);
+        }
+      }
+    }
+    return false;
+  }
+
+  handleArrowDown() {
+    // we must use 'this.body' here, as 'document' is the document from
+    // background html
+    $1("container-item", this.body).focus();
   }
 
   search() {
@@ -29,33 +54,17 @@ class SearchBar extends HTMLElement {
     console.debug("reset");
   }
 
-   focusFirstContainer() {
-    console.debug("focus first container");
-   }
-
   // predefined methods
   connectedCallback() {
-    // this.color = this.getAttribute("color");
+    this.body = this.parentElement.parentElement;
 
     if (!$1("form", this)) {
       this.innerHTML = searchBar({color: this.color});
     }
     const form = $1("form", this);
 
-    this.addEventListener("keydown", e => {
-      console.debug("search bar keydown", e);
-      // e.stopPropagation();
-      // e.preventDefault();
-
-      switch (e.key) {
-        // keyboard shortcuts instead of clicking the mouse
-        case "ArrowDown": this.focusFirstContainer(); return;
-        case "Tab": if (!e.shiftKey) this.focusFirstContainer(); return;
-        case "Enter": return;
-        default: break;
-      }
-      form.dispatchEvent(new Event("change"));
-    });
+    $1("#search-term", form).handleKeyDown = this.handleKeyDown;
+    $1("#search-term", form).handleKeyDown.bind(this);
 
     form.addEventListener("change", e => {
       e.stopPropagation();

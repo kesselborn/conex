@@ -16,7 +16,7 @@ export const tabUpdated = (tabId, changeInfo, tab) => {
     const tabItem = $1(`tab-item[tab-id='${tabId}']`);
 
     // sometimes the updated event fires before the tabItem exists
-    if(tabItem) {
+    if (tabItem) {
         tabItem.onUpdated(tabId, changeInfo, tab);
     }
 };
@@ -24,4 +24,18 @@ export const tabUpdated = (tabId, changeInfo, tab) => {
 export const tabRemoved = tabId => {
     const tabItem = $1(`tab-item[tab-id='${tabId}']`);
     tabItem.onRemoved(tabId);
+};
+
+export const keyDownHandler = e => {
+    if (e.key === "Shift") {
+        return;
+    }
+    if (e.target.handleKeyDown) {
+        e.stopPropagation();
+        if (e.target.handleKeyDown(e)) {
+            $1("form input#search-term", document).focus();
+        } else {
+            e.preventDefault();
+        }
+    }
 };
