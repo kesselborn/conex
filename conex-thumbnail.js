@@ -42,7 +42,7 @@ const sleep = (delay) => new Promise(resolve => {
   setTimeout(() => resolve(), delay);
 });
 
-// tODO: background tabs bei heise haben falsche thumbnails
+// todo: background tabs bei heise haben falsche thumbnails
 const createThumbnail = async(tabId) => {
   let thumbnailElement = null;
   let screenshot = null;

@@ -20,7 +20,7 @@
     }
   },
   "commands": {
-    "_execute_sidebar_action": {
+    "_execute_browser_action": {
       "suggested_key": {
         "default": "MacCtrl+Space"
       }

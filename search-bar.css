@@ -1,5 +1,5 @@
 search-bar {
-    min-width: 20000px;
+    min-width: 1000px;
     display: grid;
     grid-gap: 5px;
     height: var(--height);
@@ -13,4 +13,3 @@ search-bar input[type=search] {
     font-weight: 100;
     border-width: 0px;
 }
-

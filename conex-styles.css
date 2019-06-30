@@ -34,8 +34,6 @@ input[type=submit], input[type=radio] {
   display: none;
 }
 
-/* label (grid cells) styling */
-
 form label {
   height: 100%;
   display: grid;

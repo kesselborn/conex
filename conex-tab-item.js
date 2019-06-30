@@ -29,8 +29,10 @@ class TabItem extends HTMLElement {
       "activateTab",
       "closeTab",
       "continueSearch",
-      "focusNextTabItem",
-      "focusPrevTabItem",
+      "handleArrowDown",
+      "handleArrowUp",
+      "handleKeyDown",
+      "onRemoved",
       "onUpdated",
       "updateThumbnail",
       "visible"
@@ -55,20 +57,46 @@ class TabItem extends HTMLElement {
 
   closeTab() {
     window.browser.tabs.remove(this.tabId);
+    if(this.body.tabRemovedCallback) {
+      this.body.tabRemovedCallback();
+    }
   }
 
   continueSearch() {
     console.debug("continue search");
   }
 
-  focusNextTabItem() {
+  // handles key events for tab items ... return false if event was handled
+  // return true if it still needs to be handled
+  handleKeyDown(e) {
+    const form = $1("form", this);
+    console.debug("tab-item keydown", e);
+
+    switch (e.key) {
+      // keyboard shortcuts instead of clicking the mouse
+      case "ArrowUp": this.handleArrowUp(); return false;
+      case "ArrowDown": this.handleArrowDown(); return false;
+      case "Tab": if (e.shiftKey) this.handleArrowUp(); else this.handleArrowDown(); return false;
+      case "ArrowLeft": this.parentElement.focus(); return false;
+      case "ArrowRight": this.parentElement.nextElementSibling.focus(); return false;
+      default: return true;
+
+      // keyboard shortcuts instead of hovering with the mouse
+      case "Enter": $1("input[value=focus-tab]", this).checked = true; break;
+      case "Backspace": $1("input[value=close-tab]", this).checked = true; break;
+    }
+    form.dispatchEvent(new Event("change"));
+    return false;
+  }
+
+  handleArrowDown() {
     const nextTabItem = $1(`tab-item[style*="order: ${this.order + 1};"]`, this.parentElement);
 
     if (nextTabItem) {
       if(nextTabItem.visible()) {
         nextTabItem.focus();
       } else {
-        nextTabItem.focusNextTabItem();
+        nextTabItem.handleArrowDown();
       }
       return;
     }
@@ -76,7 +104,7 @@ class TabItem extends HTMLElement {
     if (this.parentElement.nextElementSibling) { this.parentElement.nextElementSibling.focus(); }
   }
 
-  focusPrevTabItem() {
+  handleArrowUp() {
     if (this.order === 0) {
       this.parentElement.focus();
       return;
@@ -86,7 +114,7 @@ class TabItem extends HTMLElement {
     if(prevTab.visible()) {
       prevTab.focus();
     } else {
-      prevTab.focusPrevTabItem();
+      prevTab.handleArrowUp();
     }
   }
 
@@ -95,19 +123,30 @@ class TabItem extends HTMLElement {
       () => console.debug(`showing tab ${this.tabId}`),
       e => console.error(`error focusing tab ${this.tabId}: ${e}`)
     );
+
     if(this.body.tabActivatedCallback) {
       this.body.tabActivatedCallback();
     }
   }
 
   // eslint-disable-next-line no-unused-vars
+  onRemoved(tabId) {
+    this.parentElement.updateTabCnt();
+    try {
+      this.nextElementSibling.focus();
+      // eslint-disable-next-line no-empty
+    } catch (_) { }
+
+    this.remove();
+  }
+
   onUpdated(tabId, newValues, tab) {
     if (tabId !== this.tabId) return;
-    // if(newValues.attention)
-    // if(newValues.audible)
+    // todo: if(newValues.attention)
+    // todo: if(newValues.audible)
     if (newValues.favIconUrl) $1(".favicon-image", this).src = newValues.favIconUrl;
-    // if(newValues.mutedInfo)
-    // if(newValues.pinned)
+    // todo: if(newValues.mutedInfo)
+    // todo: if(newValues.pinned)
     if (newValues.status === "loading") $1("img.thumbnail-image", this).src = placeholderImage;
 
     if (newValues.title) {
@@ -171,30 +210,8 @@ class TabItem extends HTMLElement {
         url: this.url
       });
     }
+
     const form = $1("form", this);
-
-    // todo: central event handling
-    this.addEventListener("keydown", e => {
-      console.debug("tab-item keydown", e);
-      e.stopPropagation();
-      e.preventDefault();
-
-      switch (e.key) {
-        // keyboard shortcuts instead of clicking the mouse
-        case "ArrowUp": this.focusPrevTabItem(); return;
-        case "ArrowDown": this.focusNextTabItem(); return;
-        case "Tab": if (e.shiftKey) this.focusPrevTabItem(); else this.focusNextTabItem(); return;
-        case "ArrowLeft": this.parentElement.focus(); return;
-        case "ArrowRight": this.parentElement.nextElementSibling.focus(); return;
-        default: this.continueSearch(e); return;
-
-        // keyboard shortcuts instead of hovering with the mouse
-        case "Enter": $1("input[value=focus-tab]", this).checked = true; break;
-        case "Backspace": $1("input[value=close-tab]", this).checked = true; break;
-      }
-      form.dispatchEvent(new Event("change"));
-    });
-
     form.addEventListener("change", e => {
       e.stopPropagation();
       e.preventDefault();
@@ -215,36 +232,22 @@ class TabItem extends HTMLElement {
 
       });
     }
-    // todo: central event handling ?
-    browser.tabs.onUpdated.addListener(this.onUpdated);
-    // todo: central event handling ?
-    browser.tabs.onRemoved.addListener(tabId => {
-      if (tabId === this.tabId) {
-        this.parentElement.updateTabCnt();
-        try {
-          this.nextElementSibling.focus();
-          // eslint-disable-next-line no-empty
-        } catch (_) { }
 
-        this.remove();
-      }
-    });
-
-    //    this.addEventListener("dragstart", function(event) {
+    //    this.addEventListener("dragstart", event => {
     //      event.dataTransfer.setData("text", this.id);
     //    });
     //
-    //    this.addEventListener("dragenter", function(event) {
+    //    this.addEventListener("dragenter", event => {
     //      console.debug("dragenter", this);
     //      event.preventDefault();
     //    });
-    //    this.addEventListener("dragover", function(event) {
+    //    this.addEventListener("dragover", event => {
     //      event.preventDefault();
     //    });
-    //    this.addEventListener("drop", function(event) {
+    //    this.addEventListener("drop", event => {
     //      event.preventDefault();
     //    });
-    //    this.addEventListener("dragleave", function(event) {
+    //    this.addEventListener("dragleave", event => {
     //      if(event.target == form) {
     //        this.classList.remove("dragging");
     //      }
