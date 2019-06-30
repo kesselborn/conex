@@ -32,9 +32,7 @@ class SearchBar extends HTMLElement {
 
       default: {
         $1("form", this).dispatchEvent(new Event("change"));
-        if(e.originalEvent) {
-          this.fireEvent(e.originalEvent.eventType);
-        }
+        return true;
       }
     }
     return false;
