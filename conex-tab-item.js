@@ -1,4 +1,5 @@
 import {$1, $e, placeholderImage} from "./conex-helper.js";
+import {fuzzysort} from "./fuzzysort.js";
 
 const tabItem = (data) => `
   <form class="tab-item ${data.color}-marker" action="">
