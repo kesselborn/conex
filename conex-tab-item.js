@@ -256,13 +256,13 @@ class TabItem extends HTMLElement {
     //    });
   }
 
-  disconnectedCallback() {
-    console.debug(`tab-item id:${this.tabId} url:${this.url} disconnnected`);
-  }
+  // disconnectedCallback() {
+  //   console.debug(`tab-item id:${this.tabId} url:${this.url} disconnnected`);
+  // }
 
-  adoptedCallback() {
-    console.debug(`tab-item id:${this.tabId} url:${this.url} adopted`);
-  }
+  // adoptedCallback() {
+  //   console.debug(`tab-item id:${this.tabId} url:${this.url} adopted`);
+  // }
 }
 
 window.customElements.define("tab-item", TabItem);

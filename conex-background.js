@@ -1,6 +1,6 @@
 import "./conex-search-bar.js";
-import {$, $1} from "./conex-helper.js";
 import {tabActivated, tabCreated, tabRemoved, tabUpdated} from "./conex-event-handlers.js";
+import {$1} from "./conex-helper.js";
 import {createContainerItem} from "./conex-container-item.js";
 import {createTabItem} from "./conex-tab-item.js";
 import {getThumbnail} from "./conex-thumbnail.js";
@@ -13,10 +13,7 @@ window.browser.tabs.onUpdated.addListener(tabUpdated);
 window.browser.tabs.onRemoved.addListener(tabRemoved);
 
 const getConexDom = () => {
-  const conexDom = document.body.firstElementChild.cloneNode(true);
-  for(const tabItem of $("tab-item", conexDom)) {
-    tabItem.disconnectedCallback();
-  }
+const conexDom = document.body.firstElementChild.cloneNode(true);
   return conexDom;
 };
 
