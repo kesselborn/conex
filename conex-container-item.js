@@ -256,6 +256,7 @@ window.customElements.define("container-item", ContainerItem);
 
 // <container-item tabindex='1' color="blue" container-id="1" container-name="banking" tab-cnt="42">
 export const createContainerItem = (containerId, containerName, color) => $e("container-item", {
+  class: "collapsed",
   color,
   container_id: containerId,
   container_name: containerName,
