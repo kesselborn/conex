@@ -57,43 +57,30 @@ class TabItem extends HTMLElement {
     }
   }
 
-  matchSearch(searchTerms) {
+  matchSearch(searchTerm) {
     return new Promise((resolve) => {
-      if(searchTerms === "") {
+      if(searchTerm === "") {
         this.classList.remove("match", "no-match");
         $1(".tab-title", this).innerHTML = this.title;
         $1(".tab-url", this).innerHTML = this.url;
         resolve(true);
         return;
       }
+      const title = fuzzysort.single(searchTerm, this.title);
+      const url = fuzzysort.single(searchTerm, this.url);
 
-      let titleText = this.title;
-      let urlText = this.url;
+      $1(".tab-title", this).innerHTML = title ? `${title.score} ${fuzzysort.highlight(title, "<em>", "</em>")}` : this.title;
+      $1(".tab-url", this).innerHTML = url ? `${url.score} ${fuzzysort.highlight(url, "<em>", "</em>")}` : this.url;
 
-      let match = false;
-      for(const searchTerm of searchTerms.split(" ")) {
-        if(searchTerm === "") break;
-        const titleMatch = fuzzysort.single(searchTerm, titleText);
-        const urlMatch = fuzzysort.single(searchTerm, urlText);
+      const titleScore = title ? title.score : -25000;
+      const urlScore = url ? url.score : -25000;
 
-        if(titleMatch === null || urlMatch === null) {
-          match = false;
-          break;
-        }
-
-        match = true;
-        titleText = fuzzysort.highlight(titleMatch, "<em>", "</em>") || titleText;
-        urlText = fuzzysort.highlight(urlMatch, "<em>", "</em>") || urlText;
-      }
-
-      if(match) {
-        $1(".tab-title", this).innerHTML = titleText;
-        $1(".tab-url", this).innerHTML = urlText;
-        this.classList.remove("no-match");
-        this.classList.add("match");
-      } else {
+      if(titleScore + urlScore < -40000) {
         this.classList.remove("match");
         this.classList.add("no-match");
+      } else {
+        this.classList.remove("no-match");
+        this.classList.add("match");
       }
 
       resolve(true);
@@ -134,7 +121,6 @@ class TabItem extends HTMLElement {
     return false;
   }
 
-  // fIXME: fix arrow handling during search
   handleArrowDown() {
     const nextTabItem = $1(`tab-item[style*="order: ${this.order + 1};"]`, this.parentElement);
 
