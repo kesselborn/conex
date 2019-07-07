@@ -21,6 +21,18 @@ tab-item em {
  font-weight: 900;
 }
 
+em.search1 {
+    color: blue;
+}
+
+em.search2 {
+    color: red;
+}
+
+em.search3 {
+    color: orange;
+}
+
 tab-item:focus form.tab-item, form.tab-item:hover {
     background-color: var(--hover-item-bg-color);
     grid-template-columns: var(--thumbnail-width) auto var(--action-width);
