@@ -15,6 +15,12 @@ tab-item.active {
     /* border-right: 2px solid blue; */
 }
 
+tab-item em {
+ color: rgb(255, 97, 61);
+ font-style: normal;
+ font-weight: 900;
+}
+
 tab-item:focus form.tab-item, form.tab-item:hover {
     background-color: var(--hover-item-bg-color);
     grid-template-columns: var(--thumbnail-width) auto var(--action-width);
@@ -70,7 +76,12 @@ tab-item:focus img, form.tab-item:hover img {
     border-radius: 6px;
 }
 
-container-item.collapsed tab-item {
+/* even if container is collapsed: show tab items that match the current search */
+container-item tab-item, container-item.collapsed tab-item.match {
+    display: inherit;
+}
+
+container-item tab-item.no-match, container-item.collapsed tab-item {
     display: none;
 }
 

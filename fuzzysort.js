@@ -593,14 +593,4 @@ var fastpriorityqueue=function(){var r=[],o=0,e={};function n(){for(var e=0,n=r[
 var q = fastpriorityqueue() // reuse this, except for async, it needs to make its own
 
 return fuzzysortNew()
-}) // UMD
-
-// TODO: (performance) wasm version!?
-
-// TODO: (performance) layout memory in an optimal way to go fast by avoiding cache misses
-
-// TODO: (performance) preparedCache is a memory leak
-
-// TODO: (like sublime) backslash === forwardslash
-
-// TODO: (performance) i have no idea how well optizmied the allowing typos algorithm is
+}); // UMD

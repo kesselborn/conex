@@ -33,6 +33,7 @@ class TabItem extends HTMLElement {
       "handleArrowDown",
       "handleArrowUp",
       "handleKeyDown",
+      "matchSearch",
       "onRemoved",
       "onUpdated",
       "updateThumbnail",
@@ -54,6 +55,36 @@ class TabItem extends HTMLElement {
         set: self[setterName]
       });
     }
+  }
+
+  matchSearch(searchTerm) {
+    return new Promise((resolve) => {
+      if(searchTerm === "") {
+        this.classList.remove("match", "no-match");
+        $1(".tab-title", this).innerHTML = this.title;
+        $1(".tab-url", this).innerHTML = this.url;
+        resolve(true);
+        return;
+      }
+      const title = fuzzysort.single(searchTerm, this.title);
+      const url = fuzzysort.single(searchTerm, this.url);
+
+      $1(".tab-title", this).innerHTML = title ? `${title.score} ${fuzzysort.highlight(title, "<em>", "</em>")}` : this.title;
+      $1(".tab-url", this).innerHTML = url ? `${url.score} ${fuzzysort.highlight(url, "<em>", "</em>")}` : this.url;
+
+      const titleScore = title ? title.score : -25000;
+      const urlScore = url ? url.score : -25000;
+
+      if(titleScore + urlScore < -40000) {
+        this.classList.remove("match");
+        this.classList.add("no-match");
+      } else {
+        this.classList.remove("no-match");
+        this.classList.add("match");
+      }
+
+      resolve(true);
+    });
   }
 
   closeTab() {
@@ -193,13 +224,13 @@ class TabItem extends HTMLElement {
 
   // predefined methods
   connectedCallback() {
-    this.body = this.parentElement.parentElement.parentElement.parentElement;
-    this.color = this.getAttribute("color");
-    this.favicon = this.getAttribute("favicon");
-    this.tabId = parseInt(this.getAttribute("tab-id"), 10);
-    this.thumbnail = this.getAttribute("thumbnail");
-    this.title = this.getAttribute("tab-title");
-    this.url = this.getAttribute("url");
+    this.body = this.body || this.parentElement.parentElement.parentElement.parentElement;
+    this.color = this.color || this.getAttribute("color");
+    this.favicon = this.favicon || this.getAttribute("favicon");
+    this.tabId = this.tabId || parseInt(this.getAttribute("tab-id"), 10);
+    this.thumbnail = this.thumbnail || this.getAttribute("thumbnail");
+    this.title = this.title || this.getAttribute("tab-title");
+    this.url = this.url || this.getAttribute("url");
 
     if (!$1("form", this)) {
       this.innerHTML = tabItem({

@@ -1,5 +1,6 @@
 import {$1} from "./conex-helper.js";
 
+// todo: listen to new containers
 export const tabCreated = tab => {
     const containerItem = $1(`container-item[container-id='${tab.cookieStoreId}']`);
     containerItem.onTabCreated(tab);

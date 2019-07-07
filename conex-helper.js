@@ -92,3 +92,23 @@ export const getConexDom = backgroundPage => () => {
 // }
 //
 // let readSettings = _refreshSettings();
+
+export const debounce = (func, wait, immediate) => {
+  let timeout = null;
+  return (...args) => {
+    const later = () => {
+      timeout = null;
+      if (!immediate) {
+        Reflect.apply(func, null, args);
+      }
+    };
+
+    const callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait || 200);
+
+    if (callNow) {
+      Reflect.apply(func, null, args);
+    }
+  };
+};

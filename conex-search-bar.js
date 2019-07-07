@@ -1,4 +1,4 @@
-import {$1} from "./conex-helper.js";
+import {$, $1, debounce} from "./conex-helper.js";
 
 const searchBar = () => `
   <form tabindex="-1" class="search" action="">
@@ -45,7 +45,15 @@ class SearchBar extends HTMLElement {
   }
 
   search() {
-    console.debug("search ...");
+    const searches = [];
+    const searchTerm = $1("#search-term", this).value;
+    for(const tabItem of $("tab-item", this.body)) {
+      searches.push(tabItem.matchSearch(searchTerm));
+    }
+
+    Promise.all(searches).then(() => {
+      // todo: hide empty containers
+    });
   }
 
   reset() {
@@ -64,16 +72,7 @@ class SearchBar extends HTMLElement {
     $1("#search-term", form).handleKeyDown = this.handleKeyDown;
     $1("#search-term", form).handleKeyDown.bind(this);
 
-    form.addEventListener("change", e => {
-      e.stopPropagation();
-      e.preventDefault();
-      console.debug("search submitted");
-      // switch ($1("input[name=action]:checked", this).value) {
-      //   case "focus-tab": this.activateTab(); break;
-      //   case "close-tab": this.closeTab(); break;
-      //   default: console.error("unknown action: ", $1("input[name=action]:checked", this)); break;
-      // }
-    });
+    form.addEventListener("change", debounce(this.search, 200, false));
   }
 
   disconnectedCallback() {
