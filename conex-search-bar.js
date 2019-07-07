@@ -46,9 +46,9 @@ class SearchBar extends HTMLElement {
 
   search() {
     const searches = [];
-    const searchTerm = $1("#search-term", this).value;
+    const searchTerms = $1("#search-term", this).value.trim().split(" ");
     for(const tabItem of $("tab-item", this.body)) {
-      searches.push(tabItem.matchSearch(searchTerm));
+      searches.push(tabItem.matchSearch(searchTerms));
     }
 
     Promise.all(searches).then(() => {

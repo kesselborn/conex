@@ -21,6 +21,16 @@ tab-item em {
  font-weight: 900;
 }
 
+em.match-1 { color: rgb(255, 97, 61); }
+em.match-2 { color: rgb(175, 81, 245); }
+em.match-3 { color: rgb(255, 159, 0); }
+em.match-4 { color: rgb(55, 173, 255); }
+em.match-5 { color: rgb(0, 199, 154); }
+em.match-6 { color: rgb(81, 205, 0); }
+em.match-7 { color: rgb(255, 203, 0); }
+em.match-8 { color: rgb(255, 75, 218); }
+em.match-9 { color: rgb(0, 0, 0); }
+
 tab-item:focus form.tab-item, form.tab-item:hover {
     background-color: var(--hover-item-bg-color);
     grid-template-columns: var(--thumbnail-width) auto var(--action-width);

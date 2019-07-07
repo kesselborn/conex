@@ -1,5 +1,4 @@
 import {$1, $e, placeholderImage} from "./conex-helper.js";
-import {fuzzysort} from "./fuzzysort.js";
 
 const tabItem = (data) => `
   <form class="tab-item ${data.color}-marker" action="">
@@ -33,6 +32,7 @@ class TabItem extends HTMLElement {
       "handleArrowDown",
       "handleArrowUp",
       "handleKeyDown",
+      "highlight",
       "matchSearch",
       "onRemoved",
       "onUpdated",
@@ -57,28 +57,41 @@ class TabItem extends HTMLElement {
     }
   }
 
-  matchSearch(searchTerm) {
+  highlight(s, searchTerms, cnt = 1) {
+    const [searchTerm] = searchTerms;
+
+    const re = new RegExp(searchTerm, "i");
+    const match = s.split(re);
+
+    if(searchTerms.length > 1 && match.length > 1) {
+      for (let i = 0; i < match.length; i += 1) {
+        match[i] = this.highlight(match[i], searchTerms.slice(1), cnt + 1);
+      }
+    }
+
+    return match.join(`<em class="match-${cnt}">${searchTerm}</em>`);
+  }
+
+  matchSearch(searchTerms) {
     return new Promise((resolve) => {
-      if(searchTerm === "") {
+      if(searchTerms === []) {
         this.classList.remove("match", "no-match");
         $1(".tab-title", this).innerHTML = this.title;
         $1(".tab-url", this).innerHTML = this.url;
         resolve(true);
         return;
       }
-      const title = fuzzysort.single(searchTerm, this.title);
-      const url = fuzzysort.single(searchTerm, this.url);
 
-      $1(".tab-title", this).innerHTML = title ? `${title.score} ${fuzzysort.highlight(title, "<em>", "</em>")}` : this.title;
-      $1(".tab-url", this).innerHTML = url ? `${url.score} ${fuzzysort.highlight(url, "<em>", "</em>")}` : this.url;
+      const titleText = this.highlight(this.title, searchTerms);
+      const urlText = this.highlight(this.url, searchTerms);
 
-      const titleScore = title ? title.score : -25000;
-      const urlScore = url ? url.score : -25000;
-
-      if(titleScore + urlScore < -40000) {
+      if(titleText.indexOf(`match-${searchTerms.length}`) === -1 && urlText.indexOf(`match-${searchTerms.length}`) === -1) {
         this.classList.remove("match");
         this.classList.add("no-match");
       } else {
+        $1(".tab-title", this).innerHTML = titleText;
+        $1(".tab-url", this).innerHTML = urlText;
+
         this.classList.remove("no-match");
         this.classList.add("match");
       }
