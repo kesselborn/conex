@@ -1,5 +1,4 @@
 search-bar {
-    min-width: 1000px;
     display: grid;
     grid-gap: 5px;
     height: var(--height);
@@ -7,9 +6,18 @@ search-bar {
 }
 
 search-bar input[type=search] {
-    width: 100%;
+    width: 90%;
     height: 100%;
     font-size: x-large;
     font-weight: 100;
     border-width: 0px;
+}
+
+search-bar input[type=reset] {
+    width: 10%;
+    height: 100%;
+    font-size: x-large;
+    font-weight: 100;
+    border-width: 0px;
+    background-color: white;
 }

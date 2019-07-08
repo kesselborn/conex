@@ -72,6 +72,7 @@ class TabItem extends HTMLElement {
     return match.join(`<em class="match-${cnt}">${searchTerm}</em>`);
   }
 
+  // fixme: 'conex github issue' does not return matches!?
   matchSearch(searchTerms) {
     return new Promise((resolve) => {
       if(searchTerms === []) {

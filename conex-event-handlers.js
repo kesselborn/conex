@@ -39,6 +39,11 @@ export const keyDownHandler = e => {
     if (e.key === "Shift") {
         return;
     }
+    if(e.key === "Escape") {
+        $1("search-bar", document).reset();
+        return;
+    }
+
     if (e.target.handleKeyDown) {
         e.stopPropagation();
         if (e.target.handleKeyDown(e)) {

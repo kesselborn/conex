@@ -3,6 +3,7 @@ import {$, $1, debounce} from "./conex-helper.js";
 const searchBar = () => `
   <form tabindex="-1" class="search" action="">
     <input tabindex="-1" autofocus title="search for tab url or title" autocomplete="off" id="search-term" type="search" name="search-term" placeholder="search for tab url or title"/>
+    <input tabindex="-1" title="reset" type="reset" value="X"/>
     <input tabindex="-1" type="submit"/>
   </form>
 `;
@@ -15,6 +16,7 @@ class SearchBar extends HTMLElement {
     for (const method of Array.from([
       "handleArrowDown",
       "handleKeyDown",
+      "reset",
       "search"
     ])) {
       self[method] = self[method].bind(this);
@@ -44,6 +46,10 @@ class SearchBar extends HTMLElement {
     $1("container-item", this.body).focus();
   }
 
+  reset() {
+    $1("form", this).reset();
+  }
+
   search() {
     const searches = [];
     const searchTerms = $1("#search-term", this).value.trim().split(" ");
@@ -54,10 +60,6 @@ class SearchBar extends HTMLElement {
     Promise.all(searches).then(() => {
       // todo: hide empty containers
     });
-  }
-
-  reset() {
-    console.debug("reset");
   }
 
   // predefined methods
