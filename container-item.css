@@ -47,11 +47,21 @@ form.container-item {
   place-content: center;
 }
 
-.container-tab-count, container-item:focus .container-close-container, container-item:focus .container-new-tab, form.container-item:hover .container-close-container, form.container-item:hover .container-new-tab {
+.container-tab-count, 
+  container-item:focus .container-close-container,
+  container-item:focus .container-new-tab,
+  form.container-item:hover .container-close-container,
+  form.container-item:hover .container-new-tab {
   display: inherit;
 }
 
-.container-close-container, .container-collapser, .container-new-tab, container-item label.container-expander, container-item.collapsed label.container-collapser, container-item:focus .container-tab-count, form.container-item:hover .container-tab-count {
+.container-close-container,
+  .container-collapser,
+  .container-new-tab,
+  container-item label.container-expander,
+  container-item.collapsed label.container-collapser,
+  container-item:focus .container-tab-count,
+  form.container-item:hover .container-tab-count {
   display: none;
 }
 
@@ -66,9 +76,17 @@ form.container-item {
   border-radius: 6px;
 }
 
-container-item.collapsed label.container-expander, container-item label.container-collapser {
+
+/* keep order of the following two rule */
+container-item.collapsed label.container-expander,
+  container-item label.container-collapser {
   display: grid;
 }
+container-item.match label.container-expander, 
+  container-item.match label.container-collapser {
+  display: none;
+}
+/* end keep order of the following two rule */
 
 .container-new-tab {
   font-weight: lighter;
