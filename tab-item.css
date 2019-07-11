@@ -16,9 +16,9 @@ tab-item.active {
 }
 
 tab-item em {
- font-style: normal;
- text-decoration: underline;
- text-decoration-style: wavy;
+    font-style: normal;
+    text-decoration: underline;
+    text-decoration-style: wavy;
 }
 
 em.match-1 { text-decoration-color: rgb(255, 97, 61); }
@@ -87,11 +87,14 @@ tab-item:focus img, form.tab-item:hover img {
 }
 
 /* even if container is collapsed: show tab items that match the current search */
+
 container-item tab-item, container-item.collapsed tab-item.match {
     display: inherit;
 }
 
-container-item tab-item.no-match, container-item.collapsed tab-item {
+container-item tab-item.no-match,
+    container-item.search-collapsed tab-item.match,
+    container-item.collapsed tab-item {
     display: none;
 }
 

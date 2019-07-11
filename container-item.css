@@ -76,17 +76,25 @@ form.container-item {
   border-radius: 6px;
 }
 
+container-item.search-collapse {
+  background-color: red;
+}
 
-/* keep order of the following two rule */
+/* following rules need to come in this order ;/ */
 container-item.collapsed label.container-expander,
-  container-item label.container-collapser {
+  container-item label.container-collapser,
+  container-item.match label.container-collapser {
   display: grid;
 }
 container-item.match label.container-expander, 
-  container-item.match label.container-collapser {
+  container-item.search-collapsed label.container-collapser, 
+  container-item.collapsed.match label.container-expander {
   display: none;
 }
-/* end keep order of the following two rule */
+container-item.match.search-collapsed label.container-expander {
+  display: grid;
+}
+/* end: following rules need to come in this order ;/ */
 
 .container-new-tab {
   font-weight: lighter;

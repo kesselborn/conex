@@ -58,13 +58,15 @@ class ContainerItem extends HTMLElement {
   }
 
   isCollapsed() {
-    return this.classList.contains("collapsed");
+    return this.classList.contains("collapsed") && !this.classList.contains("match");
   }
 
   collapseContainerItem() {
     if (this.isCollapsed()) {
       // for keyboard navigation: pressing '<-' collapses the container, second time jumps to previous container
       if(this.previousElementSibling) this.previousElementSibling.focus();
+    } else if (this.classList.contains("match")) {
+      this.classList.add("search-collapsed");
     } else {
       this.classList.add("collapsed");
     }
@@ -75,6 +77,10 @@ class ContainerItem extends HTMLElement {
   }
 
   expandContainerItem() {
+    if (this.classList.contains("search-collapsed")) {
+      this.classList.remove("search-collapsed");
+      return;
+    }
     if (this.classList.contains("collapsed")) {
       this.classList.remove("collapsed");
     } else {
@@ -142,7 +148,7 @@ class ContainerItem extends HTMLElement {
 
   hideOnNoMatch() {
     if($("tab-item.match", this).length === 0 && $("tab-item.no-match", this).length === 0) {
-      this.classList.remove("match", "no-match");
+      this.classList.remove("match", "no-match", "search-collapsed");
     } else if($("tab-item.match", this).length === 0) {
       this.classList.remove("match");
       this.classList.add("no-match");
