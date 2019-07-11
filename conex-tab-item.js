@@ -75,7 +75,7 @@ class TabItem extends HTMLElement {
   // fixme: 'conex github issue' does not return matches!?
   matchSearch(searchTerms) {
     return new Promise((resolve) => {
-      if(searchTerms === []) {
+      if(!searchTerms) {
         this.classList.remove("match", "no-match");
         $1(".tab-title", this).innerHTML = this.title;
         $1(".tab-url", this).innerHTML = this.url;

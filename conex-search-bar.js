@@ -52,13 +52,15 @@ class SearchBar extends HTMLElement {
 
   search() {
     const searches = [];
-    const searchTerms = $1("#search-term", this).value.trim().split(" ");
+    const searchTerms = $1("#search-term", this).value.trim();
     for(const tabItem of $("tab-item", this.body)) {
-      searches.push(tabItem.matchSearch(searchTerms));
+      searches.push(tabItem.matchSearch(searchTerms === "" ? null : searchTerms.split(" ")));
     }
 
     Promise.all(searches).then(() => {
-      // todo: hide empty containers
+      for(const container of $("container-item", this.body)) {
+        container.hideOnNoMatch();
+      }
     });
   }
 

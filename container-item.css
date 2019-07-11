@@ -2,6 +2,10 @@ container-item {
   display: grid;
 }
 
+container-item.no-match {
+  display: none;
+}
+
 form.container-item {
   display: grid;
   grid-gap: 5px;

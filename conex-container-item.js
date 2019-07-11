@@ -42,6 +42,7 @@ class ContainerItem extends HTMLElement {
       "handleArrowDown",
       "handleArrowUp",
       "handleKeyDown",
+      "hideOnNoMatch",
       "onTabCreated",
       "sortTabItems",
       "updateTabCnt",
@@ -137,6 +138,18 @@ class ContainerItem extends HTMLElement {
     }
 
     return false;
+  }
+
+  hideOnNoMatch() {
+    if($("tab-item.match", this).length === 0 && $("tab-item.no-match", this).length === 0) {
+      this.classList.remove("match", "no-match");
+    } else if($("tab-item.match", this).length === 0) {
+      this.classList.remove("match");
+      this.classList.add("no-match");
+    } else {
+      this.classList.remove("no-match");
+      this.classList.add("match");
+    }
   }
 
   getLastTabItem() {
