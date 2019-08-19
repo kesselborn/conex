@@ -43,6 +43,7 @@ class ContainerItem extends HTMLElement {
       "handleArrowUp",
       "handleKeyDown",
       "hideOnNoMatch",
+      "focusNextVisibleContainer",
       "onTabCreated",
       "sortTabItems",
       "updateTabCnt",
@@ -120,6 +121,29 @@ class ContainerItem extends HTMLElement {
     return false;
   }
 
+
+  focusNextVisibleContainer() {
+    try {
+      console.debug("empty container or all tabs are hidden ... jumping to next container", this);
+
+      // if we are in search mode, jump to the next container that
+      // has search matches
+      if (this.hasSearchMatches()) {
+        let cur = this.nextElementSibling;
+        while (!cur.hasSearchMatches()) {
+          cur = cur.nextElementSibling;
+        }
+        cur.focus();
+      } else {
+        this.nextElementSibling.focus();
+      }
+      return true;
+    } catch (_) {
+      console.debug("could not find next item to focus ... seems as if I am at the end of the list", this);
+      return false;
+    }
+  }
+
   handleArrowDown() {
     const firstTab = $1("tab-item[style*='order: 0']", this);
     if (!this.isCollapsed() && firstTab) {
@@ -127,14 +151,7 @@ class ContainerItem extends HTMLElement {
       return true;
     }
 
-    try {
-      console.debug("empty container or all tabs are hidden ... jumping to next container", this);
-      this.nextElementSibling.focus();
-      return true;
-    } catch (_) {
-      console.debug("could not find next item to focus ... seems as if I am at the end of the list", this);
-      return false;
-    }
+    return this.focusNextVisibleContainer();
   }
 
   handleArrowUp() {
@@ -144,7 +161,15 @@ class ContainerItem extends HTMLElement {
         lastTabOfPreviousContainer.focus();
         return true;
       }
-      this.previousElementSibling.focus();
+      if(this.classList.contains("match")) {
+        let cur = this.previousElementSibling;
+        while(!cur.classList.contains("match")) {
+          cur = cur.previousElementSibling;
+        }
+        cur.focus();
+      } else {
+        this.previousElementSibling.focus();
+      }
       return true;
     }
 

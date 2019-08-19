@@ -148,7 +148,7 @@ class TabItem extends HTMLElement {
       return;
     }
 
-    if (this.parentElement.nextElementSibling) { this.parentElement.nextElementSibling.focus(); }
+    this.parentElement.focusNextVisibleContainer();
   }
 
   handleArrowUp() {
