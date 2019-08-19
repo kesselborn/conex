@@ -7,8 +7,8 @@ const resizeImage = async(screenshot, width, height) => {
 
   // race condition prevention: sometimes, the image element is not fully created yet
   await new Promise((resolve, reject) => {
-    const maxTries = 50;
-    const intervalDelay = 50;
+    const maxTries = 10;
+    const intervalDelay = 1000;
 
     let cnt = 0;
     const timer = setInterval(() => {
@@ -48,8 +48,10 @@ const createThumbnail = async(tabId) => {
   let screenshot = null;
   let thumbnailCreated = false;
 
-  const maxTries = 20;
-  const intervalDelay = 1000;
+  const maxTries = 10;
+  const intervalDelay = 2000;
+
+  const tab = await browser.tabs.get(tabId);
 
   for (let i = 0; i < maxTries; i += 1) {
     try {
@@ -82,7 +84,11 @@ const createThumbnail = async(tabId) => {
       break;
     } catch (e) {
       if (e.name === "BlankScreenshot") {
-        console.warn(`got what I think was a blank screenshot ... trying again in ${intervalDelay}ms`);
+        if(i === maxTries - 1) {
+          // eslint-disable-next-line no-await-in-loop
+          console.warn(`got what I think was a blank screenshot for tab #${tab.id} / ${tab.url}`);
+          thumbnailCreated = true;
+        }
       } else {
         console.error(`error capturing tab #${tabId}: `, e);
       }
@@ -104,7 +110,7 @@ const createThumbnail = async(tabId) => {
     const end = Date.now();
     console.debug(`resize took ${end - start}ms`);
   } catch (e) {
-    console.error(`error resizing thumbnail for tab #${tabId}: `, e);
+    console.error(`error resizing thumbnail for tab #${tab.id} / ${tab.url}: `, e);
     return null;
   }
 
