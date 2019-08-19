@@ -233,8 +233,8 @@ class ContainerItem extends HTMLElement {
         const tabItem = $1(`tab-item[tab-id="${sortedTabs[i].id}"]`, this);
         if(this.classList.contains("match")) {
           if(tabItem.classList.contains("match")) {
-            // eslint-disable-next-line no-plusplus
-            tabItem.order = cnt++;
+            tabItem.order = cnt;
+            cnt += 1;
           } else {
             tabItem.order = -1;
           }
