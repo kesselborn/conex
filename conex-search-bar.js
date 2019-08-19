@@ -15,12 +15,20 @@ class SearchBar extends HTMLElement {
 
     // bind methods correctly
     for (const method of Array.from([
+      "activateFirstMatch",
       "handleArrowDown",
       "handleKeyDown",
       "reset",
       "search"
     ])) {
       self[method] = self[method].bind(this);
+    }
+  }
+
+  activateFirstMatch() {
+    const firstMatch = $1("tab-item.match", this.body);
+    if(firstMatch) {
+      firstMatch.activateTab();
     }
   }
 
@@ -31,8 +39,7 @@ class SearchBar extends HTMLElement {
       // keyboard shortcuts instead of clicking the mouse
       case "ArrowDown": this.handleArrowDown(); break;
       case "Tab": if (!e.shiftKey) this.handleArrowDown(); break;
-      case "Enter": break;
-
+      case "Enter": this.activateFirstMatch(); break;
       default: {
         $1("form", this).dispatchEvent(new Event("change"));
         return true;
