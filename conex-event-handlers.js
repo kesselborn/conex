@@ -28,14 +28,13 @@ export const tabActivated = activeInfo => {
                 containerItem.expandContainerItem();
             }
             tabItem.scrollIntoView();
-            window.scrollBy(0, -1 * searchBarHeight);
+            if(tabItem.scrollHeight === 0) {
+                window.scrollBy(0, -1 * searchBarHeight);
+            }
 
-            const interval = setInterval(() => {
+            setTimeout(() => {
                 tabItem.scrollIntoView();
                 window.scrollBy(0, -1 * searchBarHeight);
-                if (tabItem.scrollHeight === searchBarHeight + 1) {
-                    clearInterval(interval);
-                }
             }, 1000);
         });
 
