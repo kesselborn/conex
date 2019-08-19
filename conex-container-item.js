@@ -91,7 +91,12 @@ class ContainerItem extends HTMLElement {
   }
 
   activateFirstContainerTab() {
-    console.debug("focus container");
+    const firstTab = $1("tab-item[style*='order: 0']", this);
+    if(firstTab) {
+      firstTab.activateTab();
+    } else {
+      this.createNewTab();
+    }
   }
 
   // handles key events for container items ... return false if event was handled
