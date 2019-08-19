@@ -54,16 +54,24 @@ const initializeBackgroundHtml = async() => {
   });
 
   for (const container of containers) {
-    console.debug(`creating container element ${container.name}`);
+    // console.debug(`creating container element ${container.name}`);
     const tabs = browser.tabs.query({cookieStoreId: container.cookieStoreId});
     const c = containerList.appendChild(createContainerItem(container.cookieStoreId, container.name, container.color));
 
+    const tabItemsCreating = [];
     // eslint-disable-next-line no-await-in-loop
     for(const tab of await tabs) {
-      console.debug(`   creating tab element ${tab.title}`);
-      c.appendChild(createTabItem(tab.id, tab.title, tab.url, container.color, tab.favIconUrl, null));
+      // console.debug(`   creating tab element ${tab.title}`);
+      tabItemsCreating.push(createTabItem(tab.id, tab.title, tab.url, container.color, tab.favIconUrl, null));
     }
-    c.sortTabItems(container.cookieStoreId);
+
+    Promise.all(tabItemsCreating).then(tabItems => {
+      for (const tabItem of tabItems) {
+        c.appendChild(tabItem);
+      }
+      c.sortTabItems(container.cookieStoreId);
+    });
+
   }
 
   $1("div#containers").replaceWith(containerList);

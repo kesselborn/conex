@@ -178,9 +178,9 @@ class ContainerItem extends HTMLElement {
     }
   }
 
-  onTabCreated(tab) {
+  async onTabCreated(tab) {
     if (tab.cookieStoreId !== this.containerId) return;
-    this.appendChild(createTabItem(tab.id, tab.title, tab.url, this.color, tab.favIconUrl));
+    this.appendChild(await createTabItem(tab.id, tab.title, tab.url, this.color, tab.favIconUrl));
     this.updateTabCnt();
   }
 
