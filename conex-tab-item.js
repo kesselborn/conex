@@ -165,6 +165,8 @@ class TabItem extends HTMLElement {
     }
   }
 
+  // todo: always scroll to current tab
+  // todo: reset search form
   activateTab() {
     window.browser.tabs.update(this.tabId, {active: true}).then(
       () => console.debug(`showing tab ${this.tabId}`),
@@ -174,6 +176,9 @@ class TabItem extends HTMLElement {
     if(this.body.tabActivatedCallback) {
       this.body.tabActivatedCallback();
     }
+
+    $1("#search-term", this.body).value = "";
+
   }
 
   // eslint-disable-next-line no-unused-vars

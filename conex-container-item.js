@@ -38,6 +38,7 @@ class ContainerItem extends HTMLElement {
       "createNewTab",
       "expandContainerItem",
       "getLastTabItem",
+      "hasSearchMatches",
       "isCollapsed",
       "handleArrowDown",
       "handleArrowUp",
@@ -121,6 +122,9 @@ class ContainerItem extends HTMLElement {
     return false;
   }
 
+  hasSearchMatches() {
+    return this.classList.contains("match");
+  }
 
   focusNextVisibleContainer() {
     try {
@@ -186,6 +190,7 @@ class ContainerItem extends HTMLElement {
       this.classList.remove("no-match");
       this.classList.add("match");
     }
+    this.sortTabItems(this.containerId);
   }
 
   getLastTabItem() {
@@ -222,11 +227,22 @@ class ContainerItem extends HTMLElement {
       default: sortedTabs = tabs.sort((a, b) => a.index < b.index);
     }
 
+    let cnt = 0;
     for (let i = 0; i < sortedTabs.length; i += 1) {
       try {
-        $1(`tab-item[tab-id="${sortedTabs[i].id}"]`, this).order = i;
+        const tabItem = $1(`tab-item[tab-id="${sortedTabs[i].id}"]`, this);
+        if(this.classList.contains("match")) {
+          if(tabItem.classList.contains("match")) {
+            // eslint-disable-next-line no-plusplus
+            tabItem.order = cnt++;
+          } else {
+            tabItem.order = -1;
+          }
+        } else {
+          tabItem.order = i;
+        }
       } catch (e) {
-        console.debug(`error sorting tabs in ${cookieStoreId}: index: ${i}, tab ${sortedTabs[i]}: ${e}`);
+        console.warn(`error sorting tabs in ${cookieStoreId}: index: ${i}, tab #${sortedTabs[i].id} / ${sortedTabs[i].url}: ${e}`);
       }
     }
   }

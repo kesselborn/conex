@@ -7,6 +7,7 @@
 :root {
   --action-width: 30px;
   --height: 40px;
+  --height-total: 60px; /* height + 2 * 5 padding + 2 * 5 grid */
   --thumbnail-width: 60px;
   --container-bg-color: rgb(232, 232, 232);
   --hover-container-bg-color: rgb(220, 220, 220);

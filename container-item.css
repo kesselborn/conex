@@ -1,3 +1,7 @@
+#containers {
+  padding-top: var(--height-total);
+}
+
 container-item {
   display: grid;
 }

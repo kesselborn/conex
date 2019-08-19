@@ -1,5 +1,6 @@
 import {$, $1, debounce} from "./conex-helper.js";
 
+
 const searchBar = () => `
   <form tabindex="-1" class="search" action="">
     <input tabindex="-1" autofocus title="search for tab url or title" autocomplete="off" id="search-term" type="search" name="search-term" placeholder="search for tab url or title"/>
@@ -43,11 +44,13 @@ class SearchBar extends HTMLElement {
   handleArrowDown() {
     // we must use 'this.body' here, as 'document' is the document from
     // background html
-    $1("container-item", this.body).focus();
+    ($1("container-item.match", this.body) || $1("container-item", this.body)).focus();
   }
 
+  // tODO: pressing escape or clicking the 'x' does not properly reset the search form
   reset() {
     $1("form", this).reset();
+    $1("form", this).dispatchEvent(new Event("change"));
   }
 
   search() {
