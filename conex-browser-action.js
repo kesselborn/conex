@@ -2,6 +2,7 @@ import "./conex-search-bar.js";
 import {$1, getConexDom} from "./conex-helper.js";
 import {keyDownHandler} from "./conex-event-handlers.js";
 
+window.component = "browser-action";
 window.document.body.tabActivatedCallback = () => window.close();
 window.document.body.tabCreatedCallback = () => window.close();
 window.document.body.tabRemovedCallback = () => window.close();

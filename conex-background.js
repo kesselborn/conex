@@ -9,6 +9,7 @@ import {getThumbnail} from "./conex-thumbnail.js";
 
 let initialized = false;
 
+window.component = "background";
 window.browser.tabs.onCreated.addListener(tabCreated);
 window.browser.tabs.onActivated.addListener(tabActivated);
 window.browser.tabs.onUpdated.addListener(tabUpdated);
