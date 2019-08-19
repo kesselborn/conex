@@ -11,8 +11,7 @@ form.tab-item {
 }
 
 tab-item.active {
-    /* todo: highlight if not lru order */
-    /* border-right: 2px solid blue; */
+    border-right: 5px solid blue;
 }
 
 tab-item em {

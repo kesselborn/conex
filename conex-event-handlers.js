@@ -1,29 +1,52 @@
 import {$1} from "./conex-helper.js";
 
-// todo: listen to new containers
 export const tabCreated = tab => {
     const containerItem = $1(`container-item[container-id='${tab.cookieStoreId}']`);
+
+    // todo: listen to new containers
     containerItem.onTabCreated(tab);
 };
 
 export const tabActivated = activeInfo => {
+    const searchBarHeight = 60;
     browser.tabs.get(activeInfo.tabId).then(tab => {
-        const containerItem = $1(`container-item[container-id='${tab.cookieStoreId}']`);
-        containerItem.sortTabItems(tab.cookieStoreId);
-
         // todo: better a function on tab-item component?
         const activeTabItem = $1("tab-item.active");
         if (activeTabItem) {
             activeTabItem.classList.remove("active");
         }
-        $1(`tab-item[tab-id="${tab.id}"]`).classList.add("active");
+
+        const containerItem = $1(`container-item[container-id='${tab.cookieStoreId}']`);
+        const tabItem = $1(`tab-item[tab-id="${tab.id}"]`);
+
+        tabItem.classList.add("active");
+
+        containerItem.sortTabItems(tab.cookieStoreId).then(() => {
+            const containerItemCollapsed = containerItem.classList.contains("collapsed");
+
+            if(containerItemCollapsed) {
+                containerItem.expandContainerItem();
+            }
+            tabItem.scrollIntoView();
+            window.scrollBy(0, -1 * searchBarHeight);
+
+            const interval = setInterval(() => {
+                tabItem.scrollIntoView();
+                window.scrollBy(0, -1 * searchBarHeight);
+                if (tabItem.scrollHeight === searchBarHeight + 1) {
+                    clearInterval(interval);
+                }
+            }, 1000);
+        });
+
+
+        $1("search-bar").reset();
     });
 
 };
 
 export const tabUpdated = (tabId, changeInfo, tab) => {
     const tabItem = $1(`tab-item[tab-id='${tabId}']`);
-
     // sometimes the updated event fires before the tabItem exists
     if (tabItem) {
         tabItem.onUpdated(tabId, changeInfo, tab);
@@ -36,6 +59,7 @@ export const tabRemoved = tabId => {
 };
 
 export const keyDownHandler = e => {
+    // console.debug(e);
     if (e.key === "Shift") {
         return;
     }
