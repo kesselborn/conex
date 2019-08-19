@@ -1,4 +1,4 @@
-import {$e} from "./conex-helper.js";
+import {$e, placeholderFailedImage} from "./conex-helper.js";
 
 
 const resizeImage = async(screenshot, width, height) => {
@@ -91,9 +91,8 @@ const createThumbnail = async(tabId) => {
     await sleep(intervalDelay);
   }
   if (!thumbnailCreated) {
-    const e = new Error("creating tab thumbnail failed too often -- giving up");
-    e.name = "TooManyThumbnailFails";
-    throw e;
+    console.error(`creating tab thumbnail for tab #${tab.id} / ${tab.url} failed`);
+    return placeholderFailedImage;
   }
 
   try {
@@ -114,9 +113,11 @@ const createThumbnail = async(tabId) => {
 
 const thumbnailsWip = new Map();
 export const getThumbnail = (tabId, tabUrl) => {
-  const thumbnailCacheDuration = 10000;
+  const thumbnailCacheDuration = 120000;
   const key = `${tabId}-${tabUrl}`;
-  let thumbnailPromise = thumbnailsWip.get(key);
+
+  // for bootstrapping: use 'tabUrl' key if tabId-tabUrl is not available
+  let thumbnailPromise = thumbnailsWip.get(key) || thumbnailsWip.get(tabUrl);
   if (thumbnailPromise) {
     console.debug(`using cached thumbnail with key ${key}`);
   } else {
@@ -129,10 +130,19 @@ export const getThumbnail = (tabId, tabUrl) => {
       () => setTimeout(() => {
         console.debug(`deleting thumbnail cache with key ${key}`);
         thumbnailsWip.delete(key);
-      }, 10000),
+      }, thumbnailCacheDuration),
       e => console.error(`error creating thumbnail: ${e}`)
     );
   }
 
   return thumbnailPromise;
 };
+
+browser.storage.local.get("thumbnails").then(result => {
+    const {thumbnails} = result;
+    for(const url in thumbnails) {
+      if (Reflect.getOwnPropertyDescriptor(thumbnails, url)) {
+        thumbnailsWip.set(url, Promise.resolve(thumbnails[url]));
+      }
+    }
+  });

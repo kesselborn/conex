@@ -1,4 +1,6 @@
 import "./conex-search-bar.js";
+import "./conex-thumbnail-loader.js";
+import "./conex-thumbnail-backuper.js";
 import {tabActivated, tabCreated, tabRemoved, tabUpdated} from "./conex-event-handlers.js";
 import {$1} from "./conex-helper.js";
 import {createContainerItem} from "./conex-container-item.js";

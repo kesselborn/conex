@@ -1,4 +1,5 @@
 import "./conex-search-bar.js";
+import "./conex-thumbnail-loader.js";
 import {keyDownHandler, tabActivated, tabCreated, tabRemoved, tabUpdated} from "./conex-event-handlers.js";
 import {getConexDom} from "./conex-helper.js";
 

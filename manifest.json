@@ -49,12 +49,14 @@
     "48": "icons/icon_48.png"
   },
   "web_accessible_resources": [
-    "container-selector.html"
+    "container-selector.html",
+    "conex-cached-thumbnails.html"
   ],
   "permissions": [
     "<all_urls>",
     "contextualIdentities",
     "cookies",
+    "idle",
     "menus",
     "storage",
     "tabs",

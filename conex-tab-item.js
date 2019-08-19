@@ -1,4 +1,4 @@
-import {$1, $e, placeholderImage} from "./conex-helper.js";
+import {$1, $e, placeholderFailedImage, placeholderImage} from "./conex-helper.js";
 
 const tabItem = (data) => `
   <form class="tab-item ${data.color}-marker" action="">
@@ -29,6 +29,7 @@ class TabItem extends HTMLElement {
       "activateTab",
       "closeTab",
       "continueSearch",
+      "forceThumbnail",
       "handleArrowDown",
       "handleArrowUp",
       "handleKeyDown",
@@ -223,6 +224,15 @@ class TabItem extends HTMLElement {
     }, e => console.error(`error getting cached thumbnail: ${e}`));
   }
 
+  async forceThumbnail() {
+    const tab = await window.browser.tabs.get(this.tabId);
+    const img = $1("img.thumbnail-image", this);
+    img.src = placeholderFailedImage;
+
+    if(tab.url !== "about:blank") await window.browser.tabs.reload(tab.id);
+    if (tab.discarded) await window.browser.tabs.discard(tab.id);
+  }
+
   visible() {
     return window.getComputedStyle(this).display !== "none";
   }
@@ -312,9 +322,16 @@ class TabItem extends HTMLElement {
 
 window.customElements.define("tab-item", TabItem);
 
+const cachedThumbnails = browser.storage.local.get("thumbnails");
+
 // <tab-item color="blue-marker" tab-id="42" thumbnail="./thumbnail.jpg" favicon="./favicon.ico" tab-title="0 this is a wonderful title" url="heise.de/artikel/golang"></tab-item>
-export const createTabItem = (tabId, tabTitle, url, color, faviconIn, thumbnail) => {
+export const createTabItem = async(tabId, tabTitle, url, color, faviconIn, thumbnail) => {
+  const {thumbnails} = await cachedThumbnails;
+
   let favicon = faviconIn;
+  if(thumbnails && thumbnails[url]) {
+    favicon = thumbnails[url];
+  }
   if (!favicon || favicon.startsWith("chrome://")) {
     favicon = placeholderImage;
   }

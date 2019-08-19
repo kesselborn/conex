@@ -4,6 +4,7 @@
 // console.debug = () => {};
 
 export const placeholderImage = browser.runtime.getURL("transparent.png");
+export const placeholderFailedImage = browser.runtime.getURL("transparent-failed.png");
 
 // alias for document.querySelectorAll
 export const $ = (s, parent) => (parent || window.document).querySelectorAll(s);
