@@ -305,16 +305,12 @@ class ContainerItem extends HTMLElement {
     console.debug("container-item disconnnected");
   }
 
-  adoptedCallback() {
-    console.debug("container-item adopted");
-  }
+  // adoptedCallback() {
+  //  console.debug("container-item adopted");
+  // }
 
   static get observedAttributes() {
     return ["color"];
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    console.debug(`attribute ${name} changed: ${oldValue} -> ${newValue}`);
   }
 }
 window.customElements.define("container-item", ContainerItem);
