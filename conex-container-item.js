@@ -63,6 +63,7 @@ class ContainerItem extends HTMLElement {
     return this.classList.contains("collapsed") && !this.classList.contains("match");
   }
 
+  // tODO: collapse containers with 0 tabs on search
   collapseContainerItem() {
     if (this.isCollapsed()) {
       // for keyboard navigation: pressing '<-' collapses the container, second time jumps to previous container

@@ -1,6 +1,7 @@
 import {$e, placeholderFailedImage} from "./conex-helper.js";
 
 
+// todo: loading thumbnail of discarded tab does not work
 const resizeImage = async(screenshot, width, height) => {
   const canvas = window.document.createElement("canvas");
   const context = canvas.getContext("2d");

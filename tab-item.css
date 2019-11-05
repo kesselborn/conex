@@ -11,7 +11,8 @@ form.tab-item {
 }
 
 tab-item.active {
-    border-right: 5px solid blue;
+    /* border-right: 5px solid blue; */
+    background-color: rgb(234, 243, 254);
 }
 
 tab-item em {

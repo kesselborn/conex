@@ -27,14 +27,15 @@ export const tabActivated = activeInfo => {
             if(containerItemCollapsed) {
                 containerItem.expandContainerItem();
             }
-            tabItem.scrollIntoView();
-            if(tabItem.scrollHeight === 0) {
-                window.scrollBy(0, -1 * searchBarHeight);
-            }
+            // if(tabItem.scrollHeight === 0) {
+            //     window.scrollBy(0, -1 * searchBarHeight);
+            // }
 
             setTimeout(() => {
-                tabItem.scrollIntoView();
-                window.scrollBy(0, -1 * searchBarHeight);
+                if(window.document.body.dataset.context === "sidebar") {
+                    tabItem.scrollIntoView();
+                    window.scrollBy(0, -1 * searchBarHeight);
+                }
             }, 1000);
         });
 

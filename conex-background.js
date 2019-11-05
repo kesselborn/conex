@@ -89,3 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 console.debug("conex-background.js loaded");
+// console .log(`
+// moz-extension://47bf3fc1-a975-fa45-8fb7-8b25cc42aebe: 1Password Beta
+// moz-extension://0f191615-6491-184a-804b-5ff827dc30aa: Privacy Badger
+// `);
