@@ -182,7 +182,10 @@ class ContainerItem extends HTMLElement {
   }
 
   hideOnNoMatch() {
-    if($("tab-item.match", this).length === 0 && $("tab-item.no-match", this).length === 0) {
+    if($("tab-item", this).length === 0) {
+      this.classList.remove("match");
+      this.classList.add("no-match");
+    } else if($("tab-item.match", this).length === 0 && $("tab-item.no-match", this).length === 0) {
       this.classList.remove("match", "no-match", "search-collapsed");
     } else if($("tab-item.match", this).length === 0) {
       this.classList.remove("match");
