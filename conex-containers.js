@@ -8,13 +8,23 @@ function formChange(e) {
     e.currentTarget.reset();
 }
 
-export async function renderContainers(containers) {
+export async function renderContainers(containers, options = {}) {
     const containerList = $e('ol');
+
+    if (options.order) {
+        const cookieStoreIds = containers.map(c => c.cookieStoreId);
+        const orderedCookieStoreIds = options.order.concat(cookieStoreIds);
+        containers = containers.sort(function (a, b) {
+            return orderedCookieStoreIds.indexOf(a.cookieStoreId) > orderedCookieStoreIds.indexOf(b.cookieStoreId);
+        });
+        console.log(containers);
+    }
+
     for (const container of containers) {
         containerList.appendChild(
             $e('li', { id: `${container.cookieStoreId}` }, [
                 $e('input', { id: `e${container.cookieStoreId}`, type: 'radio', name: 'toggle-tabs-visibility', value: container.cookieStoreId }),
-                $e('label', { for: `e${container.cookieStoreId}`, class: 'tabs-visibility border-color-red', content: '>' }),
+                $e('label', { for: `e${container.cookieStoreId}`, class: `tabs-visibility border-color-${container.color}`, content: '>' }),
                 $e('input', { id: `c${container.cookieStoreId}`, type: 'radio', name: 'open-container', value: container.cookieStoreId }),
                 $e('label', { for: `c${container.cookieStoreId}` }, [
                     $e('h2', { content: container.name })

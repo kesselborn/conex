@@ -12,8 +12,36 @@
     --tab-name-width: calc(var(--total-width) - var(--thumbnail-width) - var(--close-button-width) - var(--tab-name-padding-right) - 2* var(--li-padding));
 }
 
+.border-color-blue {
+    border-color: #37adff;
+}
+
+.border-color-turquoise {
+    border-color: #00c79a;
+}
+
+.border-color-green {
+    border-color: #51cd00;
+}
+
+.border-color-yellow {
+    border-color: #ffcb00;
+}
+
+.border-color-orange {
+    border-color: #ff9f00;
+}
+
 .border-color-red {
-    border-color: red;
+    border-color: #ff613d;
+}
+
+.border-color-pink {
+    border-color: #ff4bda;
+}
+
+.border-color-purple {
+    border-color: #af51f5;
 }
 
 body, ol {
