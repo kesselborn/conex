@@ -8,7 +8,24 @@ function formChange(e) {
     e.currentTarget.reset();
 }
 
-export async function renderContainers(containers, options = {}) {
+export const defaultContainer =
+    { cookieStoreId: 'firefox-default', color: "black", name: 'no container' };
+
+export const bookmarkDummyContainer =
+    { cookieStoreId: 'bookmarks', color: "gold", name: 'bookmarks' };
+
+export const historyDummyContainer =
+    { cookieStoreId: 'history', color: "white", name: 'history' };
+
+export async function renderContainers(_containers, options = {}) {
+    let additionalContainers = [defaultContainer];
+    if (options.bookmarks) {
+        additionalContainers.push(bookmarkDummyContainer);
+    }
+    let containers = additionalContainers.concat(_containers);
+    if (options.history) {
+        containers.push(historyDummyContainer);
+    }
     const containerList = $e('ol');
 
     if (options.order) {

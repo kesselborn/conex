@@ -12,6 +12,14 @@
     --tab-name-width: calc(var(--total-width) - var(--thumbnail-width) - var(--close-button-width) - var(--tab-name-padding-right) - 2* var(--li-padding));
 }
 
+.border-color-gold {
+    border-color: goldenrod;
+}
+
+.border-color-black {
+    border-color: black;
+}
+
 .border-color-blue {
     border-color: #37adff;
 }
