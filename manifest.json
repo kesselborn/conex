@@ -1,0 +1,36 @@
+{
+  "manifest_version": 2,
+  "author": "kesselborn",
+  "description": "A tabgroup'esque successor for Firefox Quantum (FirefoxBeta and FirefoxNightly only at the moment)",
+  "homepage_url": "https://github.com/kesselborn/conex",
+  "name": "Conex",
+  "version": "0.10.0",
+  "applications": {
+    "gecko": {
+      "id": "conex@bornkessel.com"
+    }
+  },
+  "background": {
+    "page": "conex-background.html"
+  },
+  "browser_action": {
+    "default_title": "Conex",
+    "browser_style": false,
+    "default_popup": "conex-browser-action.html",
+    "default_icon": {
+      "48": "icons/icon_48.png"
+    }
+  },
+  "permissions": [
+    "<all_urls>",
+    "contextualIdentities",
+    "cookies",
+    "idle",
+    "menus",
+    "storage",
+    "tabs",
+    "webNavigation",
+    "webRequest",
+    "webRequestBlocking"
+  ]
+}

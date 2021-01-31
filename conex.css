@@ -1,0 +1,125 @@
+:root {
+    --total-width: 500px;
+    --thumbnail-width: 60px;
+    --thumbnail-height: 40px;
+    --favicon-with-height: 20px;
+    --toggle-button-width: 30px;
+    --close-button-width: var(--toggle-button-width);
+    --row-height: 60px;
+    --tab-name-padding-right: 10px;
+    --images-bottom-padding: -10px;
+    --li-padding: 10px;
+    --tab-name-width: calc(var(--total-width) - var(--thumbnail-width) - var(--close-button-width) - var(--tab-name-padding-right) - 2* var(--li-padding));
+}
+
+.border-color-red {
+    border-color: red;
+}
+
+body, ol {
+    font-family: Helvetica, sans-serif;
+    padding: 0px;
+}
+
+label {
+    display: grid;
+    align-content: center;
+}
+
+ol, ul {
+    width: var(--total-width);
+}
+
+ol>li {
+    display: grid;
+    grid-template-columns: [start] 0px [toggle] var(--toggle-button-width) [container-name-radio-button] 0px [container-name] auto [end];
+}
+
+ol>li .tabs-visibility {
+    display: grid;
+    border-left-width: 5px;
+    border-left-style: solid;
+    justify-content: center;
+}
+
+ol>li>ul {
+    padding: 0;
+}
+
+ol>li>ul>li {
+    background-color: lightcyan;
+    display: grid;
+    grid-template-columns: [start] 0px [tabinfo] auto 0px [closetab] var(--close-button-width) [end];
+    border-left-width: 2px;
+    border-left-style: solid;
+    height: var(--row-height);
+}
+
+.close {
+    justify-content: center;
+}
+
+.tab-center {
+    display: grid;
+    grid-template-columns: [faviconthumbnail] var(--thumbnail-width) [titleurl] auto;
+    padding: var(--li-padding);
+}
+
+.tab-center>div.tab-names {
+    align-self: center;
+}
+
+.images {
+    position: relative;
+}
+
+.images img {
+    position: absolute;
+    bottom: var(--images-bottom-padding);
+}
+
+.favicon {
+    width: var(--favicon-with-height);
+    height: var(--favicon-with-height);
+    z-index: 1;
+}
+
+.thumbnail {
+    background-color: lightblue;
+    width: var(--thumbnail-width);
+    height: var(--thumbnail-height);
+    z-index: 0;
+}
+
+h2, h3, h4 {
+    margin: 0px;
+}
+
+h2 {
+    display: grid;
+    height: var(--row-height);
+    align-content: center;
+    padding-right: var(--tab-name-padding-right);
+}
+
+h3 {
+    font-size: 12px;
+    font-weight: 100;
+    padding-left: var(--tab-name-padding-right);
+}
+
+h4 {
+    font-size: 10px;
+    height: 1em;
+    color: gray;
+    font-weight: 100;
+    width: var(--tab-name-width);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-left: var(--tab-name-padding-right);
+}
+
+label:hover {
+    background-color: lightskyblue;
+}
