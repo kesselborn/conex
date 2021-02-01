@@ -156,6 +156,6 @@ h4 {
     padding-left: var(--tab-name-padding-right);
 }
 
-label:hover {
+li:focus label, li:hover label {
     background-color: lightskyblue;
 }

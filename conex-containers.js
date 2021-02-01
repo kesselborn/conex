@@ -8,6 +8,14 @@ function formChange(e) {
     e.currentTarget.reset();
 }
 
+function keydown(e) {
+    console.debug('keydown', e);
+}
+
+function keyup(e) {
+    console.debug('keyup', e);
+}
+
 export const defaultContainer =
     { cookieStoreId: 'firefox-default', color: "black", name: 'no container' };
 
@@ -39,7 +47,7 @@ export async function renderContainers(_containers, options = {}) {
 
     for (const container of containers) {
         containerList.appendChild(
-            $e('li', { id: `${container.cookieStoreId}` }, [
+            $e('li', { tabindex: 0, id: `${container.cookieStoreId}` }, [
                 $e('input', { id: `e${container.cookieStoreId}`, type: 'radio', name: 'toggle-tabs-visibility', value: container.cookieStoreId }),
                 $e('label', { for: `e${container.cookieStoreId}`, class: `tabs-visibility border-color-${container.color}`, content: '>' }),
                 $e('input', { id: `c${container.cookieStoreId}`, type: 'radio', name: 'open-container', value: container.cookieStoreId }),
@@ -49,8 +57,12 @@ export async function renderContainers(_containers, options = {}) {
             ])
         );
     }
-    window.document.body.appendChild($e('form', {}, [containerList]));
+
+    const form = $e('form', {}, [containerList])
+    window.document.body.appendChild(form);
     $('form').addEventListener('change', formChange, {}, true);
+    $('form').addEventListener('keydown', keydown, true);
+    $('form').addEventListener('keyup', keyup, true);
 }
 
 export async function fillContainer(container) {
