@@ -43,6 +43,8 @@ export const $e = (name, attributes, children) => {
   return e;
 };
 
+export const _ = browser.i18n.getMessage;
+
 export const getConexDom = backgroundPage => () => {
   const startupLoop = setInterval(() => {
     if (backgroundPage.initializingConex) {

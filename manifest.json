@@ -1,8 +1,9 @@
 {
   "manifest_version": 2,
   "author": "kesselborn",
-  "description": "A tabgroup'esque successor for Firefox Quantum (FirefoxBeta and FirefoxNightly only at the moment)",
+  "description": "__MSG_extensionDescription",
   "homepage_url": "https://github.com/kesselborn/conex",
+  "default_locale": "en",
   "name": "Conex",
   "version": "0.10.0",
   "applications": {

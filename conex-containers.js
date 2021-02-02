@@ -1,4 +1,4 @@
-import { $, $e } from "./conex-helper.js";
+import { _, $, $e } from "./conex-helper.js";
 
 function formChange(e) {
     console.debug('form change', e, 'target:', e.target);
@@ -115,6 +115,6 @@ function tabElement(tab) {
         ]
         ),
         $e('input', { id: `x-${tab.id}`, type: 'radio', name: 'close-tab', value: tab.id }),
-        $e('label', { for: `x-${tab.id}`, class: 'close', content: 'x' })
+        $e('label', { for: `x-${tab.id}`, class: 'close', content: 'x', title: _("closeWithDetails", ["tab", tab.title]) })
     ])
 }
