@@ -1,10 +1,7 @@
 import { $, $e } from "./conex-helper.js";
 
 function formChange(e) {
-    console.debug('change', e);
-    console.debug(e.target);
-    console.debug(e.target.name);
-    console.debug(e.target.value);
+    console.debug('form change', e, 'target:', e.target);
     e.currentTarget.reset();
 }
 
@@ -15,7 +12,6 @@ function isContainerElement(element) {
 function keydown(e) {
     const targetElement = e.target;
     const key = e.key;
-    console.log('uuuuu', key);
 
     if (isContainerElement(targetElement)) {
         switch (key) {
@@ -95,10 +91,10 @@ export async function fillContainer(tabs) {
 
 function containerElement(container) {
     return $e('li', { tabindex: 0, id: `${container.cookieStoreId}` }, [
-        $e('input', { id: `e${container.cookieStoreId}`, type: 'radio', name: 'toggle-tabs-visibility', value: container.cookieStoreId }),
-        $e('label', { for: `e${container.cookieStoreId}`, class: `tabs-visibility border-color-${container.color}`, content: '>' }),
-        $e('input', { id: `c${container.cookieStoreId}`, type: 'radio', name: 'open-container', value: container.cookieStoreId }),
-        $e('label', { for: `c${container.cookieStoreId}` }, [
+        $e('input', { id: `e-${container.cookieStoreId}`, type: 'radio', name: 'toggle-tabs-visibility', value: container.cookieStoreId }),
+        $e('label', { for: `e-${container.cookieStoreId}`, class: `tabs-visibility border-color-${container.color}`, content: '>' }),
+        $e('input', { id: `c-${container.cookieStoreId}`, type: 'radio', name: 'open-container', value: container.cookieStoreId }),
+        $e('label', { for: `c-${container.cookieStoreId}` }, [
             $e('h2', { content: container.name })
         ])
     ]);
@@ -106,8 +102,8 @@ function containerElement(container) {
 
 function tabElement(tab) {
     return $e('li', { id: tab.id, class: 'border-color-red' }, [
-        $e('input', { id: `t${tab.id}`, type: 'radio', name: 'open-tab', value: tab.id }),
-        $e('label', { class: 'tab-center', for: `t${tab.id}` }, [
+        $e('input', { id: `t-${tab.id}`, type: 'radio', name: 'open-tab', value: tab.id }),
+        $e('label', { for: `t-${tab.id}`, class: 'tab-center' }, [
             $e('div', { class: 'images' }, [
                 $e('img', { class: 'favicon', src: tab.favIconUrl }),
                 $e('img', { class: 'thumbnail', src: tab.favIconUrl }),
@@ -118,7 +114,7 @@ function tabElement(tab) {
             ])
         ]
         ),
-        $e('input', { id: `x${tab.id}`, type: 'radio', name: 'close-tab', value: tab.id }),
-        $e('label', { for: `x${tab.id}`, class: 'close', content: 'x' })
+        $e('input', { id: `x-${tab.id}`, type: 'radio', name: 'close-tab', value: tab.id }),
+        $e('label', { for: `x-${tab.id}`, class: 'close', content: 'x' })
     ])
 }

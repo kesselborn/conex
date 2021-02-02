@@ -158,6 +158,20 @@ h4 {
     padding-left: var(--tab-name-padding-right);
 }
 
+/* highlight container element on hover / focus */
+
 li:focus label, li:hover label {
+    background-color: lightskyblue;
+}
+
+/* do not highlight every tab element of the hovered/focused container element */
+
+ol>li:focus>ul>li label, li:hover>ul>li label {
+    background-color: white;
+}
+
+/* highlight tab element on hover / focus */
+
+ol>li:focus>ul>li label:focus, li:hover>ul>li label:hover {
     background-color: lightskyblue;
 }
