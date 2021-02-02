@@ -8,8 +8,29 @@ function formChange(e) {
     e.currentTarget.reset();
 }
 
+function isContainerElement(element) {
+    return element.parentElement.nodeName === "OL";
+}
+
 function keydown(e) {
-    console.debug('keydown', e);
+    const targetElement = e.target;
+    const key = e.key;
+    console.log('uuuuu', key);
+
+    if (isContainerElement(targetElement)) {
+        switch (key) {
+            case 'ArrowDown':
+                if (targetElement.nextElementSibling) {
+                    targetElement.nextElementSibling.focus();
+                }
+                break;
+            case 'ArrowUp':
+                if (targetElement.previousElementSibling) {
+                    targetElement.previousElementSibling.focus();
+                }
+                break;
+        }
+    }
 }
 
 function keyup(e) {
@@ -46,16 +67,7 @@ export async function renderContainers(_containers, options = {}) {
     }
 
     for (const container of containers) {
-        containerList.appendChild(
-            $e('li', { tabindex: 0, id: `${container.cookieStoreId}` }, [
-                $e('input', { id: `e${container.cookieStoreId}`, type: 'radio', name: 'toggle-tabs-visibility', value: container.cookieStoreId }),
-                $e('label', { for: `e${container.cookieStoreId}`, class: `tabs-visibility border-color-${container.color}`, content: '>' }),
-                $e('input', { id: `c${container.cookieStoreId}`, type: 'radio', name: 'open-container', value: container.cookieStoreId }),
-                $e('label', { for: `c${container.cookieStoreId}` }, [
-                    $e('h2', { content: container.name })
-                ])
-            ])
-        );
+        containerList.appendChild(containerElement(container));
     }
 
     const form = $e('form', {}, [containerList])
@@ -65,30 +77,48 @@ export async function renderContainers(_containers, options = {}) {
     $('form').addEventListener('keyup', keyup, true);
 }
 
-export async function fillContainer(container) {
-    const tabs = browser.tabs.query({ cookieStoreId: container.cookieStoreId });
-    const tabsList = $(`li#${container.cookieStoreId}`).appendChild($e('ul'));
+export async function fillContainer(tabs) {
+    const containerElements = {};
 
-    console.log(await tabs);
     for (const tab of (await tabs)) {
-        tabsList.appendChild(
-            $e('li', { id: tab.id, class: 'border-color-red' }, [
-                $e('input', { id: `t${tab.id}`, type: 'radio', name: 'open-tab', value: tab.id }),
-                $e('label', { class: 'tab-center', for: `t${tab.id}` }, [
-                    $e('div', { class: 'images' }, [
-                        $e('img', { class: 'favicon', src: tab.favIconUrl }),
-                        $e('img', { class: 'thumbnail', src: tab.favIconUrl }),
-                    ]),
-                    $e('div', { class: 'tab-names' }, [
-                        $e('h3', { content: tab.title }),
-                        $e('h4', { content: tab.url }),
-                    ])
-                ]
-                ),
-                $e('input', { id: `x${tab.id}`, type: 'radio', name: 'close-tab', value: tab.id }),
-                $e('label', { for: `x${tab.id}`, class: 'close', content: 'x' })
-            ])
-        )
+        const cookieStoreId = tab.cookieStoreId;
+        const containerElement = $(`li#${cookieStoreId}`);
+        if (!containerElement) {
+            console.error(`container element for cookieStoreId=${cookieStoreId} not found`);
+        }
+        if (!containerElements[cookieStoreId]) {
+            containerElements[cookieStoreId] = containerElement.appendChild($e('ul'));;
+        }
+        containerElements[cookieStoreId].appendChild(tabElement(tab));
     }
+}
 
+function containerElement(container) {
+    return $e('li', { tabindex: 0, id: `${container.cookieStoreId}` }, [
+        $e('input', { id: `e${container.cookieStoreId}`, type: 'radio', name: 'toggle-tabs-visibility', value: container.cookieStoreId }),
+        $e('label', { for: `e${container.cookieStoreId}`, class: `tabs-visibility border-color-${container.color}`, content: '>' }),
+        $e('input', { id: `c${container.cookieStoreId}`, type: 'radio', name: 'open-container', value: container.cookieStoreId }),
+        $e('label', { for: `c${container.cookieStoreId}` }, [
+            $e('h2', { content: container.name })
+        ])
+    ]);
+}
+
+function tabElement(tab) {
+    return $e('li', { id: tab.id, class: 'border-color-red' }, [
+        $e('input', { id: `t${tab.id}`, type: 'radio', name: 'open-tab', value: tab.id }),
+        $e('label', { class: 'tab-center', for: `t${tab.id}` }, [
+            $e('div', { class: 'images' }, [
+                $e('img', { class: 'favicon', src: tab.favIconUrl }),
+                $e('img', { class: 'thumbnail', src: tab.favIconUrl }),
+            ]),
+            $e('div', { class: 'tab-names' }, [
+                $e('h3', { content: tab.title }),
+                $e('h4', { content: tab.url }),
+            ])
+        ]
+        ),
+        $e('input', { id: `x${tab.id}`, type: 'radio', name: 'close-tab', value: tab.id }),
+        $e('label', { for: `x${tab.id}`, class: 'close', content: 'x' })
+    ])
 }

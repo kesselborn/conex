@@ -9,7 +9,9 @@
     --tab-name-padding-right: 10px;
     --images-bottom-padding: -10px;
     --li-padding: 10px;
-    --tab-name-width: calc(var(--total-width) - var(--thumbnail-width) - var(--close-button-width) - var(--tab-name-padding-right) - 2* var(--li-padding));
+    --border-width-left-container-element: 5px;
+    --border-width-left-tab-element: 2px;
+    --tab-name-width: calc(var(--total-width) - var(--thumbnail-width) - var(--close-button-width) - var(--tab-name-padding-right) - 2* var(--li-padding) - var(--border-width-left-container-element) + var(--border-width-left-tab-element));
 }
 
 .border-color-gold {
@@ -73,7 +75,7 @@ ol>li {
 
 ol>li .tabs-visibility {
     display: grid;
-    border-left-width: 5px;
+    border-left-width: var(--border-width-left-container-element);
     border-left-style: solid;
     justify-content: center;
 }
@@ -86,7 +88,7 @@ ol>li>ul>li {
     background-color: lightcyan;
     display: grid;
     grid-template-columns: [start] 0px [tabinfo] auto 0px [closetab] var(--close-button-width) [end];
-    border-left-width: 2px;
+    border-left-width: var(--border-width-left-tab-element);
     border-left-style: solid;
     height: var(--row-height);
 }

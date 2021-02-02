@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderContainers(containers);
 
     for (const container of containers) {
-        fillContainer(container);
+        const tabs = browser.tabs.query({ cookieStoreId: container.cookieStoreId });
+        fillContainer(tabs);
     }
 });

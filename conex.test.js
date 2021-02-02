@@ -55,10 +55,10 @@ describe('rendering containers', function () {
   });
 });
 
-function typeKey(char, element) {
+function typeKey(key, element) {
 
-  const keyDownEvent = new KeyboardEvent('keydown', { 'key': 'ArrowDown', 'keyCode': 40 });
-  const keyUpEvent = new KeyboardEvent('keyup', { 'key': 'ArrowDown', 'keyCode': 40 });
+  const keyDownEvent = new KeyboardEvent('keydown', { 'key': key });
+  const keyUpEvent = new KeyboardEvent('keyup', { 'key': key });
 
   element.dispatchEvent(keyDownEvent);
   element.dispatchEvent(keyUpEvent);
@@ -74,6 +74,10 @@ describe('rendering containers', function () {
 
   after(async function () {
     await renderContainers(fakeContainers);
+    for (const container of fakeContainers) {
+      const tab = { cookieStoreId: container.cookieStoreId, id: container.color, title: `${container.color} tab`, url: `http://example.com/${container.color}` };
+      fillContainer(Promise.resolve([tab]));
+    }
   });
 
   it('should react on down and up arrow keys correctly', async function () {
@@ -81,9 +85,14 @@ describe('rendering containers', function () {
     const containerElements = $$('ol li');
 
     containerElements[0].focus();
-    typeKey('ArrowDown', document.activeElement);
+    typeKey('ArrowUp', document.activeElement);
+    expect(document.activeElement).to.equal(containerElements[0]);
 
+    typeKey('ArrowDown', document.activeElement);
     expect(document.activeElement).to.equal(containerElements[1]);
+
+    typeKey('ArrowUp', document.activeElement);
+    expect(document.activeElement).to.equal(containerElements[0]);
   });
 
 });
