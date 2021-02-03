@@ -14,6 +14,10 @@
     --tab-name-width: calc(var(--total-width) - var(--thumbnail-width) - var(--close-button-width) - var(--tab-name-padding-right) - 2* var(--li-padding) - var(--border-width-left-container-element) + var(--border-width-left-tab-element));
 }
 
+input[type="radio"] {
+    display: none;
+}
+
 .border-color-gold {
     border-color: goldenrod;
 }
@@ -70,7 +74,7 @@ ol, ul {
 
 ol>li {
     display: grid;
-    grid-template-columns: [start] 0px [toggle] var(--toggle-button-width) [container-name-radio-button] 0px [container-name] auto [end];
+    grid-template-columns: [start] var(--toggle-button-width) [container-name] auto [end];
 }
 
 ol>li .tabs-visibility {
@@ -87,7 +91,7 @@ ol>li>ul {
 ol>li>ul>li {
     background-color: lightcyan;
     display: grid;
-    grid-template-columns: [start] 0px [tabinfo] auto 0px [closetab] var(--close-button-width) [end];
+    grid-template-columns: [start] auto [closetab] var(--close-button-width) [end];
     border-left-width: var(--border-width-left-tab-element);
     border-left-style: solid;
     height: var(--row-height);
@@ -160,18 +164,6 @@ h4 {
 
 /* highlight container element on hover / focus */
 
-li:focus label, li:hover label {
-    background-color: lightskyblue;
-}
-
-/* do not highlight every tab element of the hovered/focused container element */
-
-ol>li:focus>ul>li label, li:hover>ul>li label {
-    background-color: white;
-}
-
-/* highlight tab element on hover / focus */
-
-ol>li:focus>ul>li label:focus, li:hover>ul>li label:hover {
+ul>li:focus, ul>li:hover, ol>li:focus h2, ol>li:hover h2:hover {
     background-color: lightskyblue;
 }

@@ -14,6 +14,7 @@ function keydown(e) {
     const key = e.key;
 
     if (isContainerElement(targetElement)) {
+        console.debug('keydown', e, targetElement.nextElementSibling);
         switch (key) {
             case 'ArrowDown':
                 if (targetElement.nextElementSibling) {
@@ -101,7 +102,7 @@ function containerElement(container) {
 }
 
 function tabElement(tab) {
-    return $e('li', { id: tab.id, class: 'border-color-red' }, [
+    return $e('li', { tabindex: 0, id: tab.id, class: 'border-color-red' }, [
         $e('input', { id: `t-${tab.id}`, type: 'radio', name: 'open-tab', value: tab.id }),
         $e('label', { for: `t-${tab.id}`, class: 'tab-center' }, [
             $e('div', { class: 'images' }, [

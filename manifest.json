@@ -21,6 +21,11 @@
     "default_icon": {
       "48": "icons/icon_48.png"
     }
+  }, 
+    "options_ui": {
+    "page": "conex-options-ui.html",
+    "browser_style": true,
+    "open_in_tab": true
   },
   "permissions": [
     "<all_urls>",

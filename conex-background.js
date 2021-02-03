@@ -9,3 +9,20 @@ window.foo = function () {
 window.bar = function () {
   xx = "new value";
 }
+
+window.logLevel = function (s) {
+  console.error('=> debug');
+  debugger;
+  switch (s) {
+    case 'debug':
+      console.debug('=> debug');
+      window.debug = console.debug;
+      window.info = console.info;
+      break;
+    case 'info':
+      console.debug('=> info');
+      window.debug = function () { };
+      window.info = console.info;
+      break;
+  }
+}

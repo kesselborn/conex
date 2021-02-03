@@ -45,24 +45,6 @@ export const $e = (name, attributes, children) => {
 
 export const _ = browser.i18n.getMessage;
 
-export const getConexDom = backgroundPage => () => {
-  const startupLoop = setInterval(() => {
-    if (backgroundPage.initializingConex) {
-      backgroundPage.initializingConex.then(
-        getDomTree => {
-          window.getThumbnail = backgroundPage.window.getThumbnail;
-          window.settings = backgroundPage.window.settings;
-          document.body.firstElementChild.replaceWith(getDomTree());
-        },
-        e => console.error(e)
-      );
-      clearInterval(startupLoop);
-    } else {
-      console.debug("waiting for background page to be initialized");
-    }
-  }, 100);
-};
-
 
 // const cleanUrl = url => {
 //   return url.replace('http://','').replace('https://','').toLowerCase();
@@ -115,3 +97,22 @@ export const debounce = (func, wait, immediate) => {
     }
   };
 };
+
+let _bg;
+function bg() {
+  if (!_bg) {
+    _bg = browser.extension.getBackgroundPage();
+  }
+
+  return _bg;
+}
+
+export function logLevel(s) {
+  bg().logLevel(s);
+}
+
+// export const debug = bg.debug;
+export const debug = function () {
+  debugger;
+  bg().debug('hallo');
+}
