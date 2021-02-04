@@ -1,38 +1,11 @@
 import { _, $, $e } from "./conex-helper.js";
+import { keydown, keyup } from "./conex-keyboard-input-handler.js";
 
 function formChange(e) {
     console.debug('form change', e, 'target:', e.target);
     e.currentTarget.reset();
 }
 
-function isContainerElement(element) {
-    return element.parentElement.nodeName === "OL";
-}
-
-function keydown(e) {
-    const targetElement = e.target;
-    const key = e.key;
-
-    if (isContainerElement(targetElement)) {
-        console.debug('keydown', e, targetElement.nextElementSibling);
-        switch (key) {
-            case 'ArrowDown':
-                if (targetElement.nextElementSibling) {
-                    targetElement.nextElementSibling.focus();
-                }
-                break;
-            case 'ArrowUp':
-                if (targetElement.previousElementSibling) {
-                    targetElement.previousElementSibling.focus();
-                }
-                break;
-        }
-    }
-}
-
-function keyup(e) {
-    console.debug('keyup', e);
-}
 
 export const defaultContainer =
     { cookieStoreId: 'firefox-default', color: "black", name: 'no container' };
@@ -60,7 +33,6 @@ export async function renderContainers(_containers, options = {}) {
         containers = containers.sort(function (a, b) {
             return orderedCookieStoreIds.indexOf(a.cookieStoreId) > orderedCookieStoreIds.indexOf(b.cookieStoreId);
         });
-        console.log(containers);
     }
 
     for (const container of containers) {

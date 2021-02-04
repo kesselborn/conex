@@ -2,6 +2,7 @@
 // eslint-disable-next-line no-empty-function
 // console.origDebug = console.debug;
 // console.debug = () => {};
+console.debug = function (..._) { }
 
 export const placeholderImage = browser.runtime.getURL("transparent.png");
 export const placeholderFailedImage = browser.runtime.getURL("transparent-failed.png");
@@ -97,22 +98,3 @@ export const debounce = (func, wait, immediate) => {
     }
   };
 };
-
-let _bg;
-function bg() {
-  if (!_bg) {
-    _bg = browser.extension.getBackgroundPage();
-  }
-
-  return _bg;
-}
-
-export function logLevel(s) {
-  bg().logLevel(s);
-}
-
-// export const debug = bg.debug;
-export const debug = function () {
-  debugger;
-  bg().debug('hallo');
-}

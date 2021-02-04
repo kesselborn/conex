@@ -26,9 +26,9 @@ describe('render containers', function () {
   });
 
   it('should respect container order option', async function () {
-    await renderContainers(fakeContainers, { order: ['fake-cookieStoreId-5', 'fake-cookieStoreId-2'] });
+    await renderContainers(fakeContainers, { order: ['container-4', 'container-1'] });
     const containerElements = $$('ol li');
-    const order = ['fake-cookieStoreId-5', 'fake-cookieStoreId-2', defaultContainer.cookieStoreId, 'fake-cookieStoreId-1', 'fake-cookieStoreId-3', 'fake-cookieStoreId-4'];
+    const order = ['container-4', 'container-1', defaultContainer.cookieStoreId, 'container-0', 'container-2', 'container-3'];
 
     for (let i = 0; i < containerElements.length; i++) {
       const input = $('input', containerElements[i]);
