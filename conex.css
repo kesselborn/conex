@@ -12,6 +12,14 @@
     --border-width-left-container-element: 5px;
     --border-width-left-tab-element: 2px;
     --tab-name-width: calc(var(--total-width) - var(--thumbnail-width) - var(--close-button-width) - var(--tab-name-padding-right) - 2* var(--li-padding) - var(--border-width-left-container-element) + var(--border-width-left-tab-element));
+    --search-box-width: calc(var(--total-width) - var(--toggle-button-width));
+    --search-box-height: var(--row-height);
+}
+
+input[type="text"] {
+    width: var(--search-box-width);
+    height: var(--search-box-height);
+    font-size: calc(var(--search-box-height) / 2);
 }
 
 input[type="radio"] {
