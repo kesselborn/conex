@@ -3,9 +3,7 @@ import { keydown, keyup } from "./conex-keyboard-input-handler.js";
 
 function formChange(e) {
     console.debug('form change', e, 'target:', e.target);
-    e.currentTarget.reset();
 }
-
 
 export const defaultContainer =
     { cookieStoreId: 'firefox-default', color: "black", name: 'no container' };
@@ -39,7 +37,9 @@ export async function renderContainers(_containers, options = {}) {
         containerList.appendChild(containerElement(container));
     }
 
-    const form = $e('form', {}, [containerList])
+    const searchField = $e('input', { id: 'search', placeholder: _('searchBoxPlaceholder'), type: 'text' })
+
+    const form = $e('form', {}, [searchField, containerList])
     window.document.body.appendChild(form);
     $('form').addEventListener('change', formChange, {}, true);
     $('form').addEventListener('keydown', keydown, true);

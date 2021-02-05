@@ -7,6 +7,10 @@
     "message": "close",
     "description": "close ... used as title attribute for closing tabs or containers"
   },
+  "searchBoxPlaceholder": {
+    "message": "search for title or url",
+    "description": "place holder displayed in the search field"
+  },
   "closeWithDetails": {
     "message": "close $WHAT$ $NAME$",
     "description": "tooltip that tell user what to close (second parameter is optional)",

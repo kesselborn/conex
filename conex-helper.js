@@ -2,7 +2,7 @@
 // eslint-disable-next-line no-empty-function
 // console.origDebug = console.debug;
 // console.debug = () => {};
-console.debug = function (..._) { }
+//console.debug = function (..._) { }
 
 export const placeholderImage = browser.runtime.getURL("transparent.png");
 export const placeholderFailedImage = browser.runtime.getURL("transparent-failed.png");
