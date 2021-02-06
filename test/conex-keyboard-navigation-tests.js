@@ -10,6 +10,56 @@ function typeKey(key, element) {
     element.dispatchEvent(keyUpEvent);
 }
 
+describe('keyboard actions', function () {
+    afterEach(clear);
+
+    it('should react on collapse / un-collapse keys', async function () {
+        await renderContainers(fakeContainers);
+        const firstFakeContainer = fakeContainers[0];
+        const lastFakeContainer = fakeContainers[fakeContainers.length - 1];
+
+        for (const container of [firstFakeContainer, lastFakeContainer]) {
+            const fakeTabs = [
+                { cookieStoreId: container.cookieStoreId, id: `tab-0-${container.cookieStoreId}`, title: `tab 0 / fake ${container.cookieStoreId}`, url: `http://example.com/${container.color}` },
+                { cookieStoreId: container.cookieStoreId, id: `tab-1-${container.cookieStoreId}`, title: `tab 1 / fake ${container.cookieStoreId}`, url: `http://example.com/${container.color}` },
+            ];
+            await fillContainer(fakeTabs);
+        }
+
+        const firstFakeContainerElement = $(`#${firstFakeContainer.cookieStoreId}`);
+        const tabInFirstFakeContainerElement = $(`#tab-1-${firstFakeContainer.cookieStoreId}`);
+        const lastFakeContainerElement = $(`#${lastFakeContainer.cookieStoreId}`);
+        const tabInLastFakeContainerElement = $(`#tab-1-${lastFakeContainer.cookieStoreId}`);
+
+
+        // when collapsing on a container element, go to the next container element
+        firstFakeContainerElement.focus();
+        expect(document.activeElement.classList.contains('collapsed')).to.be.false
+        typeKey({ key: 'ArrowLeft' }, document.activeElement);
+        expect(firstFakeContainerElement.classList.contains('collapsed')).to.be.true
+        expect(document.activeElement).to.equal(firstFakeContainerElement.nextElementSibling);
+
+        firstFakeContainerElement.focus();
+        typeKey({ key: 'ArrowRight' }, document.activeElement);
+        expect(document.activeElement.classList.contains('collapsed')).to.be.false
+        expect(document.activeElement).to.equal(firstFakeContainerElement);
+
+        // when collapsing on a tab element, jump to the next container element
+        tabInFirstFakeContainerElement.focus();
+        typeKey({ key: 'ArrowLeft' }, document.activeElement);
+        expect(firstFakeContainerElement.classList.contains('collapsed')).to.be.true
+        expect(document.activeElement).to.equal(firstFakeContainerElement.nextElementSibling);
+
+        typeKey({ key: 'ArrowRight' }, document.activeElement);
+
+        // when collapsing on a tab element of the _last_ container element, jump to the current container element
+        tabInLastFakeContainerElement.focus();
+        typeKey({ key: 'ArrowLeft' }, document.activeElement);
+        expect(lastFakeContainerElement.classList.contains('collapsed')).to.be.true
+        expect(document.activeElement).to.equal(lastFakeContainerElement);
+    });
+});
+
 describe('keyboard navigation', function () {
     afterEach(clear);
 
@@ -188,7 +238,6 @@ describe('keyboard navigation', function () {
             typeKey(keys.up, document.activeElement);
             expect(e2t(document.activeElement)).to.equal(e2t(containerElements[0]));
 
-            // Test 18
             typeKey(keys.up, document.activeElement);
             expect(e2t(document.activeElement)).to.equal(e2t($('#search')));
 

@@ -8,6 +8,7 @@ export const fakeContainers = [
     { cookieStoreId: 'container-4', color: "yellow", name: 'fake container-4' },
 ];
 
+chai.config.includeStack = true;
 export const expect = chai.expect;
 
 export async function clear() {

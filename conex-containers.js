@@ -2,7 +2,17 @@ import { _, $, $e } from "./conex-helper.js";
 import { keydown, keyup } from "./conex-keyboard-input-handler.js";
 
 function formChange(e) {
-    console.debug('form change', e, 'target:', e.target);
+    const target = e.target;
+    const action = target.name;
+
+    console.info('form change', e, 'target:', e.target);
+    switch (action) {
+        case 'toggle-tabs-visibility':
+            target.checked = false;
+            const containerElement = target.parentElement;
+            containerElement.classList.toggle('collapsed');
+            break;
+    }
 }
 
 export const defaultContainer =
@@ -65,7 +75,7 @@ export async function fillContainer(tabs) {
 function containerElement(container) {
     return $e('li', { tabindex: 0, id: `${container.cookieStoreId}` }, [
         $e('input', { id: `e-${container.cookieStoreId}`, type: 'radio', name: 'toggle-tabs-visibility', value: container.cookieStoreId }),
-        $e('label', { for: `e-${container.cookieStoreId}`, class: `tabs-visibility border-color-${container.color}`, content: '>' }),
+        $e('label', { for: `e-${container.cookieStoreId}`, class: `tabs-visibility border-color-${container.color}` }),
         $e('input', { id: `c-${container.cookieStoreId}`, type: 'radio', name: 'open-container', value: container.cookieStoreId }),
         $e('label', { for: `c-${container.cookieStoreId}` }, [
             $e('h2', { content: container.name })

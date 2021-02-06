@@ -1,4 +1,4 @@
 mocha.setup({
     ui: 'bdd',
-    reporter: 'spec'
+    reporter: 'html'
 })

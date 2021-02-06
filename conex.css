@@ -16,6 +16,14 @@
     --search-box-height: var(--row-height);
 }
 
+.no-match {
+    display: none;
+}
+
+.collapsed ul {
+    display: none;
+}
+
 input[type="text"] {
     width: var(--search-box-width);
     height: var(--search-box-height);
@@ -89,6 +97,15 @@ ol>li {
     grid-template-columns: [start] var(--toggle-button-width) [container-name] auto [end];
 }
 
+ol>li.collapsed .tabs-visibility::before {
+    content: '\025b6';
+    font-size: smaller;
+}
+
+ol>li .tabs-visibility::before {
+    content: '\025bc';
+}
+
 ol>li .tabs-visibility {
     display: grid;
     border-left-width: var(--border-width-left-container-element);
@@ -150,10 +167,13 @@ h2, h3, h4 {
 }
 
 h2 {
+    font-size: 12px;
+    font-weight: 100;
     display: grid;
     height: var(--row-height);
     align-content: center;
     padding-right: var(--tab-name-padding-right);
+    padding-left: var(--tab-name-padding-right);
 }
 
 h3 {
@@ -176,6 +196,6 @@ h4 {
 
 /* highlight container element on hover / focus */
 
-ul>li:focus, ul>li:hover, ol>li:focus h2, ol>li:hover h2:hover {
+ul>li:focus, ul>li:hover, ol>li:focus>label, ol>li:hover>label:hover {
     background-color: lightskyblue;
 }
