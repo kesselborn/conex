@@ -97,6 +97,12 @@ ol>li {
     grid-template-columns: [start] var(--toggle-button-width) [container-name] auto [end];
 }
 
+ol>li.empty .tabs-visibility::before {
+    content: '\025b6';
+    font-size: smaller;
+    color: gray;
+}
+
 ol>li.collapsed .tabs-visibility::before {
     content: '\025b6';
     font-size: smaller;

@@ -5,6 +5,23 @@ import { fakeContainers, expect, clear } from "./conex-test-helper.js"
 describe('render containers', function () {
   afterEach(clear);
 
+  it('should set class "empty" on empty containers', async function () {
+    await renderContainers(fakeContainers);
+    const containerElements = $$('ol li');
+
+    const tabs = [
+      { cookieStoreId: fakeContainers[0].cookieStoreId, id: fakeContainers[0].color, title: `${fakeContainers[0].color} tab`, url: `http://example.com/${fakeContainers[0].color}` },
+      { cookieStoreId: fakeContainers[0].cookieStoreId, id: `${fakeContainers[0].color}-2`, title: `${fakeContainers[0].color} tab 2`, url: `http://example.com/${fakeContainers[0].color}` },
+    ];
+    await fillContainer(Promise.resolve(tabs));
+
+    // containerElements[1] == fakeContainers[0] due to default container
+    // containerElements[1] contains tab elements (i.e. not empty)
+    // containerElements[2] does not contain tabs (i.e. empty)
+    expect(containerElements[1].classList.contains('empty')).to.be.false;
+    expect(containerElements[2].classList.contains('empty')).to.be.true;
+  });
+
   it('should render container elements correctly', async function () {
     await renderContainers(fakeContainers);
     const containerElements = $$('ol li');
