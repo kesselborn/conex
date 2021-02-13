@@ -27,9 +27,9 @@ describe('keyboard actions', function () {
         }
 
         const firstFakeContainerElement = $(`#${firstFakeContainer.cookieStoreId}`);
-        const tabInFirstFakeContainerElement = $(`#tab-1-${firstFakeContainer.cookieStoreId}`);
+        const tabInFirstFakeContainerElement = $(`#ttab-1-${firstFakeContainer.cookieStoreId}`);
         const lastFakeContainerElement = $(`#${lastFakeContainer.cookieStoreId}`);
-        const tabInLastFakeContainerElement = $(`#tab-1-${lastFakeContainer.cookieStoreId}`);
+        const tabInLastFakeContainerElement = $(`#ttab-1-${lastFakeContainer.cookieStoreId}`);
 
 
         // when collapsing on a container element, go to the next container element
@@ -99,14 +99,14 @@ describe('keyboard navigation', function () {
                 // second tab contains a tab that should be hidden (class == no-match)
                 case 1: // containerElements[2]
                     await fillContainer(Promise.resolve(fakeTabs));
-                    $(`#${fakeTabs[0].id}`).classList.add('no-match');
+                    $(`#t${fakeTabs[0].id}`).classList.add('no-match');
                     break;
                 // third container only contains hidden tabs and is hidden as well (happens on search)
                 case 2: // containerElements[3]
                     await fillContainer(Promise.resolve(fakeTabs));
                     $(`#${container.cookieStoreId}`).classList.add('no-match');
-                    $(`#${fakeTabs[0].id}`).classList.add('no-match');
-                    $(`#${fakeTabs[1].id}`).classList.add('no-match');
+                    $(`#t${fakeTabs[0].id}`).classList.add('no-match');
+                    $(`#t${fakeTabs[1].id}`).classList.add('no-match');
                     break;
                 case 3: // containerElements[4]
                     await fillContainer(Promise.resolve(fakeTabs));
@@ -114,7 +114,7 @@ describe('keyboard navigation', function () {
                     break;
                 case 4: // containerElements[5]
                     await fillContainer(Promise.resolve(fakeTabs));
-                    $(`#${fakeTabs[1].id}`).classList.add('no-match');
+                    $(`#t${fakeTabs[1].id}`).classList.add('no-match');
                     break;
                 case 5: // containerElements[6]
                     $(`#${container.cookieStoreId}`).classList.add('no-match');

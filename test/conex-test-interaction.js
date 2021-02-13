@@ -1,4 +1,4 @@
-import { closeContainer } from "../conex-helper.js";
+import { $, closeContainer } from "../conex-helper.js";
 import { renderContainers, fillContainer, defaultContainer } from "../conex-containers.js";
 import { expect, clear } from "./conex-test-helper.js"
 
@@ -20,6 +20,15 @@ describe('container management', function () {
     });
 });
 
+
+function timeoutResolver(ms) {
+    return new Promise((resolve, reject) => {
+        setTimeout(function () {
+            resolve(true);
+        }, ms)
+    });
+}
+
 describe('interactions', function () {
     beforeEach(async function () {
         testingTab = (await browser.tabs.query({ active: true }))[0];
@@ -27,18 +36,40 @@ describe('interactions', function () {
         const container = await browser.contextualIdentities.create({ name: name, color: 'blue', icon: 'circle' });
         containerId = container.cookieStoreId;
 
-        tab = await browser.tabs.create({ active: true, cookieStoreId: containerId, url: 'https://news.ycombinator.com/' })
+        tab = await browser.tabs.create({ active: true, cookieStoreId: containerId })
+
+        await renderContainers(await browser.contextualIdentities.query({}));
+        await fillContainer(await browser.tabs.query({ cookieStoreId: containerId }));
     })
 
     afterEach(async function () {
         await browser.tabs.update(testingTab.id, { active: true });
         await clear();
-        await browser.contextualIdentities.remove(containerId);
+        await closeContainer(containerId);
     });
 
-    it.skip('should be true', async function (done) {
-        await browser.tabs.update(tab.id, { active: true })
-        expect(true).to.be.true;
-        done();
+    it('tab switching should work correctly', async function () {
+        this.timeout(5000);
+        let newActiveTabId;
+        const setNewActiveTabId = (activeInfo) => {
+            newActiveTabId = activeInfo.tabId;
+        }
+
+        function tabChangeEventCatcher() {
+            return new Promise((resolve, reject) => {
+                let x = setInterval(function () {
+                    if (newActiveTabId !== undefined) {
+                        alert(newActiveTabId);
+                        clearInterval(x);
+                        resolve();
+                    }
+                }, 100)
+            });
+        }
+        browser.tabs.onActivated.addListener(setNewActiveTabId);
+
+        $(`#t${tab.id}`).click();
+        await tabChangeEventCatcher();
+        expect(newActiveTabId).to.not.equal(currentlyActiveTab.id);
     });
 });

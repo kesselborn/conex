@@ -85,7 +85,7 @@ function containerElement(container) {
 }
 
 function tabElement(tab) {
-    return $e('li', { tabindex: 0, id: tab.id, class: 'border-color-red' }, [
+    return $e('li', { tabindex: 0, id: `t${tab.id}`, class: 'border-color-red' }, [
         $e('input', { id: `t-${tab.id}`, type: 'radio', name: 'open-tab', value: tab.id }),
         $e('label', { for: `t-${tab.id}`, class: 'tab-center' }, [
             $e('div', { class: 'images' }, [
