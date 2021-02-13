@@ -8,10 +8,10 @@ export const placeholderImage = browser.runtime.getURL("transparent.png");
 export const placeholderFailedImage = browser.runtime.getURL("transparent-failed.png");
 
 // alias for document.querySelectorAll
-export const $$ = (s, parent) => (parent || window.document).querySelectorAll(s);
+export function $$(s, parent) { return (parent || window.document).querySelectorAll(s) };
 
 // alias for document.querySelector
-export const $ = (s, parent) => (parent || window.document).querySelector(s);
+export function $(s, parent) { return (parent || window.document).querySelector(s) };
 
 // creates a dom element, can contain children; attributes contains a map of the elements attributes
 // with 'content' being a special attribute representing the text node's content; underscores in
@@ -26,7 +26,7 @@ export const $ = (s, parent) => (parent || window.document).querySelector(s);
 //
 // <div class='foo'><span class='bar1' data-foo='bar'>baz1</span><span class='bar2'>baz2</span></div>
 //
-export const $e = (name, attributes, children) => {
+export function $e(name, attributes, children) {
   const e = window.document.createElement(name);
 
   for (const key in attributes) {
@@ -79,7 +79,7 @@ export const _ = browser.i18n.getMessage;
 //
 // let readSettings = _refreshSettings();
 
-export const debounce = (func, wait, immediate) => {
+export function debounce(func, wait, immediate) {
   let timeout = null;
   return (...args) => {
     const later = () => {
@@ -98,3 +98,12 @@ export const debounce = (func, wait, immediate) => {
     }
   };
 };
+
+export async function closeContainer(containerId) {
+  const tabClosings = [];
+  for (const tab of (await browser.tabs.query({ cookieStoreId: containerId }))) {
+    tabClosings.push(browser.tabs.remove(tab.id));
+  }
+  await Promise.all(tabClosings);
+  await browser.contextualIdentities.remove(containerId);
+}
