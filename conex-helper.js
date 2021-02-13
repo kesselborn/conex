@@ -1,11 +1,11 @@
 // alias for document.querySelectorAll
-const $ = function(s, parent){ return (parent || document).querySelectorAll(s); };
+const $ = function (s, parent) { return (parent || document).querySelectorAll(s); };
 
 // alias for document.querySelector
-const $1 = function(s, parent){ return (parent || document).querySelector(s); };
+const $1 = function (s, parent) { return (parent || document).querySelector(s); };
 
-const cleanUrl = function(url) {
-  return url.replace('http://','').replace('https://','').toLowerCase();
+const cleanUrl = function (url) {
+  return url.replace('http://', '').replace('https://', '').toLowerCase();
 };
 
 var settings = {};
@@ -13,6 +13,8 @@ var settings = {};
 function _refreshSettings() {
   return new Promise((resolve, reject) => {
     browser.storage.local.get([
+      'conex/settings/use-system-theme',
+      'conex/settings/enable-dark-theme',
       'conex/settings/create-thumbnail',
       'conex/settings/experimental-features',
       'conex/settings/hide-tabs',

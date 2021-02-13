@@ -6,14 +6,36 @@
   <meta content="utf-8" http-equiv="encoding">
 </head>
 
-<body id='browseraction'>
+<body id='browseraction' theme='dark'>
   <form id='search-form'>
-    <input tabindex='1' id='search' type='search' autocomplete="off" placeholder="search for title or url" autofocus></input>
-    <a id='new-container-button' href="#" title='create new container'>+</a>
+    <span id="search-span">
+      <label for="search">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+      </label>
+      <input tabindex='1' id='search' type='search' autocomplete="off" placeholder="search for title or url" autofocus>
+    </span>
+    <a id='new-container-button' tabindex="1" href="#" title='create new container'>
+      <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd"
+          d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd">
+        </path>
+      </svg>
+    </a>
   </form>
   <form id='new-container-form'>
     <div id='new-container'>
-      <input id='new-container-name' placeholder='container name' type='text'></input>
+      <button id="back-to-search-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd"
+            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+            clip-rule="evenodd"></path>
+        </svg></button>
+      <span id="new-container-span">
+        <input id='new-container-name' placeholder='container name' type='text'>
+      </span>
       <select id='color'>
         <option class='blue' val="blue">&#9679;</option>
         <option class='turquoise' val='turquoise'>&#9679;</option>
@@ -24,7 +46,7 @@
         <option class='pink' val='pink'>&#9679;</option>
         <option class='purple' val='purple'>&#9679;</option>
       </select>
-      <input type='submit' value='add'></input>
+      <input type='submit' value='add'>
     </div>
   </form>
   <div id='tabcontainers'></div>

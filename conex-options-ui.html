@@ -1,110 +1,135 @@
 <!DOCTYPE html>
 <html>
-  <title>Conex settings</title>
-  <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="conex-options-ui.css">
-  </head>
-  <body id="options-ui">
-    <div>
-      <h2>Options</h2>
-        <div class='switch'>
-          <input id='hide-tabs' class='option-toggle option-toggle-round' type='checkbox'>
-          <label for='hide-tabs'></label>
-          <span class='checkbox-label'>only show tabs of the current container</span>
-        </div>
+<title>Conex settings</title>
 
-        <div class='switch'>
-          <input id='create-thumbnail' class='option-toggle option-toggle-round' type='checkbox'>
-          <label for='create-thumbnail'></label>
-          <span class='checkbox-label'>create tab thumbnails (careful: this can cause performance issues)</span>
-        </div>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="conex-options-ui.css">
+</head>
 
-        <div class='switch'>
-          <input id='show-favicons' class='option-toggle option-toggle-round' type='checkbox'>
-          <label for='show-favicons'></label>
-          <span class='checkbox-label'>show favicons in Conex popup (careful: this can cause performance issues)</span>
-        </div>
-
-        <div class='switch'>
-          <input id='search-bookmarks' class='option-toggle option-toggle-round' type='checkbox'>
-          <label for='search-bookmarks'></label>
-          <span class='checkbox-label'>include bookmarks in search</span>
-        </div>
-
-        <div class='switch'>
-          <input id='search-history' class='option-toggle option-toggle-round' type='checkbox'>
-          <label for='search-history'></label>
-          <span class='checkbox-label'>include history in search</span>
-        </div>
-
-        <div class='switch'>
-          <input id='show-container-selector' class='option-toggle option-toggle-round' type='checkbox'>
-          <label for='show-container-selector'></label>
-          <span class='checkbox-label'>ask in which container to open external links instead of always using the current container</span>
-        </div>
-
-        <div class='switch'>
-          <input id='close-reopened-tabs' class='option-toggle option-toggle-round' type='checkbox'>
-          <label for='close-reopened-tabs'></label>
-          <span class='checkbox-label'>(experimental) close tabs that are re-opened in another container <span title="reopening a tab in another container is now possible via the tab context menu entry 'Reopen in Container'">&#9432;</span></span>
-        </div>
+<body id="options-ui">
+  <div>
+    <h2>Options</h2>
+    <div class="switch">
+      <input id="use-system-theme" class="option-toggle option-toggle-round" type="checkbox" checked>
+      <label for="use-system-theme"></label>
+      <span class="checkbox-label">🌑|☀ use system's theme </span>
     </div>
-    <div>
-      <h2>Keyboard shortcuts</h2>
-      <table>
-        <thead></thead>
-      </table>
-      <h3>Browser context</h3>
-      <ul>
-        <li><span class='keyboard-shortcut-help keys'>&darr; click to edit shortcut &darr;</span></li>
-        <li>
-          <span class="keys">
-            <tt>
-              <input id='_execute_browser_action' title='focus and type shortcut you want to configure' readonly="1" class='keyboard-shortcut' type='text' value='' />
-            </tt>
-          </span>
-          <span>open Conex popup</span>
-        </li>
-        <li>
-          <span class="keys">
-            <tt>
-              <input id='new-container' title='focus and type shortcut you want to configure' readonly="1" class='keyboard-shortcut' type='text' value='' />
-            </tt>
-          </span>
-          <span>create new container</span>
-        </li>
-        <li><span class="keys"><tt>Ctrl-T / CMD-T</tt></span>open new tab in current container</li>
-      </ul>
-
-      <h3>Within the Conex popup</h3>
-      <ul>
-        <li><span class="keys"><tt>&darr;</tt> / <tt>Tab</tt></span>jump to next container or tab in the popup list</li>
-        <li><span class="keys"><tt>&uarr;</tt> / <tt>Shift+Tab</tt></span>jump to previous container or tab in the popup list</li>
-        <li><span class="keys"><tt>Enter</tt></span>on a container: activate the last accessed tab of the selected container</li>
-        <li><span class="keys"><tt></tt></span>on a tab: activate selected tab</li>
-        <li><span class="keys"><tt>Backspace</tt></span>on a tab: close the selected tab</li>
-        <li><span class="keys"><tt></tt></span>on a container: delete selected container</li>
-        <li><span class="keys"><tt>Backspace+Shift</tt></span>on a container: delete selected container without confirmation dialog</li>
-        <li><span class="keys"><tt>&rarr;</tt> / <tt>&larr;</tt> / <tt>Ctrl+Enter</tt></span>on a container: expand / unexpand tab list of the selected container</li>
-        <li><span class="keys"><tt>Ctrl+Shift+Enter</tt> / <tt>Ctrl+ +</tt></span>on a container: open a new tab in the selected container and activate this tab</li>
-        <li><span class="keys"></span>in the search box: open new container dialog</span></li>
-      </ul>
+    <div class="switch">
+      <input id="enable-dark-theme" class="option-toggle option-toggle-round" type="checkbox">
+      <label for="enable-dark-theme"></label>
+      <span class="checkbox-label">🌑 enable dark theme</span>
     </div>
-    <div>
-      <h2>adding, deleting and renaming containers</h2>
-      <p>Please go to preferences / containers (url: <b>about:preferences#containers</b>) for container management for now</p>
-    </div>
-    <div>
-      <h2>Import TabGroups backup file</h2>
-      <p>Tabgroups, windows and all tabs will be recreated, apart from urls starting with 'about://' due to technical limitations. All tabs and windows will be opened rather quickly, so expect your CPU fan to be noisy for a while</p>
-      <label class="custom-file-upload">
-        <input id="file-picker" type="file"/>
-        Select TabGroup backup file
-      </label>
+    <div class='switch'>
+      <input id='hide-tabs' class='option-toggle option-toggle-round' type='checkbox'>
+      <label for='hide-tabs'></label>
+      <span class='checkbox-label'>only show tabs of the current container</span>
     </div>
 
-    <script type="text/javascript" src="conex-helper.js"></script>
-    <script type="text/javascript" src="conex-options-ui.js"></script>
-  </body>
+    <div class='switch'>
+      <input id='create-thumbnail' class='option-toggle option-toggle-round' type='checkbox'>
+      <label for='create-thumbnail'></label>
+      <span class='checkbox-label'>create tab thumbnails (careful: this can cause performance issues)</span>
+    </div>
+
+    <div class='switch'>
+      <input id='show-favicons' class='option-toggle option-toggle-round' type='checkbox'>
+      <label for='show-favicons'></label>
+      <span class='checkbox-label'>show favicons in Conex popup (careful: this can cause performance issues)</span>
+    </div>
+
+    <div class='switch'>
+      <input id='search-bookmarks' class='option-toggle option-toggle-round' type='checkbox'>
+      <label for='search-bookmarks'></label>
+      <span class='checkbox-label'>include bookmarks in search</span>
+    </div>
+
+    <div class='switch'>
+      <input id='search-history' class='option-toggle option-toggle-round' type='checkbox'>
+      <label for='search-history'></label>
+      <span class='checkbox-label'>include history in search</span>
+    </div>
+
+    <div class='switch'>
+      <input id='show-container-selector' class='option-toggle option-toggle-round' type='checkbox'>
+      <label for='show-container-selector'></label>
+      <span class='checkbox-label'>ask in which container to open external links instead of always using the current
+        container</span>
+    </div>
+
+    <div class='switch'>
+      <input id='close-reopened-tabs' class='option-toggle option-toggle-round' type='checkbox'>
+      <label for='close-reopened-tabs'></label>
+      <span class='checkbox-label'>(experimental) close tabs that are re-opened in another container <span
+          title="reopening a tab in another container is now possible via the tab context menu entry 'Reopen in Container'">&#9432;</span></span>
+    </div>
+  </div>
+  <div>
+    <h2>Keyboard shortcuts</h2>
+    <table>
+      <thead></thead>
+    </table>
+    <h3>Browser context</h3>
+    <ul>
+      <li><span class='keyboard-shortcut-help keys'>&darr; click to edit shortcut &darr;</span></li>
+      <li>
+        <span class="keys">
+          <tt>
+            <input id='_execute_browser_action' title='focus and type shortcut you want to configure' readonly="1"
+              class='keyboard-shortcut' type='text' value='' />
+          </tt>
+        </span>
+        <span>open Conex popup</span>
+      </li>
+      <li>
+        <span class="keys">
+          <tt>
+            <input id='new-container' title='focus and type shortcut you want to configure' readonly="1"
+              class='keyboard-shortcut' type='text' value='' />
+          </tt>
+        </span>
+        <span>create new container</span>
+      </li>
+      <li><span class="keys"><tt>Ctrl-T / CMD-T</tt></span>open new tab in current container</li>
+    </ul>
+
+    <h3>Within the Conex popup</h3>
+    <ul>
+      <li><span class="keys"><tt>&darr;</tt> / <tt>Tab</tt></span>jump to next container or tab in the popup list</li>
+      <li><span class="keys"><tt>&uarr;</tt> / <tt>Shift+Tab</tt></span>jump to previous container or tab in the popup
+        list</li>
+      <li><span class="keys"><tt>Enter</tt></span>on a container: activate the last accessed tab of the selected
+        container</li>
+      <li><span class="keys"><tt></tt></span>on a tab: activate selected tab</li>
+      <li><span class="keys"><tt>Backspace</tt></span>on a tab: close the selected tab</li>
+      <li><span class="keys"><tt></tt></span>on a container: delete selected container</li>
+      <li><span class="keys"><tt>Backspace+Shift</tt></span>on a container: delete selected container without
+        confirmation dialog</li>
+      <li><span class="keys"><tt>&rarr;</tt> / <tt>&larr;</tt> / <tt>Ctrl+Enter</tt></span>on a container: expand /
+        unexpand tab list of the selected container</li>
+      <li><span class="keys"><tt>Ctrl+Shift+Enter</tt> / <tt>Ctrl+ +</tt></span>on a container: open a new tab in the
+        selected container and activate this tab</li>
+      <li><span class="keys"></span>in the search box: open new container dialog</span></li>
+    </ul>
+  </div>
+  <div>
+    <h2>adding, deleting and renaming containers</h2>
+    <p>Please go to preferences / containers (url: <b>about:preferences#containers</b>) for container management for now
+    </p>
+  </div>
+  <div>
+    <h2>Import TabGroups backup file</h2>
+    <p>Tabgroups, windows and all tabs will be recreated, apart from urls starting with 'about://' due to technical
+      limitations. All tabs and windows will be opened rather quickly, so expect your CPU fan to be noisy for a while
+    </p>
+    <label class="custom-file-upload">
+      <input id="file-picker" type="file" />
+      Select TabGroup backup file
+    </label>
+  </div>
+
+  <script type="text/javascript" src="conex-helper.js"></script>
+  <script type="text/javascript" src="conex-options-ui.js"></script>
+</body>
+
 </html>
