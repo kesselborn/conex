@@ -1,4 +1,5 @@
-import { _, $$, $ } from "./conex-helper.js";
+import { _, $$, $ } from './conex-helper.js';
+import { htmlId2TabId } from './conex-tab-element.js';
 
 export function keydown(e) {
     console.debug('keydown', e);
@@ -94,6 +95,12 @@ function keyDownOnTabElement(e) {
 
     let curTabElement = tabElement;
     switch (key) {
+        case 'Enter':
+            e.preventDefault();
+            // if the shiftKey is pressed, fall through to 'ArrowUp'
+            const tabId = htmlId2TabId(tabElement.id);
+            browser.tabs.update(tabId, { active: true });
+            break;
         case 'ArrowDown':
         case 'Tab':
             e.preventDefault();
@@ -152,9 +159,9 @@ function previousVisibleContainerSibling(curContainerElement) {
 }
 
 function isContainerElement(element) {
-    return element.parentElement.nodeName === "OL";
+    return element.nodeName === "OL" || element.parentElement.nodeName === "OL";
 }
 
 function isTabElement(element) {
-    return element.parentElement.nodeName === "UL";
+    return element.nodeName === "UL" || element.parentElement.nodeName === "UL";
 }

@@ -1,7 +1,7 @@
 import { $, closeContainer } from '../conex-helper.js';
-import { renderContainers, fillContainer, defaultContainer } from '../conex-containers.js';
-import { expect, clear } from './conex-test-helper.js'
-import { tabId2HtmlOpenTabId } from '../conex-tab-element.js';
+import { renderContainers, fillContainer } from '../conex-containers.js';
+import { typeKey, expect, clear } from './conex-test-helper.js'
+import { tabId2HtmlId, tabId2HtmlOpenTabId } from '../conex-tab-element.js';
 
 let newContainerId;
 let newTab;
@@ -50,11 +50,23 @@ describe('interactions', function () {
         await closeContainer(newContainerId);
     });
 
-    it('tab switching should work correctly', async function () {
+    it('should switch tabs when clicking with mouse on the open-tab radio button', async function () {
         let activeTab = await browser.tabs.query({ active: true });
         expect(`testing-tab-id-${activeTab[0].id}`).to.equal(`testing-tab-id-${testingTab.id}`);
 
         $(`#${tabId2HtmlOpenTabId(newTab.id)}`).click();
+        // let the event handling do its work
+        timeoutResolver(100);
+
+        activeTab = await browser.tabs.query({ active: true });
+        expect(`new-tab-id-${activeTab[0].id}`).to.equal(`new-tab-id-${newTab.id}`);
+    });
+
+    it('should switch tabs when hitting enter on tab element', async function () {
+        let activeTab = await browser.tabs.query({ active: true });
+        expect(`testing-tab-id-${activeTab[0].id}`).to.equal(`testing-tab-id-${testingTab.id}`);
+
+        typeKey({ key: 'Enter' }, $(`#${tabId2HtmlId(newTab.id)}`));
         // let the event handling do its work
         timeoutResolver(100);
 

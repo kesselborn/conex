@@ -1,15 +1,8 @@
 import { $, $$ } from "../conex-helper.js";
 import { renderContainers, fillContainer } from "../conex-containers.js";
-import { fakeContainers, expect, clear } from "./conex-test-helper.js"
+import { typeKey, fakeContainers, expect, clear } from "./conex-test-helper.js"
 import { tabId2HtmlId } from '../conex-tab-element.js';
 
-function typeKey(key, element) {
-    const keyDownEvent = new KeyboardEvent('keydown', { 'key': key.key, 'shiftKey': !!key.shift });
-    const keyUpEvent = new KeyboardEvent('keyup', { 'key': key.key, 'shiftKey': !!key.shift });
-
-    element.dispatchEvent(keyDownEvent);
-    element.dispatchEvent(keyUpEvent);
-}
 
 describe('keyboard actions', function () {
     afterEach(clear);

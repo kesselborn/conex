@@ -11,6 +11,14 @@ export const fakeContainers = [
 chai.config.includeStack = true;
 export const expect = chai.expect;
 
+export function typeKey(key, element) {
+    const keyDownEvent = new KeyboardEvent('keydown', { 'key': key.key, 'shiftKey': !!key.shift });
+    const keyUpEvent = new KeyboardEvent('keyup', { 'key': key.key, 'shiftKey': !!key.shift });
+
+    element.dispatchEvent(keyDownEvent);
+    element.dispatchEvent(keyUpEvent);
+}
+
 export async function clear() {
     const form = $('form');
     if (form) {
