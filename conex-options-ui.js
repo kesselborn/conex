@@ -1,5 +1,36 @@
 const filePicker = $1('#file-picker');
 const bg = browser.extension.getBackgroundPage();
+const systemThemeCheckbox = document.getElementById("use-system-theme");
+
+async function isSystemThemeCheckBoxChecked() {
+  await readSettings;
+
+  if (settings["use-system-theme"]) {
+    document.getElementById("enable-dark-theme").disabled = true;
+    document.getElementById("enable-dark-theme").parentElement.style.display = "none";
+  } else {
+    document.getElementById("enable-dark-theme").disabled = false;
+    document.getElementById("enable-dark-theme").parentElement.style.display = "unset";
+  }
+}
+
+isSystemThemeCheckBoxChecked();
+
+systemThemeCheckbox.addEventListener("change", function (event) {
+  if (this.checked) {
+    document.getElementById("enable-dark-theme").disabled = true;
+    document.getElementById("enable-dark-theme").parentElement.style.display = "none";
+    if (window.matchMedia && !!window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      settings["enable-dark-theme"] = true;
+    }
+    else {
+      settings["enable-dark-theme"] = false;
+    }
+  } else {
+    document.getElementById("enable-dark-theme").disabled = false;
+    document.getElementById("enable-dark-theme").parentElement.style.display = "unset";
+  }
+});
 
 filePicker.addEventListener('change', picker => {
   const file = picker.target.files[0];
@@ -50,8 +81,8 @@ filePicker.addEventListener('change', picker => {
 
 async function fillShortcutFields(field) {
   const commands = await browser.commands.getAll();
-  for(command of commands) {
-    if(field == undefined || field == command.name) {
+  for (command of commands) {
+    if (field == undefined || field == command.name) {
       $1('#' + command.name).value = command.shortcut;
     }
   }
@@ -72,12 +103,12 @@ async function setupShortcutListeners() {
     });
 
     input.addEventListener('keypress', e => {
-      if(typeof browser.commands.update != 'function') {
+      if (typeof browser.commands.update != 'function') {
         alert('shortcut remapping is only available in Firefox >= v60');
         return;
       }
       const normalizedKey = normalizeKey(e.code);
-      if((e.ctrlKey || e.altKey || e.metaKey) && normalizedKey) {
+      if ((e.ctrlKey || e.altKey || e.metaKey) && normalizedKey) {
         const shortcutParts = [e.ctrlKey ? (isMac ? "MacCtrl" : "Ctrl") : (e.altKey ? "Alt" : "Command")];
         if (e.shiftKey) {
           shortcutParts.push("Shift");
@@ -86,14 +117,14 @@ async function setupShortcutListeners() {
         shortcutParts.push(normalizedKey);
         const shortcut = shortcutParts.join("+");
 
-        for(const e of $('.keyboard-shortcut')) {
-          if(shortcut == e.value) {
+        for (const e of $('.keyboard-shortcut')) {
+          if (shortcut == e.value) {
             alert('Key combinations must differ');
             e.target.blur();
             return;
           }
         }
-        
+
         e.target.value = shortcut;
         browser.commands.update({
           name: e.target.id,
@@ -125,10 +156,10 @@ NOTE: if a key-combination triggers a different action, you will not create a ne
 
 // from: https://github.com/piroor/webextensions-lib-shortcut-customize-ui/blob/master/ShortcutCustomizeUI.js
 function normalizeKey(value) {
-  const aKey = value.trim().replace(/^Digit/,"").replace(/^Key/,"").toLowerCase();
+  const aKey = value.trim().replace(/^Digit/, "").replace(/^Key/, "").toLowerCase();
   const normalizedKey = aKey.replace(/\s+/g, '');
   if (/^[a-z0-9]$/i.test(normalizedKey) ||
-      /^F([1-9]|1[0-2])$/i.test(normalizedKey))
+    /^F([1-9]|1[0-2])$/i.test(normalizedKey))
     return aKey.toUpperCase();
 
   switch (normalizedKey) {
@@ -173,17 +204,17 @@ function normalizeKey(value) {
       return 'MediaStop';
 
     default:
-      for (let map of [keyNameMapLocales[browser.i18n.getUILanguage()] || 
-                       keyNameMapLocales[browser.i18n.getUILanguage().replace(/[-_].+$/, '')] || 
-                       {}, keyNameMapLocales.global]) {
+      for (let map of [keyNameMapLocales[browser.i18n.getUILanguage()] ||
+        keyNameMapLocales[browser.i18n.getUILanguage().replace(/[-_].+$/, '')] ||
+        {}, keyNameMapLocales.global]) {
         for (let key of Object.keys(map)) {
           if (Array.isArray(map[key])) {
             if (map[key].some(aLocalizedKey => aLocalizedKey.toLowerCase() == aKey))
               return key;
-        }
-        else {
+          }
+          else {
             if (map[key] &&
-                map[key].toLowerCase() == aKey)
+              map[key].toLowerCase() == aKey)
               return key;
           }
         }
@@ -195,21 +226,21 @@ function normalizeKey(value) {
 
 const keyNameMapLocales = {
   global: {
-    Comma:  [','],
+    Comma: [','],
     Period: ['.'],
-    Space:  [' '],
-    Up:     ['↑'],
-    Down:   ['↓'],
-    Left:   ['←', '<=', '<-'],
-    Right:  ['→', '=>', '->'],
+    Space: [' '],
+    Up: ['↑'],
+    Down: ['↓'],
+    Left: ['←', '<=', '<-'],
+    Right: ['→', '=>', '->'],
   },
   // define tables with https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/i18n/LanguageCode
   ja: {
     // key: valid key name listed at https://developer.mozilla.org/en-US/Add-ons/WebExtensions/manifest.json/commands#Shortcut_values
     // value: array of localized key names
-    Up:    ['上'],
-    Down:  ['下'],
-    Left:  ['左'],
+    Up: ['上'],
+    Down: ['下'],
+    Left: ['左'],
     Right: ['右'],
     // you can localize modifier keys also.
     // Alt:     ['オルト'],
@@ -221,9 +252,9 @@ const keyNameMapLocales = {
   ru: {
     // key: valid key name listed at https://developer.mozilla.org/en-US/Add-ons/WebExtensions/manifest.json/commands#Shortcut_values
     // value: array of localized key names
-    Up:    ['Вверх'],
-    Down:  ['Вниз'],
-    Left:  ['Влево'],
+    Up: ['Вверх'],
+    Down: ['Вниз'],
+    Left: ['Влево'],
     Right: ['Вправо'],
     Comma: ['Запятая'],
     Period: ['Точка'],
@@ -246,12 +277,12 @@ browser.contextualIdentities.query({}).then(identities => {
   }
 }, e => console.error(e));
 
-var handlePermission = function(setting, value) {
+var handlePermission = function (setting, value) {
   return new Promise((resolve, reject) => {
     const mapping = {
-      'search-bookmarks': {permissions: ['bookmarks']},
-      'search-history': {permissions: ['history']},
-      'hide-tabs': {permissions: ['tabHide']},
+      'search-bookmarks': { permissions: ['bookmarks'] },
+      'search-history': { permissions: ['history'] },
+      'hide-tabs': { permissions: ['tabHide'] },
       /* 'create-thumbnail': {origins: ['<all_urls>']}, <all_urls> does not work correctly for optional permissions :( */
     };
 
@@ -284,24 +315,23 @@ var handlePermission = function(setting, value) {
 readSettings.then(_ => {
   for (const key in settings) {
     const checkbox = $1('#' + key);
-    if(settings[key] && checkbox) {
+    if (settings[key] && checkbox) {
       checkbox.checked = 'checked';
     }
   }
 });
 
 let permissionQueryOpen = false;
-for(const element of $('input[type=checkbox]')) {
+for (const element of $('input[type=checkbox]')) {
   element.addEventListener('click', event => {
     const settingId = 'conex/settings/' + event.target.id;
     const value = event.target.checked;
-    if(permissionQueryOpen) {
-        event.target.checked = !event.target.checked;
-        return;
+    if (permissionQueryOpen) {
+      event.target.checked = !event.target.checked;
+      return;
     }
 
-
-    const handlePermissionResult = function(success) {
+    const handlePermissionResult = function (success) {
       permissionQueryOpen = false;
       if (success) {
         console.info(`setting ${settingId} to ${value}`);
@@ -314,13 +344,12 @@ for(const element of $('input[type=checkbox]')) {
       }
     }
 
-
     if (event.target.id == 'hide-tabs') {
       if (value == true) {
         handlePermission(event.target.id, value).then(success => {
-          if(success) {
+          if (success) {
             browser.tabs.query({ active: true, windowId: browser.windows.WINDOW_ID_CURRENT }).then(tabs => {
-              if(tabs.length > 0) {
+              if (tabs.length > 0) {
                 const activeTab = tabs[0];
                 bg.showCurrentContainerTabsOnly(activeTab.id);
               } else {
