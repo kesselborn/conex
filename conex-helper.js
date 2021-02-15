@@ -4,14 +4,14 @@
 // console.debug = () => {};
 // console.debug = function (..._) { }
 
-export const placeholderImage = browser.runtime.getURL("transparent.png");
-export const placeholderFailedImage = browser.runtime.getURL("transparent-failed.png");
+export const placeholderImage = browser.runtime.getURL('transparent.png');
+export const placeholderFailedImage = browser.runtime.getURL('transparent-failed.png');
 
 // alias for document.querySelectorAll
-export function $$(s, parent) { return (parent || window.document).querySelectorAll(s) };
+export function $$(s, parent) { return (parent || window.document).querySelectorAll(s); };
 
 // alias for document.querySelector
-export function $(s, parent) { return (parent || window.document).querySelector(s) };
+export function $(s, parent) { return (parent || window.document).querySelector(s); };
 
 // creates a dom element, can contain children; attributes contains a map of the elements attributes
 // with 'content' being a special attribute representing the text node's content; underscores in
@@ -30,10 +30,10 @@ export function $e(name, attributes, children) {
   const e = window.document.createElement(name);
 
   for (const key in attributes) {
-    if (key === "content") {
+    if (key === 'content') {
       e.appendChild(window.document.createTextNode(attributes[key]));
     } else {
-      e.setAttribute(key.replace(/_/ug, "-"), attributes[key]);
+      e.setAttribute(key.replace(/_/ug, '-'), attributes[key]);
     }
   }
 
@@ -45,7 +45,6 @@ export function $e(name, attributes, children) {
 };
 
 export const _ = browser.i18n.getMessage;
-
 
 // const cleanUrl = url => {
 //   return url.replace('http://','').replace('https://','').toLowerCase();

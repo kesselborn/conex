@@ -1,6 +1,6 @@
-import { $, $$ } from "../conex-helper.js";
-import { renderContainers, fillContainer, defaultContainer } from "../conex-containers.js";
-import { fakeContainers, expect, clear } from "./conex-test-helper.js"
+import { $, $$ } from '../conex-helper.js';
+import { renderContainers, fillContainer, defaultContainer } from '../conex-containers.js';
+import { fakeContainers, expect, clear } from './conex-test-helper.js';
 
 describe('render containers', function () {
   afterEach(clear);
