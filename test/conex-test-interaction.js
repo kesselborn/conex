@@ -10,7 +10,7 @@ let testingTab;
 describe('container management', function () {
   it('should close tabs before closing the container', async function () {
     const tabCntBefore = (await browser.tabs.query({})).length;
-    const name = (new Date()).toString();
+    const name = new Date().toString();
     const container = await browser.contextualIdentities.create({ name: name, color: 'blue', icon: 'circle' });
     await browser.tabs.create({ active: false, cookieStoreId: container.cookieStoreId });
 
@@ -35,7 +35,11 @@ describe('interactions', function () {
   });
 
   beforeEach(async function () {
-    const newContainer = await browser.contextualIdentities.create({ name: (new Date()).toString(), color: 'blue', icon: 'circle' });
+    const newContainer = await browser.contextualIdentities.create({
+      name: new Date().toString(),
+      color: 'blue',
+      icon: 'circle',
+    });
     newContainerId = newContainer.cookieStoreId;
 
     newTab = await browser.tabs.create({ active: false, cookieStoreId: newContainerId, url: 'http://example.com' });
@@ -72,5 +76,24 @@ describe('interactions', function () {
 
     activeTab = await browser.tabs.query({ active: true });
     expect(`new-tab-id-${activeTab[0].id}`).to.equal(`new-tab-id-${newTab.id}`);
+  });
+
+  it('should close tab when hitting backspace on tab element', async function () {
+    let tab;
+    try {
+      tab = await browser.tabs.get(newTab.id);
+    } catch (_) {}
+
+    expect(tab.id).to.equal(newTab.id);
+    typeKey({ key: 'Backspace' }, $(`#${tabId2HtmlId(newTab.id)}`));
+    // let the event handling do its work
+    timeoutResolver(100);
+
+    tab = undefined;
+    try {
+      tab = await browser.tabs.get(newTab.id);
+    } catch (_) {}
+    expect(tab).to.be.undefined;
+    expect($(`#${tabId2HtmlId(newTab.id)}`).classList.contains('closed')).to.be.true;
   });
 });

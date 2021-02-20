@@ -104,9 +104,15 @@ function keyDownOnTabElement(e) {
   switch (key) {
     case 'Enter': {
       e.preventDefault();
-      // if the shiftKey is pressed, fall through to 'ArrowUp'
       const tabId = htmlId2TabId(tabElement.id);
       browser.tabs.update(tabId, { active: true });
+      break;
+    }
+    case 'Backspace': {
+      e.preventDefault();
+      const tabId = htmlId2TabId(tabElement.id);
+      curTabElement.classList.add('closed');
+      browser.tabs.remove(tabId);
       break;
     }
     case 'ArrowDown':
@@ -126,6 +132,7 @@ function keyDownOnTabElement(e) {
         focusNextVisibleContainerSibling(curTabElement.parentElement.parentElement);
         break;
       }
+    // FALLTHROUGH ON PURPOSE: if the shiftKey is pressed, fall through to 'ArrowUp'
     // eslint-disable-next-line no-fallthrough
     case 'ArrowUp':
       while (curTabElement.previousElementSibling) {
