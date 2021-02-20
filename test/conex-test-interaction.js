@@ -87,7 +87,7 @@ describe('interactions', function () {
     expect(tab.id).to.equal(newTab.id);
     typeKey({ key: 'Backspace' }, $(`#${tabId2HtmlId(newTab.id)}`));
     // let the event handling do its work
-    timeoutResolver(100);
+    await timeoutResolver(200);
 
     tab = undefined;
     try {
@@ -95,5 +95,26 @@ describe('interactions', function () {
     } catch (_) {}
     expect(tab).to.be.undefined;
     expect($(`#${tabId2HtmlId(newTab.id)}`).classList.contains('closed')).to.be.true;
+    expect($(`#${tabId2HtmlId(newTab.id)}`).dataset.url).to.equal(newTab.url);
+  });
+
+  it('should close tab when clicking the close radio button', async function () {
+    let tab;
+    try {
+      tab = await browser.tabs.get(newTab.id);
+    } catch (_) {}
+
+    expect(tab.id).to.equal(newTab.id);
+    typeKey({ key: 'Backspace' }, $(`#${tabId2HtmlId(newTab.id)}`));
+    // let the event handling do its work
+    await timeoutResolver(200);
+
+    tab = undefined;
+    try {
+      tab = await browser.tabs.get(newTab.id);
+    } catch (_) {}
+    expect(tab).to.be.undefined;
+    expect($(`#${tabId2HtmlId(newTab.id)}`).classList.contains('closed')).to.be.true;
+    expect($(`#${tabId2HtmlId(newTab.id)}`).dataset.url).to.equal(newTab.url);
   });
 });

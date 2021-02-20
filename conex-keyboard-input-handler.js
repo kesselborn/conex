@@ -1,5 +1,5 @@
 import { $$, $ } from './conex-helper.js';
-import { htmlId2TabId } from './conex-tab-element.js';
+import { htmlId2TabId, tabId2HtmlCloseTabId } from './conex-tab-element.js';
 
 export function keydown(e) {
   console.debug('keydown', e);
@@ -108,13 +108,10 @@ function keyDownOnTabElement(e) {
       browser.tabs.update(tabId, { active: true });
       break;
     }
-    case 'Backspace': {
+    case 'Backspace':
       e.preventDefault();
-      const tabId = htmlId2TabId(tabElement.id);
-      curTabElement.classList.add('closed');
-      browser.tabs.remove(tabId);
+      $(`#${tabId2HtmlCloseTabId(htmlId2TabId(tabElement.id))}`).click();
       break;
-    }
     case 'ArrowDown':
     case 'Tab':
       e.preventDefault();

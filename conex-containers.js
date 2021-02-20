@@ -3,7 +3,7 @@ import { keydown, keyup } from './conex-keyboard-input-handler.js';
 import { tabElement, htmlId2TabId } from './conex-tab-element.js';
 import { containerElement } from './conex-container-element.js';
 
-function formChange(e) {
+async function formChange(e) {
   const target = e.target;
   const action = target.name;
 
@@ -19,6 +19,15 @@ function formChange(e) {
       target.checked = false;
       const tabElement = target.parentElement;
       browser.tabs.update(htmlId2TabId(tabElement.id), { active: true });
+      break;
+    }
+    case 'close-tab': {
+      target.checked = false;
+      const tabElement = target.parentElement;
+      const tab = await browser.tabs.get(htmlId2TabId(tabElement.id));
+      tabElement.dataset.url = tab.url;
+      browser.tabs.remove(tab.id);
+      tabElement.classList.add('closed');
       break;
     }
   }
