@@ -45,7 +45,7 @@ describe('interactions', function () {
     newTab = await browser.tabs.create({ active: false, cookieStoreId: newContainerId, url: 'http://example.com' });
 
     await renderContainers(await browser.contextualIdentities.query({}));
-    await fillContainer(await browser.tabs.query({ cookieStoreId: newContainerId }));
+    await fillContainer(newContainer, await browser.tabs.query({ cookieStoreId: newContainerId }));
   });
 
   afterEach(async function () {

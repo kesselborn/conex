@@ -26,7 +26,7 @@ describe('keyboard actions', function () {
           url: `http://example.com/${container.color}`,
         },
       ];
-      await fillContainer(fakeTabs);
+      await fillContainer(container, fakeTabs);
     }
 
     const firstFakeContainerElement = $(`#${firstFakeContainer.cookieStoreId}`);
@@ -106,26 +106,26 @@ describe('keyboard navigation', function () {
       switch (i) {
         // first container contains two tabs
         case 0: // containerElements[1]
-          await fillContainer(Promise.resolve(fakeTabs));
+          await fillContainer(fakeContainers[0], Promise.resolve(fakeTabs));
           break;
         // second tab contains a tab that should be hidden (class == no-match)
         case 1: // containerElements[2]
-          await fillContainer(Promise.resolve(fakeTabs));
+          await fillContainer(fakeContainers[1], Promise.resolve(fakeTabs));
           $(`#${tabId2HtmlId(fakeTabs[0].id)}`).classList.add('no-match');
           break;
         // third container only contains hidden tabs and is hidden as well (happens on search)
         case 2: // containerElements[3]
-          await fillContainer(Promise.resolve(fakeTabs));
+          await fillContainer(fakeContainers[2], Promise.resolve(fakeTabs));
           $(`#${container.cookieStoreId}`).classList.add('no-match');
           $(`#${tabId2HtmlId(fakeTabs[0].id)}`).classList.add('no-match');
           $(`#${tabId2HtmlId(fakeTabs[1].id)}`).classList.add('no-match');
           break;
         case 3: // containerElements[4]
-          await fillContainer(Promise.resolve(fakeTabs));
+          await fillContainer(fakeContainers[3], Promise.resolve(fakeTabs));
           $(`#${container.cookieStoreId}`).classList.add('collapsed');
           break;
         case 4: // containerElements[5]
-          await fillContainer(Promise.resolve(fakeTabs));
+          await fillContainer(fakeContainers[4], Promise.resolve(fakeTabs));
           $(`#${tabId2HtmlId(fakeTabs[1].id)}`).classList.add('no-match');
           break;
         case 5: // containerElements[6]

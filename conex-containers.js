@@ -33,11 +33,11 @@ async function formChange(e) {
   }
 }
 
-export const defaultContainer = { cookieStoreId: 'firefox-default', color: 'black', name: 'no container' };
+export const defaultContainer = { cookieStoreId: 'firefox-default', color: 'black', name: _('no container') };
 
-export const bookmarkDummyContainer = { cookieStoreId: 'bookmarks', color: 'gold', name: 'bookmarks' };
+export const bookmarkDummyContainer = { cookieStoreId: 'bookmarks', color: 'gold', name: _('bookmarks') };
 
-export const historyDummyContainer = { cookieStoreId: 'history', color: 'white', name: 'history' };
+export const historyDummyContainer = { cookieStoreId: 'history', color: 'white', name: _('history') };
 
 export async function renderContainers(_containers, options = {}) {
   const additionalContainers = [defaultContainer];
@@ -71,7 +71,7 @@ export async function renderContainers(_containers, options = {}) {
   $('form').addEventListener('keyup', keyup, true);
 }
 
-export async function fillContainer(tabs) {
+export async function fillContainer(container, tabs) {
   const containerElements = {};
 
   for (const tab of await tabs) {
@@ -83,7 +83,7 @@ export async function fillContainer(tabs) {
     if (!containerElements[cookieStoreId]) {
       containerElements[cookieStoreId] = containerElement.appendChild($e('ul'));
     }
-    containerElements[cookieStoreId].appendChild(tabElement(tab));
+    containerElements[cookieStoreId].appendChild(tabElement(container, tab));
     containerElement.classList.remove('empty');
   }
 }

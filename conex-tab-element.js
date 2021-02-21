@@ -24,23 +24,24 @@ export function htmlCloseTabId2TabId(id) {
   return Number(id.slice(2));
 }
 
-export function tabElement(tab) {
+export function tabElement(container, tab) {
   // ot prefix: open tab
   // x prefix: close tab
-  return $e('li', { tabindex: 0, id: tabId2HtmlId(tab.id), class: 'border-color-red' }, [
+  return $e('li', { tabindex: 0, id: tabId2HtmlId(tab.id), class: `border-color-${container.color}` }, [
     $e('input', { id: tabId2HtmlOpenTabId(tab.id), type: 'radio', name: 'open-tab', value: tab.id }),
     $e('label', { for: tabId2HtmlOpenTabId(tab.id), class: 'tab-center' }, [
       $e('div', { class: 'images' }, [
         $e('img', { class: 'favicon', src: tab.favIconUrl }),
         $e('img', { class: 'thumbnail', src: tab.favIconUrl }),
       ]),
-      $e('div', { class: 'tab-names' }, [
-        $e('h3', { content: tab.title }),
-        $e('h4', { content: tab.url }),
-      ]),
-    ]
-    ),
+      $e('div', { class: 'tab-names' }, [$e('h3', { content: tab.title }), $e('h4', { content: tab.url })]),
+    ]),
     $e('input', { id: tabId2HtmlCloseTabId(tab.id), type: 'radio', name: 'close-tab', value: tab.id }),
-    $e('label', { for: tabId2HtmlCloseTabId(tab.id), class: 'close', content: 'x', title: _('closeWithDetails', ['tab', tab.title]) }),
+    $e('label', {
+      for: tabId2HtmlCloseTabId(tab.id),
+      class: 'close',
+      content: 'x',
+      title: _('closeWithDetails', ['tab', tab.title]),
+    }),
   ]);
 }

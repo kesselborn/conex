@@ -1,4 +1,16 @@
 {
+  "no container": {
+    "message": "no container",
+    "description": "name of the default container element in the extension popup"
+  },
+  "bookmarks": {
+    "message": "bookmarks",
+    "description": "name of the bookmarks container element in the exention popup"
+  },
+  "history": {
+    "message": "history",
+    "description": "name of the history container element in the exention popup"
+  },
   "extensionDescription": {
     "message": "A tabgroup'esque successor for Firefox Quantum",
     "description": "Description of the extension."
