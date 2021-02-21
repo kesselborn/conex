@@ -72,15 +72,15 @@ describe('render containers', function () {
   });
 
   it('should respect container order option', async function () {
-    await renderContainers(fakeContainers, { order: ['container-4', 'container-1'] });
+    await renderContainers(fakeContainers, { order: ['container4', 'container1'] });
     const containerElements = $$('ol li');
     const order = [
-      'container-4',
-      'container-1',
+      'container4',
+      'container1',
       defaultContainer.cookieStoreId,
-      'container-0',
-      'container-2',
-      'container-3',
+      'container0',
+      'container2',
+      'container3',
     ];
 
     for (let i = 0; i < containerElements.length; i++) {
