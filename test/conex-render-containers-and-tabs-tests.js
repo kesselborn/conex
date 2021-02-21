@@ -47,8 +47,8 @@ describe('render containers', function () {
     ];
     await fillContainer(fakeContainers[0], Promise.resolve(tabs));
     // containerElements[1] == fakeContainers[0] due to default container
-    expect($('.tabs-visibility', containerElements[1]).classList.contains(`border-color-${fakeContainers[0].color}`)).to
-      .be.true;
+    expect($('.tabs-visibility', containerElements[1]).classList.contains(`container-color-${fakeContainers[0].color}`))
+      .to.be.true;
   });
 
   it('should render container elements correctly', async function () {
@@ -59,7 +59,7 @@ describe('render containers', function () {
     expect(containerElements.length).to.equal(allContainers.length);
     for (let i = 0; i < containerElements.length; i++) {
       const label = $('label', containerElements[i]);
-      expect(label.classList.contains(`border-color-${allContainers[i].color}`)).to.be.true;
+      expect(label.classList.contains(`container-color-${allContainers[i].color}`)).to.be.true;
     }
   });
 
@@ -112,8 +112,8 @@ describe('render tabs', function () {
         },
       ];
       await fillContainer(container, Promise.resolve(tabs));
-      expect($(`#${tabId2HtmlId(tabCnt - 2)}`).classList.contains(`border-color-${container.color}`)).to.be.true;
-      expect($(`#${tabId2HtmlId(tabCnt - 1)}`).classList.contains(`border-color-${container.color}`)).to.be.true;
+      expect($(`#${tabId2HtmlId(tabCnt - 2)}`).classList.contains(`container-color-${container.color}`)).to.be.true;
+      expect($(`#${tabId2HtmlId(tabCnt - 1)}`).classList.contains(`container-color-${container.color}`)).to.be.true;
     }
 
     expect($$('form ul>li').length).to.equal(tabCnt);

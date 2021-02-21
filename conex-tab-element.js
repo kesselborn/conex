@@ -27,7 +27,7 @@ export function htmlCloseTabId2TabId(id) {
 export function tabElement(container, tab) {
   // ot prefix: open tab
   // x prefix: close tab
-  return $e('li', { tabindex: 0, id: tabId2HtmlId(tab.id), class: `border-color-${container.color}` }, [
+  return $e('li', { tabindex: 0, id: tabId2HtmlId(tab.id), class: `container-color-${container.color}` }, [
     $e('input', { id: tabId2HtmlOpenTabId(tab.id), type: 'radio', name: 'open-tab', value: tab.id }),
     $e('label', { for: tabId2HtmlOpenTabId(tab.id), class: 'tab-center' }, [
       $e('div', { class: 'images' }, [
