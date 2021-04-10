@@ -1,0 +1,24 @@
+{
+  "extensionDescription": {
+    "message": "Ein Tabgroup-ähnlicher Nachfolger für Firefox Quantum ähnliche Erweiterungen",
+    "description": "Description of the extension."
+  },
+  "close": {
+    "message": "schließen",
+    "description": "close ... used as title attribute for closing tabs or containers"
+  },
+  "closeWithDetails": {
+    "message": "$WHAT$ $NAME$ schließen",
+    "description": "tooltip that tell user what to close (second parameter is optional)",
+    "placeholders": {
+      "what": {
+        "content": "$1",
+        "example": "tab"
+      },
+      "name": {
+        "content": "$2",
+        "example": "tab name"
+      }
+    }
+  }
+}
