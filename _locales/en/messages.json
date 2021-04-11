@@ -23,6 +23,10 @@
     "message": "search for title or url",
     "description": "place holder displayed in the search field"
   },
+  "newContainerPlaceholder": {
+    "message": "new container",
+    "description": "placeholder text for input that sets name of new container"
+  },
   "closeWithDetails": {
     "message": "close $WHAT$ $NAME$",
     "description": "tooltip that tell user what to close (second parameter is optional)",

@@ -7,6 +7,10 @@
     "message": "schließen",
     "description": "close ... used as title attribute for closing tabs or containers"
   },
+  "newContainerPlaceholder": {
+    "message": "neuer Container",
+    "description": "placeholder text for input that sets name of new container"
+  },
   "closeWithDetails": {
     "message": "$WHAT$ $NAME$ schließen",
     "description": "tooltip that tell user what to close (second parameter is optional)",

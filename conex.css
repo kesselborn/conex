@@ -32,11 +32,11 @@ h1 {
 }
 
 #form-head {
-  @apply flex items-center gap-4 my-4;
+  @apply flex flex-wrap items-center gap-4 my-4;
 }
 
 #search-wrapper {
-  @apply flex-grow flex gap-4 items-center rounded-lg bg-gray-100 dark:bg-gray-700 p-3 w-full dark:text-white outline-none;
+  @apply flex-grow flex gap-4 items-center rounded-lg bg-gray-100 dark:bg-gray-700 p-3 dark:text-white outline-none;
 }
 
 #search-wrapper label {
@@ -48,12 +48,19 @@ h1 {
   @apply appearance-none bg-[transparent] text-black dark:text-white outline-none w-full h-full;
 }
 
-#add-container {
-  @apply min-w-[3rem] min-h-[3rem] bg-gray-100 dark:bg-gray-700 flex justify-center items-center rounded-lg cursor-pointer;
+#add-container-wrapper {
+  @apply min-w-[3rem] max-w-[3rem] min-h-[3rem] max-h-[3rem] bg-gray-100 dark:bg-gray-700 flex justify-center items-center rounded-lg cursor-pointer flex-grow relative;
 }
 
-#add-container img {
-  @apply filter dark:invert;
+#add-container-wrapper label {
+  @apply absolute top-0 right-0 bottom-0 left-0 flex justify-center items-center cursor-pointer;
+}
+
+#add-container-wrapper input {
+  @apply hidden;
+}
+#add-container-wrapper img {
+  @apply filter dark:invert pointer-events-none;
 }
 
 input[type='radio'] {
@@ -72,40 +79,129 @@ input[type='radio'] {
   background-color: goldenrod;
 }
 
+[color='gold'] {
+  color: goldenrod;
+}
+
 .container-color-black {
   background-color: black;
+}
+
+[color='black'] {
+  color: black;
 }
 
 .container-color-blue {
   background-color: #37adff;
 }
 
+[color='blue'] {
+  color: #37adff;
+}
+
 .container-color-turquoise {
   background-color: #00c79a;
+}
+
+[color='turquoise'] {
+  color: #00c79a;
 }
 
 .container-color-green {
   background-color: #51cd00;
 }
 
+[color='green'] {
+  color: #51cd00;
+}
+
 .container-color-yellow {
   background-color: #ffcb00;
+}
+
+[color='yellow'] {
+  color: #ffcb00;
 }
 
 .container-color-orange {
   background-color: #ff9f00;
 }
 
+[color='orange'] {
+  color: #ff9f00;
+}
+
 .container-color-red {
   background-color: #ff613d;
+}
+
+[color='red'] {
+  color: #ff613d;
 }
 
 .container-color-pink {
   background-color: #ff4bda;
 }
 
+[color='pink'] {
+  color: #ff4bda;
+}
+
 .container-color-purple {
   background-color: #af51f5;
+}
+
+[color='purple'] {
+  color: #af51f5;
+}
+
+#new-container {
+  @apply w-full py-2 px-4 flex-row hidden;
+}
+
+#new-container.show {
+  display: flex;
+}
+
+#new-container select {
+  @apply appearance-none bg-gray-100 dark:bg-gray-600 rounded-lg ml-[-0.3rem] pb-[0.3rem] cursor-pointer outline-none focus:bg-gray-200 dark:focus:bg-gray-500;
+  font-size: 2.75rem;
+  text-indent: -0.05rem;
+  line-height: 1.7rem;
+  width: 2rem;
+  /* border: 1px solid transparent; */
+}
+
+/* #new-container.show {
+    height: 3rem;
+    padding: 0.5rem 1rem;
+    opacity: 1;
+}
+#new-container {
+    width: 100%;
+    flex-direction: row;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    height: 0;
+    padding: 0;
+    transition: padding 0.7s, opacity 0.5s, height 0.5s;
+    opacity: 0;
+    height: 0;
+} */
+
+/* #new-container select:focus {
+  border-color: #111;
+} */
+
+#new-container select option {
+  @apply cursor-pointer;
+  font-size: 2rem;
+}
+
+#new-container input {
+  @apply appearance-none bg-[transparent] outline-none font-bold text-[1.1rem] ml-4;
 }
 
 .container-elem {
@@ -124,12 +220,12 @@ input[type='radio'] {
 .container-elem.collapsed,
 .container-elem.empty,
 .container-tab,
-#add-container {
+#add-container-wrapper {
   @apply hover:bg-gray-200 dark:hover:bg-gray-600 focus:bg-gray-200 dark:focus:bg-gray-600 outline-none pb-0;
 }
 
 .container-elem-head {
-  @apply flex gap-2 items-center py-2 px-4;
+  @apply flex flex-wrap gap-2 items-center py-2 px-4;
 }
 
 .tabs-visibility {
@@ -163,7 +259,7 @@ input[type='radio'] {
   @apply px-4 box-border flex flex-col gap-2;
 }
 
-.close{
+.close {
   @apply text-2xl box-content p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-500 flex justify-center items-center w-4 mr-[-0.5rem];
   line-height: 1rem;
 }

@@ -1,5 +1,5 @@
 import { _, $, $e } from './conex-helper.js';
-import { keydown, keyup } from './conex-keyboard-input-handler.js';
+import { keydown, keyup, showNewContainerTemplate } from './conex-keyboard-input-handler.js';
 import { tabElement, htmlId2TabId } from './conex-tab-element.js';
 import { containerElement } from './conex-container-element.js';
 
@@ -63,13 +63,31 @@ export async function renderContainers(_containers, options = {}) {
     containerList.appendChild(containerElement(container));
   }
 
+  const colors = ['gold', 'black', 'blue', 'turquoise', 'green', 'yellow', 'orange', 'red', 'pink', 'purple'];
+  let selectColor = $e('select', { color: 'blue' });
+  selectColor.addEventListener('change', function () {
+    this.setAttribute('color', this.options[this.selectedIndex].getAttribute('color'));
+  });
+  colors.map(color => {
+    selectColor.appendChild($e('option', { color, value: '●', content: '●' }));
+  });
+  // selectColor = optionsArray.map(option => selectColor.appendChild(option));
+
   const formHead = $e('div', { id: 'form-head' }, [
     $e('div', { id: 'search-wrapper' }, [
       $e('label', { for: 'search' }),
       $e('input', { id: 'search', placeholder: _('searchBoxPlaceholder'), type: 'text' }),
     ]),
-    $e('div', { id: 'add-container', tabindex: 0 }, [
+    $e('div', { id: 'add-container-wrapper', tabindex: 0 }, [
       $e('img', { width: '25', height: '25', src: './plus.svg', alt: 'add-container' }),
+      // $e('label', { for: 'add-container' }, [
+      // ]),
+      // $e('input', { id: 'add-container', type: 'button' }),
+    ]),
+    $e('div', { id: 'new-container', class: 'container-elem' }, [
+      selectColor,
+      $e('input', { required: '', placeholder: 'new container', type: 'text' }),
+      // $e('input', { placeholder: _('newContainerPlaceholder'), type: 'text' }),
     ]),
   ]);
 
@@ -78,6 +96,7 @@ export async function renderContainers(_containers, options = {}) {
   $('form').addEventListener('change', formChange, {}, true);
   $('form').addEventListener('keydown', keydown, true);
   $('form').addEventListener('keyup', keyup, true);
+  $('#add-container-wrapper').addEventListener("click", showNewContainerTemplate);
 }
 
 export async function fillContainer(container, tabs) {

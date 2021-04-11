@@ -5,10 +5,14 @@ export function keydown(e) {
   console.debug('keydown', e);
   const targetElement = e.target;
   const searchBox = $('#search');
-  const addContainer = $('#add-container');
+  const newContainer = $('#new-container input');
+  const addContainer = $('#add-container-wrapper');
 
   if (targetElement === searchBox) {
     return keyDownOnSearchElement(e);
+  }
+  if (targetElement === newContainer) {
+    keyDownOnNewContainerInput(e);
   }
   if (isContainerElement(targetElement)) {
     keyDownOnContainerElement(e);
@@ -31,17 +35,51 @@ export function keyup(e) {
   }
 }
 
+function keyDownOnNewContainerInput(e) {
+  const key = e.key;
+  switch (key) {
+    case 'ArrowUp':
+      e.preventDefault();
+      $('#search').focus();
+      break;
+    case 'ArrowDown':
+      e.preventDefault();
+      $('ol>li', $('#search').closest('form')).focus();
+      break;
+    case 'Escape':
+      e.preventDefault();
+      console.log("escapeeeeeeeeee");
+      $('#new-container').classList.remove('show');
+      $('ol>li', $('#search').closest('form')).focus();
+      console.log(e.target);
+      e.target.value = "";
+      e.target.innerHtml = "";
+      break;
+  }
+}
+
 function keyDownOnAddContainerElement(e) {
   const key = e.key;
-  const addContainer = $('#add-container');
+  const addContainer = $('#add-container-wrapper');
   switch (key) {
     case 'ArrowDown':
     case 'Tab':
       e.preventDefault();
-      $('ol>li', addContainer.closest('form')).focus();
+      if (e.shiftKey) {
+        $('#search').focus();
+      } else {
+        if ($('#new-container').classList.contains("show")) {
+          $('#new-container input').focus();
+        } else {
+          $('ol>li', addContainer.closest('form')).focus();
+        }
+      }
       break;
     case 'ArrowLeft':
       $('#search').focus();
+      break;
+    case 'Enter':
+      showNewContainerTemplate();
       break;
   }
 }
@@ -52,24 +90,33 @@ function keyDownOnSearchElement(e) {
 
   switch (key) {
     case 'ArrowDown':
-      $('ol>li', searchBox.closest('form')).focus();
+      if ($('#new-container').classList.contains('show')) {
+        $('#new-container input').focus();
+      } else {
+        $('ol>li', searchBox.closest('form')).focus();
+      }
       break;
     case 'Tab':
       e.preventDefault();
       if (!e.shiftKey) {
         // $('ol>li', searchBox.closest("form")).focus();
-        $('#add-container').focus();
+        $('#add-container-wrapper').focus();
         // $('#add-container', searchBox.closest("#form-head")).focus();
       }
       break;
-    case 'ArrowRight':
-      e.preventDefault();
-      $('#add-container').focus();
-      break;
+    // case 'ArrowRight':
+    //   e.preventDefault();
+    //   $('#add-container-wrapper').focus();
+    //   break;
     case 'Enter':
       e.preventDefault();
       console.log('opening "a" tab now');
   }
+}
+
+export function showNewContainerTemplate() {
+  $('#new-container').classList.toggle('show');
+  $('#new-container input').focus();
 }
 
 function search(value) {
@@ -109,7 +156,11 @@ function keyDownOnContainerElement(e) {
           previousContainer.focus();
         }
       } else {
-        $('#search').focus();
+        if ($('#new-container').classList.contains("show")) {
+          $('#new-container input').focus();
+        } else {
+          $('#search').focus();
+        }
       }
       break;
     }
