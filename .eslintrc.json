@@ -1,0 +1,47 @@
+{
+  "env": {
+    "browser": true,
+    "webextensions": true
+  },
+  "extends": ["standard"],
+  "parserOptions": {
+    "ecmaVersion": 11,
+    "sourceType": "module"
+  },
+  "rules": {
+    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "semi": ["error", "always"],
+    "generator-star-spacing": ["off"],
+    "comma-dangle": [
+      "error",
+      {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "always-multiline",
+        "exports": "never",
+        "functions": "never"
+      }
+    ],
+    "space-before-function-paren": [
+      "error",
+      {
+        "anonymous": "always",
+        "named": "never",
+        "asyncArrow": "always"
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "globals": {
+        "chai": true
+      },
+      "files": ["./test/*.js"],
+      "env": {
+        "mocha": true
+      },
+      "extends": ["plugin:chai-friendly/recommended"],
+      "plugins": ["mocha", "chai-friendly"]
+    }
+  ]
+}

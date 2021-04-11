@@ -1,10 +1,19 @@
 {
   "manifest_version": 2,
   "author": "kesselborn",
-  "description": "A tabgroup'esque successor for Firefox Quantum (FirefoxBeta and FirefoxNightly only at the moment)",
+  "description": "__MSG_extensionDescription",
   "homepage_url": "https://github.com/kesselborn/conex",
-  "name": "Conex (preview)",
-  "version": "0.9.14",
+  "default_locale": "en",
+  "name": "Conex",
+  "version": "0.10.0",
+  "applications": {
+    "gecko": {
+      "id": "conex@bornkessel.com"
+    }
+  },
+  "background": {
+    "page": "conex-background.html"
+  },
   "browser_action": {
     "default_title": "Conex",
     "browser_style": false,
@@ -12,60 +21,22 @@
     "default_icon": {
       "48": "icons/icon_48.png"
     }
-  },
-  "applications": {
-    "gecko": {
-      "strict_min_version": "60.0a1",
-      "update_url": "https://raw.githubusercontent.com/kesselborn/conex/master/versions.json"
-    }
-  },
-  "commands": {
-    "_execute_browser_action": {
-      "suggested_key": {
-        "default": "MacCtrl+Space"
-      }
-    },
-    "new-container": {
-      "suggested_key": {
-        "default": "Alt+Shift+N"
-      }
-    }
-  },
-  "options_ui": {
+  }, 
+    "options_ui": {
     "page": "conex-options-ui.html",
-    "browser_style": false,
+    "browser_style": true,
     "open_in_tab": true
   },
-  "background": {
-    "scripts": [
-      "conex-helper.js",
-      "conex-components.js",
-      "conex-actions-common.js",
-      "conex-background.js"
-    ]
-  },
-  "icons": {
-    "48": "icons/icon_48.png"
-  },
-  "web_accessible_resources": [
-    "container-selector.html"
-  ],
   "permissions": [
     "<all_urls>",
     "contextualIdentities",
     "cookies",
+    "idle",
     "menus",
     "storage",
     "tabs",
     "webNavigation",
     "webRequest",
     "webRequestBlocking"
-  ],
-  "optional_permissions": [
-    "activeTab",
-    "bookmarks",
-    "history",
-    "notifications",
-    "tabHide"
   ]
 }
