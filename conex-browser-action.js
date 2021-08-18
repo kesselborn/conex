@@ -1,4 +1,5 @@
 import { renderContainers, fillContainer, defaultContainer } from './conex-containers.js';
+import { $ } from './conex-helper.js';
 document.addEventListener('DOMContentLoaded', async () => {
   // const bg = browser.extension.getBackgroundPage();
 
@@ -9,4 +10,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const tabs = browser.tabs.query({ cookieStoreId: container.cookieStoreId });
     fillContainer(container, tabs);
   }
+
+  $('#search').focus();
 });
