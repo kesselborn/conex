@@ -83,6 +83,9 @@ function keyDownOnContainerElement(e) {
         }
       } else {
         $('#search').focus();
+        setTimeout(function () {
+          $('#search').select();
+        }, 0);
       }
       break;
     }

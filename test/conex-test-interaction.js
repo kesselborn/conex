@@ -1,6 +1,6 @@
 import { $, closeContainer } from '../conex-helper.js';
 import { renderContainers, fillContainer } from '../conex-containers.js';
-import { typeKey, expect, clear } from './conex-test-helper.js';
+import { typeKey, expect, clear, timeoutResolver } from './conex-test-helper.js';
 import { tabId2HtmlId, tabId2HtmlOpenTabId } from '../conex-tab-element.js';
 
 let newContainerId;
@@ -20,14 +20,6 @@ describe('container management', function () {
     expect(tabCntAfter).to.equal(tabCntBefore);
   });
 });
-
-function timeoutResolver(ms) {
-  return new Promise((resolve, reject) => {
-    setTimeout(function () {
-      resolve(true);
-    }, ms);
-  });
-}
 
 describe('interactions', function () {
   before(async function () {

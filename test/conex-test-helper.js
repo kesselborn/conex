@@ -25,3 +25,11 @@ export async function clear() {
     form.remove();
   }
 }
+
+export function timeoutResolver(ms) {
+  return new Promise((resolve, reject) => {
+    setTimeout(function () {
+      resolve(true);
+    }, ms);
+  });
+}

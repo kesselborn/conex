@@ -1,7 +1,9 @@
 import { $, $$ } from '../conex-helper.js';
 import { renderContainers, fillContainer } from '../conex-containers.js';
-import { typeKey, fakeContainers, expect, clear } from './conex-test-helper.js';
+import { typeKey, fakeContainers, expect, clear, timeoutResolver } from './conex-test-helper.js';
 import { tabId2HtmlId } from '../conex-tab-element.js';
+
+// TODO: when typing, restart search
 
 describe('keyboard actions', function () {
   afterEach(clear);
@@ -253,8 +255,13 @@ describe('keyboard navigation', function () {
       typeKey(keys.up, document.activeElement);
       expect(e2t(document.activeElement)).to.equal(e2t(containerElements[0]));
 
+      $('#search').value = 'foo';
       typeKey(keys.up, document.activeElement);
       expect(e2t(document.activeElement)).to.equal(e2t($('#search')));
+
+      await timeoutResolver(100);
+      expect($('#search').selectionStart).to.equal(0);
+      expect($('#search').selectionEnd).to.equal(3);
     }
   });
 });
