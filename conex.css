@@ -137,6 +137,10 @@ ol > li > ul > li {
   height: var(--row-height);
 }
 
+.closed {
+  opacity: 0.2;
+}
+
 .close {
   justify-content: center;
 }
