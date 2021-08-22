@@ -145,6 +145,11 @@ ol > li > ul > li {
   justify-content: center;
 }
 
+em {
+  text-decoration: solid underline purple 2px;
+  font-style: normal;
+}
+
 .tab-center {
   display: grid;
   grid-template-columns: [faviconthumbnail] var(--thumbnail-width) [titleurl] auto;

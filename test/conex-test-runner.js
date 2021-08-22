@@ -9,13 +9,13 @@ describe('finally: render somthing to play around with', function () {
         {
           cookieStoreId: container.cookieStoreId,
           id: `tab-0-${container.cookieStoreId}`,
-          title: `tab 0 / fake ${container.cookieStoreId}`,
+          title: `http://zombo.com / fake ${container.cookieStoreId}`,
           url: `http://example.com/${container.color}`,
         },
         {
           cookieStoreId: container.cookieStoreId,
           id: `tab-1-${container.cookieStoreId}`,
-          title: `tab 1 / fake ${container.cookieStoreId}`,
+          title: `https://www.allyourbasearebelongtous.com / fake ${container.cookieStoreId}`,
           url: `http://example.com/${container.color}`,
         },
       ];
@@ -26,5 +26,11 @@ describe('finally: render somthing to play around with', function () {
 
 document.addEventListener('DOMContentLoaded', async () => {
   mocha.checkLeaks();
-  mocha.run();
+  mocha.run((failures) => {
+    if (failures === 0) {
+      document.title = '✅ Conex Tests';
+    } else {
+      document.title = `❌ (${failures} error${failures > 1 ? 's' : ''}) Conext Tests`;
+    }
+  });
 });

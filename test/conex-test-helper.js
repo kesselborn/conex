@@ -1,11 +1,11 @@
 import { $ } from '../conex-helper.js';
 
 export const fakeContainers = [
-  { cookieStoreId: 'container0', color: 'orange', name: 'fake container-0' },
-  { cookieStoreId: 'container1', color: 'blue', name: 'fake container-1' },
-  { cookieStoreId: 'container2', color: 'red', name: 'fake container-2' },
-  { cookieStoreId: 'container3', color: 'tourqouise', name: 'fake container-3' },
-  { cookieStoreId: 'container4', color: 'yellow', name: 'fake container-4' },
+  { cookieStoreId: 'container0', color: 'orange', name: 'fake container-0 foo' },
+  { cookieStoreId: 'container1', color: 'blue', name: 'fake container-1 bar' },
+  { cookieStoreId: 'container2', color: 'red', name: 'fake container-2 baz' },
+  { cookieStoreId: 'container3', color: 'tourqouise', name: 'fake container-3 foobar' },
+  { cookieStoreId: 'container4', color: 'yellow', name: 'fake container-4 foobaz' },
 ];
 
 chai.config.includeStack = true;
@@ -20,9 +20,11 @@ export function typeKey(key, element) {
 }
 
 export async function clear() {
-  const form = $('form');
-  if (form) {
-    form.remove();
+  if (window.location.search === '') {
+    const form = $('form');
+    if (form) {
+      form.remove();
+    }
   }
 }
 

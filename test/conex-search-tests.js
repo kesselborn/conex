@@ -30,17 +30,24 @@ describe('highlight search', function () {
     expect(match).to.equal(true);
   });
 
-  it('should highlight search for every token', async function () {
+  it('should highlight at least one search token', async function () {
     const { highlightedString, match } = hilightSearchMatch('hallo', 'hal lo');
 
     expect(highlightedString).to.equal('<em>hal</em>lo');
     expect(match).to.equal(true);
   });
 
-  it('should highlight search for every token 2', async function () {
+  it('should highlight at least one search token 2', async function () {
     const { highlightedString, match } = hilightSearchMatch('hallo', 'lo hal');
 
     expect(highlightedString).to.equal('hal<em>lo</em>');
+    expect(match).to.equal(true);
+  });
+
+  it('should ignore case sensivity', async function () {
+    const { highlightedString, match } = hilightSearchMatch('hellOhello', 'LlohE');
+
+    expect(highlightedString).to.equal('he<em>llOhe</em>llo');
     expect(match).to.equal(true);
   });
 });
