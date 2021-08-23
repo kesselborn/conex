@@ -174,7 +174,7 @@ describe('keyboard navigation', function () {
         }
         return `test ${cnt} ${JSON.stringify(keys)}: ${element.innerText.trim()}`;
       };
-      containerElements[0].focus(); // default coantiner
+      containerElements[0].focus(); // default container
 
       // one arrow down: we should now be on the first fakeContainers container as the default container is empty
       // Test 1
@@ -254,14 +254,19 @@ describe('keyboard navigation', function () {
       // Test 17
       typeKey(keys.up, document.activeElement);
       expect(e2t(document.activeElement)).to.equal(e2t(containerElements[0]));
-
-      $('#search').value = 'foo';
-      typeKey(keys.up, document.activeElement);
-      expect(e2t(document.activeElement)).to.equal(e2t($('#search')));
-
-      await timeoutResolver(100);
-      expect($('#search').selectionStart).to.equal(0);
-      expect($('#search').selectionEnd).to.equal(3);
     }
+  });
+
+  it('should select search term when returning to search field', async function () {
+    await renderContainers(fakeContainers);
+    $('#search').value = 'fake';
+    $('ol > li').focus();
+    // containerElements[0].focus();
+    typeKey({ key: 'ArrowUp' }, document.activeElement);
+    expect(document.activeElement).to.equal($('#search'));
+
+    await timeoutResolver(100);
+    expect($('#search').selectionStart).to.equal(0);
+    expect($('#search').selectionEnd).to.equal(4);
   });
 });

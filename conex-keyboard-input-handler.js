@@ -1,5 +1,6 @@
 import { $$, $ } from './conex-helper.js';
 import { htmlId2TabId, tabId2HtmlCloseTabId } from './conex-tab-element.js';
+import { searchInContainer } from './conex-search.js';
 
 export function keydown(e) {
   console.debug('keydown', e);
@@ -46,7 +47,9 @@ function keyDownOnSearchElement(e) {
 }
 
 function search(value) {
-  console.debug(`searching for ${value}`);
+  for (const containerElement of $$('ol > li')) {
+    searchInContainer(containerElement, value);
+  }
 }
 
 function keyDownOnContainerElement(e) {
