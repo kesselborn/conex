@@ -28,6 +28,7 @@ export function hilightSearchMatch(string, searchStringTokensString) {
 
 export function searchInContainer(containerElement, searchString) {
   const containerTabs = $$('li', containerElement);
+  let containerHasMatch = false;
   for (const tabElement of containerTabs) {
     const title = $('h3', tabElement);
     const url = $('h4', tabElement);
@@ -50,8 +51,15 @@ export function searchInContainer(containerElement, searchString) {
 
     if (containedMatch) {
       tabElement.classList.remove('no-match');
+      containerHasMatch = true;
     } else {
       tabElement.classList.add('no-match');
     }
+  }
+
+  if (containerHasMatch) {
+    containerElement.classList.remove('no-match');
+  } else {
+    containerElement.classList.add('no-match');
   }
 }

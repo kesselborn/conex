@@ -65,4 +65,13 @@ describe('search box', function () {
     expect($('h3', $$('li:not(.no-match)', firstContainer)[1]).innerHTML).to.equal('<em>Reddi</em>t');
     expect($('h4', $$('li:not(.no-match)', firstContainer)[1]).innerHTML).to.equal('https://<em>reddi</em>t.com');
   });
+
+  it('containers with not matches should be hidden', async function () {
+    const firstContainer = $$('ol > li')[1];
+    const searchTerm = 'xxxxxx';
+
+    searchInContainer(firstContainer, searchTerm);
+
+    expect(firstContainer.classList.contains('no-match')).to.be.true;
+  });
 });
