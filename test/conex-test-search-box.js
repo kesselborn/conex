@@ -66,12 +66,22 @@ describe('search box', function () {
     expect($('h4', $$('li:not(.no-match)', firstContainer)[1]).innerHTML).to.equal('https://<em>reddi</em>t.com');
   });
 
-  it('containers with not matches should be hidden', async function () {
+  it('containers with no matches should be hidden', async function () {
     const firstContainer = $$('ol > li')[1];
     const searchTerm = 'xxxxxx';
 
     searchInContainer(firstContainer, searchTerm);
 
     expect(firstContainer.classList.contains('no-match')).to.be.true;
+  });
+
+  it('do not hide container if name of the container matches search', async function () {
+    const firstContainer = $$('ol > li')[1];
+    const searchTerm = 'fake';
+
+    searchInContainer(firstContainer, searchTerm);
+
+    expect(firstContainer.classList.contains('no-match')).to.be.false;
+    expect($('h2', firstContainer).innerHTML).to.equal('<span><em>fake</em> container-0 foo</span>');
   });
 });

@@ -57,6 +57,13 @@ export function searchInContainer(containerElement, searchString) {
     }
   }
 
+  const containerTitle = $('h2', containerElement);
+  const { highlightedString, match } = hilightSearchMatch(containerTitle.innerText, searchString);
+  containerTitle.innerHTML = `<span>${highlightedString}</span>`;
+  if (match) {
+    containerHasMatch = true;
+  }
+
   if (containerHasMatch) {
     containerElement.classList.remove('no-match');
   } else {
