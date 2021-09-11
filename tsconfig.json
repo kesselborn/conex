@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "allowJs": false,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "alwaysStrict": true,
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    "module": "es6",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": "./extension",
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+    "target": "es2018",
+    "allowSyntheticDefaultImports": false,
+    "exactOptionalPropertyTypes": false
+  },
+  "include": [
+    "./src/**/*"
+  ],
+  "types": [
+    "browser"
+  ],
+  "exclude": [
+    "./src/test/mocha.js"
+  ]
+}

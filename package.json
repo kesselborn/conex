@@ -7,6 +7,8 @@
     "lint": "eslint --fix ."
   },
   "devDependencies": {
+    "@types/mocha": "^9.0.0",
+    "@types/webextension-polyfill": "^0.8.0",
     "eslint": "^7.15.0",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-chai-friendly": "^0.6.0",
@@ -15,11 +17,15 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.1.0",
-    "husky": "^4.3.5"
+    "husky": "^4.3.5",
+    "typescript": "^4.4.3"
   },
   "husky": {
     "hooks": {
       "pre-commit": "npm run lint --fix"
     }
+  },
+  "dependencies": {
+    "webextension-polyfill": "^0.8.0"
   }
 }

@@ -36,7 +36,7 @@
       "globals": {
         "chai": true
       },
-      "files": ["./test/*.js"],
+      "files": ["./extension/test/*.js", "./src/test/*.js"],
       "env": {
         "mocha": true
       },
