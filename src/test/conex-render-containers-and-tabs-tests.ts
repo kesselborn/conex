@@ -1,5 +1,5 @@
 import { $, $$ } from '../conex-helper.js';
-import { defaultContainer, renderContainers, renderTabs } from '../conex-containers.js';
+import { ContainerRenderOptions, defaultContainer, renderContainers, renderTabs } from '../conex-containers.js';
 import { tabId2HtmlId } from '../conex-tab-element.js';
 import { clear, expect, fakeContainers } from './conex-test-helper.js';
 import { Selectors } from '../conex-selectors.js';
@@ -60,7 +60,10 @@ describe('render containers', function () {
   });
 
   it('should render history and bookmarks containers if respective options are passed', async function () {
-    await renderContainers(fakeContainers, { history: true, bookmarks: true });
+    const options = new ContainerRenderOptions();
+    options.history = true;
+    options.bookmarks = true;
+    await renderContainers(fakeContainers, options);
     const containerElements = $$('ol li');
 
     // containers + default container + bookmarks + history
@@ -68,7 +71,9 @@ describe('render containers', function () {
   });
 
   it('should respect container order option', async function () {
-    await renderContainers(fakeContainers, { order: ['container4', 'container1'] });
+    const options = new ContainerRenderOptions();
+    options.order = Array.from(['container4', 'container1']);
+    await renderContainers(fakeContainers, options);
     const containerElements = $$('ol li');
     const order = [
       'container4',

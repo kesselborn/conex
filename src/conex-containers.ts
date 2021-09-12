@@ -74,24 +74,30 @@ export const historyDummyContainer: ContextualIdentity = {
   name: _('history'),
 };
 
-// TODO: make options a fixed type; remove ts ignores for options
-export async function renderContainers(_containers: Array<ContextualIdentity>, options: Object = {}): Promise<void> {
+export class ContainerRenderOptions {
+  bookmarks: boolean = false;
+  history: boolean = false;
+  order: Array<string> | null = null;
+}
+
+export async function renderContainers(
+  _containers: Array<ContextualIdentity>,
+  options: ContainerRenderOptions = new ContainerRenderOptions()
+): Promise<void> {
   const additionalContainers = [defaultContainer];
-  // @ts-ignore
+
   if (options.bookmarks) {
     additionalContainers.push(bookmarkDummyContainer);
   }
   let containers = additionalContainers.concat(_containers);
-  // @ts-ignore
+
   if (options.history) {
     containers.push(historyDummyContainer);
   }
   const containerList = $e('ol');
 
-  // @ts-ignore
   if (options.order) {
     const cookieStoreIds = containers.map((c) => c.cookieStoreId);
-    // @ts-ignore
     const orderedCookieStoreIds = options.order.concat(cookieStoreIds);
     containers = containers.sort(
       (a, b) => orderedCookieStoreIds.indexOf(a.cookieStoreId) - orderedCookieStoreIds.indexOf(b.cookieStoreId)

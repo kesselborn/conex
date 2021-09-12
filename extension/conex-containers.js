@@ -3,6 +3,7 @@ import { keydown, keyup } from './conex-keyboard-input-handler.js';
 import { htmlId2TabId, tabElement } from './conex-tab-element.js';
 import { containerElement } from './conex-container-element.js';
 import { ConexElements, Selectors } from './conex-selectors.js';
+
 async function formChange(e) {
   if (!e.target || !(e.target instanceof HTMLInputElement)) {
     return;
@@ -36,6 +37,7 @@ async function formChange(e) {
     }
   }
 }
+
 export const defaultContainer = {
   colorCode: ContexturalIdentitiesColorCodes.black,
   icon: 'circle',
@@ -60,36 +62,47 @@ export const historyDummyContainer = {
   color: 'white',
   name: _('history'),
 };
-// TODO: make options a fixed type; remove ts ignores for options
-export async function renderContainers(_containers, options = {}) {
+
+export class ContainerRenderOptions {
+  constructor() {
+    this.bookmarks = false;
+    this.history = false;
+    this.order = null;
+  }
+}
+
+export async function renderContainers(_containers, options = new ContainerRenderOptions()) {
   const additionalContainers = [defaultContainer];
-  // @ts-ignore
   if (options.bookmarks) {
     additionalContainers.push(bookmarkDummyContainer);
   }
   let containers = additionalContainers.concat(_containers);
-  // @ts-ignore
   if (options.history) {
     containers.push(historyDummyContainer);
   }
   const containerList = $e('ol');
-  // @ts-ignore
   if (options.order) {
     const cookieStoreIds = containers.map((c) => c.cookieStoreId);
-    // @ts-ignore
     const orderedCookieStoreIds = options.order.concat(cookieStoreIds);
-    containers = containers.sort((a, b) => orderedCookieStoreIds.indexOf(a.cookieStoreId) - orderedCookieStoreIds.indexOf(b.cookieStoreId));
+    containers = containers.sort(
+      (a, b) => orderedCookieStoreIds.indexOf(a.cookieStoreId) - orderedCookieStoreIds.indexOf(b.cookieStoreId)
+    );
   }
   for (const container of containers) {
     containerList.appendChild(containerElement(container));
   }
-  const searchField = $e('input', { id: Selectors.searchId, placeholder: _('searchBoxPlaceholder'), type: 'text' });
+  const searchField = $e('input', {
+    id: Selectors.searchId,
+    placeholder: _('searchBoxPlaceholder'),
+    type: 'text',
+  });
   const form = $e('form', {}, [searchField, containerList]);
   window.document.body.appendChild(form);
   ConexElements.form.addEventListener('change', formChange, true);
   ConexElements.form.addEventListener('keydown', keydown, true);
   ConexElements.form.addEventListener('keyup', keyup, true);
 }
+
 export async function renderTabs(tabs) {
   const containerElements = new Map();
   for (const tab of await tabs) {
