@@ -3,10 +3,12 @@
 // select first tab on enter
 // esc === clear
 
-import { fakeContainers, expect, clear } from './conex-test-helper.js';
-import { renderContainers, fillContainer } from '../conex-containers.js';
+import { clear, expect, fakeContainers } from './conex-test-helper.js';
+import { renderContainers, renderTabs } from '../conex-containers.js';
 import { $, $$ } from '../conex-helper.js';
 import { searchInContainer } from '../conex-search.js';
+import { Tabs } from 'webextension-polyfill';
+import Tab = Tabs.Tab;
 
 describe('search box', function () {
   afterEach(clear);
@@ -17,7 +19,8 @@ describe('search box', function () {
     const lastFakeContainer = fakeContainers[fakeContainers.length - 1];
 
     for (const container of [firstFakeContainer, lastFakeContainer]) {
-      const fakeTabs = [
+      // @ts-ignore
+      const fakeTabs = Array.from([
         {
           cookieStoreId: container!.cookieStoreId,
           id: `tab-0-${container!.cookieStoreId}`,
@@ -36,10 +39,9 @@ describe('search box', function () {
           title: 'Firefox',
           url: 'https://firefox.com',
         },
-      ];
+      ]) as Array<Tab>;
 
-      // @ts-ignore
-      await fillContainer(container!, new Promise(resolve => resolve(fakeTabs)));
+      await renderTabs(new Promise((resolve) => resolve(fakeTabs)));
     }
   });
 

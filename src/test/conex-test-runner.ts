@@ -1,11 +1,14 @@
-import { renderContainers, fillContainer } from '../conex-containers.js';
+import { renderContainers, renderTabs } from '../conex-containers.js';
 import { fakeContainers } from './conex-test-helper.js';
+import { Tabs } from 'webextension-polyfill';
+import Tab = Tabs.Tab;
 
 describe('finally: render somthing to play around with', function () {
   it('renders', async function () {
     await renderContainers(fakeContainers);
     for (const container of fakeContainers) {
-      const tabs = [
+      // @ts-ignore
+      const tabs = Array.from([
         {
           cookieStoreId: container.cookieStoreId,
           id: `tab-0-${container.cookieStoreId}`,
@@ -18,10 +21,9 @@ describe('finally: render somthing to play around with', function () {
           title: `https://www.allyourbasearebelongtous.com / fake ${container.cookieStoreId}`,
           url: `http://example.com/${container.color}`,
         },
-      ];
+      ]) as Array<Tab>;
 
-      // @ts-ignore
-      await fillContainer(container, new Promise((resolve) => resolve(tabs)));
+      await renderTabs(new Promise((resolve) => resolve(tabs)));
     }
   });
 });

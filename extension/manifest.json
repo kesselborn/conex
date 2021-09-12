@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "author": "kesselborn",
-  "description": "__MSG_extensionDescription",
+  "description": "__MSG_extensionDescription__",
   "homepage_url": "https://github.com/kesselborn/conex",
   "default_locale": "en",
   "name": "Conex",
@@ -21,8 +21,8 @@
     "default_icon": {
       "48": "icons/icon_48.png"
     }
-  }, 
-    "options_ui": {
+  },
+  "options_ui": {
     "page": "conex-options-ui.html",
     "browser_style": true,
     "open_in_tab": true

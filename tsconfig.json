@@ -28,12 +28,10 @@
     "exactOptionalPropertyTypes": false
   },
   "include": [
-    "./src/**/*"
+    "./src/*.ts",
+    "./src/test/*.ts"
   ],
   "types": [
     "browser"
-  ],
-  "exclude": [
-    "./src/test/mocha.js"
   ]
 }

@@ -1,12 +1,15 @@
-import {$, $$} from '../conex-helper.js';
-import {defaultContainer, fillContainer, renderContainers} from '../conex-containers.js';
-import {tabId2HtmlId} from '../conex-tab-element.js';
-import {clear, expect, fakeContainers} from './conex-test-helper.js';
+import { $, $$ } from '../conex-helper.js';
+import { defaultContainer, renderContainers, renderTabs } from '../conex-containers.js';
+import { tabId2HtmlId } from '../conex-tab-element.js';
+import { clear, expect, fakeContainers } from './conex-test-helper.js';
+import { Selectors } from '../conex-selectors.js';
+import { Tabs } from 'webextension-polyfill';
+import Tab = Tabs.Tab;
 
 describe('render containers', function () {
   afterEach(clear);
 
-  const {color, cookieStoreId} = fakeContainers[0]!;
+  const { color, cookieStoreId } = fakeContainers[0]!;
 
   it('should set class "empty" on empty containers', async function () {
     await renderContainers(fakeContainers);
@@ -28,44 +31,32 @@ describe('render containers', function () {
     ];
 
     // @ts-ignore
-    await fillContainer(fakeContainers[0]!, Promise.resolve(tabs));
+    await renderTabs(Promise.resolve(tabs));
 
     // containerElements[1] == fakeContainers[0] due to default container
     // containerElements[1] contains tab elements (i.e. not empty)
     // containerElements[2] does not contain tabs (i.e. empty)
-    expect(containerElements[1]!.classList.contains('empty')).to.be.false;
-    expect(containerElements[2]!.classList.contains('empty')).to.be.true;
+    expect(containerElements[1]!.classList.contains(Selectors.emptyContainerClass)).to.be.false;
+    expect(containerElements[2]!.classList.contains(Selectors.emptyContainerClass)).to.be.true;
   });
 
   it('should set correct container color on containers', async function () {
     await renderContainers(fakeContainers);
     const containerElements = $$('ol li');
 
-    const tabs = [
+    // @ts-ignore
+    const tabs = Array.from([
       {
         cookieStoreId: cookieStoreId,
         id: color,
         title: `${color} tab`,
         url: `http://example.com/${color}`,
       },
-    ];
-    // @ts-ignore
-    await fillContainer(fakeContainers[0]!, Promise.resolve(tabs));
+    ]) as Array<Tab>;
+
+    await renderTabs(Promise.resolve(tabs));
     // containerElements[1] == fakeContainers[0] due to default container
-    expect($('.tabs-visibility', containerElements[1]!)!.classList.contains(`container-color-${color}`))
-      .to.be.true;
-  });
-
-  it('should render container elements correctly', async function () {
-    await renderContainers(fakeContainers);
-    const containerElements = $$('ol li');
-
-    const allContainers = [defaultContainer].concat(fakeContainers);
-    expect(containerElements.length).to.equal(allContainers.length);
-    for (let i = 0; i < containerElements.length; i++) {
-      const label = $('label', containerElements[i])!;
-      expect(label.classList.contains(`container-color-${allContainers[i]!.color}`)).to.be.true;
-    }
+    expect(containerElements[1]!.classList.contains(`container-color-${color}`)).to.be.true;
   });
 
   it('should render history and bookmarks containers if respective options are passed', async function () {
@@ -102,7 +93,7 @@ describe('render tabs', function () {
     let tabCnt = 0;
     await renderContainers(fakeContainers);
     for (const container of fakeContainers) {
-      const tabs = [
+      const tabs = Array.from([
         {
           cookieStoreId: container.cookieStoreId,
           id: tabCnt++,
@@ -115,12 +106,11 @@ describe('render tabs', function () {
           title: `${container.color} tab 2`,
           url: `http://example.com/${container.color}`,
         },
-      ];
+      ]) as Array<Tab>;
 
-      // @ts-ignore
-      await fillContainer(container, Promise.resolve(tabs));
-      expect($(`#${tabId2HtmlId(tabCnt - 2)}`)!.classList.contains(`container-color-${container.color}`)).to.be.true;
-      expect($(`#${tabId2HtmlId(tabCnt - 1)}`)!.classList.contains(`container-color-${container.color}`)).to.be.true;
+      await renderTabs(Promise.resolve(tabs));
+      expect($(`#${tabId2HtmlId(tabCnt - 2)} > input`)!.getAttribute('name')).to.equal(Selectors.openTabName);
+      expect($(`#${tabId2HtmlId(tabCnt - 1)} > input`)!.getAttribute('name')).to.equal(Selectors.openTabName);
     }
 
     expect($$('form ul>li').length).to.equal(tabCnt);

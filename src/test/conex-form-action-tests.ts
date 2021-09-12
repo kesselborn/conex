@@ -1,6 +1,7 @@
 import { $ } from '../conex-helper.js';
 import { renderContainers } from '../conex-containers.js';
-import { fakeContainers, expect, clear } from './conex-test-helper.js';
+import { clear, expect, fakeContainers } from './conex-test-helper.js';
+import { Selectors } from '../conex-selectors.js';
 
 describe('form actions', function () {
   afterEach(clear);
@@ -9,7 +10,7 @@ describe('form actions', function () {
     await renderContainers(fakeContainers);
 
     const firstFakeContainerElement = $(`#${fakeContainers[0]!.cookieStoreId}`)!;
-    const toggleCollapseCheckbox = $('input[name="toggle-tabs-visibility"]', firstFakeContainerElement);
+    const toggleCollapseCheckbox = $(`input[name=${Selectors.toggleTabsVisibilityName}]`, firstFakeContainerElement);
     const toggleCollapseLabel = $(`label[for="${toggleCollapseCheckbox!.id}"]`, firstFakeContainerElement)!;
 
     firstFakeContainerElement.focus();

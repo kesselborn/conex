@@ -1,19 +1,19 @@
-import type {Browser} from 'webextension-polyfill';
-import {defaultContainer, fillContainer, renderContainers} from './conex-containers.js';
-import {$} from './conex-helper.js';
+import type { Browser } from 'webextension-polyfill';
+import { defaultContainer, renderContainers, renderTabs } from './conex-containers.js';
+import { ConexElements } from './conex-selectors.js';
 
 declare let browser: Browser;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // const bg = browser.extension.getBackgroundPage();
+  // const bg = browser.extension.getBackgroundPage();
 
-    const containers = await browser.contextualIdentities.query({});
-    renderContainers(containers);
+  const containers = await browser.contextualIdentities.query({});
+  await renderContainers(containers);
 
-    for (const container of [defaultContainer].concat(containers)) {
-        const tabs = browser.tabs.query({cookieStoreId: container.cookieStoreId});
-        fillContainer(container, tabs);
-    }
+  for (const container of [defaultContainer].concat(containers)) {
+    const tabs = browser.tabs.query({ cookieStoreId: container.cookieStoreId });
+    renderTabs(tabs).then();
+  }
 
-    $('#search')!.focus();
+  ConexElements.search.focus();
 });
