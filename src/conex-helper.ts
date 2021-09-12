@@ -3,8 +3,8 @@
 // console.origDebug = console.debug;
 // console.debug = () => {};
 // console.debug = function (..._) { }
-// @ts-ignore
-import {Browser} from "webextension-polyfill";
+
+import { Browser } from 'webextension-polyfill';
 
 declare let browser: Browser;
 
@@ -19,13 +19,11 @@ export enum ContextualIdentitiesColors {
   purple = '#af51f5',
   gold = '#daa520',
   black = '#000000',
-  white = '#ffffff'
+  white = '#ffffff',
 }
-
 
 export const placeholderImage = browser.runtime.getURL('transparent.png');
 
-// @ts-ignore
 export const placeholderFailedImage = browser.runtime.getURL('transparent-failed.png');
 
 // alias for document.querySelectorAll
@@ -55,20 +53,23 @@ export function $(s: string, parent: Element | Document = window.document): HTML
 //
 // <div class='foo'><span class='bar1' data-foo='bar'>baz1</span><span class='bar2'>baz2</span></div>
 //
-export function $e(name: string, attributes?: Object, children?: Array<Element>): Element {
+export function $e(
+  name: string,
+  attributes: any = {},
+  children: Array<Element> = Array.from([]) as Array<Element>
+): Element {
   const e = window.document.createElement(name);
 
   for (const key in attributes) {
+    const value = attributes[key];
     if (key === 'content') {
-      // @ts-ignore
-      e.appendChild(window.document.createTextNode(attributes[key]));
+      e.appendChild(window.document.createTextNode(value));
     } else {
-      // @ts-ignore
-      e.setAttribute(key.replace(/_/ug, '-'), attributes[key]);
+      e.setAttribute(key.replace(/_/gu, '-'), value);
     }
   }
 
-  for (const child of children || []) {
+  for (const child of children) {
     e.appendChild(child);
   }
 
@@ -135,7 +136,7 @@ export function debounce(func: Function, wait: number = 200, immediate: boolean)
 
 export async function closeContainer(containerId: string) {
   const tabClosings = [];
-  for (const tab of (await browser.tabs.query({cookieStoreId: containerId}))) {
+  for (const tab of await browser.tabs.query({ cookieStoreId: containerId })) {
     tabClosings.push(browser.tabs.remove(tab.id!));
   }
   await Promise.all(tabClosings);

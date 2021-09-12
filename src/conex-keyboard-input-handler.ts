@@ -91,7 +91,6 @@ function keyDownOnContainerElement(e: KeyboardEvent): void {
       } else {
         ConexElements.search.focus();
         setTimeout(function () {
-          // @ts-ignore
           ConexElements.search.select();
         }, 0);
       }

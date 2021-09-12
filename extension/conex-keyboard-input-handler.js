@@ -76,7 +76,6 @@ function keyDownOnContainerElement(e) {
       } else {
         ConexElements.search.focus();
         setTimeout(function () {
-          // @ts-ignore
           ConexElements.search.select();
         }, 0);
       }
