@@ -1,11 +1,11 @@
 import { $ } from '../conex-helper.js';
-import { renderContainers } from '../conex-containers.js';
 import { clear, expect, fakeContainers } from './conex-test-helper.js';
 import { Selectors } from '../conex-selectors.js';
+import { renderMainPage } from '../conex-main-page.js';
 describe('form actions', function () {
   afterEach(clear);
   it('should react on collapse / un-collapse actions', async function () {
-    await renderContainers(fakeContainers);
+    await renderMainPage(fakeContainers);
     const firstFakeContainerElement = $(`#${fakeContainers[0].cookieStoreId}`);
     const toggleCollapseCheckbox = $(`input[name=${Selectors.toggleTabsVisibilityName}]`, firstFakeContainerElement);
     const toggleCollapseLabel = $(`label[for="${toggleCollapseCheckbox.id}"]`, firstFakeContainerElement);

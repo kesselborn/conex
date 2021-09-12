@@ -1,8 +1,9 @@
 import { $, closeContainer } from '../conex-helper.js';
-import { renderContainers, renderTabs } from '../conex-containers.js';
+import { renderTabs } from '../conex-containers.js';
 import { clear, expect, timeoutResolver, typeKey } from './conex-test-helper.js';
 import { tabId2HtmlId, tabId2HtmlOpenTabId } from '../conex-tab-element.js';
 import type { Browser, Tabs } from 'webextension-polyfill';
+import { renderMainPage } from '../conex-main-page.js';
 
 let newContainerId: string;
 let newTab: Tabs.Tab;
@@ -39,7 +40,7 @@ describe('interactions', function () {
 
     newTab = await browser.tabs.create({ active: false, cookieStoreId: newContainerId, url: 'http://example.com' });
 
-    await renderContainers(await browser.contextualIdentities.query({}));
+    await renderMainPage(await browser.contextualIdentities.query({}));
     await renderTabs(browser.tabs.query({ cookieStoreId: newContainerId }));
   });
 

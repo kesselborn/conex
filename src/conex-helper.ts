@@ -8,7 +8,7 @@ import {Browser} from "webextension-polyfill";
 
 declare let browser: Browser;
 
-export enum ContexturalIdentitiesColorCodes {
+export enum ContextualIdentitiesColors {
   orange = '#ff9f00',
   blue = '#37adff',
   turquoise = '#00c79a',

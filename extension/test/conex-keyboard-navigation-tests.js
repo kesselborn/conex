@@ -1,13 +1,14 @@
 import { $, $$ } from '../conex-helper.js';
-import { renderContainers, renderTabs } from '../conex-containers.js';
+import { renderTabs } from '../conex-containers.js';
 import { clear, expect, fakeContainers, timeoutResolver, typeKey } from './conex-test-helper.js';
 import { tabId2HtmlId } from '../conex-tab-element.js';
 import { ConexElements } from '../conex-selectors.js';
+import { renderMainPage } from '../conex-main-page.js';
 // TODO: when typing, restart search
 describe('keyboard actions', function () {
   afterEach(clear);
   it('should react on collapse / un-collapse keys', async function () {
-    await renderContainers(fakeContainers);
+    await renderMainPage(fakeContainers);
     const firstFakeContainer = fakeContainers[0];
     const lastFakeContainer = fakeContainers[fakeContainers.length - 1];
     let cnt = 0;
@@ -58,7 +59,7 @@ describe('keyboard actions', function () {
 describe('keyboard navigation', function () {
   afterEach(clear);
   it('should react on down and up arrow keys for empty container elements correctly', async function () {
-    await renderContainers(fakeContainers);
+    await renderMainPage(fakeContainers);
     const containerElements = $$('ol li');
     containerElements[0].focus();
     typeKey({ key: 'ArrowUp' }, document.activeElement);
@@ -71,7 +72,7 @@ describe('keyboard navigation', function () {
     expect(document.activeElement).to.equal(containerElements[0]);
   });
   it('should react on down and up arrow keys for container elements with tabs correctly', async function () {
-    await renderContainers(fakeContainers);
+    await renderMainPage(fakeContainers);
     let cnt = 0;
     for (let i = 0; i < fakeContainers.length; i++) {
       const container = fakeContainers[i];
@@ -227,7 +228,7 @@ describe('keyboard navigation', function () {
     }
   });
   it('should select search term when returning to search field', async function () {
-    await renderContainers(fakeContainers);
+    await renderMainPage(fakeContainers);
     ConexElements.search.value = 'fake';
     $('ol > li').focus();
     // containerElements[0].focus();

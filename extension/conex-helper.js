@@ -1,17 +1,17 @@
-export var ContexturalIdentitiesColorCodes;
-(function (ContexturalIdentitiesColorCodes) {
-  ContexturalIdentitiesColorCodes.orange = '#ff9f00';
-  ContexturalIdentitiesColorCodes.blue = '#37adff';
-  ContexturalIdentitiesColorCodes.turquoise = '#00c79a';
-  ContexturalIdentitiesColorCodes.green = '#51cd00';
-  ContexturalIdentitiesColorCodes.yellow = '#ffcb00';
-  ContexturalIdentitiesColorCodes.red = '#ff613d';
-  ContexturalIdentitiesColorCodes.pink = '#ff4bda';
-  ContexturalIdentitiesColorCodes.purple = '#af51f5';
-  ContexturalIdentitiesColorCodes.gold = '#daa520';
-  ContexturalIdentitiesColorCodes.black = '#000000';
-  ContexturalIdentitiesColorCodes.white = '#ffffff';
-})(ContexturalIdentitiesColorCodes || (ContexturalIdentitiesColorCodes = {}));
+export var ContextualIdentitiesColors;
+(function (ContextualIdentitiesColors) {
+  ContextualIdentitiesColors.orange = '#ff9f00';
+  ContextualIdentitiesColors.blue = '#37adff';
+  ContextualIdentitiesColors.turquoise = '#00c79a';
+  ContextualIdentitiesColors.green = '#51cd00';
+  ContextualIdentitiesColors.yellow = '#ffcb00';
+  ContextualIdentitiesColors.red = '#ff613d';
+  ContextualIdentitiesColors.pink = '#ff4bda';
+  ContextualIdentitiesColors.purple = '#af51f5';
+  ContextualIdentitiesColors.gold = '#daa520';
+  ContextualIdentitiesColors.black = '#000000';
+  ContextualIdentitiesColors.white = '#ffffff';
+})(ContextualIdentitiesColors || (ContextualIdentitiesColors = {}));
 export const placeholderImage = browser.runtime.getURL('transparent.png');
 // @ts-ignore
 export const placeholderFailedImage = browser.runtime.getURL('transparent-failed.png');

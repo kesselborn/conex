@@ -1,11 +1,11 @@
-import { ContexturalIdentitiesColorCodes } from '../conex-helper.js';
-import { ConexElements } from '../conex-selectors.js';
+import { $e, _, ContextualIdentitiesColors } from '../conex-helper.js';
+import { ConexElements, Selectors } from '../conex-selectors.js';
 export const fakeContainers = [
   {
     cookieStoreId: 'container0',
     color: 'orange',
     name: 'fake container-0 foo',
-    colorCode: ContexturalIdentitiesColorCodes.orange,
+    colorCode: ContextualIdentitiesColors.orange,
     icon: 'circle',
     iconUrl: '',
   },
@@ -13,7 +13,7 @@ export const fakeContainers = [
     cookieStoreId: 'container1',
     color: 'blue',
     name: 'fake container-1 bar',
-    colorCode: ContexturalIdentitiesColorCodes.blue,
+    colorCode: ContextualIdentitiesColors.blue,
     icon: 'circle',
     iconUrl: '',
   },
@@ -21,7 +21,7 @@ export const fakeContainers = [
     cookieStoreId: 'container2',
     color: 'red',
     name: 'fake container-2 baz',
-    colorCode: ContexturalIdentitiesColorCodes.red,
+    colorCode: ContextualIdentitiesColors.red,
     icon: 'circle',
     iconUrl: '',
   },
@@ -29,7 +29,7 @@ export const fakeContainers = [
     cookieStoreId: 'container3',
     color: 'turquoise',
     name: 'fake container-3 foobar',
-    colorCode: ContexturalIdentitiesColorCodes.turquoise,
+    colorCode: ContextualIdentitiesColors.turquoise,
     icon: 'circle',
     iconUrl: '',
   },
@@ -37,7 +37,7 @@ export const fakeContainers = [
     cookieStoreId: 'container4',
     color: 'yellow',
     name: 'fake container-4 foobaz',
-    colorCode: ContexturalIdentitiesColorCodes.yellow,
+    colorCode: ContextualIdentitiesColors.yellow,
     icon: 'circle',
     iconUrl: '',
   },
@@ -46,6 +46,11 @@ export const fakeContainers = [
 chai.config.includeStack = true;
 // @ts-ignore
 export const expect = chai.expect;
+export function renderMainPageStub() {
+  const searchField = $e('input', { id: Selectors.searchId, placeholder: _('searchBoxPlaceholder'), type: 'text' });
+  const form = $e('form', {}, [searchField]);
+  window.document.body.appendChild(form);
+}
 export function typeKey(key, element) {
   const keyDownEvent = new KeyboardEvent('keydown', key);
   const keyUpEvent = new KeyboardEvent('keyup', key);

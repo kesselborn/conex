@@ -1,8 +1,9 @@
-import { renderContainers, renderTabs } from '../conex-containers.js';
+import { renderTabs } from '../conex-containers.js';
 import { fakeContainers } from './conex-test-helper.js';
+import { renderMainPage } from '../conex-main-page.js';
 describe('finally: render somthing to play around with', function () {
   it('renders', async function () {
-    await renderContainers(fakeContainers);
+    await renderMainPage(fakeContainers);
     for (const container of fakeContainers) {
       // @ts-ignore
       const tabs = Array.from([

@@ -1,5 +1,4 @@
-import { $e, _, ContexturalIdentitiesColorCodes } from './conex-helper.js';
-import { keydown, keyup } from './conex-keyboard-input-handler.js';
+import { $e, _, ContextualIdentitiesColors } from './conex-helper.js';
 import { htmlId2TabId, tabElement } from './conex-tab-element.js';
 import { containerElement } from './conex-container-element.js';
 import type { Browser } from 'webextension-polyfill';
@@ -10,7 +9,7 @@ import Tab = Tabs.Tab;
 
 declare let browser: Browser;
 
-async function formChange(e: Event): Promise<void> {
+export async function formChange(e: Event): Promise<void> {
   if (!e.target || !(e.target instanceof HTMLInputElement)) {
     return;
   }
@@ -48,7 +47,7 @@ async function formChange(e: Event): Promise<void> {
 }
 
 export const defaultContainer: ContextualIdentity = {
-  colorCode: ContexturalIdentitiesColorCodes.black,
+  colorCode: ContextualIdentitiesColors.black,
   icon: 'circle',
   iconUrl: '',
   cookieStoreId: 'firefox-default',
@@ -57,7 +56,7 @@ export const defaultContainer: ContextualIdentity = {
 };
 
 export const bookmarkDummyContainer: ContextualIdentity = {
-  colorCode: ContexturalIdentitiesColorCodes.gold,
+  colorCode: ContextualIdentitiesColors.gold,
   icon: 'circle',
   iconUrl: '',
   cookieStoreId: 'bookmarks',
@@ -66,7 +65,7 @@ export const bookmarkDummyContainer: ContextualIdentity = {
 };
 
 export const historyDummyContainer: ContextualIdentity = {
-  colorCode: ContexturalIdentitiesColorCodes.white,
+  colorCode: ContextualIdentitiesColors.white,
   icon: 'circle',
   iconUrl: '',
   cookieStoreId: 'history',
@@ -81,7 +80,7 @@ export class ContainerRenderOptions {
 }
 
 export async function renderContainers(
-  _containers: Array<ContextualIdentity>,
+  containers: Array<ContextualIdentity>,
   options: ContainerRenderOptions = new ContainerRenderOptions()
 ): Promise<void> {
   const additionalContainers = [defaultContainer];
@@ -89,7 +88,7 @@ export async function renderContainers(
   if (options.bookmarks) {
     additionalContainers.push(bookmarkDummyContainer);
   }
-  let containers = additionalContainers.concat(_containers);
+  containers = additionalContainers.concat(containers);
 
   if (options.history) {
     containers.push(historyDummyContainer);
@@ -108,13 +107,7 @@ export async function renderContainers(
     containerList.appendChild(containerElement(container));
   }
 
-  const searchField = $e('input', { id: Selectors.searchId, placeholder: _('searchBoxPlaceholder'), type: 'text' });
-
-  const form = $e('form', {}, [searchField, containerList]);
-  window.document.body.appendChild(form);
-  ConexElements.form.addEventListener('change', formChange, true);
-  ConexElements.form.addEventListener('keydown', keydown, true);
-  ConexElements.form.addEventListener('keyup', keyup, true);
+  ConexElements.form.appendChild(containerList);
 }
 
 export async function renderTabs(tabs: Promise<Array<Tab>>) {

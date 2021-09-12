@@ -4,17 +4,18 @@
 // esc === clear
 
 import { clear, expect, fakeContainers } from './conex-test-helper.js';
-import { renderContainers, renderTabs } from '../conex-containers.js';
+import { renderTabs } from '../conex-containers.js';
 import { $, $$ } from '../conex-helper.js';
 import { searchInContainer } from '../conex-search.js';
 import { Tabs } from 'webextension-polyfill';
+import { renderMainPage } from '../conex-main-page.js';
 import Tab = Tabs.Tab;
 
 describe('search box', function () {
   afterEach(clear);
 
   beforeEach(async () => {
-    await renderContainers(fakeContainers);
+    await renderMainPage(fakeContainers);
     const firstFakeContainer = fakeContainers[0];
     const lastFakeContainer = fakeContainers[fakeContainers.length - 1];
 
