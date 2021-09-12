@@ -96,7 +96,7 @@ describe('render tabs', function () {
   it('should render tabs elements correctly', async function () {
     let tabCnt = 0;
 
-    const searchField = $e('input', {id: Selectors.searchId, placeholder: _('searchBoxPlaceholder'), type: 'text'});
+    const searchField = $e('input', { id: Selectors.searchId, placeholder: _('searchBoxPlaceholder'), type: 'text' });
     const form = $e('form', {}, [searchField]);
     window.document.body.appendChild(form);
 

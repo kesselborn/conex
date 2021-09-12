@@ -73,52 +73,66 @@ describe('keyboard navigation', function () {
   });
   it('should react on down and up arrow keys for container elements with tabs correctly', async function () {
     await renderMainPage(fakeContainers);
-    let cnt = 0;
-    for (let i = 0; i < fakeContainers.length; i++) {
-      const container = fakeContainers[i];
-      const fakeTabs = [
+    let tabIdCnt = 0;
+    const fakeTabs = (cookieStoreId) => {
+      return [
         {
-          cookieStoreId: container.cookieStoreId,
-          id: cnt++,
-          title: `tab ${cnt} / fake ${container.cookieStoreId}`,
-          url: `http://example.com/${container.color}`,
+          cookieStoreId: cookieStoreId,
+          id: tabIdCnt++,
+          title: `tab 0 / fake ${cookieStoreId}`,
+          url: `http://example.com/${cookieStoreId}`,
         },
         {
-          cookieStoreId: container.cookieStoreId,
-          id: cnt++,
-          title: `tab ${cnt} / fake ${container.cookieStoreId}`,
-          url: `http://example.com/${container.color}`,
+          cookieStoreId: cookieStoreId,
+          id: tabIdCnt++,
+          title: `tab 1 / fake ${cookieStoreId}`,
+          url: `http://example.com/${cookieStoreId}`,
         },
       ];
+    };
+    for (let i = 0; i < fakeContainers.length; i++) {
+      const container = fakeContainers[i];
       switch (i) {
         // first container contains two tabs
         case 0: // containerElements[1]
           // @ts-ignore
-          await renderTabs(Promise.resolve(fakeTabs));
+          await renderTabs(Promise.resolve(fakeTabs(fakeContainers[i].cookieStoreId)));
           break;
           // second tab contains a tab that should be hidden (class == no-match)
         case 1: // containerElements[2]
-          // @ts-ignore
-          await renderTabs(Promise.resolve(fakeTabs));
-          $(`#${tabId2HtmlId(fakeTabs[0].id)}`).classList.add('no-match');
+          {
+            const tabs = fakeTabs(fakeContainers[i].cookieStoreId);
+            // @ts-ignore
+            await renderTabs(Promise.resolve(tabs));
+            $(`#${tabId2HtmlId(tabs[0].id)}`).classList.add('no-match');
+          }
           break;
           // third container only contains hidden tabs and is hidden as well (happens on search)
         case 2: // containerElements[3]
-          // @ts-ignore
-          await renderTabs(Promise.resolve(fakeTabs));
-          $(`#${container.cookieStoreId}`).classList.add('no-match');
-          $(`#${tabId2HtmlId(fakeTabs[0].id)}`).classList.add('no-match');
-          $(`#${tabId2HtmlId(fakeTabs[1].id)}`).classList.add('no-match');
+          {
+            const tabs = fakeTabs(fakeContainers[i].cookieStoreId);
+            // @ts-ignore
+            await renderTabs(Promise.resolve(tabs));
+            $(`#${container.cookieStoreId}`).classList.add('no-match');
+            $(`#${tabId2HtmlId(tabs[0].id)}`).classList.add('no-match');
+            $(`#${tabId2HtmlId(tabs[1].id)}`).classList.add('no-match');
+          }
           break;
         case 3: // containerElements[4]
-          // @ts-ignore
-          await renderTabs(Promise.resolve(fakeTabs));
-          $(`#${container.cookieStoreId}`).classList.add('collapsed');
+          {
+            const tabs = fakeTabs(fakeContainers[i].cookieStoreId);
+            // @ts-ignore
+            await renderTabs(Promise.resolve(tabs));
+            $(`#${container.cookieStoreId}`).classList.add('collapsed');
+          }
           break;
         case 4: // containerElements[5]
-          // @ts-ignore
-          await renderTabs(Promise.resolve(fakeTabs));
-          $(`#${tabId2HtmlId(fakeTabs[1].id)}`).classList.add('no-match');
+          {
+            const tabs = fakeTabs(fakeContainers[i].cookieStoreId);
+            // @ts-ignore
+            await renderTabs(Promise.resolve(tabs));
+            $(`#${tabId2HtmlId(tabs[1].id)}`).classList.add('no-match');
+          }
           break;
         case 5: // containerElements[6]
           $(`#${container.cookieStoreId}`).classList.add('no-match');
@@ -147,8 +161,8 @@ describe('keyboard navigation', function () {
     // └── containerElements[6] === fakeContainers[5] ==> HIDDEN (class: no-match)
     const containerElements = $$('ol>li', document.forms[0]);
     for (const keys of [
-      { down: { key: 'ArrowDown' }, up: { key: 'ArrowUp' } },
-      { down: { key: 'Tab' }, up: { key: 'Tab', shiftKey: true } },
+      { down: { key: 'ArrowDown' }, up: { key: 'ArrowUp' }, left: { key: 'ArrowLeft' } },
+      { down: { key: 'Tab' }, up: { key: 'Tab', shiftKey: true }, left: { key: 'ArrowLeft' } },
     ]) {
       // this includes the firefox default container on positions 0 that does not have tabs
       // make the testing output more concise, otherwise the error messages are unparseable
@@ -163,9 +177,10 @@ describe('keyboard navigation', function () {
         return `test ${cnt} ${JSON.stringify(keys)}: ${element.innerText.trim()}`;
       };
       containerElements[0].focus(); // default container
-      // one arrow down: we should now be on the first fakeContainers container as the default container is empty
+      // one arrow left: we should now be on the first fakeContainers container as arrow left collapses
+      // the container and jumps to the next container
       // Test 1
-      typeKey(keys.down, document.activeElement);
+      typeKey(keys.left, document.activeElement);
       expect(e2t(document.activeElement)).to.equal(e2t(containerElements[1]));
       // one arrow down:  we should now be on the first tab within the first container
       // Test 2
