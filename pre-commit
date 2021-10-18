@@ -1,0 +1,14 @@
+#!/bin/sh
+
+problematicImports=$(grep -r "import.*\/" src/|grep -v "\.js';")
+
+if [ -n "${problematicImports}" ]
+then
+    printf "Fix this import(s) as it will blow up in your face: %s" "${problematicImports}"
+    exit 1
+fi
+
+
+printf "%d tests should be successful" $(grep -ir ' it(' src/|grep -v 'test/mocha.js'|wc -l)
+
+
