@@ -14,10 +14,10 @@ import ContextualIdentity = ContextualIdentities.ContextualIdentity;
 declare let browser: Browser;
 
 export async function renderMainPage(
-  containers: Array<ContextualIdentity> | null = null,
+  containers: Array<ContextualIdentity> = [],
   options: ContainerRenderOptions = new ContainerRenderOptions()
 ) {
-  if (!containers) {
+  if (containers.length === 0) {
     containers = await browser.contextualIdentities.query({});
   }
 

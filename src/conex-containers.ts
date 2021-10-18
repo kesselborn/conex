@@ -21,7 +21,7 @@ export async function formChange(e: Event): Promise<void> {
     case Selectors.toggleTabsVisibilityName: {
       target.checked = false;
       const containerElement = target.parentElement!; // this action always has a parent
-      containerElement.classList.toggle('collapsed');
+      containerElement.classList.toggle(Selectors.collapsedContainer);
       break;
     }
     case Selectors.openTabName: {
@@ -39,7 +39,7 @@ export async function formChange(e: Event): Promise<void> {
       if (tab) {
         tabElement.dataset['url'] = tab.url;
         browser.tabs.remove(tab.id!);
-        tabElement.classList.add('closed');
+        tabElement.classList.add(Selectors.tabClosed);
       }
       break;
     }

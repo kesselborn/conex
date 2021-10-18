@@ -1,8 +1,9 @@
 import { $, $$ } from './conex-helper.js';
+import { Selectors } from './conex-selectors.js';
 
 interface HighlightResult {
-  highlightedString: string,
-  match: boolean
+  highlightedString: string;
+  match: boolean;
 }
 
 export function hilightSearchMatch(string: string, searchStringTokensString: string): HighlightResult {
@@ -31,7 +32,7 @@ export function hilightSearchMatch(string: string, searchStringTokensString: str
   return { highlightedString: string, match: false };
 }
 
-export function searchInContainer(containerElement: Element | Document, searchString: string) {
+export function searchInContainer(containerElement: Element, searchString: string) {
   const containerTabs = $$('li', containerElement)!;
   let containerHasMatch = false;
   for (const tabElement of Array.from(containerTabs)) {
@@ -55,10 +56,10 @@ export function searchInContainer(containerElement: Element | Document, searchSt
     }
 
     if (containedMatch) {
-      tabElement.classList.remove('no-match');
+      tabElement.classList.remove(Selectors.noMatch);
       containerHasMatch = true;
     } else {
-      tabElement.classList.add('no-match');
+      tabElement.classList.add(Selectors.noMatch);
     }
   }
 
@@ -70,8 +71,8 @@ export function searchInContainer(containerElement: Element | Document, searchSt
   }
 
   if (containerHasMatch) {
-    (containerElement as HTMLElement).classList.remove('no-match');
+    (containerElement as HTMLElement).classList.remove(Selectors.noMatch);
   } else {
-    (containerElement as HTMLElement).classList.add('no-match');
+    (containerElement as HTMLElement).classList.add(Selectors.noMatch);
   }
 }

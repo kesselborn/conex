@@ -1,12 +1,15 @@
 import { $ } from './conex-helper.js';
 
 export enum Selectors {
-  searchId = 'searchId',
-  toggleTabsVisibilityName = 'toggle-tabs-visibility',
+  closeTabName = 'close-tab',
+  collapsedContainer = 'collapsed',
+  emptyContainerClass = 'empty',
+  noMatch = 'no-match',
   openContainerName = 'open-container',
   openTabName = 'open-tab',
-  closeTabName = 'close-tab',
-  emptyContainerClass = 'empty',
+  searchId = 'searchId',
+  tabClosed = 'closed',
+  toggleTabsVisibilityName = 'toggle-tabs-visibility',
 }
 
 export class ConexElements {

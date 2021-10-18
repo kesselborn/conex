@@ -1,4 +1,5 @@
 import { $, $$ } from './conex-helper.js';
+import { Selectors } from './conex-selectors.js';
 export function hilightSearchMatch(string, searchStringTokensString) {
   const searchStringTokens = searchStringTokensString.split(' ');
   for (const searchString of searchStringTokens) {
@@ -43,10 +44,10 @@ export function searchInContainer(containerElement, searchString) {
       }
     }
     if (containedMatch) {
-      tabElement.classList.remove('no-match');
+      tabElement.classList.remove(Selectors.noMatch);
       containerHasMatch = true;
     } else {
-      tabElement.classList.add('no-match');
+      tabElement.classList.add(Selectors.noMatch);
     }
   }
   const containerTitle = $('h2', containerElement);
@@ -56,8 +57,8 @@ export function searchInContainer(containerElement, searchString) {
     containerHasMatch = true;
   }
   if (containerHasMatch) {
-    containerElement.classList.remove('no-match');
+    containerElement.classList.remove(Selectors.noMatch);
   } else {
-    containerElement.classList.add('no-match');
+    containerElement.classList.add(Selectors.noMatch);
   }
 }

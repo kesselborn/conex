@@ -10,10 +10,10 @@ describe('form actions', function () {
     const toggleCollapseCheckbox = $(`input[name=${Selectors.toggleTabsVisibilityName}]`, firstFakeContainerElement);
     const toggleCollapseLabel = $(`label[for="${toggleCollapseCheckbox.id}"]`, firstFakeContainerElement);
     firstFakeContainerElement.focus();
-    expect(firstFakeContainerElement.classList.contains('collapsed')).to.be.false;
+    expect(firstFakeContainerElement.classList.contains(Selectors.collapsedContainer)).to.be.false;
     toggleCollapseLabel.click();
-    expect(firstFakeContainerElement.classList.contains('collapsed')).to.be.true;
+    expect(firstFakeContainerElement.classList.contains(Selectors.collapsedContainer)).to.be.true;
     toggleCollapseLabel.click();
-    expect(firstFakeContainerElement.classList.contains('collapsed')).to.be.false;
+    expect(firstFakeContainerElement.classList.contains(Selectors.collapsedContainer)).to.be.false;
   });
 });

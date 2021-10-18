@@ -53,15 +53,16 @@ export function $(s: string, parent: Element | Document = window.document): HTML
 //
 // <div class='foo'><span class='bar1' data-foo='bar'>baz1</span><span class='bar2'>baz2</span></div>
 //
+
 export function $e(
   name: string,
-  attributes: any = {},
+  attributes: Record<string, string> = {},
   children: Array<Element> = Array.from([]) as Array<Element>
 ): Element {
   const e = window.document.createElement(name);
 
   for (const key in attributes) {
-    const value = attributes[key];
+    const value = attributes[key]!;
     if (key === 'content') {
       e.appendChild(window.document.createTextNode(value));
     } else {

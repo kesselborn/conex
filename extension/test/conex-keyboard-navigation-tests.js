@@ -2,7 +2,7 @@ import { $, $$ } from '../conex-helper.js';
 import { renderTabs } from '../conex-containers.js';
 import { clear, expect, fakeContainers, timeoutResolver, typeKey } from './conex-test-helper.js';
 import { tabId2HtmlId } from '../conex-tab-element.js';
-import { ConexElements } from '../conex-selectors.js';
+import { ConexElements, Selectors } from '../conex-selectors.js';
 import { renderMainPage } from '../conex-main-page.js';
 // TODO: when typing, restart search
 describe('keyboard actions', function () {
@@ -35,24 +35,24 @@ describe('keyboard actions', function () {
     const tabInLastFakeContainerElement = $(`#${tabId2HtmlId(3)}`);
     // when collapsing on a container element, go to the next container element
     firstFakeContainerElement.focus();
-    expect(document.activeElement.classList.contains('collapsed')).to.be.false;
+    expect(document.activeElement.classList.contains(Selectors.collapsedContainer)).to.be.false;
     typeKey({ key: 'ArrowLeft' }, document.activeElement);
-    expect(firstFakeContainerElement.classList.contains('collapsed')).to.be.true;
+    expect(firstFakeContainerElement.classList.contains(Selectors.collapsedContainer)).to.be.true;
     expect(document.activeElement).to.equal(firstFakeContainerElement.nextElementSibling);
     firstFakeContainerElement.focus();
     typeKey({ key: 'ArrowRight' }, document.activeElement);
-    expect(document.activeElement.classList.contains('collapsed')).to.be.false;
+    expect(document.activeElement.classList.contains(Selectors.collapsedContainer)).to.be.false;
     expect(document.activeElement).to.equal(firstFakeContainerElement);
     // when collapsing on a tab element, jump to the next container element
     firstTabInFirstFakeContainerElement.focus();
     typeKey({ key: 'ArrowLeft' }, document.activeElement);
-    expect(firstFakeContainerElement.classList.contains('collapsed')).to.be.true;
+    expect(firstFakeContainerElement.classList.contains(Selectors.collapsedContainer)).to.be.true;
     expect(document.activeElement).to.equal(firstFakeContainerElement.nextElementSibling);
     typeKey({ key: 'ArrowRight' }, document.activeElement);
     // when collapsing on a tab element of the _last_ container element, jump to the current container element
     tabInLastFakeContainerElement.focus();
     typeKey({ key: 'ArrowLeft' }, document.activeElement);
-    expect(lastFakeContainerElement.classList.contains('collapsed')).to.be.true;
+    expect(lastFakeContainerElement.classList.contains(Selectors.collapsedContainer)).to.be.true;
     expect(document.activeElement).to.equal(lastFakeContainerElement);
   });
 });
@@ -104,7 +104,7 @@ describe('keyboard navigation', function () {
             const tabs = fakeTabs(fakeContainers[i].cookieStoreId);
             // @ts-ignore
             await renderTabs(Promise.resolve(tabs));
-            $(`#${tabId2HtmlId(tabs[0].id)}`).classList.add('no-match');
+            $(`#${tabId2HtmlId(tabs[0].id)}`).classList.add(Selectors.noMatch);
           }
           break;
           // third container only contains hidden tabs and is hidden as well (happens on search)
@@ -113,9 +113,9 @@ describe('keyboard navigation', function () {
             const tabs = fakeTabs(fakeContainers[i].cookieStoreId);
             // @ts-ignore
             await renderTabs(Promise.resolve(tabs));
-            $(`#${container.cookieStoreId}`).classList.add('no-match');
-            $(`#${tabId2HtmlId(tabs[0].id)}`).classList.add('no-match');
-            $(`#${tabId2HtmlId(tabs[1].id)}`).classList.add('no-match');
+            $(`#${container.cookieStoreId}`).classList.add(Selectors.noMatch);
+            $(`#${tabId2HtmlId(tabs[0].id)}`).classList.add(Selectors.noMatch);
+            $(`#${tabId2HtmlId(tabs[1].id)}`).classList.add(Selectors.noMatch);
           }
           break;
         case 3: // containerElements[4]
@@ -123,7 +123,7 @@ describe('keyboard navigation', function () {
             const tabs = fakeTabs(fakeContainers[i].cookieStoreId);
             // @ts-ignore
             await renderTabs(Promise.resolve(tabs));
-            $(`#${container.cookieStoreId}`).classList.add('collapsed');
+            $(`#${container.cookieStoreId}`).classList.add(Selectors.collapsedContainer);
           }
           break;
         case 4: // containerElements[5]
@@ -131,11 +131,11 @@ describe('keyboard navigation', function () {
             const tabs = fakeTabs(fakeContainers[i].cookieStoreId);
             // @ts-ignore
             await renderTabs(Promise.resolve(tabs));
-            $(`#${tabId2HtmlId(tabs[1].id)}`).classList.add('no-match');
+            $(`#${tabId2HtmlId(tabs[1].id)}`).classList.add(Selectors.noMatch);
           }
           break;
         case 5: // containerElements[6]
-          $(`#${container.cookieStoreId}`).classList.add('no-match');
+          $(`#${container.cookieStoreId}`).classList.add(Selectors.noMatch);
           break;
       }
     }
@@ -194,11 +194,11 @@ describe('keyboard navigation', function () {
       // Test 4
       typeKey(keys.down, document.activeElement);
       expect(e2t(document.activeElement)).to.equal(e2t(containerElements[2]));
-      // one arrow down:  we should now be on the _second_ tab (as the first one has class 'no-match') of the second container element
+      // one arrow down:  we should now be on the _second_ tab (as the first one has class Selectors.noMatch) of the second container element
       // Test 5
       typeKey(keys.down, document.activeElement);
       expect(e2t(document.activeElement)).to.equal(e2t($('ul>li:nth-child(2)', containerElements[2])));
-      // one arrow down:  we should now be on the fourth container element as the third container element is hidden with 'no-match' class
+      // one arrow down:  we should now be on the fourth container element as the third container element is hidden with Selectors.noMatch class
       // Test 6
       typeKey(keys.down, document.activeElement);
       expect(e2t(document.activeElement)).to.equal(e2t(containerElements[4]));

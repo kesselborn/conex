@@ -1,7 +1,7 @@
 import { $, $$ } from './conex-helper.js';
 import { htmlId2TabId, tabId2HtmlCloseTabId } from './conex-tab-element.js';
 import { searchInContainer } from './conex-search.js';
-import { ConexElements } from './conex-selectors.js';
+import { ConexElements, Selectors } from './conex-selectors.js';
 export function keydown(e) {
   console.debug('keydown', e);
   const targetElement = e.target;
@@ -53,8 +53,8 @@ function keyDownOnContainerElement(e) {
       e.preventDefault();
       // FALLTHROUGH ON PURPOSE: if the shiftKey is pressed, fall through to 'ArrowUp'
       if (!e.shiftKey) {
-        const tabElement = Array.from($$('ul>li', containerElement)).find((tabElement) => !tabElement.classList.contains('no-match'));
-        if (tabElement && !containerElement.classList.contains('collapsed')) {
+        const tabElement = Array.from($$('ul>li', containerElement)).find((tabElement) => !tabElement.classList.contains(Selectors.noMatch));
+        if (tabElement && !containerElement.classList.contains(Selectors.collapsedContainer)) {
           tabElement.focus();
         } else {
           focusNextVisibleContainerSibling(containerElement);
@@ -67,8 +67,8 @@ function keyDownOnContainerElement(e) {
       if (previousContainer) {
         const lastTabOfPreviousContainer = Array.from($$('ul>li', previousContainer))
           .reverse()
-          .find((tabElement) => !tabElement.classList.contains('no-match'));
-        if (lastTabOfPreviousContainer && !previousContainer.classList.contains('collapsed')) {
+          .find((tabElement) => !tabElement.classList.contains(Selectors.noMatch));
+        if (lastTabOfPreviousContainer && !previousContainer.classList.contains(Selectors.collapsedContainer)) {
           lastTabOfPreviousContainer.focus();
         } else {
           previousContainer.focus();
@@ -82,11 +82,11 @@ function keyDownOnContainerElement(e) {
       break;
     }
     case 'ArrowLeft':
-      containerElement.classList.add('collapsed');
+      containerElement.classList.add(Selectors.collapsedContainer);
       focusNextVisibleContainerSibling(containerElement);
       break;
     case 'ArrowRight':
-      containerElement.classList.remove('collapsed');
+      containerElement.classList.remove(Selectors.collapsedContainer);
       break;
   }
 }
@@ -114,7 +114,7 @@ function keyDownOnTabElement(e) {
       if (!e.shiftKey) {
         while (curTabElement.nextElementSibling) {
           curTabElement = curTabElement.nextElementSibling;
-          if (!curTabElement.classList.contains('no-match')) {
+          if (!curTabElement.classList.contains(Selectors.noMatch)) {
             curTabElement.focus();
             return;
           }
@@ -128,7 +128,7 @@ function keyDownOnTabElement(e) {
     case 'ArrowUp':
       while (curTabElement.previousElementSibling) {
         curTabElement = curTabElement.previousElementSibling;
-        if (!curTabElement.classList.contains('no-match')) {
+        if (!curTabElement.classList.contains(Selectors.noMatch)) {
           curTabElement.focus();
           return;
         }
@@ -138,7 +138,7 @@ function keyDownOnTabElement(e) {
       break;
     case 'ArrowLeft': {
       const tabContainerElement = curTabElement.parentElement.parentElement;
-      tabContainerElement.classList.add('collapsed');
+      tabContainerElement.classList.add(Selectors.collapsedContainer);
       tabContainerElement.focus();
       focusNextVisibleContainerSibling(tabContainerElement);
       break;
@@ -148,7 +148,7 @@ function keyDownOnTabElement(e) {
 function focusNextVisibleContainerSibling(curContainerElement) {
   while (curContainerElement.nextElementSibling) {
     curContainerElement = curContainerElement.nextElementSibling;
-    if (!curContainerElement.classList.contains('no-match')) {
+    if (!curContainerElement.classList.contains(Selectors.noMatch)) {
       curContainerElement.focus();
       return;
     }
@@ -157,7 +157,7 @@ function focusNextVisibleContainerSibling(curContainerElement) {
 function previousVisibleContainerSibling(curContainerElement) {
   while (curContainerElement.previousElementSibling) {
     curContainerElement = curContainerElement.previousElementSibling;
-    if (!curContainerElement.classList.contains('no-match')) {
+    if (!curContainerElement.classList.contains(Selectors.noMatch)) {
       return curContainerElement;
     }
   }

@@ -7,6 +7,7 @@ import { renderTabs } from '../conex-containers.js';
 import { $, $$ } from '../conex-helper.js';
 import { searchInContainer } from '../conex-search.js';
 import { renderMainPage } from '../conex-main-page.js';
+import { Selectors } from '../conex-selectors.js';
 describe('search box', function () {
   afterEach(clear);
   beforeEach(async () => {
@@ -60,13 +61,13 @@ describe('search box', function () {
     const firstContainer = $$('ol > li')[1];
     const searchTerm = 'xxxxxx';
     searchInContainer(firstContainer, searchTerm);
-    expect(firstContainer.classList.contains('no-match')).to.be.true;
+    expect(firstContainer.classList.contains(Selectors.noMatch)).to.be.true;
   });
   it('do not hide container if name of the container matches search', async function () {
     const firstContainer = $$('ol > li')[1];
     const searchTerm = 'fake';
     searchInContainer(firstContainer, searchTerm);
-    expect(firstContainer.classList.contains('no-match')).to.be.false;
+    expect(firstContainer.classList.contains(Selectors.noMatch)).to.be.false;
     expect($('h2', firstContainer).innerHTML).to.equal('<span><em>fake</em> container-0 foo</span>');
   });
 });

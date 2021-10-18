@@ -7,7 +7,7 @@ export function containerElement(container: ContextualIdentity): Element {
   return $e(
     'li',
     {
-      tabindex: 0,
+      tabindex: '0',
       class: `container-color-${container.color} ${Selectors.emptyContainerClass}`,
       id: `${container.cookieStoreId}`,
     },

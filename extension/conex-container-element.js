@@ -2,7 +2,7 @@ import { $e } from './conex-helper.js';
 import { Selectors } from './conex-selectors.js';
 export function containerElement(container) {
   return $e('li', {
-    tabindex: 0,
+    tabindex: '0',
     class: `container-color-${container.color} ${Selectors.emptyContainerClass}`,
     id: `${container.cookieStoreId}`,
   }, [

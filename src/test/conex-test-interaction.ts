@@ -4,6 +4,7 @@ import { clear, expect, timeoutResolver, typeKey } from './conex-test-helper.js'
 import { tabId2HtmlId, tabId2HtmlOpenTabId } from '../conex-tab-element.js';
 import type { Browser, Tabs } from 'webextension-polyfill';
 import { renderMainPage } from '../conex-main-page.js';
+import { Selectors } from '../conex-selectors.js';
 
 let newContainerId: string;
 let newTab: Tabs.Tab;
@@ -91,7 +92,7 @@ describe('interactions', function () {
       tab = await browser.tabs.get(newTab.id!);
     } catch (_) {}
     expect(tab).to.be.undefined;
-    expect($(`#${tabId2HtmlId(newTab.id!)}`)!.classList.contains('closed')).to.be.true;
+    expect($(`#${tabId2HtmlId(newTab.id!)}`)!.classList.contains(Selectors.tabClosed)).to.be.true;
     expect($(`#${tabId2HtmlId(newTab.id!)}`)!.dataset['url']).to.equal(newTab.url);
   });
 
@@ -112,7 +113,7 @@ describe('interactions', function () {
       tab = await browser.tabs.get(newTab.id!);
     } catch (_) {}
     expect(tab).to.be.undefined;
-    expect($(`#${tabId2HtmlId(newTab.id!)}`)!.classList.contains('closed')).to.be.true;
+    expect($(`#${tabId2HtmlId(newTab.id!)}`)!.classList.contains(Selectors.tabClosed)).to.be.true;
     expect($(`#${tabId2HtmlId(newTab.id!)}`)!.dataset['url']).to.equal(newTab.url);
   });
 });

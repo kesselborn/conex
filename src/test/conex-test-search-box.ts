@@ -9,6 +9,7 @@ import { $, $$ } from '../conex-helper.js';
 import { searchInContainer } from '../conex-search.js';
 import { Tabs } from 'webextension-polyfill';
 import { renderMainPage } from '../conex-main-page.js';
+import { Selectors } from '../conex-selectors.js';
 import Tab = Tabs.Tab;
 
 describe('search box', function () {
@@ -77,7 +78,7 @@ describe('search box', function () {
 
     searchInContainer(firstContainer!, searchTerm);
 
-    expect(firstContainer!.classList.contains('no-match')).to.be.true;
+    expect(firstContainer!.classList.contains(Selectors.noMatch)).to.be.true;
   });
 
   it('do not hide container if name of the container matches search', async function () {
@@ -86,7 +87,7 @@ describe('search box', function () {
 
     searchInContainer(firstContainer!, searchTerm);
 
-    expect(firstContainer!.classList.contains('no-match')).to.be.false;
+    expect(firstContainer!.classList.contains(Selectors.noMatch)).to.be.false;
     expect($('h2', firstContainer)!.innerHTML).to.equal('<span><em>fake</em> container-0 foo</span>');
   });
 });
