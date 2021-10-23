@@ -1,5 +1,7 @@
 :root {
+    --body-margin: 2px;
     --total-width: 500px;
+    --body-width: calc(var(--body-margin) + var(--total-width));
     --thumbnail-width: 60px;
     --thumbnail-height: 40px;
     --favicon-with-height: 20px;
@@ -15,8 +17,15 @@
             var(--total-width) - var(--thumbnail-width) - var(--close-button-width) - var(--tab-name-padding-right) - 2 *
             var(--li-padding) - var(--border-width-left-container-element) + var(--border-width-left-tab-element)
     );
-    --search-box-width: calc(var(--total-width) - var(--toggle-button-width));
+    --search-box-width: calc(var(--total-width) - var(--border-width-left-tab-element));
     --search-box-height: var(--row-height);
+}
+
+body {
+    overflow-x: hidden; /* Hide horizontal scrollbar */
+    overflow-y: scroll; /* Hide horizontal scrollbar */
+    margin: 0 var(--body-margin);
+    width: var(--body-width);
 }
 
 .no-match {
@@ -31,14 +40,20 @@ input[type='text'] {
     width: var(--search-box-width);
     height: var(--search-box-height);
     font-size: calc(var(--search-box-height) / 2);
+    padding: 0;
+    border: 0;
 }
 
 input[type='radio'] {
     display: none;
 }
 
-input[type='text']:focus {
-    border: 4px solid red;
+input[type='text'] {
+    margin: 4px;
+}
+
+input[type='text']:focus, input[type='text']:focus-visible {
+    outline: none;
 }
 
 .container-color-gold {
@@ -163,6 +178,14 @@ em {
 
 .tab-center > div.tab-names {
     align-self: center;
+    overflow: hidden;
+}
+
+
+.tab-center > div.tab-names h3, .tab-center > div.tab-names h4 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .images {
