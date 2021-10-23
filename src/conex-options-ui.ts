@@ -18,6 +18,13 @@ async function showHideDebugUI() {
     });
   }
 
+  if (window.location.pathname === 'debug.html') {
+    await browser.storage.local.set({
+      showDebugUI: true,
+    });
+    window.close();
+  }
+
   if ((await browser.storage.local.get('showDebugUI'))['showDebugUI'] === true) {
     $('section#debug')!.style.display = 'block';
   }

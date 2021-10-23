@@ -23,9 +23,7 @@
     }
   },
   "options_ui": {
-    "page": "conex-options-ui.html",
-    "browser_style": true,
-    "open_in_tab": true
+    "page": "conex-options-ui.html"
   },
   "permissions": [
     "<all_urls>",
