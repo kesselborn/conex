@@ -76,7 +76,7 @@ describe('interactions', function () {
         expect($(`#${tabId2HtmlId(newTab.id)}`).classList.contains(Selectors.tabClosed)).to.be.true;
         expect($(`#${tabId2HtmlId(newTab.id)}`).dataset['url']).to.equal(newTab.url);
     });
-    it('should close tab when clicking the close radio button', async function () {
+    it('NEEDS INTERNET CONNECTION: should close tab when clicking the close radio button', async function () {
         let tab;
         try {
             tab = await browser.tabs.get(newTab.id);
