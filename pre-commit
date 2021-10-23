@@ -1,4 +1,5 @@
 #!/bin/sh
+npm run lint
 
 problematicImports=$(grep -r "import.*\/" src/|grep -v "\.js';")
 
