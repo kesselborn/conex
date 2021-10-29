@@ -101,10 +101,13 @@ function keyDownOnTabElement(e) {
       browser.tabs.update(tabId, { active: true });
       break;
     }
+    // @ts-ignore
     case 'Backspace':
       e.preventDefault();
+      // we fall through here as we want to focuse the next element when closing this tab
       $(`#${tabId2HtmlCloseTabId(htmlId2TabId(tabElement.id))}`).click();
-      break;
+      // @ts-ignore
+      // eslint-disable-next-line no-fallthrough
     case 'ArrowDown':
       // @ts-ignore
       // eslint-disable-next-line no-fallthrough
