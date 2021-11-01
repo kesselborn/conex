@@ -86,6 +86,48 @@ describe('interactions', function () {
     expect(`new-tab-id-${activeTab[0]!.id}`).to.equal(`new-tab-id-${newTab.id}`);
   });
 
+  it('should switch to first tab in container when hitting enter on container', async function () {
+    let activeTab = await browser.tabs.query({ active: true });
+    expect(`testing-tab-id-${activeTab[0]!.id}`).to.equal(`testing-tab-id-${testingTab!.id}`);
+
+    const tabElement = $(`#${tabId2HtmlId(newTab.id!)}`)!;
+    const containerElement = tabElement.parentElement!.parentElement!;
+
+    debugger;
+    typeKey({ key: 'Enter' }, containerElement);
+    // let the event handling do its work
+    timeoutResolver(100);
+
+    activeTab = await browser.tabs.query({ active: true });
+    expect(`new-tab-id-${activeTab[0]!.id}`).to.equal(`new-tab-id-${newTab.id}`);
+  });
+
+  //   it('should open a new container tab when hitting enter on a container', async function () {
+  //     expect(false, true);
+  //     let activeTab = await browser.tabs.query({ active: true });
+  //     expect(`testing-tab-id-${activeTab[0]!.id}`).to.equal(`testing-tab-id-${testingTab!.id}`);
+  //
+  //     typeKey({ key: 'Enter' }, $(`#${tabId2HtmlId(newTab.id!)}`)!);
+  //     // let the event handling do its work
+  //     timeoutResolver(100);
+  //
+  //     activeTab = await browser.tabs.query({ active: true });
+  //     expect(`new-tab-id-${activeTab[0]!.id}`).to.equal(`new-tab-id-${newTab.id}`);
+  //   });
+  //
+  //   it('should open the first tab of the first container when hitting enter on search box', async function () {
+  //     expect(false, true);
+  //     let activeTab = await browser.tabs.query({ active: true });
+  //     expect(`testing-tab-id-${activeTab[0]!.id}`).to.equal(`testing-tab-id-${testingTab!.id}`);
+  //
+  //     typeKey({ key: 'Enter' }, $(`#${tabId2HtmlId(newTab.id!)}`)!);
+  //     // let the event handling do its work
+  //     timeoutResolver(100);
+  //
+  //     activeTab = await browser.tabs.query({ active: true });
+  //     expect(`new-tab-id-${activeTab[0]!.id}`).to.equal(`new-tab-id-${newTab.id}`);
+  //   });
+
   it('should close tab when hitting backspace on tab element', async function () {
     let tab;
     try {

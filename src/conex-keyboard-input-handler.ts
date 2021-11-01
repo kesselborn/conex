@@ -53,11 +53,25 @@ function search(value: string): void {
   }
 }
 
+function downOnContainerElement(containerElement: Element): Element {
+  const tabElement = Array.from($$('ul>li', containerElement)).find(
+    (tabElement) => !tabElement.classList.contains(Selectors.noMatch)
+  );
+  if (tabElement && !containerElement.classList.contains(Selectors.collapsedContainer)) {
+    tabElement.focus();
+    return tabElement;
+  } else {
+    return focusNextVisibleContainerSibling(containerElement);
+  }
+}
+
 function keyDownOnContainerElement(e: KeyboardEvent): void {
   const containerElement: Element = e.target as Element;
   const key = e.key;
 
   switch (key) {
+    case 'Enter':
+      break;
     case 'ArrowDown':
     // @ts-ignore
     // eslint-disable-next-line no-fallthrough
@@ -66,14 +80,7 @@ function keyDownOnContainerElement(e: KeyboardEvent): void {
 
       // FALLTHROUGH ON PURPOSE: if the shiftKey is pressed, fall through to 'ArrowUp'
       if (!e.shiftKey) {
-        const tabElement = Array.from($$('ul>li', containerElement)).find(
-          (tabElement) => !tabElement.classList.contains(Selectors.noMatch)
-        );
-        if (tabElement && !containerElement.classList.contains(Selectors.collapsedContainer)) {
-          tabElement.focus();
-        } else {
-          focusNextVisibleContainerSibling(containerElement);
-        }
+        downOnContainerElement(containerElement);
         break;
       }
     // eslint-disable-next-line no-fallthrough
@@ -169,14 +176,15 @@ function keyDownOnTabElement(e: KeyboardEvent): void {
   }
 }
 
-function focusNextVisibleContainerSibling(curContainerElement: Element): void {
+function focusNextVisibleContainerSibling(curContainerElement: Element): Element {
   while (curContainerElement.nextElementSibling) {
     curContainerElement = curContainerElement.nextElementSibling;
     if (!curContainerElement.classList.contains(Selectors.noMatch)) {
       (curContainerElement as HTMLElement).focus();
-      return;
+      break;
     }
   }
+  return curContainerElement;
 }
 
 function previousVisibleContainerSibling(curContainerElement: Element): Element | void {
