@@ -23,6 +23,11 @@ export function hilightSearchMatch(string, searchStringTokensString) {
   return { highlightedString: string, match: false };
 }
 export function searchInContainer(containerElement, searchString) {
+  if (searchString === '') {
+    containerElement.classList.add(Selectors.collapsedContainer);
+  } else {
+    containerElement.classList.remove(Selectors.collapsedContainer);
+  }
   const containerTabs = $$('li', containerElement);
   let containerHasMatch = false;
   for (const tabElement of Array.from(containerTabs)) {

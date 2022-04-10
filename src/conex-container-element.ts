@@ -8,7 +8,7 @@ export function containerElement(container: ContextualIdentity): Element {
     'li',
     {
       tabindex: '0',
-      class: `container-color-${container.color} ${Selectors.emptyContainerClass}`,
+      class: `collapsed container-color-${container.color} ${Selectors.emptyContainerClass}`,
       id: `${container.cookieStoreId}`,
     },
     [

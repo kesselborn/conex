@@ -3,7 +3,7 @@ import { Selectors } from './conex-selectors.js';
 export function containerElement(container) {
   return $e('li', {
     tabindex: '0',
-    class: `container-color-${container.color} ${Selectors.emptyContainerClass}`,
+    class: `collapsed container-color-${container.color} ${Selectors.emptyContainerClass}`,
     id: `${container.cookieStoreId}`,
   }, [
     $e('input', {

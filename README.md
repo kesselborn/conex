@@ -2,6 +2,12 @@
 
 ## Developer notes:
 
+### Enable debug ui
+
+- open `about:addons` and browse to `Conex / Preferences`.
+- on the preferences tab, click 10 times on the **Conex Preferences** header at the very top and click on the link that appears
+
+
 Structure:
 
 - one global form that includes all elements

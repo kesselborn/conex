@@ -33,6 +33,12 @@ export function hilightSearchMatch(string: string, searchStringTokensString: str
 }
 
 export function searchInContainer(containerElement: Element, searchString: string) {
+  if(searchString === '') {
+      containerElement.classList.add(Selectors.collapsedContainer);
+  } else {
+      containerElement.classList.remove(Selectors.collapsedContainer);
+  }
+
   const containerTabs = $$('li', containerElement)!;
   let containerHasMatch = false;
   for (const tabElement of Array.from(containerTabs)) {
