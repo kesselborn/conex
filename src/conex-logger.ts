@@ -1,5 +1,7 @@
 import {Browser} from 'webextension-polyfill';
 
+const component = 'logging'
+
 enum Level {
     Debug = "debug",
     Info = "info",
@@ -8,7 +10,7 @@ enum Level {
 }
 
 const logSettingsKey = "log-settings";
-const defaultLevel = Level.Info;
+const defaultLevel = Level.Warn;
 
 declare let browser: Browser;
 
@@ -16,27 +18,39 @@ interface LogSettings {
     [index: string]: Level
 }
 
-let logSettings: LogSettings = {}
-browser.storage.local.get(logSettingsKey)
+let logSettings: LogSettings | null = null
 
-function debug(component: string, formatstring: string, ...data: any[]): void {
-    log(Level.Debug, component, [formatstring, ...data]);
+async function loadSettings(): Promise<LogSettings> {
+    if (!logSettings) {
+        const data = await browser.storage.local.get(logSettingsKey)
+        logSettings = data[logSettingsKey]
+    }
+    if (!logSettings) {
+        logSettings = {}
+    }
+
+    return logSettings
 }
 
-function info(component: string, formatstring: string, ...data: any[]): void {
-    log(Level.Info, component, [formatstring, ...data]);
+async function debug(component: string, ...data: any[]): Promise<void> {
+    await log(Level.Debug, component, data);
 }
 
-function warn(component: string, formatstring: string, ...data: any[]): void {
-    log(Level.Warn, component, [formatstring, ...data]);
+async function info(component: string, ...data: any[]): Promise<void> {
+    await log(Level.Info, component, data);
 }
 
-function error(component: string, formatstring: string, ...data: any[]): void {
-    log(Level.Error, component, [formatstring, ...data]);
+async function warn(component: string, ...data: any[]): Promise<void> {
+    await log(Level.Warn, component, data);
 }
 
-function persistLogLevel(component: string, level: Level) {
-    logSettings[component] = level;
+async function error(component: string, ...data: any[]): Promise<void> {
+    await log(Level.Error, component, data);
+}
+
+async function persistLogLevel(component: string, level: Level) {
+    await loadSettings()
+    logSettings![component] = level;
     browser.storage.local.set({
         [logSettingsKey]: logSettings
     }).catch(e => console.error('error persisting log levels: ', e))
@@ -44,23 +58,24 @@ function persistLogLevel(component: string, level: Level) {
     //TODO: this was here: browser.storage.onChanged
 }
 
-function log(level: Level, component: string, data: any[]): void {
-    const callStack = (new Error()).stack!.split('\n').slice(2)[0];
+async function log(level: Level, component: string, data: any[]): Promise<void> {
+    await loadSettings()
+    let componentLogSetting = logSettings![component.toString()]!;
 
-    let componentLogSetting = logSettings[component];
     if (!componentLogSetting) {
         componentLogSetting = defaultLevel;
-        persistLogLevel(component, defaultLevel);
+        await persistLogLevel(component, defaultLevel);
     }
 
-    if (level === Level.Debug && logSettings[component] === Level.Debug)
-        return console.debug(`🐞 [conex:${component}]`, ...data, '\n', callStack);
-    else if (level === Level.Info && [Level.Debug, Level.Info].includes(componentLogSetting))
-        return console.log(`[conex:${component}]`, ...data);
+    if (level === Level.Debug && logSettings![component] === Level.Debug) {
+        const callStack = (new Error()).stack!.split('\n').slice(2)[0];
+        console.debug(`[conex:${component}] 🐞`, ...data, '\n', callStack);
+    } else if (level === Level.Info && [Level.Debug, Level.Info].includes(componentLogSetting))
+        console.log(`[conex:${component}]`, ...data);
     else if (level === Level.Warn && [Level.Debug, Level.Info, Level.Warn].includes(componentLogSetting))
-        return console.warn(`[conex:${component}]`, ...data);
+        console.warn(`[conex:${component}]`, ...data);
     else if (level === Level.Error && [Level.Debug, Level.Info, Level.Warn, Level.Error].includes(componentLogSetting))
-        return console.error(`[conex:${component}]`, ...data);
+        console.error(`[conex:${component}]`, ...data);
 }
 
 browser.storage.onChanged.addListener((change, area) => {
@@ -68,9 +83,9 @@ browser.storage.onChanged.addListener((change, area) => {
         const newLogSettings = change[logSettingsKey];
         if (newLogSettings) {
             logSettings = newLogSettings.newValue as LogSettings;
-            console.log('[conex:logging] new logging settings detected', logSettings);
+            console.debug(`[conex:${component}] new logging settings detected`, logSettings);
         }
     }
 })
 
-export {debug, info, warn, error, persistLogLevel, Level};
+export {debug, info, warn, error, loadSettings, persistLogLevel, Level};

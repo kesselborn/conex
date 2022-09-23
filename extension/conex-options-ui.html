@@ -12,6 +12,7 @@
 <h1 id="secret">Conex Preferences</h1>
 <p id="show-debug-section-link" style="display: none"><a href="?debug=1" role="button">show debug section</a></p>
 <section id="debug" style="display:none">
+    <a href="?debug=0" role="button">hide debug section</a>
     <h2>Debug Section</h2>
     <ul>
         <li>
@@ -20,8 +21,19 @@
         <li>
             <a href="./conex-browser-action.html" target="_blank">open browser action popup in tab</a>
         </li>
+        <li>
+            <a href="./conex-options-ui.html" target="_blank">options ui in normal tab</a>
+        </li>
     </ul>
-    <a href="?debug=0" role="button">hide debug section</a>
+
+    <h2>Set logging levels for components</h2>
+    <form>
+        <ul id="debug-level-selector">
+
+        </ul>
+    </form>
+
+
 </section>
 ...
 </body>

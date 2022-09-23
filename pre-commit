@@ -6,7 +6,7 @@ problematicImports=$(grep -r "import.*\/" src/|grep -v "\.js';")
 
 if [ -n "${problematicImports}" ]
 then
-    printf "Fix this import(s) as it will blow up in your face: %s" "${problematicImports}"
+  printf "Fix this import(s) as it will blow up in your face: %s (add '.js' extensions)" "${problematicImports}"
     exit 1
 fi
 
