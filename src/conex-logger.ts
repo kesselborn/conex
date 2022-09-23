@@ -53,7 +53,13 @@ async function persistLogLevel(component: string, level: Level) {
     logSettings![component] = level;
     browser.storage.local.set({
         [logSettingsKey]: logSettings
-    }).catch(e => console.error('error persisting log levels: ', e))
+    }).catch(e => console.error(`
+error persisting log levels:
+    component: '${component}'
+    logSettingsKey: '${logSettingsKey}'
+    logSettings:
+    `, logSettings, `
+    error:`, e))
 
     //TODO: this was here: browser.storage.onChanged
 }

@@ -8,22 +8,29 @@ declare let browser: Browser;
 
 async function showHideDebugUI() {
     const params = new URLSearchParams(window.location.search);
+    let debugParam = params.get('debug')
+    let showDebugUISetting = await browser.storage.local.get('showDebugUI')
 
-    if (params.get('debug') === '1') {
-        debug("options", "enabling debug section")
+    if (!debugParam) {
+        debugParam = '0'
+    }
+
+    if (debugParam === '1') {
+        debug(component, "enabling debug section")
         await browser.storage.local.set({
             showDebugUI: true,
         });
     }
 
-    if (params.get('debug') === '0') {
-        debug("options", "disabling debug section")
+    if (debugParam === '0') {
+        debug(component, "disabling debug section")
         await browser.storage.local.set({
             showDebugUI: false,
         });
     }
 
-    if ((await browser.storage.local.get('showDebugUI'))['showDebugUI'] === true) {
+    showDebugUISetting = await browser.storage.local.get('showDebugUI')
+    if (showDebugUISetting['showDebugUI'] === true) {
         $('section#debug')!.style.display = 'block';
     }
 }
@@ -59,7 +66,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         const value = logSettings[key]
 
         const selectionBox = newSelectionBox(key)
-        selectionBox!.querySelector(`option[value=${value}]`)!.setAttribute('selected', 'selected')
+        const option = selectionBox!.querySelector(`option[value=${value}]`)
+
+        if (option)
+            option.setAttribute('selected', 'selected')
+
+        debug(component, `adding selection box for component ${key}`)
 
         await selectorContainer.appendChild(selectionBox)
     }

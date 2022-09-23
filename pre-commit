@@ -2,7 +2,7 @@
 ./node_modules/.bin/tsc || exit 1
 npm run lint
 
-problematicImports=$(grep -r "import.*\/" src/|grep -v "\.js';")
+problematicImports=$(grep -r "import.*\/" src/|grep -v "\.js['\"];")
 
 if [ -n "${problematicImports}" ]
 then

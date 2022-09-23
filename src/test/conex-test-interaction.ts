@@ -5,6 +5,7 @@ import {tabId2HtmlId, tabId2HtmlOpenTabId} from '../conex-tab-element.js';
 import type {Browser, Tabs} from 'webextension-polyfill';
 import {renderMainPage} from '../conex-main-page.js';
 import {Selectors} from '../conex-selectors.js';
+import {debug, info} from "../conex-logger.js";
 
 let newContainerId: string;
 let newTab: Tabs.Tab;
@@ -12,6 +13,8 @@ let newTab2: Tabs.Tab;
 let testingTab: Tabs.Tab | undefined;
 
 declare let browser: Browser;
+
+const component = 'test-interactions'
 
 describe('container management', function () {
     it('should close tabs before closing the container', async function () {
@@ -44,12 +47,12 @@ describe('interactions', function () {
         newTab = await browser.tabs.create({
             active: false,
             cookieStoreId: newContainerId,
-            url: './conex-options-ui.html?1',
+            url: 'about:blank',
         });
         newTab2 = await browser.tabs.create({
             active: false,
             cookieStoreId: newContainerId,
-            url: './conex-options-ui.html?2',
+            url: 'about:blank',
         });
 
         await renderMainPage(await browser.contextualIdentities.query({}));
@@ -87,8 +90,10 @@ describe('interactions', function () {
     });
 
     it('should switch to first tab in container when hitting enter on container', async function () {
+        info(component, 'entering test:', 'should switch to first tab in container when hitting enter on container')
         let activeTab = await browser.tabs.query({active: true});
         expect(`testing-tab-id-${activeTab[0]!.id}`).to.equal(`testing-tab-id-${testingTab!.id}`);
+        debug(component, `active & testing tab id: ${testingTab!.id}; new tab id: ${newTab.id}`)
 
         const tabElement = $(`#${tabId2HtmlId(newTab.id!)}`)!;
         const containerElement = tabElement.parentElement!.parentElement!;
@@ -96,7 +101,7 @@ describe('interactions', function () {
         typeKey({key: 'Enter'}, containerElement);
 
         // let the event handling do its work
-        timeoutResolver(100);
+        timeoutResolver(200);
 
         activeTab = await browser.tabs.query({active: true});
         expect(`new-tab-id-${activeTab[0]!.id}`).to.equal(`new-tab-id-${newTab.id}`);

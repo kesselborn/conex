@@ -3,22 +3,25 @@ import {htmlId2TabId, tabId2HtmlCloseTabId} from './conex-tab-element.js';
 import {searchInContainer} from './conex-search.js';
 import type {Browser} from 'webextension-polyfill';
 import {ConexElements, Selectors} from './conex-selectors.js';
+import {debug, info} from "./conex-logger.js";
 
 declare let browser: Browser;
+
+const component = 'keyboard-input-handler'
 
 export function keydown(e: KeyboardEvent): void {
     const targetElement = e.target as Element;
 
     if (targetElement === ConexElements.search) {
-        console.debug('keydown on search element', e);
+        debug(component, `keydown on search element (key: ${e.key})`, e);
         return keyDownOnSearchElement(e);
     }
     if (isContainerElement(targetElement)) {
-        console.debug('keydown on container element', e);
+        debug(component, `keydown on container element (key: ${e.key})`, e);
         keyDownOnContainerElement(e);
     }
     if (isTabElement(targetElement)) {
-        console.debug('keydown on tab element', e);
+        debug(component, `keydown on tab element (key: ${e.key})`, e);
         keyDownOnTabElement(e);
     }
 }
@@ -27,7 +30,7 @@ export function keyup(e: KeyboardEvent) {
 
     // only search, if search box is still focused (no the case if ArrowDown was handled in keydown)
     if (document.activeElement === ConexElements.search) {
-        console.debug('keyup on search element', e);
+        debug('keyup on search element', e);
         search(ConexElements.search.value);
     }
 }
@@ -45,7 +48,7 @@ function keyDownOnSearchElement(e: KeyboardEvent): void {
             break;
         case 'Enter':
             e.preventDefault();
-            console.log('opening "a" tab now');
+            info(component, 'opening "a" tab now');
     }
 }
 
@@ -69,11 +72,17 @@ function downOnContainerElement(containerElement: Element): Element {
 }
 
 function keyDownOnContainerElement(e: KeyboardEvent): void {
-    const containerElement: Element = e.target as Element;
-    const key = e.key;
+    const containerElement: Element = e.target as Element
+    const key = e.key
+    const nextTabElement = containerElement.querySelector('li')
 
     switch (key) {
         case 'Enter':
+            e.preventDefault();
+            if (nextTabElement) {
+                const tabId = htmlId2TabId(nextTabElement.id)
+                browser.tabs.update(tabId, {active: true})
+            }
             break;
         case 'ArrowDown':
         // @ts-ignore
