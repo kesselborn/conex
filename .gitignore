@@ -1,3 +1,3 @@
 /node_modules
-/extension/*.js
-/extension/*/*.js
+/extension/conex*.js
+/extension/*/conex*.js
