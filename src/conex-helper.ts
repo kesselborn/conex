@@ -4,22 +4,22 @@
 // console.debug = () => {};
 // console.debug = function (..._) { }
 
-import { Browser } from 'webextension-polyfill';
+import {Browser} from 'webextension-polyfill';
 
 declare let browser: Browser;
 
 export enum ContextualIdentitiesColors {
-  orange = '#ff9f00',
-  blue = '#37adff',
-  turquoise = '#00c79a',
-  green = '#51cd00',
-  yellow = '#ffcb00',
-  red = '#ff613d',
-  pink = '#ff4bda',
-  purple = '#af51f5',
-  gold = '#daa520',
-  black = '#000000',
-  white = '#ffffff',
+    orange = '#ff9f00',
+    blue = '#37adff',
+    turquoise = '#00c79a',
+    green = '#51cd00',
+    yellow = '#ffcb00',
+    red = '#ff613d',
+    pink = '#ff4bda',
+    purple = '#af51f5',
+    gold = '#daa520',
+    black = '#000000',
+    white = '#ffffff',
 }
 
 export const placeholderImage = browser.runtime.getURL('transparent.png');
@@ -28,7 +28,7 @@ export const placeholderFailedImage = browser.runtime.getURL('transparent-failed
 
 // alias for document.querySelectorAll
 export function $$(s: string, parent: Element | Document = window.document): NodeListOf<HTMLElement> {
-  return parent.querySelectorAll(s);
+    return parent.querySelectorAll(s);
 }
 
 // alias for document.querySelector
@@ -37,7 +37,7 @@ export function $$(s: string, parent: Element | Document = window.document): Nod
  * @param {*} parent
  */
 export function $(s: string, parent: Element | Document = window.document): HTMLElement | null {
-  return parent.querySelector(s);
+    return parent.querySelector(s);
 }
 
 // creates a dom element, can contain children; attributes contains a map of the elements attributes
@@ -55,26 +55,26 @@ export function $(s: string, parent: Element | Document = window.document): HTML
 //
 
 export function $e(
-  name: string,
-  attributes: Record<string, string> = {},
-  children: Array<Element> = Array.from([]) as Array<Element>
+    name: string,
+    attributes: Record<string, string> = {},
+    children: Array<Element> = Array.from([]) as Array<Element>
 ): Element {
-  const e = window.document.createElement(name);
+    const e = window.document.createElement(name);
 
-  for (const key in attributes) {
-    const value = attributes[key]!;
-    if (key === 'content') {
-      e.appendChild(window.document.createTextNode(value));
-    } else {
-      e.setAttribute(key.replace(/_/gu, '-'), value);
+    for (const key in attributes) {
+        const value = attributes[key]!;
+        if (key === 'content') {
+            e.appendChild(window.document.createTextNode(value));
+        } else {
+            e.setAttribute(key.replace(/_/gu, '-'), value);
+        }
     }
-  }
 
-  for (const child of children) {
-    e.appendChild(child);
-  }
+    for (const child of children) {
+        e.appendChild(child);
+    }
 
-  return e;
+    return e;
 }
 
 export const _ = browser.i18n.getMessage;
@@ -112,34 +112,34 @@ export const _ = browser.i18n.getMessage;
 // let readSettings = _refreshSettings();
 
 export function debounce(func: Function, wait: number = 200, immediate: boolean) {
-  let timeoutFuncHandlerId: number | null = null;
+    let timeoutFuncHandlerId: NodeJS.Timeout | null;
 
-  // @ts-ignore
-  return (...args) => {
-    const later = () => {
-      timeoutFuncHandlerId = null;
-      if (!immediate) {
-        Reflect.apply(func, null, args);
-      }
+    // @ts-ignore
+    return (...args) => {
+        const later = () => {
+            timeoutFuncHandlerId = null;
+            if (!immediate) {
+                Reflect.apply(func, null, args);
+            }
+        };
+
+        const callNow = immediate && !timeoutFuncHandlerId;
+        if (timeoutFuncHandlerId) {
+            clearTimeout(timeoutFuncHandlerId);
+        }
+        timeoutFuncHandlerId = setTimeout(later, wait);
+
+        if (callNow) {
+            Reflect.apply(func, null, args);
+        }
     };
-
-    const callNow = immediate && !timeoutFuncHandlerId;
-    if (timeoutFuncHandlerId) {
-      clearTimeout(timeoutFuncHandlerId);
-    }
-    timeoutFuncHandlerId = setTimeout(later, wait);
-
-    if (callNow) {
-      Reflect.apply(func, null, args);
-    }
-  };
 }
 
 export async function closeContainer(containerId: string) {
-  const tabClosings = [];
-  for (const tab of await browser.tabs.query({ cookieStoreId: containerId })) {
-    tabClosings.push(browser.tabs.remove(tab.id!));
-  }
-  await Promise.all(tabClosings);
-  await browser.contextualIdentities.remove(containerId);
+    const tabClosings = [];
+    for (const tab of await browser.tabs.query({cookieStoreId: containerId})) {
+        tabClosings.push(browser.tabs.remove(tab.id!));
+    }
+    await Promise.all(tabClosings);
+    await browser.contextualIdentities.remove(containerId);
 }

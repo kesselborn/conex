@@ -28,10 +28,10 @@ async function showHideDebugUI() {
 
 
 document.addEventListener('DOMContentLoaded', async () => {
-    let secretCnt = 0;
+    let secretCnt: number = 0;
     showHideDebugUI();
 
-    $('#secret')?.addEventListener('click', async () => {
+    $('#secret')!.addEventListener('click', async () => {
         secretCnt += 1;
         if (secretCnt >= 5) {
             $('#show-debug-section-link')!.style.display = 'inherit';

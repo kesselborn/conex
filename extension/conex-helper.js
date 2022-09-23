@@ -92,7 +92,7 @@ export const _ = browser.i18n.getMessage;
 //
 // let readSettings = _refreshSettings();
 export function debounce(func, wait = 200, immediate) {
-  let timeoutFuncHandlerId = null;
+  let timeoutFuncHandlerId;
   // @ts-ignore
   return (...args) => {
     const later = () => {
