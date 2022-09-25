@@ -1,6 +1,6 @@
 import {$, $$} from '../conex-helper.js';
 import {renderTabs} from '../conex-containers.js';
-import {clear, expect, fakeContainers, timeoutResolver, typeKey} from './conex-test-helper.js';
+import {clear, expect, fakeContainers, maxTabId, timeoutResolver, typeKey} from './conex-test-helper.js';
 import {tabId2HtmlId} from '../conex-tab-element.js';
 import {ConexElements, Selectors} from '../conex-selectors.js';
 import {Tabs} from 'webextension-polyfill';
@@ -10,6 +10,7 @@ import Tab = Tabs.Tab;
 
 // TODO: when typing, restart search
 const component = 'test-keyboard-navigation'
+
 
 describe('keyboard actions', function () {
     afterEach(clear);
@@ -21,17 +22,19 @@ describe('keyboard actions', function () {
         const lastFakeContainer = fakeContainers[fakeContainers.length - 1]!;
 
         let cnt = 0;
+        let tabIdOffset = await maxTabId()
+
         for (const container of [firstFakeContainer, lastFakeContainer]) {
             const fakeTabs = Array.from([
                 {
                     cookieStoreId: container.cookieStoreId,
-                    id: cnt++,
+                    id: tabIdOffset + cnt++,
                     title: `tab 0 / fake ${container.cookieStoreId}`,
                     url: `http://example.com/${container.color}`,
                 },
                 {
                     cookieStoreId: container.cookieStoreId,
-                    id: cnt++,
+                    id: tabIdOffset + cnt++,
                     title: `tab 1 / fake ${container.cookieStoreId}`,
                     url: `http://example.com/${container.color}`,
                 },
@@ -41,9 +44,9 @@ describe('keyboard actions', function () {
         }
 
         const firstFakeContainerElement = $(`#${firstFakeContainer.cookieStoreId}`)!;
-        const firstTabInFirstFakeContainerElement = $(`#${tabId2HtmlId(0)}`)!;
+        const firstTabInFirstFakeContainerElement = $(`#${tabId2HtmlId(tabIdOffset)}`)!;
         const lastFakeContainerElement = $(`#${lastFakeContainer.cookieStoreId}`)!;
-        const tabInLastFakeContainerElement = $(`#${tabId2HtmlId(3)}`)!;
+        const tabInLastFakeContainerElement = $(`#${tabId2HtmlId(tabIdOffset + 3)}`)!;
 
         // when collapsing on a container element, go to the next container element
         debug(component, '    1 arrow left')
@@ -73,7 +76,7 @@ describe('keyboard actions', function () {
         // when collapsing on a tab element of the _last_ container element, jump to the current container element
         tabInLastFakeContainerElement.focus();
         debug(component, '    5 arrow left')
-        typeKey({key: 'ArrowLeft'}, document.activeElement!);
+        typeKey({key: 'ArrowLeft'}, tabInLastFakeContainerElement);
         expect(lastFakeContainerElement.classList.contains(Selectors.collapsedContainer)).to.be.true;
         expect(document.activeElement!).to.equal(lastFakeContainerElement);
     });

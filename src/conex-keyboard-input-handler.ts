@@ -3,7 +3,7 @@ import {htmlId2TabId, tabId2HtmlCloseTabId} from './conex-tab-element.js';
 import {searchInContainer} from './conex-search.js';
 import type {Browser} from 'webextension-polyfill';
 import {ConexElements, Selectors} from './conex-selectors.js';
-import {debug, info} from "./conex-logger.js";
+import {debug, info, warn} from "./conex-logger.js";
 
 declare let browser: Browser;
 
@@ -140,7 +140,6 @@ function keyDownOnTabElement(e: KeyboardEvent): void {
 
         // @ts-ignore
         case 'Backspace':
-            e.preventDefault();
             // we fall through here as we want to focuse the next element when closing this tab
             $(`#${tabId2HtmlCloseTabId(htmlId2TabId(tabElement.id))}`)!.click();
         // @ts-ignore
@@ -152,16 +151,19 @@ function keyDownOnTabElement(e: KeyboardEvent): void {
             e.preventDefault();
             // FALLTHROUGH ON PURPOSE: if the shiftKey is pressed, fall through to 'ArrowUp'
             if (!e.shiftKey) {
+                debug(component, "searching for next tab to focus on")
                 while (curTabElement.nextElementSibling) {
                     curTabElement = curTabElement.nextElementSibling;
                     if (!curTabElement.classList.contains(Selectors.noMatch)) {
-                        (curTabElement as HTMLElement).focus();
+                        (curTabElement as HTMLElement).focus()
+                        debug(component, "found next tab to focus on", curTabElement)
                         return;
                     }
                 }
 
                 // no more tabs within this container group ... focus next container element if there is one
                 focusNextVisibleContainerSibling(curTabElement.parentElement!.parentElement as Element);
+                warn(component, "did not find a tab to focus on")
                 break;
             }
         // FALLTHROUGH ON PURPOSE: if the shiftKey is pressed, fall through to 'ArrowUp'
@@ -192,10 +194,10 @@ function focusNextVisibleContainerSibling(curContainerElement: Element): Element
     while (curContainerElement.nextElementSibling) {
         curContainerElement = curContainerElement.nextElementSibling;
         if (!curContainerElement.classList.contains(Selectors.noMatch)) {
-            (curContainerElement as HTMLElement).focus();
             break;
         }
     }
+    (curContainerElement as HTMLElement).focus();
     return curContainerElement;
 }
 
