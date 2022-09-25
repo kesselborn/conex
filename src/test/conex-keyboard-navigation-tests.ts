@@ -112,17 +112,19 @@ describe('keyboard navigation', function () {
         await renderMainPage(fakeContainers);
 
         let tabIdCnt = 0;
+        const tabIdOffset = await maxTabId()
+
         const fakeTabs = (cookieStoreId: string) => {
             return [
                 {
                     cookieStoreId: cookieStoreId,
-                    id: tabIdCnt++,
+                    id: tabIdOffset + tabIdCnt++,
                     title: `tab 0 / fake ${cookieStoreId}`,
                     url: `http://example.com/${cookieStoreId}`,
                 },
                 {
                     cookieStoreId: cookieStoreId,
-                    id: tabIdCnt++,
+                    id: tabIdOffset + tabIdCnt++,
                     title: `tab 1 / fake ${cookieStoreId}`,
                     url: `http://example.com/${cookieStoreId}`,
                 },
@@ -136,6 +138,7 @@ describe('keyboard navigation', function () {
                 case 0: // containerElements[1]
                     // @ts-ignore
                     await renderTabs(Promise.resolve(fakeTabs(fakeContainers[i].cookieStoreId)));
+                    $(`#${fakeContainers[i]!.cookieStoreId}`)!.classList.remove(Selectors.collapsedContainer);
                     break;
                 // second tab contains a tab that should be hidden (class == no-match)
                 case 1: // containerElements[2]
@@ -145,6 +148,7 @@ describe('keyboard navigation', function () {
                     // @ts-ignore
                     await renderTabs(Promise.resolve(tabs));
                     $(`#${tabId2HtmlId(tabs[0]!.id)}`)!.classList.add(Selectors.noMatch);
+                    $(`#${fakeContainers[i]!.cookieStoreId}`)!.classList.remove(Selectors.collapsedContainer);
                 }
                     break;
                 // third container only contains hidden tabs and is hidden as well (happens on search)
@@ -172,6 +176,7 @@ describe('keyboard navigation', function () {
                     // @ts-ignore
                     await renderTabs(Promise.resolve(tabs));
                     $(`#${tabId2HtmlId(tabs[1]!.id)}`)!.classList.add(Selectors.noMatch);
+                    $(`#${fakeContainers[i]!.cookieStoreId}`)!.classList.remove(Selectors.collapsedContainer);
                 }
                     break;
                 case 5: // containerElements[6]
@@ -224,14 +229,14 @@ describe('keyboard navigation', function () {
             // the container and jumps to the next container
             // Test 1
             typeKey(keys.left, document.activeElement!);
-            expect(e2t(document.activeElement! as HTMLElement)).to.equal(e2t(containerElements[1]!));
+            expect(e2t(document.activeElement! as HTMLElement))
+                .to.equal(e2t(containerElements[1]!));
 
             // one arrow down:  we should now be on the first tab within the first container
             // Test 2
             typeKey(keys.down, document.activeElement!);
-            expect(e2t(document.activeElement! as HTMLElement)).to.equal(
-                e2t($('ul>li:nth-child(1)', containerElements[1]!)!)
-            );
+            expect(e2t(document.activeElement! as HTMLElement))
+                .to.equal(e2t($('ul>li:nth-child(1)', containerElements[1]!)!));
 
             // one arrow down:  we should now be on the second tab within the first container
             // Test 3
@@ -243,31 +248,32 @@ describe('keyboard navigation', function () {
             // one arrow down:  we should now be on the second container element
             // Test 4
             typeKey(keys.down, document.activeElement!);
-            expect(e2t(document.activeElement! as HTMLElement)).to.equal(e2t(containerElements[2]!));
+            expect(e2t(document.activeElement! as HTMLElement))
+                .to.equal(e2t(containerElements[2]!));
 
             // one arrow down:  we should now be on the _second_ tab (as the first one has class Selectors.noMatch) of the second container element
             // Test 5
             typeKey(keys.down, document.activeElement!);
-            expect(e2t(document.activeElement! as HTMLElement)).to.equal(
-                e2t($('ul>li:nth-child(2)', containerElements[2]!)!)
-            );
+            expect(e2t(document.activeElement! as HTMLElement))
+                .to.equal(e2t($('ul>li:nth-child(2)', containerElements[2]!)!));
 
             // one arrow down:  we should now be on the fourth container element as the third container element is hidden with Selectors.noMatch class
             // Test 6
             typeKey(keys.down, document.activeElement!);
-            expect(e2t(document.activeElement! as HTMLElement)).to.equal(e2t(containerElements[4]!));
+            expect(e2t(document.activeElement! as HTMLElement))
+                .to.equal(e2t(containerElements[4]!));
 
             // one arrow down:  we should now be on the fifth container element as the fourth container is collapsed
             // Test 7
             typeKey(keys.down, document.activeElement!);
-            expect(e2t(document.activeElement! as HTMLElement)).to.equal(e2t(containerElements[5]!));
+            expect(e2t(document.activeElement! as HTMLElement))
+                .to.equal(e2t(containerElements[5]!));
 
             // one arrow down:  we should now be on the first tab of the fifth container element
             // Test 8
             typeKey(keys.down, document.activeElement!);
-            expect(e2t(document.activeElement! as HTMLElement)).to.equal(
-                e2t($('ul>li:nth-child(1)', containerElements[5]!)!)
-            );
+            expect(e2t(document.activeElement! as HTMLElement))
+                .to.equal(e2t($('ul>li:nth-child(1)', containerElements[5]!)!));
 
             // one arrow down:  we should still be on the first tab of the fifth container element
             // as the second container of the fifth container is hidden

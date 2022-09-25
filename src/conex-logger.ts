@@ -78,9 +78,10 @@ async function log(level: Level, component: string, data: any[]): Promise<void> 
         console.debug(`[conex:${component}] 🐞`, ...data, '\n', callStack);
     } else if (level === Level.Info && [Level.Debug, Level.Info].includes(componentLogSetting))
         console.log(`[conex:${component}]`, ...data);
-    else if (level === Level.Warn && [Level.Debug, Level.Info, Level.Warn].includes(componentLogSetting))
-        console.warn(`[conex:${component}]`, ...data);
-    else if (level === Level.Error && [Level.Debug, Level.Info, Level.Warn, Level.Error].includes(componentLogSetting))
+    else if (level === Level.Warn && [Level.Debug, Level.Info, Level.Warn].includes(componentLogSetting)) {
+        const callStack = (new Error()).stack!.split('\n').slice(2)[0];
+        console.warn(`[conex:${component}]`, ...data, '\n', callStack);
+    } else if (level === Level.Error && [Level.Debug, Level.Info, Level.Warn, Level.Error].includes(componentLogSetting))
         console.error(`[conex:${component}]`, ...data);
 }
 

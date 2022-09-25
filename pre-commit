@@ -13,4 +13,4 @@ fi
 
 printf "%d tests should be successful" $(grep -ir ' it(' src/|grep -v 'test/mocha.js'|wc -l)
 
-
+sleep 2

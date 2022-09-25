@@ -194,10 +194,10 @@ function focusNextVisibleContainerSibling(curContainerElement: Element): Element
     while (curContainerElement.nextElementSibling) {
         curContainerElement = curContainerElement.nextElementSibling;
         if (!curContainerElement.classList.contains(Selectors.noMatch)) {
+            (curContainerElement as HTMLElement).focus();
             break;
         }
     }
-    (curContainerElement as HTMLElement).focus();
     return curContainerElement;
 }
 
