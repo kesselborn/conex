@@ -107,7 +107,7 @@ describe('interactions', function () {
         expect(`new-tab-id-${activeTab[0]!.id}`).to.equal(`new-tab-id-${newTab.id}`);
     });
 
-    xit('should open a new container tab when hitting enter on a container', async function () {
+    it('should open a new container tab when hitting enter on a container', async function () {
         expect(false, true);
         let activeTab = await browser.tabs.query({active: true});
         expect(`testing-tab-id-${activeTab[0]!.id}`).to.equal(`testing-tab-id-${testingTab!.id}`);
@@ -120,7 +120,7 @@ describe('interactions', function () {
         expect(`new-tab-id-${activeTab[0]!.id}`).to.equal(`new-tab-id-${newTab.id}`);
     });
 
-    xit('should open the first tab of the first container when hitting enter on search box', async function () {
+    it('should open the first tab of the first container when hitting enter on search box', async function () {
         expect(false, true);
         let activeTab = await browser.tabs.query({active: true});
         expect(`testing-tab-id-${activeTab[0]!.id}`).to.equal(`testing-tab-id-${testingTab!.id}`);

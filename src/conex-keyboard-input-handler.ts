@@ -135,6 +135,7 @@ function keyDownOnTabElement(e: KeyboardEvent): void {
             e.preventDefault();
             const tabId = htmlId2TabId(tabElement.id);
             browser.tabs.update(tabId, {active: true});
+            window.close()
             break;
         }
 

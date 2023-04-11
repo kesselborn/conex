@@ -1,19 +1,11 @@
 {
   "manifest_version": 2,
   "author": "kesselborn",
-  "description": "__MSG_extensionDescription__",
-  "homepage_url": "https://github.com/kesselborn/conex",
   "default_locale": "en",
-  "name": "Conex",
-  "version": "0.10.0",
-  "applications": {
-    "gecko": {
-      "id": "conex@bornkessel.com"
-    }
-  },
-  "background": {
-    "page": "conex-background.html"
-  },
+  "description": "A tab manager",
+  "homepage_url": "https://github.com/kesselborn/conex",
+  "name": "Conex (preview)",
+  "version": "0.9.14",
   "browser_action": {
     "default_title": "Conex",
     "browser_style": false,
@@ -22,19 +14,65 @@
       "48": "icons/icon_48.png"
     }
   },
+  "applications": {
+    "gecko": {
+      "strict_min_version": "60.0a1",
+      "update_url": "https://raw.githubusercontent.com/kesselborn/conex/master/versions.json"
+    }
+  },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "MacCtrl+Space"
+      }
+    },
+    "new-container": {
+      "suggested_key": {
+        "default": "Alt+Shift+N"
+      }
+    }
+  },
   "options_ui": {
-    "page": "conex-options-ui.html"
+    "page": "conex-options-ui.html",
+    "browser_style": false,
+    "open_in_tab": true
+  },
+  "background": {
+    "scripts": [
+      "conex-background.js",
+      "conex-browser-action.js",
+      "conex-container-element.js",
+      "conex-containers.js",
+      "conex-helper.js",
+      "conex-keyboard-input-handler.js",
+      "conex-logger.js",
+      "conex-main-page.js",
+      "conex-options-ui.js",
+      "conex-search.js",
+      "conex-selectors.js",
+      "conex-tab-element.js",
+      "settings.js"
+    ]
+  },
+  "icons": {
+    "48": "icons/icon_48.png"
   },
   "permissions": [
     "<all_urls>",
     "contextualIdentities",
     "cookies",
-    "idle",
     "menus",
     "storage",
     "tabs",
     "webNavigation",
     "webRequest",
     "webRequestBlocking"
+  ],
+  "optional_permissions": [
+    "activeTab",
+    "bookmarks",
+    "history",
+    "notifications",
+    "tabHide"
   ]
 }
