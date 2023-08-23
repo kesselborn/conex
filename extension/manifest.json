@@ -9,7 +9,7 @@
   "browser_action": {
     "default_title": "Conex",
     "browser_style": false,
-    "default_popup": "conex-browser-action.html",
+    "default_popup": "browser-action.html",
     "default_icon": {
       "48": "icons/icon_48.png"
     }
@@ -33,25 +33,13 @@
     }
   },
   "options_ui": {
-    "page": "conex-options-ui.html",
+    "page": "options-ui.html",
     "browser_style": false,
     "open_in_tab": true
   },
   "background": {
     "scripts": [
-      "conex-background.js",
-      "conex-browser-action.js",
-      "conex-container-element.js",
-      "conex-containers.js",
-      "conex-helper.js",
-      "conex-keyboard-input-handler.js",
-      "conex-logger.js",
-      "conex-main-page.js",
-      "conex-options-ui.js",
-      "conex-search.js",
-      "conex-selectors.js",
-      "conex-tab-element.js",
-      "settings.js"
+      "background.js"
     ]
   },
   "icons": {

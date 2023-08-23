@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" type="image/x-icon" href="favicon.ico"/>
+    <title>Conex Options</title>
+    <script type="module" src="./options-ui.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+</head>
+
+<body>
+<h1 id="secret">Conex Preferences</h1>
+<p id="show-debug-section-link" style="display: none"><a href="?debug=1" role="button">show debug section</a></p>
+<section id="debug" style="display:none">
+    <a href="?debug=0" role="button">hide debug section</a>
+    <h2>Debug Section</h2>
+    <ul>
+        <li>
+            <a href="./test/test.html">run tests</a>
+        </li>
+        <li>
+            <a href="./browser-action.html" target="_blank">open browser action popup in tab</a>
+        </li>
+        <li>
+            <a href="./options-ui.html" target="_blank">options ui in normal tab</a>
+        </li>
+    </ul>
+
+    <h2>Set logging levels for components</h2>
+    <form>
+        <ul id="debug-level-selector">
+
+        </ul>
+    </form>
+
+
+</section>
+...
+</body>
+</html>

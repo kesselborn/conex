@@ -1,7 +1,7 @@
-import { $ } from '../conex-helper.js';
-import { clear, expect, fakeContainers } from './conex-test-helper.js';
-import { Selectors } from '../conex-selectors.js';
-import { renderMainPage } from '../conex-main-page.js';
+import { $ } from '../helper.js';
+import { clear, expect, fakeContainers } from './helper.js';
+import { Selectors } from '../selectors.js';
+import { renderMainPage } from '../main-page.js';
 
 const component = 'form-actions-tests';
 
