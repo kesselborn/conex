@@ -2,71 +2,61 @@ import { $, $$ } from './helper.js';
 import { Selectors } from './selectors.js';
 import { debug } from './logger.js';
 const component = 'search';
-export function hilightSearchMatch(string, searchStringTokensString) {
-    const searchStringTokens = searchStringTokensString.split(' ');
-    let searchResults = [{ isMatch: false, token: string, matchNo: 0 }];
-    debug(component, `>>>>> doing a highlight search on '${string}' for search string '${searchStringTokensString}'`);
-    for (let tokenIndex = 0; tokenIndex < searchStringTokens.length; tokenIndex++) {
-        const searchString = searchStringTokens[tokenIndex];
-        debug(component, `    search string: '${searchString}'`);
-        if (searchString === '') {
-            continue;
-        }
-        let matchFound = false;
-        let xxx = [];
-        for (let resultIndex = 0; resultIndex < searchResults.length; resultIndex++) {
-            const { token, isMatch } = searchResults[resultIndex];
-            debug(component, `      searching '${searchString}' in '${token}'`);
-            const indexOfMatch = token.toLowerCase().indexOf(searchString.toLowerCase());
-            if (indexOfMatch === -1) {
-                xxx.push(searchResults[resultIndex]);
+export function hilightSearchMatch(originalString, searchTerm) {
+    const searchTokens = searchTerm.split(' ').filter((token) => token !== '');
+    // we initialize the searchResults with one token (the complete searchTerm), that (up to now) has not matched any searchToken
+    let resultTokens = [{ isMatch: false, tokenValue: originalString, matchNo: 0 }];
+    debug(component, `>>>>> doing a highlight search on '${originalString}' for search string '${searchTerm}'`);
+    let searchTokenCnt = 0;
+    for (const searchToken of searchTokens) {
+        searchTokenCnt++;
+        debug(component, `    search token: '${searchToken}'`);
+        let searchTokenMatched = false;
+        let resultTokensWithCurrentSearchToken = [];
+        for (const resultToken of resultTokens) {
+            const { tokenValue } = resultToken;
+            debug(component, `      searching '${searchToken}' in '${tokenValue}'`);
+            const indexOfMatch = tokenValue.toLowerCase().indexOf(searchToken.toLowerCase());
+            if (indexOfMatch === -1 /* no match */) {
+                resultTokensWithCurrentSearchToken.push(resultToken);
                 continue;
             }
-            else {
-                // if this token was already matched by a previous searchToken, just set the information
-                // that this token matched
-                if (isMatch) {
-                    matchFound = true;
-                    xxx.push(searchResults[resultIndex]);
-                    continue;
-                }
+            // if this token was already matched by a previous searchToken, just set the information
+            // that this searchToken did match
+            if (resultToken.isMatch) {
+                searchTokenMatched = true;
+                resultTokensWithCurrentSearchToken.push(resultToken);
+                continue;
             }
-            const indexOfSearchMatchEnd = indexOfMatch + searchString.length;
-            xxx.push({ isMatch: false, token: token.slice(0, indexOfMatch) });
-            xxx.push({
-                isMatch: true,
-                token: token.slice(indexOfMatch, indexOfSearchMatchEnd),
-                matchNo: tokenIndex + 1,
-            });
-            xxx.push({
+            const indexOfSearchMatchEnd = indexOfMatch + searchToken.length;
+            resultTokensWithCurrentSearchToken.push({
                 isMatch: false,
-                token: token.length >= indexOfSearchMatchEnd ? token.slice(indexOfSearchMatchEnd) : '',
+                tokenValue: tokenValue.slice(0, indexOfMatch),
             });
-            matchFound = true;
+            resultTokensWithCurrentSearchToken.push({
+                isMatch: true,
+                tokenValue: tokenValue.slice(indexOfMatch, indexOfSearchMatchEnd),
+                matchNo: searchTokenCnt,
+            });
+            resultTokensWithCurrentSearchToken.push({
+                isMatch: false,
+                tokenValue: tokenValue.length >= indexOfSearchMatchEnd ? tokenValue.slice(indexOfSearchMatchEnd) : '',
+            });
+            searchTokenMatched = true;
         }
-        searchResults = xxx;
-        if (!matchFound) {
-            debug(component, '      XXXX aborting search ... current results:', searchResults);
-            return { highlightedString: string, match: false };
-        }
-        else {
-            debug(component, '      ... a token matched ... current results:', searchResults);
-        }
-    }
-    let resultString = '';
-    for (const yyy of searchResults) {
-        const { token, isMatch, matchNo } = yyy;
-        if (token === '') {
-            continue;
-        }
-        if (isMatch) {
-            resultString += `<em class="match-${matchNo}">${token}</em>`;
+        resultTokens = resultTokensWithCurrentSearchToken;
+        if (searchTokenMatched) {
+            debug(component, '      ... a token matched ... current results:', resultTokens);
         }
         else {
-            resultString += token;
+            debug(component, '      XXXX aborting search ... current results:', resultTokens);
+            return { highlightedString: originalString, match: false };
         }
     }
-    return { highlightedString: resultString, match: true };
+    return {
+        highlightedString: resultTokens.reduce((result, { isMatch, tokenValue, matchNo }) => (result += isMatch ? `<em class="match-${matchNo}">${tokenValue}</em>` : tokenValue), ''),
+        match: true,
+    };
 }
 export function searchInContainer(containerElement, searchString) {
     if (searchString === '') {
