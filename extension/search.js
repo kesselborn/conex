@@ -4,32 +4,69 @@ import { debug } from './logger.js';
 const component = 'search';
 export function hilightSearchMatch(string, searchStringTokensString) {
     const searchStringTokens = searchStringTokensString.split(' ');
-    let highlightedString = string;
-    let match = false;
-    debug(component, `doing a highlight search on '${string}' for search string '${searchStringTokensString}'`);
+    let searchResults = [{ isMatch: false, token: string, matchNo: 0 }];
+    debug(component, `>>>>> doing a highlight search on '${string}' for search string '${searchStringTokensString}'`);
     for (let tokenIndex = 0; tokenIndex < searchStringTokens.length; tokenIndex++) {
         const searchString = searchStringTokens[tokenIndex];
         debug(component, `    search string: '${searchString}'`);
         if (searchString === '') {
             continue;
         }
-        const indexOfMatch = highlightedString.toLowerCase().indexOf(searchString.toLowerCase());
-        if (indexOfMatch === -1) {
-            debug(component, '    XXXX aborting search, highlighted string is:', highlightedString);
+        let matchFound = false;
+        let xxx = [];
+        for (let resultIndex = 0; resultIndex < searchResults.length; resultIndex++) {
+            const { token, isMatch } = searchResults[resultIndex];
+            debug(component, `      searching '${searchString}' in '${token}'`);
+            const indexOfMatch = token.toLowerCase().indexOf(searchString.toLowerCase());
+            if (indexOfMatch === -1) {
+                xxx.push(searchResults[resultIndex]);
+                continue;
+            }
+            else {
+                // if this token was already matched by a previous searchToken, just set the information
+                // that this token matched
+                if (isMatch) {
+                    matchFound = true;
+                    xxx.push(searchResults[resultIndex]);
+                    continue;
+                }
+            }
+            const indexOfSearchMatchEnd = indexOfMatch + searchString.length;
+            xxx.push({ isMatch: false, token: token.slice(0, indexOfMatch) });
+            xxx.push({
+                isMatch: true,
+                token: token.slice(indexOfMatch, indexOfSearchMatchEnd),
+                matchNo: tokenIndex + 1,
+            });
+            xxx.push({
+                isMatch: false,
+                token: token.length >= indexOfSearchMatchEnd ? token.slice(indexOfSearchMatchEnd) : '',
+            });
+            matchFound = true;
+        }
+        searchResults = xxx;
+        if (!matchFound) {
+            debug(component, '      XXXX aborting search ... current results:', searchResults);
             return { highlightedString: string, match: false };
         }
-        const indexOfSearchMatchEnd = indexOfMatch + searchString.length;
-        highlightedString = [
-            highlightedString.slice(0, indexOfMatch),
-            `<em class="match-${tokenIndex + 1}">`,
-            highlightedString.slice(indexOfMatch, indexOfSearchMatchEnd),
-            '</em>',
-            highlightedString.length >= indexOfSearchMatchEnd ? highlightedString.slice(indexOfSearchMatchEnd) : '',
-        ].join('');
-        debug(component, '    found match, highlighted string is:', highlightedString);
-        match = true;
+        else {
+            debug(component, '      ... a token matched ... current results:', searchResults);
+        }
     }
-    return { highlightedString: highlightedString, match: match };
+    let resultString = '';
+    for (const yyy of searchResults) {
+        const { token, isMatch, matchNo } = yyy;
+        if (token === '') {
+            continue;
+        }
+        if (isMatch) {
+            resultString += `<em class="match-${matchNo}">${token}</em>`;
+        }
+        else {
+            resultString += token;
+        }
+    }
+    return { highlightedString: resultString, match: true };
 }
 export function searchInContainer(containerElement, searchString) {
     if (searchString === '') {

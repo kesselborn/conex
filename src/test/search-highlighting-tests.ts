@@ -56,7 +56,7 @@ describe(component, function () {
   it('should not match the highlighting code (e.g. the "<em>" element)', async function () {
     const { highlightedString, match } = hilightSearchMatch('Welcome to Firefox em', 'We em');
 
-    expect(highlightedString).to.equal('<em class="match-1">We</em>lcome to Firefox<em class="match-2">em</em>');
+    expect(highlightedString).to.equal('<em class="match-1">We</em>lcome to Firefox <em class="match-2">em</em>');
     expect(match).to.equal(true);
   });
 });
