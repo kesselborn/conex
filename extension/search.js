@@ -50,7 +50,12 @@ export function hilightSearchMatch(originalString, searchTerm) {
         }
         else {
             debug(component, '      XXXX aborting search ... current results:', resultTokens);
-            return { highlightedString: originalString, match: false };
+            // make sure, that the searchToken does not match the original string ... if we have the originalString
+            // 'Welcome' and the search tokens 'We', 'lc' and 'Welcome' it would return that the string does not match
+            // as we already split up the original term in the search results 'We', 'lc' and 'ome'
+            if (!originalString.includes(searchToken)) {
+                return { highlightedString: originalString, match: false };
+            }
         }
     }
     return {
