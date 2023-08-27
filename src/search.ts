@@ -13,15 +13,17 @@ export function hilightSearchMatch(string: string, searchStringTokensString: str
   const searchStringTokens = searchStringTokensString.split(' ');
   let highlightedString = string;
   let match = false;
+  debug(component, `doing a highlight search on '${string}' for search string '${searchStringTokensString}'`);
   for (let tokenIndex = 0; tokenIndex < searchStringTokens.length; tokenIndex++) {
     const searchString = searchStringTokens[tokenIndex]!;
-    debug(component, `search string: '${searchString}'`);
+    debug(component, `    search string: '${searchString}'`);
     if (searchString === '') {
       continue;
     }
 
     const indexOfMatch = highlightedString.toLowerCase().indexOf(searchString.toLowerCase());
     if (indexOfMatch === -1) {
+      debug(component, '    XXXX aborting search, highlighted string is:', highlightedString);
       return { highlightedString: string, match: false };
     }
 
@@ -34,6 +36,7 @@ export function hilightSearchMatch(string: string, searchStringTokensString: str
       '</em>',
       highlightedString.length >= indexOfSearchMatchEnd ? highlightedString.slice(indexOfSearchMatchEnd) : '',
     ].join('');
+    debug(component, '    found match, highlighted string is:', highlightedString);
 
     match = true;
   }
@@ -44,6 +47,10 @@ export function hilightSearchMatch(string: string, searchStringTokensString: str
 export function searchInContainer(containerElement: Element, searchString: string) {
   if (searchString === '') {
     containerElement.classList.add(Selectors.collapsedContainer);
+    for (const element of Array.from($$(Selectors.noMatch))) {
+      element.classList.remove(Selectors.noMatch);
+    }
+    return;
   } else {
     containerElement.classList.remove(Selectors.collapsedContainer);
   }
@@ -71,6 +78,7 @@ export function searchInContainer(containerElement: Element, searchString: strin
     }
 
     if (containedMatch) {
+      debug(component, `     **** we have a match, title: '${title.innerHTML}, url: '${url.innerHTML}'`);
       tabElement.classList.remove(Selectors.noMatch);
       containerHasMatch = true;
     } else {

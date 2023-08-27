@@ -15,7 +15,7 @@ import Tab = Tabs.Tab;
 const component = 'search-box-tests';
 
 describe(component, function () {
-  afterEach(clear);
+  afterEach(async () => await clear());
 
   beforeEach(async () => {
     await renderMainPage(fakeContainers);
@@ -49,6 +49,15 @@ describe(component, function () {
     }
   });
 
+  it('empty search string should reset the search', async function () {
+    const firstContainer = $$('ol > li')[1]!;
+    const searchTerm = '';
+
+    searchInContainer(firstContainer, searchTerm);
+
+    expect($$('.no-match', firstContainer).length).to.equal(0);
+  });
+
   it('simple search should work', async function () {
     const firstContainer = $$('ol > li')[1]!;
     const searchTerm = 'reDdI';
@@ -56,19 +65,41 @@ describe(component, function () {
     searchInContainer(firstContainer, searchTerm);
 
     expect($$('li:not(.no-match)', firstContainer).length).to.equal(1);
-    expect($('h3', $('li:not(.no-match)', firstContainer)!)!.innerHTML).to.equal('<em>Reddi</em>t foo');
-    expect($('h4', $('li:not(.no-match)', firstContainer)!)!.innerHTML).to.equal('https://<em>reddi</em>t.com');
+    expect($('h3', $('li:not(.no-match)', firstContainer)!)!.innerHTML).to.equal('<em class="match-1">Reddi</em>t foo');
+    expect($('h4', $('li:not(.no-match)', firstContainer)!)!.innerHTML).to.equal(
+      'https://<em class="match-1">reddi</em>t.com'
+    );
   });
 
-  it('multiple search terms should should be combined with AND', async function () {
+  it('multiple search terms should should be combined with AND on title', async function () {
     const firstContainer = $$('ol > li')[1]!;
     const searchTerm = 'reDdI foo';
 
     searchInContainer(firstContainer, searchTerm);
 
     expect($$('li:not(.no-match)', firstContainer).length).to.equal(1);
-    expect($('h3', $$('li:not(.no-match)', firstContainer)[1])!.innerHTML).to.equal('<em>Reddi</em>t');
-    expect($('h4', $$('li:not(.no-match)', firstContainer)[1])!.innerHTML).to.equal('https://<em>reddi</em>t.com');
+    expect($('h3', $$('li:not(.no-match)', firstContainer)[0])!.innerHTML).to.equal(
+      '<em class="match-1">Reddi</em>t <em class="match-2">foo</em>'
+    );
+
+    // url does not have a highlight as only the first token is matched
+    expect($('h4', $$('li:not(.no-match)', firstContainer)[0])!.innerHTML).to.equal('https://reddit.com');
+  });
+
+  it('multiple search terms should should be combined with AND on url', async function () {
+    const firstContainer = $$('ol > li')[1]!;
+    const searchTerm = 'reDdI com';
+
+    searchInContainer(firstContainer, searchTerm);
+
+    expect($$('li:not(.no-match)', firstContainer).length).to.equal(1);
+
+    // title does not have a highlight as only the first token is matched
+    expect($('h3', $$('li:not(.no-match)', firstContainer)[0])!.innerHTML).to.equal('Reddit foo');
+
+    expect($('h4', $$('li:not(.no-match)', firstContainer)[0])!.innerHTML).to.equal(
+      'https://<em class="match-1">reddi</em>t.<em class="match-2">com</em>'
+    );
   });
 
   it('multiple search terms: a blank after a word should not match everything', async function () {
@@ -78,8 +109,12 @@ describe(component, function () {
     searchInContainer(firstContainer, searchTerm);
 
     expect($$('li:not(.no-match)', firstContainer).length).to.equal(1);
-    expect($('h3', $$('li:not(.no-match)', firstContainer)[1])!.innerHTML).to.equal('<em>Reddi</em>t foo');
-    expect($('h4', $$('li:not(.no-match)', firstContainer)[1])!.innerHTML).to.equal('https://<em>reddi</em>t.com');
+    expect($('h3', $$('li:not(.no-match)', firstContainer)[0])!.innerHTML).to.equal(
+      '<em class="match-1">Reddi</em>t foo'
+    );
+    expect($('h4', $$('li:not(.no-match)', firstContainer)[0])!.innerHTML).to.equal(
+      'https://<em class="match-1">reddi</em>t.com'
+    );
   });
 
   it('containers with no matches should be hidden', async function () {
@@ -98,6 +133,6 @@ describe(component, function () {
     searchInContainer(firstContainer!, searchTerm);
 
     expect(firstContainer!.classList.contains(Selectors.noMatch)).to.be.false;
-    expect($('h2', firstContainer)!.innerHTML).to.equal('<span><em>fake</em> container-0 foo</span>');
+    expect($('h2', firstContainer)!.innerHTML).to.equal('<span><em class="match-1">fake</em> container-0 foo</span>');
   });
 });

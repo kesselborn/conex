@@ -170,6 +170,26 @@ em {
     font-style: normal;
 }
 
+em.match-1 {
+    text-decoration-color: #37adff;
+}
+
+em.match-2 {
+    text-decoration-color: #51cd00;
+}
+
+em.match-3 {
+    text-decoration-color: #ff613d;
+}
+
+em.match-4 {
+    text-decoration-color: aquamarine;
+}
+
+em.match-5 {
+    text-decoration-color: darkorange;
+}
+
 .tab-center {
     display: grid;
     grid-template-columns: [faviconthumbnail] var(--thumbnail-width) [titleurl] auto;

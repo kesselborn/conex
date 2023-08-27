@@ -81,7 +81,7 @@ export function typeKey(key: KeyboardEventInit, element: Element) {
 export async function clear() {
   if (window.location.search === '') {
     if (ConexElements.form) {
-      ConexElements.form.remove();
+      await ConexElements.form.remove();
     }
   }
 }
