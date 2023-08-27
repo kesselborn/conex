@@ -61,7 +61,7 @@ describe(component, function () {
   });
 
   it('should not match super-string if substrings were already matched', async function () {
-    const { highlightedString, match } = hilightSearchMatch('Welcome to Firefox em', 'We em Welcome');
+    const { highlightedString, match } = hilightSearchMatch('Welcome to Firefox em', 'We em welcome');
 
     expect(highlightedString).to.equal('<em class="match-1">We</em>lcome to Firefox <em class="match-2">em</em>');
     expect(match).to.equal(true);

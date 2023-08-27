@@ -20,7 +20,7 @@ export function hilightSearchMatch(originalString: string, searchTerm: string): 
 
   // we initialize the searchResults with one token (the complete searchTerm), that (up to now) has not matched any searchToken
   let resultTokens = [{ isMatch: false, tokenValue: originalString, matchNo: 0 } as ResultToken];
-  debug(component, `>>>>> doing a highlight search on '${originalString}' for search string '${searchTerm}'`);
+  debug(component, `############ doing a highlight search on '${originalString}' for search string '${searchTerm}'`);
 
   let searchTokenCnt = 0;
   for (const searchToken of searchTokens) {
@@ -68,15 +68,16 @@ export function hilightSearchMatch(originalString: string, searchTerm: string): 
 
     resultTokens = resultTokensWithCurrentSearchToken;
     if (searchTokenMatched) {
-      debug(component, '      ... a token matched ... current results:', resultTokens);
+      debug(component, '      ++++++ a token matched ... current results:', resultTokens);
     } else {
-      debug(component, '      XXXX aborting search ... current results:', resultTokens);
-
       // make sure, that the searchToken does not match the original string ... if we have the originalString
       // 'Welcome' and the search tokens 'We', 'lc' and 'Welcome' it would return that the string does not match
       // as we already split up the original term in the search results 'We', 'lc' and 'ome'
-      if (!originalString.includes(searchToken)) {
+      if (!originalString.toLowerCase().includes(searchToken)) {
+        debug(component, '      ------ aborting search ... current results:', resultTokens);
         return { highlightedString: originalString, match: false };
+      } else {
+        debug(component, '      ////// no match in the current token but in the overall original string', resultTokens);
       }
     }
   }
@@ -125,7 +126,7 @@ export function searchInContainer(containerElement: Element, searchString: strin
     }
 
     if (containedMatch) {
-      debug(component, `     **** we have a match, title: '${title.innerHTML}, url: '${url.innerHTML}'`);
+      debug(component, `************ we have a match, title: '${title.innerHTML}, url: '${url.innerHTML}'`);
       tabElement.classList.remove(Selectors.noMatch);
       containerHasMatch = true;
     } else {
