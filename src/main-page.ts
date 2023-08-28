@@ -1,4 +1,4 @@
-import { ContainerRenderOptions, defaultContainer, formChange, renderContainers, renderTabs } from './containers.js';
+import { ContainerRenderOptions, defaultContainer, formChange, renderContainers, renderTabs2 } from './containers.js';
 import { Browser, ContextualIdentities } from 'webextension-polyfill';
 import { ConexElements, Selectors } from './selectors.js';
 import { keydown, keyup } from './keyboard-input-handler.js';
@@ -27,7 +27,7 @@ export async function renderMainPage(
 
   for (const container of [defaultContainer].concat(containers)) {
     const tabs = browser.tabs.query({ cookieStoreId: container.cookieStoreId });
-    renderTabs(tabs);
+    await renderTabs2(tabs);
   }
   ConexElements.search.focus();
 }

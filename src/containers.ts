@@ -1,5 +1,5 @@
 import { $e, _, ContextualIdentitiesColors } from './helper.js';
-import { htmlId2TabId, tabElement } from './tab-element.js';
+import { htmlId2TabId, tabElement, tabElement2 } from './tab-element.js';
 import { containerElement } from './container-element.js';
 import type { Browser } from 'webextension-polyfill';
 import { ContextualIdentities, Tabs } from 'webextension-polyfill';
@@ -141,5 +141,33 @@ export async function renderTabs(tabs: Promise<Array<Tab>>) {
 
     containerElements.get(cookieStoreId).appendChild(tabElement(tab));
     containerElement.classList.remove(Selectors.emptyContainerClass);
+  }
+}
+
+export async function renderTabs2(tabs: Promise<Array<Tab>>) {
+  const containerElements = new Map();
+  let tabSrc = '';
+  let cookieStoreId;
+
+  for (const tab of await tabs) {
+    cookieStoreId = tab.cookieStoreId!;
+
+    const containerElement = ConexElements.container(cookieStoreId);
+    if (!containerElement) {
+      error(component, `container element for cookieStoreId=${cookieStoreId} not found`);
+      return;
+    }
+
+    if (!containerElements.has(cookieStoreId)) {
+      containerElements.set(cookieStoreId, containerElement.appendChild($e('ul')));
+    }
+
+    tabSrc += tabElement2(tab);
+    // containerElements.get(cookieStoreId).appendChild(tabElement(tab));
+    containerElement.classList.remove(Selectors.emptyContainerClass);
+  }
+
+  if (cookieStoreId) {
+    containerElements.get(cookieStoreId).innerHTML = tabSrc;
   }
 }

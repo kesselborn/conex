@@ -59,3 +59,32 @@ export function tabElement(tab: Tabs.Tab): Element {
     }),
   ]);
 }
+
+export function tabElement2(tab: Tabs.Tab): String {
+  let favicon = tab.favIconUrl;
+
+  // this favIconUrl is returned on some firefox tabs but not accessible
+  if (favicon === 'chrome://mozapps/skin/extensions/extension.svg') {
+    favicon = '';
+  }
+
+  // ot prefix: open tab
+  // x prefix: close tab
+  return `
+  <li tabindex="0" id="${tabId2HtmlId(tab.id!)}">
+    <input id="${tabId2HtmlOpenTabId(tab.id!)}" type="radio" name="${Selectors.openTabName}" value="${tab.id}"/>
+    <label for="${tabId2HtmlOpenTabId(tab.id!)}" class="tab-center">
+      <div class="images">
+        <img class="favicon" src="${favicon || ''}"/>
+        <img class="thumbnail" src="${favicon || ''}"/>
+      </div>
+      <div class="tab-names">
+        <h3>${tab.title || ''}</h3>
+        <h4>${tab.url || ''}</h4>
+      </div>
+    </label>
+    <input id="${tabId2HtmlCloseTabId(tab.id!)}" type="radio" name="${Selectors.closeTabName} value="${tab.id}"/>
+    <label for="${tabId2HtmlCloseTabId(tab.id!)}" class="close" title="${_('closeWithDetails', ['tab', tab.title])}"/>
+  </li>
+  `;
+}

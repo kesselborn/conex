@@ -16,5 +16,5 @@ document.addEventListener('DOMContentLoaded', async () => {
   // @ts-ignore
   debug(component, 'xxx', bg.xxx);
 
-  setTimeout(() => renderMainPage(), 500);
+  setTimeout(() => renderMainPage(), 0);
 });
