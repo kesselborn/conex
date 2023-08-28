@@ -1,4 +1,4 @@
-import { ContainerRenderOptions, defaultContainer, formChange, renderContainers, renderTabs2 } from './containers.js';
+import { ContainerRenderOptions, defaultContainer, formChange, renderContainers, renderTabs } from './containers.js';
 import { ConexElements, Selectors } from './selectors.js';
 import { keydown, keyup } from './keyboard-input-handler.js';
 import { $e, _ } from './helper.js';
@@ -13,9 +13,11 @@ export async function renderMainPage(containers = [], options = new ContainerRen
     ConexElements.form.addEventListener('change', formChange, true);
     ConexElements.form.addEventListener('keydown', keydown, true);
     ConexElements.form.addEventListener('keyup', keyup, true);
-    for (const container of [defaultContainer].concat(containers)) {
-        const tabs = browser.tabs.query({ cookieStoreId: container.cookieStoreId });
-        await renderTabs2(tabs);
-    }
     ConexElements.search.focus();
+    setTimeout(() => {
+        for (const container of [defaultContainer].concat(containers)) {
+            const tabs = browser.tabs.query({ cookieStoreId: container.cookieStoreId });
+            renderTabs(tabs);
+        }
+    }, 100);
 }

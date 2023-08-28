@@ -95,10 +95,9 @@ export function hilightSearchMatch(originalString: string, searchTerm: string): 
 export function searchInContainer(containerElement: Element, searchString: string) {
   if (searchString === '') {
     containerElement.classList.add(Selectors.collapsedContainer);
-    for (const element of Array.from($$(Selectors.noMatch))) {
+    for (const element of Array.from($$('.' + Selectors.noMatch))) {
       element.classList.remove(Selectors.noMatch);
     }
-    return;
   } else {
     containerElement.classList.remove(Selectors.collapsedContainer);
   }

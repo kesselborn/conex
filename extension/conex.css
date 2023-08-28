@@ -223,6 +223,16 @@ em.match-5 {
     z-index: 1;
 }
 
+.favicon-only {
+    height: var(--thumbnail-height) !important;
+    width: var(--thumbnail-height) !important;
+    z-index: 1;
+}
+
+.images img.favicon-only + img {
+    display: none;
+}
+
 .thumbnail {
     background-color: lightblue;
     width: var(--thumbnail-width);

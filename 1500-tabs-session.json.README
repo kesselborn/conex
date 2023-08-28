@@ -1,8 +1,9 @@
 # example sessions
+#
 to be used with https://addons.mozilla.org/en-US/firefox/addon/tab-session-manager/
 
 You probably have to adjust the link. Go to https://uroulette.com, click on the button that takes you to a random site and look in the console, which link it calls
 
-Enable tree and set the delay between each tab to 800ms, otherwise most tabs won't load
+Enable tree and set the delay between each tab to 2000ms, otherwise most tabs won't load ... it'll roughly take 1h to open all tabs.
 
 Recreate the session, observer how your laptop dies, quit Firefox and re-open the session

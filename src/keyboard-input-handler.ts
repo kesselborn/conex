@@ -29,7 +29,7 @@ export function keydown(e: KeyboardEvent): void {
 export function keyup(e: KeyboardEvent) {
   // only search, if search box is still focused (no the case if ArrowDown was handled in keydown)
   if (document.activeElement === ConexElements.search) {
-    debug('keyup on search element', e);
+    debug(component, 'keyup on search element', e);
     search(ConexElements.search.value);
   }
 }
@@ -51,7 +51,7 @@ function keyDownOnSearchElement(e: KeyboardEvent): void {
   }
 }
 
-function search(value: string): void {
+export function search(value: string): void {
   for (const containerElement of Array.from($$('ol > li'))) {
     searchInContainer(containerElement, value);
   }
@@ -140,7 +140,7 @@ function keyDownOnTabElement(e: KeyboardEvent): void {
 
     // @ts-ignore
     case 'Backspace':
-      // we fall through here as we want to focuse the next element when closing this tab
+      // we fall through here as we want to focus the next element when closing this tab
       $(`#${tabId2HtmlCloseTabId(htmlId2TabId(tabElement.id))}`)!.click();
     // @ts-ignore
     // eslint-disable-next-line no-fallthrough

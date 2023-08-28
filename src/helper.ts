@@ -16,6 +16,11 @@ export enum ContextualIdentitiesColors {
   white = '#ffffff',
 }
 
+export enum Contants {
+  defaultFavicon = 'chrome://branding/content/icon64.png',
+  addonsFavicon = './icons/extension.svg',
+}
+
 export const placeholderImage = browser.runtime.getURL('transparent.png');
 
 export const placeholderFailedImage = browser.runtime.getURL('transparent-failed.png');

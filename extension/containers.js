@@ -1,5 +1,5 @@
 import { $e, _, ContextualIdentitiesColors } from './helper.js';
-import { htmlId2TabId, tabElement, tabElement2 } from './tab-element.js';
+import { htmlId2TabId, tabElement } from './tab-element.js';
 import { containerElement } from './container-element.js';
 import { ConexElements, Selectors } from './selectors.js';
 import { debug, error } from './logger.js';
@@ -100,22 +100,6 @@ export async function renderContainers(containers, options = new ContainerRender
 }
 export async function renderTabs(tabs) {
     const containerElements = new Map();
-    for (const tab of await tabs) {
-        const cookieStoreId = tab.cookieStoreId;
-        const containerElement = ConexElements.container(cookieStoreId);
-        if (!containerElement) {
-            error(component, `container element for cookieStoreId=${cookieStoreId} not found`);
-            return;
-        }
-        if (!containerElements.has(cookieStoreId)) {
-            containerElements.set(cookieStoreId, containerElement.appendChild($e('ul')));
-        }
-        containerElements.get(cookieStoreId).appendChild(tabElement(tab));
-        containerElement.classList.remove(Selectors.emptyContainerClass);
-    }
-}
-export async function renderTabs2(tabs) {
-    const containerElements = new Map();
     let tabSrc = '';
     let cookieStoreId;
     for (const tab of await tabs) {
@@ -128,8 +112,7 @@ export async function renderTabs2(tabs) {
         if (!containerElements.has(cookieStoreId)) {
             containerElements.set(cookieStoreId, containerElement.appendChild($e('ul')));
         }
-        tabSrc += tabElement2(tab);
-        // containerElements.get(cookieStoreId).appendChild(tabElement(tab));
+        tabSrc += tabElement(tab);
         containerElement.classList.remove(Selectors.emptyContainerClass);
     }
     if (cookieStoreId) {

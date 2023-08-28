@@ -1,5 +1,5 @@
 import { Tabs } from 'webextension-polyfill';
-import { $e, _ } from './helper.js';
+import { _, Contants } from './helper.js';
 import { Selectors } from './selectors.js';
 
 export function tabId2HtmlId(id: number): string {
@@ -26,65 +26,53 @@ export function htmlCloseTabId2TabId(id: string): number {
   return Number(id.slice(2));
 }
 
-export function tabElement(tab: Tabs.Tab): Element {
+export function tabElement(tab: Tabs.Tab): String {
   let favicon = tab.favIconUrl;
+  let thumbnail;
 
   // this favIconUrl is returned on some firefox tabs but not accessible
-  if (favicon === 'chrome://mozapps/skin/extensions/extension.svg') {
-    favicon = '';
+  switch (favicon) {
+    case 'chrome://mozapps/skin/extensions/extension.svg':
+      favicon = Contants.addonsFavicon;
+      break;
+    case '':
+    // fall through on purpose
+    case undefined:
+      favicon = 'chrome://branding/content/icon64.png';
+      break;
   }
 
   // ot prefix: open tab
   // x prefix: close tab
-  return $e('li', { tabindex: '0', id: tabId2HtmlId(tab.id!) }, [
-    $e('input', { id: tabId2HtmlOpenTabId(tab.id!), type: 'radio', name: Selectors.openTabName, value: `${tab.id}` }),
-    $e('label', { for: tabId2HtmlOpenTabId(tab.id!), class: 'tab-center' }, [
-      $e('div', { class: 'images' }, [
-        $e('img', { class: 'favicon', src: favicon || '' }),
-        $e('img', { class: 'thumbnail', src: favicon || '' }),
-      ]),
-      $e('div', { class: 'tab-names' }, [$e('h3', { content: tab.title || '' }), $e('h4', { content: tab.url || '' })]),
-    ]),
-    $e('input', {
-      id: tabId2HtmlCloseTabId(tab.id!),
-      type: 'radio',
-      name: Selectors.closeTabName,
-      value: `${tab.id}`,
-    }),
-    $e('label', {
-      for: tabId2HtmlCloseTabId(tab.id!),
-      class: 'close',
-      content: 'x',
-      title: _('closeWithDetails', ['tab', tab.title]),
-    }),
-  ]);
-}
-
-export function tabElement2(tab: Tabs.Tab): String {
-  let favicon = tab.favIconUrl;
-
-  // this favIconUrl is returned on some firefox tabs but not accessible
-  if (favicon === 'chrome://mozapps/skin/extensions/extension.svg') {
-    favicon = '';
-  }
-
-  // ot prefix: open tab
-  // x prefix: close tab
-  return `
+  let src = `
   <li tabindex="0" id="${tabId2HtmlId(tab.id!)}">
     <input id="${tabId2HtmlOpenTabId(tab.id!)}" type="radio" name="${Selectors.openTabName}" value="${tab.id}"/>
     <label for="${tabId2HtmlOpenTabId(tab.id!)}" class="tab-center">
-      <div class="images">
+      <div class="images">`;
+
+  if (thumbnail) {
+    src += `
         <img class="favicon" src="${favicon || ''}"/>
         <img class="thumbnail" src="${favicon || ''}"/>
+        `;
+  } else {
+    src += `
+        <img class="favicon-only" src="${favicon || ''}"/>
+        <img class="thumbnail" src=""/>
+        `;
+  }
+
+  src += `
       </div>
       <div class="tab-names">
         <h3>${tab.title || ''}</h3>
         <h4>${tab.url || ''}</h4>
       </div>
     </label>
-    <input id="${tabId2HtmlCloseTabId(tab.id!)}" type="radio" name="${Selectors.closeTabName} value="${tab.id}"/>
+    <input id="${tabId2HtmlCloseTabId(tab.id!)}" type="radio" name="${Selectors.closeTabName}" value="${tab.id}"/>
     <label for="${tabId2HtmlCloseTabId(tab.id!)}" class="close" title="${_('closeWithDetails', ['tab', tab.title])}"/>
   </li>
   `;
+
+  return src;
 }

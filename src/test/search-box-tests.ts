@@ -10,6 +10,7 @@ import { searchInContainer } from '../search.js';
 import { Tabs } from 'webextension-polyfill';
 import { renderMainPage } from '../main-page.js';
 import { Selectors } from '../selectors.js';
+import { search } from '../keyboard-input-handler.js';
 import Tab = Tabs.Tab;
 
 const component = 'search-box-tests';
@@ -49,6 +50,14 @@ describe(component, function () {
     }
   });
 
+  it('resets container when search string is empty again', async function () {
+    search('z');
+    search('');
+
+    expect($$('ol > li.no-match', $('ol')!).length).to.equal(0);
+    expect($$('em[class*="match-"]')!.length).to.equal(0);
+  });
+
   it('empty search string should reset the search', async function () {
     const firstContainer = $$('ol > li')[1]!;
     const searchTerm = '';
@@ -56,6 +65,7 @@ describe(component, function () {
     searchInContainer(firstContainer, searchTerm);
 
     expect($$('.no-match', firstContainer).length).to.equal(0);
+    expect($$('ol li.no-match', $('ol')!).length).to.equal(0);
   });
 
   it('simple search should work', async function () {
