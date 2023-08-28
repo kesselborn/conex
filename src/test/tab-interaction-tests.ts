@@ -1,4 +1,4 @@
-import { $, closeContainer } from '../helper.js';
+import { $, $$, closeContainer } from '../helper.js';
 import { renderTabs } from '../containers.js';
 import { clear, expect, timeoutResolver, typeKey } from './helper.js';
 import { tabId2HtmlId, tabId2HtmlOpenTabId } from '../tab-element.js';
@@ -140,7 +140,10 @@ describe(component, function () {
     expect($(`#${tabId2HtmlId(newTab.id!)}`)!.dataset['url']).to.equal(newTab.url);
   });
 
-  xit('should jump to next item after closing tab', async function () {
+  it('should jump to next item after closing tab', async function () {
+    for (const e of Array.from($$('.collapsed')!)) {
+      e.classList.remove(Selectors.collapsedContainer);
+    }
     info(component, 'entering test:', 'should jump to next item after closing tab');
     let tab;
     try {
