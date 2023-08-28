@@ -70,7 +70,10 @@ export function tabElement(tab: Tabs.Tab): String {
       </div>
     </label>
     <input id="${tabId2HtmlCloseTabId(tab.id!)}" type="radio" name="${Selectors.closeTabName}" value="${tab.id}"/>
-    <label for="${tabId2HtmlCloseTabId(tab.id!)}" class="close" title="${_('closeWithDetails', ['tab', tab.title])}"/>
+    <label for="${tabId2HtmlCloseTabId(tab.id!)}" class="close" title="${_('closeWithDetails', [
+    'tab',
+    tab.title,
+  ])}">X</label>
   </li>
   `;
 

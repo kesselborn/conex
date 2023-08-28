@@ -21,8 +21,14 @@
     --search-box-height: var(--row-height);
 }
 
+/* Remove the blue focus border */
+:focus {
+    outline: none !important;
+}
+
 body {
     overflow-x: hidden; /* Hide horizontal scrollbar */
+    scrollbar-width: none; /* Firefox */
     overflow-y: scroll; /* Hide horizontal scrollbar */
     margin: 0 var(--body-margin);
     width: var(--body-width);
@@ -148,7 +154,6 @@ ol > li > ul {
 
 /* tab element */
 ol > li > ul > li {
-    background-color: lightcyan;
     display: grid;
     grid-template-columns: [start] auto [closetab] var(--close-button-width) [end];
     border-left-width: var(--border-width-left-tab-element);
@@ -161,8 +166,21 @@ ol > li > ul > li {
     opacity: 0.2;
 }
 
-.close {
+ul > li .close {
     justify-content: center;
+    display: none;
+}
+
+ul > li:hover .close {
+    justify-content: center;
+    display: inherit;
+}
+
+ul > li:hover .close:hover {
+    justify-content: center;
+    display: inherit;
+    background-color: black;
+    color: white;
 }
 
 em {
@@ -280,5 +298,5 @@ ul > li:focus,
 ul > li:hover,
 ol > li:focus > label,
 ol > li:hover > label:hover {
-    background-color: lightskyblue;
+    background-color: #f0f0f0;
 }
