@@ -1,3 +1,5 @@
 /node_modules
-/extension/conex*.js
-/extension/*/conex*.js
+/extension/*.js
+/extension/test/*.js
+!/extension/test/chai.js
+!/extension/test/mocha.js
