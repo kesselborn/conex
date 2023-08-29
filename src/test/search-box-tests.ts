@@ -145,6 +145,6 @@ describe(component, function () {
     searchInContainer(firstContainer!, searchTerm);
 
     expect(firstContainer!.classList.contains(Selectors.noMatch)).to.be.false;
-    expect($('h2', firstContainer)!.innerHTML).to.equal('<span><em class="match-1">fake</em> container-0 foo</span>');
+    expect($(Selectors.containerName, firstContainer)!.innerText).to.equal('fake container-0 foo');
   });
 });

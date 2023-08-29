@@ -121,6 +121,7 @@ ul {
     margin-top: 0px;
 }
 
+/* container element */
 ol > li {
     display: grid;
     grid-template-columns: [start] var(--toggle-button-width) [container-name] auto [end];
@@ -275,6 +276,12 @@ h2 {
     align-content: center;
     padding-right: var(--tab-name-padding-right);
     padding-left: var(--tab-name-padding-right);
+    grid-template-columns: [start] auto [container-name] auto [cnt] 0px [end];
+}
+
+h2 span:nth-child(2) {
+    justify-content: end;
+    display: grid;
 }
 
 h3 {

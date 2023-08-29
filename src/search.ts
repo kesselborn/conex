@@ -133,7 +133,7 @@ export function searchInContainer(containerElement: Element, searchString: strin
     }
   }
 
-  const containerTitle = $('h2', containerElement)!;
+  const containerTitle = $(Selectors.containerName, containerElement)!;
   const { highlightedString, match } = hilightSearchMatch(containerTitle.innerText, searchString);
   containerTitle.innerHTML = `<span>${highlightedString}</span>`;
   if (match) {

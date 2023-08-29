@@ -12,6 +12,38 @@ describe(component, function () {
 
   const { color, cookieStoreId } = fakeContainers[0]!;
 
+  it('should set the tab count correctly', async function () {
+    await renderMainPage(fakeContainers);
+    const containerElements = $$(Selectors.containerElements);
+
+    const tabs = [
+      {
+        cookieStoreId: cookieStoreId,
+        id: color,
+        title: `${color} tab`,
+        url: `http://example.com/${color}`,
+      },
+      {
+        cookieStoreId: cookieStoreId,
+        id: `${color}-2`,
+        title: `${color} tab 2`,
+        url: `http://example.com/${color}`,
+      },
+      {
+        cookieStoreId: cookieStoreId,
+        id: `${color}-2`,
+        title: `${color} tab 3`,
+        url: `http://example.com/${color}`,
+      },
+    ];
+
+    // @ts-ignore
+    await renderTabs(Promise.resolve(tabs));
+
+    expect($('h2 span:nth-child(2)', containerElements[1])!.innerText).to.equal('(3 tabs)');
+    expect($('h2 span:nth-child(2)', containerElements[2])!.innerText).to.equal('(0 tabs)');
+  });
+
   it('should set class "empty" on empty containers', async function () {
     await renderMainPage(fakeContainers);
     const containerElements = $$(Selectors.containerElements);

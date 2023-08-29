@@ -1,9 +1,12 @@
-import { ContextualIdentities } from 'webextension-polyfill';
+import { Browser, ContextualIdentities } from 'webextension-polyfill';
 import { Selectors } from './selectors.js';
 import ContextualIdentity = ContextualIdentities.ContextualIdentity;
 
-export function containerElement(container: ContextualIdentity): Element {
+declare let browser: Browser;
+
+export async function containerElement(container: ContextualIdentity): Promise<Element> {
   const e = window.document.createElement('div');
+  const tabs = browser.tabs.query({ cookieStoreId: container.cookieStoreId });
 
   e.innerHTML = `
     <li tabindex="0"
@@ -19,7 +22,10 @@ export function containerElement(container: ContextualIdentity): Element {
              name="${Selectors.openContainerName}"
              value="${container.cookieStoreId}"/>
       <label for="c-${container.cookieStoreId}">
-        <h2>${container.name}</h2>
+        <h2>
+            <span>${container.name}</span>
+            <span class="container-cnt" id="c-${container.cookieStoreId}-cnt">(${(await tabs).length} tabs)</span>
+        </h2>
       </label>
     </li>`;
 

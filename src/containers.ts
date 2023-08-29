@@ -1,4 +1,4 @@
-import { $e, _, ContextualIdentitiesColors } from './helper.js';
+import { $, $e, _, ContextualIdentitiesColors } from './helper.js';
 import { htmlId2TabId, tabElement } from './tab-element.js';
 import { containerElement } from './container-element.js';
 import type { Browser } from 'webextension-polyfill';
@@ -108,7 +108,7 @@ export async function renderContainers(
   }
 
   for (const container of containers) {
-    containerList.appendChild(containerElement(container));
+    containerList.appendChild(await containerElement(container));
   }
 
   if (ConexElements.containerList) {
@@ -121,17 +121,16 @@ export async function renderContainers(
 export async function renderTabs(tabs: Promise<Array<Tab>>) {
   const containerElements = new Map();
   let tabSrc = '';
-  let cookieStoreId;
+  let cookieStoreId = (await tabs)[0]!.cookieStoreId!;
+  const containerElement = ConexElements.container(cookieStoreId);
+  if (!containerElement) {
+    error(component, `container element for cookieStoreId=${cookieStoreId} not found`);
+    return;
+  }
+
+  $(Selectors.tabsCnt, containerElement)!.innerText = `(${(await tabs).length} tabs)`;
 
   for (const tab of await tabs) {
-    cookieStoreId = tab.cookieStoreId!;
-
-    const containerElement = ConexElements.container(cookieStoreId);
-    if (!containerElement) {
-      error(component, `container element for cookieStoreId=${cookieStoreId} not found`);
-      return;
-    }
-
     if (!containerElements.has(cookieStoreId)) {
       containerElements.set(cookieStoreId, containerElement.appendChild($e('ul')));
     }

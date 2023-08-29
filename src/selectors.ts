@@ -12,6 +12,8 @@ export enum Selectors {
   searchId = 'searchId',
   tabClosed = 'closed',
   toggleTabsVisibilityName = 'toggle-tabs-visibility',
+  tabsCnt = 'h2 span:nth-child(2)',
+  containerName = 'h2 span:nth-child(1)',
 
   // no variable substitution in enums .. remember to adjust all values if you change one
   noMatch = 'no-match',
