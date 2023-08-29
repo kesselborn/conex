@@ -116,11 +116,6 @@ export async function renderContainers(
   } else {
     ConexElements.form.appendChild(containerList);
   }
-
-  // @ts-ignore
-  const bg = await browser.runtime.getBackgroundPage();
-  // @ts-ignore
-  bg.xxx = document.innerHTML;
 }
 
 export async function renderTabs(tabs: Promise<Array<Tab>>) {

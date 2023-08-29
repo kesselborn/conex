@@ -4,7 +4,7 @@ import {clear, expect, fakeContainers, maxTabId, timeoutResolver, typeKey} from 
 import {tabId2HtmlId} from '../tab-element.js';
 import {ConexElements, Selectors} from '../selectors.js';
 import {renderMainPage} from '../main-page.js';
-import {debug, info} from '../logger.js';
+import {debug} from '../logger.js';
 import {search} from '../keyboard-input-handler.js';
 
 // TODO: when typing, restart search
@@ -55,7 +55,7 @@ describe(component, function () {
   });
 
   it('should react on down and up arrow keys for empty container elements correctly', async function () {
-    info(component, 'entering test:', 'should react on down and up arrow keys for empty container elements correctly');
+    debug(component, 'entering test:', 'should react on down and up arrow keys for empty container elements correctly');
     await renderMainPage(fakeContainers);
     const containerElements = $$(Selectors.containerElements);
 

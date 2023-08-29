@@ -158,7 +158,7 @@ function keyDownOnTabElement(e: KeyboardEvent): void {
 
         // no more tabs within this container group ... focus next container element if there is one
         focusNextVisibleContainerSibling(curTabElement.parentElement!.parentElement as Element);
-        info(component, 'did not find a tab to focus on');
+        debug(component, 'did not find a tab to focus on');
         break;
       }
     // FALLTHROUGH ON PURPOSE: if the shiftKey is pressed, fall through to 'ArrowUp'

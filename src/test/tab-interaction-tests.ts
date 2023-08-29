@@ -76,7 +76,7 @@ describe(component, function () {
   });
 
   it('should switch to first tab in container when hitting enter on container', async function () {
-    info(component, 'entering test:', 'should switch to first tab in container when hitting enter on container');
+    debug(component, 'entering test:', 'should switch to first tab in container when hitting enter on container');
     let activeTab = await browser.tabs.query({ active: true });
     expect(`testing-tab-id-${activeTab[0]!.id}`).to.equal(`testing-tab-id-${testingTab!.id}`);
     debug(component, `active & testing tab id: ${testingTab!.id}; new tab id: ${newTab.id}`);
