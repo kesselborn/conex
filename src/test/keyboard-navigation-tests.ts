@@ -13,7 +13,7 @@ const component = 'keyboard-navigation-tests';
 describe(component, function () {
   afterEach(clear);
 
-  it('should go to the first tab that matches even if the first container is hidden', async function () {
+  it('hidden containers should not break downward navigation', async function () {
     await renderMainPage(fakeContainers);
     const containerElements = $$(Selectors.containerElements);
 
@@ -40,18 +40,28 @@ describe(component, function () {
     // @ts-ignore
     await renderTabs(Promise.resolve(fakeTabs(fakeContainers[1].cookieStoreId)));
     // @ts-ignore
-    await renderTabs(Promise.resolve(fakeTabs(fakeContainers[2].cookieStoreId)));
+    await renderTabs(Promise.resolve(fakeTabs(fakeContainers[3].cookieStoreId)));
 
-    const searchTerm = 'tab1container2';
+    const searchTerm = 'tab0container';
     const searchInputField = $(`#${Selectors.searchId}`)! as HTMLInputElement;
     searchInputField.value = searchTerm;
     search(searchTerm);
     searchInputField.focus();
 
-    const container2Element = containerElements[3];
+    typeKey({ key: 'ArrowDown' }, document.activeElement!);
+    expect((document.activeElement! as HTMLElement)!.id).to.equal(containerElements[2]!.id);
 
     typeKey({ key: 'ArrowDown' }, document.activeElement!);
-    expect(document.activeElement! as HTMLElement).to.equal(container2Element);
+    expect((document.activeElement! as HTMLElement)!.id).to.equal(
+      $(Selectors.tabElementsMatch, containerElements[2]!)!.id
+    );
+
+    typeKey({ key: 'ArrowDown' }, document.activeElement!);
+    expect((document.activeElement! as HTMLElement)!.id).to.equal(containerElements[4]!.id);
+    typeKey({ key: 'ArrowDown' }, document.activeElement!);
+    expect((document.activeElement! as HTMLElement)!.id).to.equal(
+      $(Selectors.tabElementsMatch, containerElements[4]!)!.id
+    );
   });
 
   it('should react on down and up arrow keys for empty container elements correctly', async function () {

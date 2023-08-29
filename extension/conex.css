@@ -118,6 +118,7 @@ label {
 ol,
 ul {
     width: var(--total-width);
+    margin-top: 0px;
 }
 
 ol > li {

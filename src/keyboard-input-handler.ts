@@ -150,15 +150,18 @@ function keyDownOnTabElement(e: KeyboardEvent): void {
       if (!e.shiftKey) {
         debug(component, 'searching for next tab to focus on');
         const tabId = tabElement.id;
-        const nextVisibleTabInContainer = $(`#${tabId} ~ :not(${Selectors.noMatch}`, tabElement.parentElement!);
+        const nextVisibleTabInContainer = $(`#${tabId} ~ :not(.${Selectors.noMatch}`, tabElement.parentElement!);
         if (nextVisibleTabInContainer) {
+          debug(component, '  found tab', nextVisibleTabInContainer);
           nextVisibleTabInContainer.focus();
           return;
         }
 
+        const tabsContainer = curTabElement.parentElement!.parentElement as Element;
+        debug(component, '  no more visible containers in container', tabsContainer);
+
         // no more tabs within this container group ... focus next container element if there is one
-        focusNextVisibleContainerSibling(curTabElement.parentElement!.parentElement as Element);
-        debug(component, 'did not find a tab to focus on');
+        focusNextVisibleContainerSibling(tabsContainer);
         break;
       }
     // FALLTHROUGH ON PURPOSE: if the shiftKey is pressed, fall through to 'ArrowUp'
