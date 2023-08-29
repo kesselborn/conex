@@ -1,5 +1,5 @@
 :root {
-    --body-margin: 2px;
+    --body-margin: 0px;
     --total-width: 500px;
     --body-width: calc(var(--body-margin) + var(--total-width));
     --thumbnail-width: 60px;
@@ -26,10 +26,12 @@
     outline: none !important;
 }
 
+* {
+    scrollbar-width: none
+}
+
 body {
     overflow-x: hidden; /* Hide horizontal scrollbar */
-    scrollbar-width: none; /* Firefox */
-    overflow-y: scroll; /* Hide horizontal scrollbar */
     margin: 0 var(--body-margin);
     width: var(--body-width);
 }
