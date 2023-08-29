@@ -41,7 +41,7 @@ describe(component, function () {
       expect($(`#${tabId2HtmlId(tabCnt - 1)} > input`)!.getAttribute('name')).to.equal(Selectors.openTabName);
     }
 
-    expect($$('form ul>li').length).to.equal(tabCnt);
+    expect($$(`form ${Selectors.tabElements}`).length).to.equal(tabCnt);
   });
 
   it('should render special favicons for specific tabs', async function () {
@@ -85,6 +85,6 @@ describe(component, function () {
       expect($(`#${tabId2HtmlId(2)} .favicon-only`)!.getAttribute('src')).to.equal(Contants.defaultFavicon);
     }
 
-    expect($$('form ul>li').length).to.equal(tabCnt);
+    expect($$(`form ${Selectors.tabElements}`).length).to.equal(tabCnt);
   });
 });

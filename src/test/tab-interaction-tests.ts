@@ -141,7 +141,7 @@ describe(component, function () {
   });
 
   it('should jump to next item after closing tab', async function () {
-    for (const e of Array.from($$('.collapsed')!)) {
+    for (const e of Array.from($$(`.${Selectors.collapsedContainer}`)!)) {
       e.classList.remove(Selectors.collapsedContainer);
     }
     info(component, 'entering test:', 'should jump to next item after closing tab');

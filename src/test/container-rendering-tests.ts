@@ -14,7 +14,7 @@ describe(component, function () {
 
   it('should set class "empty" on empty containers', async function () {
     await renderMainPage(fakeContainers);
-    const containerElements = $$('ol li');
+    const containerElements = $$(Selectors.containerElements);
 
     const tabs = [
       {
@@ -40,7 +40,7 @@ describe(component, function () {
 
   it('should set correct container color on containers', async function () {
     await renderMainPage(fakeContainers);
-    const containerElements = $$('ol li');
+    const containerElements = $$(Selectors.containerElements);
 
     // @ts-ignore
     const tabs = Array.from([
@@ -62,7 +62,7 @@ describe(component, function () {
     options.history = true;
     options.bookmarks = true;
     await renderMainPage(fakeContainers, options);
-    const containerElements = $$('ol li');
+    const containerElements = $$(Selectors.containerElements);
 
     // containers + default container + bookmarks + history
     expect(containerElements.length).to.equal(fakeContainers.length + 3);
@@ -73,7 +73,7 @@ describe(component, function () {
     options.order = Array.from(['container4', 'container1']);
 
     await renderMainPage(fakeContainers, options);
-    const containerElements = $$('ol li');
+    const containerElements = $$(Selectors.containerElements);
     const order = [
       'container4',
       'container1',

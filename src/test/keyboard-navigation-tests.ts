@@ -15,7 +15,7 @@ describe(component, function () {
 
   it('should go to the first tab that matches even if the first container is hidden', async function () {
     await renderMainPage(fakeContainers);
-    const containerElements = $$('ol li');
+    const containerElements = $$(Selectors.containerElements);
 
     let tabIdCnt = 0;
     const tabIdOffset = await maxTabId();
@@ -57,7 +57,7 @@ describe(component, function () {
   it('should react on down and up arrow keys for empty container elements correctly', async function () {
     info(component, 'entering test:', 'should react on down and up arrow keys for empty container elements correctly');
     await renderMainPage(fakeContainers);
-    const containerElements = $$('ol li');
+    const containerElements = $$(Selectors.containerElements);
 
     containerElements[0]!.focus();
     debug(component, '    arrow up;');
@@ -175,7 +175,7 @@ describe(component, function () {
     // │   └── tab 9 === nth - child(2) ==> HIDDEN (class: no-match)
     // └── containerElements[6] === fakeContainers[5] ==> HIDDEN (class: no-match)
 
-    const containerElements = $$('ol>li', document.forms[0]);
+    const containerElements = $$(Selectors.containerElements, document.forms[0]);
     for (const keys of [
       { down: { key: 'ArrowDown' }, up: { key: 'ArrowUp' }, left: { key: 'ArrowLeft' } },
       { down: { key: 'Tab' }, up: { key: 'Tab', shiftKey: true }, left: { key: 'ArrowLeft' } },
@@ -204,14 +204,14 @@ describe(component, function () {
       // Test 2
       typeKey(keys.down, document.activeElement!);
       expect(e2t(document.activeElement! as HTMLElement)).to.equal(
-        e2t($('ul>li:nth-child(1)', containerElements[1]!)!)
+        e2t($(`${Selectors.tabElements}:nth-child(1)`, containerElements[1]!)!)
       );
 
       // one arrow down:  we should now be on the second tab within the first container
       // Test 3
       typeKey(keys.down, document.activeElement!);
       expect(e2t(document.activeElement! as HTMLElement)).to.equal(
-        e2t($('ul>li:nth-child(2)', containerElements[1]!)!)
+        e2t($(`${Selectors.tabElements}:nth-child(2)`, containerElements[1]!)!)
       );
 
       // one arrow down:  we should now be on the second container element
@@ -223,7 +223,7 @@ describe(component, function () {
       // Test 5
       typeKey(keys.down, document.activeElement!);
       expect(e2t(document.activeElement! as HTMLElement)).to.equal(
-        e2t($('ul>li:nth-child(2)', containerElements[2]!)!)
+        e2t($(`${Selectors.tabElements}:nth-child(2)`, containerElements[2]!)!)
       );
 
       // one arrow down:  we should now be on the fourth container element as the third container element is hidden with Selectors.noMatch class
@@ -240,7 +240,7 @@ describe(component, function () {
       // Test 8
       typeKey(keys.down, document.activeElement!);
       expect(e2t(document.activeElement! as HTMLElement)).to.equal(
-        e2t($('ul>li:nth-child(1)', containerElements[5]!)!)
+        e2t($(`${Selectors.tabElements}:nth-child(1)`, containerElements[5]!)!)
       );
 
       // one arrow down:  we should still be on the first tab of the fifth container element
@@ -248,7 +248,7 @@ describe(component, function () {
       // Test 9
       typeKey(keys.down, document.activeElement!);
       expect(e2t(document.activeElement! as HTMLElement)).to.equal(
-        e2t($('ul>li:nth-child(1)', containerElements[5]!)!)
+        e2t($(`${Selectors.tabElements}:nth-child(1)`, containerElements[5]!)!)
       );
 
       /// /////////////////// going up again
@@ -263,7 +263,7 @@ describe(component, function () {
       // Test 12
       typeKey(keys.up, document.activeElement!);
       expect(e2t(document.activeElement! as HTMLElement)).to.equal(
-        e2t($('ul>li:nth-child(2)', containerElements[2]!)!)
+        e2t($(`${Selectors.tabElements}:nth-child(2)`, containerElements[2]!)!)
       );
 
       // Test 13
@@ -273,13 +273,13 @@ describe(component, function () {
       // Test 14
       typeKey(keys.up, document.activeElement!);
       expect(e2t(document.activeElement! as HTMLElement)).to.equal(
-        e2t($('ul>li:nth-child(2)', containerElements[1]!)!)
+        e2t($(`${Selectors.tabElements}:nth-child(2)`, containerElements[1]!)!)
       );
 
       // Test 15
       typeKey(keys.up, document.activeElement!);
       expect(e2t(document.activeElement! as HTMLElement)).to.equal(
-        e2t($('ul>li:nth-child(1)', containerElements[1]!)!)
+        e2t($(`${Selectors.tabElements}:nth-child(1)`, containerElements[1]!)!)
       );
 
       // Test 16
@@ -295,7 +295,7 @@ describe(component, function () {
   it('should select search term when returning to search field', async function () {
     await renderMainPage(fakeContainers);
     ConexElements.search.value = 'fake';
-    $('ol > li')!.focus();
+    $(Selectors.containerElements)!.focus();
     // containerElements[0].focus();
     typeKey({ key: 'ArrowUp' }, document.activeElement!);
     expect(document.activeElement!).to.equal(ConexElements.search);

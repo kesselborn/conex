@@ -3,7 +3,7 @@ import { htmlId2TabId, tabId2HtmlCloseTabId } from './tab-element.js';
 import { searchInContainer } from './search.js';
 import type { Browser } from 'webextension-polyfill';
 import { ConexElements, Selectors } from './selectors.js';
-import { debug, info, warn } from './logger.js';
+import { debug, info } from './logger.js';
 
 declare let browser: Browser;
 
@@ -42,7 +42,7 @@ function keyDownOnSearchElement(e: KeyboardEvent): void {
     case 'Tab':
       e.preventDefault();
       if (!e.shiftKey) {
-        $(`ol>li:not(.${Selectors.noMatch})`, ConexElements.search.parentElement!)!.focus();
+        $(Selectors.containerElementsMatch, ConexElements.search.parentElement!)!.focus();
       }
       break;
     case 'Enter':
@@ -52,15 +52,13 @@ function keyDownOnSearchElement(e: KeyboardEvent): void {
 }
 
 export function search(value: string): void {
-  for (const containerElement of Array.from($$('ol > li'))) {
+  for (const containerElement of Array.from($$(Selectors.containerElements))) {
     searchInContainer(containerElement, value);
   }
 }
 
 function downOnContainerElement(containerElement: Element): Element {
-  const tabElement = Array.from($$('ul>li', containerElement)).find(
-    (tabElement) => !tabElement.classList.contains(Selectors.noMatch)
-  );
+  const tabElement = $(Selectors.tabElementsMatch, containerElement);
 
   if (tabElement && !containerElement.classList.contains(Selectors.collapsedContainer)) {
     tabElement.focus();
@@ -73,11 +71,12 @@ function downOnContainerElement(containerElement: Element): Element {
 function keyDownOnContainerElement(e: KeyboardEvent): void {
   const containerElement: Element = e.target as Element;
   const key = e.key;
-  const nextTabElement = containerElement.querySelector('li');
+  const nextTabElement = $(Selectors.tabElementsMatch, containerElement);
 
   switch (key) {
     case 'Enter':
       e.preventDefault();
+      debug(component, 'enter on container ... will open the first tab in that container', nextTabElement);
       if (nextTabElement) {
         const tabId = htmlId2TabId(nextTabElement.id);
         browser.tabs.update(tabId, { active: true });
@@ -98,9 +97,7 @@ function keyDownOnContainerElement(e: KeyboardEvent): void {
     case 'ArrowUp': {
       const previousContainer = previousVisibleContainerSibling(containerElement);
       if (previousContainer) {
-        const lastTabOfPreviousContainer = Array.from($$('ul>li', previousContainer))
-          .reverse()
-          .find((tabElement) => !tabElement.classList.contains(Selectors.noMatch));
+        const lastTabOfPreviousContainer = Array.from($$(Selectors.tabElementsMatch, previousContainer)).pop();
         if (lastTabOfPreviousContainer && !previousContainer.classList.contains(Selectors.collapsedContainer)) {
           lastTabOfPreviousContainer.focus();
         } else {
@@ -152,18 +149,16 @@ function keyDownOnTabElement(e: KeyboardEvent): void {
       // FALLTHROUGH ON PURPOSE: if the shiftKey is pressed, fall through to 'ArrowUp'
       if (!e.shiftKey) {
         debug(component, 'searching for next tab to focus on');
-        while (curTabElement.nextElementSibling) {
-          curTabElement = curTabElement.nextElementSibling;
-          if (!curTabElement.classList.contains(Selectors.noMatch)) {
-            (curTabElement as HTMLElement).focus();
-            debug(component, 'found next tab to focus on', curTabElement);
-            return;
-          }
+        const tabId = tabElement.id;
+        const nextVisibleTabInContainer = $(`#${tabId} ~ :not(${Selectors.noMatch}`, tabElement.parentElement!);
+        if (nextVisibleTabInContainer) {
+          nextVisibleTabInContainer.focus();
+          return;
         }
 
         // no more tabs within this container group ... focus next container element if there is one
         focusNextVisibleContainerSibling(curTabElement.parentElement!.parentElement as Element);
-        warn(component, 'did not find a tab to focus on');
+        info(component, 'did not find a tab to focus on');
         break;
       }
     // FALLTHROUGH ON PURPOSE: if the shiftKey is pressed, fall through to 'ArrowUp'
@@ -191,14 +186,11 @@ function keyDownOnTabElement(e: KeyboardEvent): void {
 }
 
 function focusNextVisibleContainerSibling(curContainerElement: Element): Element {
-  while (curContainerElement.nextElementSibling) {
-    curContainerElement = curContainerElement.nextElementSibling;
-    if (!curContainerElement.classList.contains(Selectors.noMatch)) {
-      (curContainerElement as HTMLElement).focus();
-      break;
-    }
+  const nextVisibleContainerSibling = $(`#${curContainerElement.id} ~ :not(.${Selectors.noMatch})`);
+  if (nextVisibleContainerSibling) {
+    nextVisibleContainerSibling.focus();
   }
-  return curContainerElement;
+  return nextVisibleContainerSibling as Element;
 }
 
 function previousVisibleContainerSibling(curContainerElement: Element): Element | void {

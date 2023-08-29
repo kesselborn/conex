@@ -102,7 +102,7 @@ export function searchInContainer(containerElement: Element, searchString: strin
     containerElement.classList.remove(Selectors.collapsedContainer);
   }
 
-  const containerTabs = $$('li', containerElement)!;
+  const containerTabs = $$(Selectors.tabElements, containerElement)!;
   let containerHasMatch = false;
   for (const tabElement of Array.from(containerTabs)) {
     const title = $('h3', tabElement)!;

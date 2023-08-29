@@ -7,12 +7,20 @@ export enum Selectors {
   closeTabName = 'close-tab',
   collapsedContainer = 'collapsed',
   emptyContainerClass = 'empty',
-  noMatch = 'no-match',
   openContainerName = 'open-container',
   openTabName = 'open-tab',
   searchId = 'searchId',
   tabClosed = 'closed',
   toggleTabsVisibilityName = 'toggle-tabs-visibility',
+
+  // no variable substitution in enums .. remember to adjust all values if you change one
+  noMatch = 'no-match',
+  containerElements = 'ol>li',
+  containerElementsNoMatch = `ol>li.no-match`,
+  containerElementsMatch = `ol>li:not(.no-match)`,
+  tabElements = 'ul>li',
+  tabElementsNoMatch = 'ul>li.no-match',
+  tabElementsMatch = 'ul>li:not(.no-match)',
 }
 
 export class ConexElements {
@@ -25,7 +33,7 @@ export class ConexElements {
   }
 
   static get containerList(): HTMLElement | null {
-    return $('ol', ConexElements.form) as HTMLElement;
+    return $(Selectors.containerElements, ConexElements.form) as HTMLElement;
   }
 
   static container(cookieStoreId: string): HTMLElement | null {

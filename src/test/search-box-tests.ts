@@ -54,81 +54,83 @@ describe(component, function () {
     search('z');
     search('');
 
-    expect($$('ol > li.no-match', $('ol')!).length).to.equal(0);
+    expect($$(Selectors.containerElementsNoMatch, $(Selectors.containerElements)!).length).to.equal(0);
     expect($$('em[class*="match-"]')!.length).to.equal(0);
   });
 
   it('empty search string should reset the search', async function () {
-    const firstContainer = $$('ol > li')[1]!;
+    const firstContainer = $$(Selectors.containerElements)[1]!;
     const searchTerm = '';
 
     searchInContainer(firstContainer, searchTerm);
 
-    expect($$('.no-match', firstContainer).length).to.equal(0);
-    expect($$('ol li.no-match', $('ol')!).length).to.equal(0);
+    expect($$(`.${Selectors.noMatch}`, firstContainer).length).to.equal(0);
+    expect($$(Selectors.containerElementsNoMatch, $(Selectors.containerElements)!).length).to.equal(0);
   });
 
   it('simple search should work', async function () {
-    const firstContainer = $$('ol > li')[1]!;
+    const firstContainer = $$(Selectors.containerElements)[1]!;
     const searchTerm = 'reDdI';
 
     searchInContainer(firstContainer, searchTerm);
 
-    expect($$('li:not(.no-match)', firstContainer).length).to.equal(1);
-    expect($('h3', $('li:not(.no-match)', firstContainer)!)!.innerHTML).to.equal('<em class="match-1">Reddi</em>t foo');
-    expect($('h4', $('li:not(.no-match)', firstContainer)!)!.innerHTML).to.equal(
+    expect($$(Selectors.tabElementsMatch, firstContainer).length).to.equal(1);
+    expect($('h3', $(Selectors.tabElementsMatch, firstContainer)!)!.innerHTML).to.equal(
+      '<em class="match-1">Reddi</em>t foo'
+    );
+    expect($('h4', $(Selectors.tabElementsMatch, firstContainer)!)!.innerHTML).to.equal(
       'https://<em class="match-1">reddi</em>t.com'
     );
   });
 
   it('multiple search terms should should be combined with AND on title', async function () {
-    const firstContainer = $$('ol > li')[1]!;
+    const firstContainer = $$(Selectors.containerElements)[1]!;
     const searchTerm = 'reDdI foo';
 
     searchInContainer(firstContainer, searchTerm);
 
-    expect($$('li:not(.no-match)', firstContainer).length).to.equal(1);
-    expect($('h3', $$('li:not(.no-match)', firstContainer)[0])!.innerHTML).to.equal(
+    expect($$(Selectors.tabElementsMatch, firstContainer).length).to.equal(1);
+    expect($('h3', $$(Selectors.tabElementsMatch, firstContainer)[0])!.innerHTML).to.equal(
       '<em class="match-1">Reddi</em>t <em class="match-2">foo</em>'
     );
 
     // url does not have a highlight as only the first token is matched
-    expect($('h4', $$('li:not(.no-match)', firstContainer)[0])!.innerHTML).to.equal('https://reddit.com');
+    expect($('h4', $$(Selectors.tabElementsMatch, firstContainer)[0])!.innerHTML).to.equal('https://reddit.com');
   });
 
   it('multiple search terms should should be combined with AND on url', async function () {
-    const firstContainer = $$('ol > li')[1]!;
+    const firstContainer = $$(Selectors.containerElements)[1]!;
     const searchTerm = 'reDdI com';
 
     searchInContainer(firstContainer, searchTerm);
 
-    expect($$('li:not(.no-match)', firstContainer).length).to.equal(1);
+    expect($$(Selectors.tabElementsMatch, firstContainer).length).to.equal(1);
 
     // title does not have a highlight as only the first token is matched
-    expect($('h3', $$('li:not(.no-match)', firstContainer)[0])!.innerHTML).to.equal('Reddit foo');
+    expect($('h3', $$(Selectors.tabElementsMatch, firstContainer)[0])!.innerHTML).to.equal('Reddit foo');
 
-    expect($('h4', $$('li:not(.no-match)', firstContainer)[0])!.innerHTML).to.equal(
+    expect($('h4', $$(Selectors.tabElementsMatch, firstContainer)[0])!.innerHTML).to.equal(
       'https://<em class="match-1">reddi</em>t.<em class="match-2">com</em>'
     );
   });
 
   it('multiple search terms: a blank after a word should not match everything', async function () {
-    const firstContainer = $$('ol > li')[1]!;
+    const firstContainer = $$(Selectors.containerElements)[1]!;
     const searchTerm = 'reDdI ';
 
     searchInContainer(firstContainer, searchTerm);
 
-    expect($$('li:not(.no-match)', firstContainer).length).to.equal(1);
-    expect($('h3', $$('li:not(.no-match)', firstContainer)[0])!.innerHTML).to.equal(
+    expect($$(Selectors.tabElementsMatch, firstContainer).length).to.equal(1);
+    expect($('h3', $$(Selectors.tabElementsMatch, firstContainer)[0])!.innerHTML).to.equal(
       '<em class="match-1">Reddi</em>t foo'
     );
-    expect($('h4', $$('li:not(.no-match)', firstContainer)[0])!.innerHTML).to.equal(
+    expect($('h4', $$(Selectors.tabElementsMatch, firstContainer)[0])!.innerHTML).to.equal(
       'https://<em class="match-1">reddi</em>t.com'
     );
   });
 
   it('containers with no matches should be hidden', async function () {
-    const firstContainer = $$('ol > li')[1];
+    const firstContainer = $$(Selectors.containerElements)[1];
     const searchTerm = 'xxxxxx';
 
     searchInContainer(firstContainer!, searchTerm);
@@ -137,7 +139,7 @@ describe(component, function () {
   });
 
   it('do not hide container if name of the container matches search', async function () {
-    const firstContainer = $$('ol > li')[1];
+    const firstContainer = $$(Selectors.containerElements)[1];
     const searchTerm = 'fake';
 
     searchInContainer(firstContainer!, searchTerm);
