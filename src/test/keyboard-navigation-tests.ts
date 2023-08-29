@@ -5,12 +5,54 @@ import {tabId2HtmlId} from '../tab-element.js';
 import {ConexElements, Selectors} from '../selectors.js';
 import {renderMainPage} from '../main-page.js';
 import {debug, info} from '../logger.js';
+import {search} from '../keyboard-input-handler.js';
 
 // TODO: when typing, restart search
 const component = 'keyboard-navigation-tests';
 
 describe(component, function () {
   afterEach(clear);
+
+  it('should go to the first tab that matches even if the first container is hidden', async function () {
+    await renderMainPage(fakeContainers);
+    const containerElements = $$('ol li');
+
+    let tabIdCnt = 0;
+    const tabIdOffset = await maxTabId();
+
+    const fakeTabs = (cookieStoreId: string) => {
+      return [
+        {
+          cookieStoreId: cookieStoreId,
+          id: tabIdOffset + tabIdCnt++,
+          title: `tab0${cookieStoreId}`,
+          url: `http://example.com/${cookieStoreId}`,
+        },
+        {
+          cookieStoreId: cookieStoreId,
+          id: tabIdOffset + tabIdCnt++,
+          title: `tab1${cookieStoreId}`,
+          url: `http://example.com/${cookieStoreId}`,
+        },
+      ];
+    };
+
+    // @ts-ignore
+    await renderTabs(Promise.resolve(fakeTabs(fakeContainers[1].cookieStoreId)));
+    // @ts-ignore
+    await renderTabs(Promise.resolve(fakeTabs(fakeContainers[2].cookieStoreId)));
+
+    const searchTerm = 'tab1container2';
+    const searchInputField = $(`#${Selectors.searchId}`)! as HTMLInputElement;
+    searchInputField.value = searchTerm;
+    search(searchTerm);
+    searchInputField.focus();
+
+    const container2Element = containerElements[3];
+
+    typeKey({ key: 'ArrowDown' }, document.activeElement!);
+    expect(document.activeElement! as HTMLElement).to.equal(container2Element);
+  });
 
   it('should react on down and up arrow keys for empty container elements correctly', async function () {
     info(component, 'entering test:', 'should react on down and up arrow keys for empty container elements correctly');

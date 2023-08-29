@@ -42,7 +42,7 @@ function keyDownOnSearchElement(e: KeyboardEvent): void {
     case 'Tab':
       e.preventDefault();
       if (!e.shiftKey) {
-        $('ol>li', ConexElements.search.parentElement!)!.focus();
+        $(`ol>li:not(.${Selectors.noMatch})`, ConexElements.search.parentElement!)!.focus();
       }
       break;
     case 'Enter':
