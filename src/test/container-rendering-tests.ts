@@ -38,7 +38,7 @@ describe(component, function () {
     ];
 
     // @ts-ignore
-    await renderTabs(Promise.resolve(tabs));
+    await renderTabs(tabs);
 
     expect($('h2 span:nth-child(2)', containerElements[1])!.innerText).to.equal('(3 tabs)');
     expect($('h2 span:nth-child(2)', containerElements[2])!.innerText).to.equal('(0 tabs)');
@@ -64,7 +64,7 @@ describe(component, function () {
     ];
 
     // @ts-ignore
-    await renderTabs(Promise.resolve(tabs));
+    await renderTabs(tabs);
 
     expect(containerElements[1]!.classList.contains(Selectors.emptyContainerClass)).to.be.false;
     expect(containerElements[2]!.classList.contains(Selectors.emptyContainerClass)).to.be.true;
@@ -84,7 +84,7 @@ describe(component, function () {
       },
     ]) as Array<Tab>;
 
-    await renderTabs(Promise.resolve(tabs));
+    await renderTabs(tabs);
     // containerElements[1] == fakeContainers[0] due to default container
     expect(containerElements[1]!.classList.contains(`container-color-${color}`)).to.be.true;
   });

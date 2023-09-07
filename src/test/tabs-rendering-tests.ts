@@ -18,7 +18,7 @@ describe(component, function () {
     const form = $e('form', {}, [searchField]);
     window.document.body.appendChild(form);
 
-    renderMainPageStub();
+    await renderMainPageStub();
     await renderContainers(fakeContainers);
     for (const container of fakeContainers) {
       const tabs = Array.from([
@@ -36,7 +36,7 @@ describe(component, function () {
         },
       ]) as Array<Tab>;
 
-      await renderTabs(Promise.resolve(tabs));
+      await renderTabs(tabs);
       expect($(`#${tabId2HtmlId(tabCnt - 2)} > input`)!.getAttribute('name')).to.equal(Selectors.openTabName);
       expect($(`#${tabId2HtmlId(tabCnt - 1)} > input`)!.getAttribute('name')).to.equal(Selectors.openTabName);
     }
@@ -78,7 +78,7 @@ describe(component, function () {
         },
       ]) as Array<Tab>;
 
-      await renderTabs(Promise.resolve(tabs));
+      await renderTabs(tabs);
       // debug(component, $(`#${tabId2HtmlId(tabCnt - 1)}`));
       expect($(`#${tabId2HtmlId(0)} .favicon-only`)!.getAttribute('src')).to.equal(Contants.addonsFavicon);
       expect($(`#${tabId2HtmlId(1)} .favicon-only`)!.getAttribute('src')).to.equal(Contants.defaultFavicon);

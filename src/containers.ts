@@ -118,10 +118,13 @@ export async function renderContainers(
   }
 }
 
-export async function renderTabs(tabs: Promise<Array<Tab>>) {
+export async function renderTabs(tabs: Array<Tab>) {
+  if (tabs.length === 0) {
+    return;
+  }
   const containerElements = new Map();
   let tabSrc = '';
-  let cookieStoreId = (await tabs)[0]!.cookieStoreId!;
+  let cookieStoreId = tabs[0]!.cookieStoreId!;
   const containerElement = ConexElements.container(cookieStoreId);
   if (!containerElement) {
     error(component, `container element for cookieStoreId=${cookieStoreId} not found`);

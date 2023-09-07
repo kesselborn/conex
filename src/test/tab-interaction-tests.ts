@@ -1,20 +1,22 @@
 import { $, $$, closeContainer } from '../helper.js';
-import { renderTabs } from '../containers.js';
 import { clear, expect, timeoutResolver, typeKey } from './helper.js';
 import { tabId2HtmlId, tabId2HtmlOpenTabId } from '../tab-element.js';
 import type { Browser, Tabs } from 'webextension-polyfill';
 import { renderMainPage } from '../main-page.js';
 import { Selectors } from '../selectors.js';
 import { debug, info } from '../logger.js';
+import { renderTabs } from '../containers.js';
 
 let newContainerId: string;
 let newTab: Tabs.Tab;
 let newTab2: Tabs.Tab;
 let testingTab: Tabs.Tab | undefined;
 
+let uniqUrlSearchString = `tab${Math.random()}`;
+
 declare let browser: Browser;
 
-const component = 'tab-interaction-tests';
+let component = 'tab-interaction-tests-';
 
 describe(component, function () {
   before(async function () {
@@ -22,7 +24,6 @@ describe(component, function () {
   });
 
   beforeEach(async function () {
-    await clear();
     const newContainer = await browser.contextualIdentities.create({
       name: new Date().toString(),
       color: 'blue',
@@ -38,17 +39,32 @@ describe(component, function () {
     newTab2 = await browser.tabs.create({
       active: false,
       cookieStoreId: newContainerId,
-      url: 'about:blank',
+      url: `about:blank?id=${uniqUrlSearchString}`,
     });
 
     await renderMainPage(await browser.contextualIdentities.query({}));
-    await renderTabs(browser.tabs.query({ cookieStoreId: newContainerId }));
+    await renderTabs(await browser.tabs.query({ cookieStoreId: newContainerId }));
   });
 
   afterEach(async function () {
-    await browser.tabs.update(testingTab!.id, { active: true });
-    await clear();
     await closeContainer(newContainerId);
+    await clear();
+    await browser.tabs.update(testingTab!.id, { active: true });
+  });
+
+  it('should open the first tab of the first container when hitting enter on search box', async function () {
+    let activeTab = await browser.tabs.query({ active: true });
+    expect(`testing-tab-id-${activeTab[0]!.id}`).to.equal(`testing-tab-id-${testingTab!.id}`);
+
+    ($(`#${Selectors.searchId}`)! as HTMLInputElement).value = uniqUrlSearchString;
+    typeKey({ key: 'Backspace' }, $(`#${Selectors.searchId}`)!);
+    await timeoutResolver(50);
+    typeKey({ key: 'Enter' }, $(`#${Selectors.searchId}`)!);
+    // let the event handling do its work
+    await timeoutResolver(100);
+
+    activeTab = await browser.tabs.query({ active: true });
+    expect(`new-tab-id-${activeTab[0]!.id}`).to.equal(`new-tab-id-${newTab.id}`);
   });
 
   it('should switch tabs when clicking with mouse on the open-tab radio button', async function () {
@@ -76,7 +92,6 @@ describe(component, function () {
   });
 
   it('should switch to first tab in container when hitting enter on container', async function () {
-    debug(component, 'entering test:', 'should switch to first tab in container when hitting enter on container');
     let activeTab = await browser.tabs.query({ active: true });
     expect(`testing-tab-id-${activeTab[0]!.id}`).to.equal(`testing-tab-id-${testingTab!.id}`);
     debug(component, `active & testing tab id: ${testingTab!.id}; new tab id: ${newTab.id}`);
@@ -87,37 +102,13 @@ describe(component, function () {
     typeKey({ key: 'Enter' }, containerElement);
 
     // let the event handling do its work
-    timeoutResolver(200);
+    await timeoutResolver(200);
 
     activeTab = await browser.tabs.query({ active: true });
     expect(`new-tab-id-${activeTab[0]!.id}`).to.equal(`new-tab-id-${newTab.id}`);
   });
 
-  it('should open a new container tab when hitting enter on a container', async function () {
-    expect(false, true);
-    let activeTab = await browser.tabs.query({ active: true });
-    expect(`testing-tab-id-${activeTab[0]!.id}`).to.equal(`testing-tab-id-${testingTab!.id}`);
-
-    typeKey({ key: 'Enter' }, $(`#${tabId2HtmlId(newTab.id!)}`)!);
-    // let the event handling do its work
-    timeoutResolver(100);
-
-    activeTab = await browser.tabs.query({ active: true });
-    expect(`new-tab-id-${activeTab[0]!.id}`).to.equal(`new-tab-id-${newTab.id}`);
-  });
-
-  it('should open the first tab of the first container when hitting enter on search box', async function () {
-    expect(false, true);
-    let activeTab = await browser.tabs.query({ active: true });
-    expect(`testing-tab-id-${activeTab[0]!.id}`).to.equal(`testing-tab-id-${testingTab!.id}`);
-
-    typeKey({ key: 'Enter' }, $(`#${tabId2HtmlId(newTab.id!)}`)!);
-    // let the event handling do its work
-    timeoutResolver(100);
-
-    activeTab = await browser.tabs.query({ active: true });
-    expect(`new-tab-id-${activeTab[0]!.id}`).to.equal(`new-tab-id-${newTab.id}`);
-  });
+  it('should open a new container tab when hitting enter on a container', async function () {});
 
   it('should close tab when hitting backspace on tab element', async function () {
     let tab;

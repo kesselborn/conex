@@ -39,7 +39,7 @@ describe(component, function () {
         },
       ]) as Array<Tab>;
 
-      await renderTabs(Promise.resolve(fakeTabs));
+      await renderTabs(fakeTabs);
     }
 
     const firstFakeContainerElement = $(`#${firstFakeContainer.cookieStoreId}`)!;

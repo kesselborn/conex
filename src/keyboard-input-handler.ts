@@ -3,7 +3,7 @@ import { htmlId2TabId, tabId2HtmlCloseTabId } from './tab-element.js';
 import { searchInContainer } from './search.js';
 import type { Browser } from 'webextension-polyfill';
 import { ConexElements, Selectors } from './selectors.js';
-import { debug, info } from './logger.js';
+import { debug } from './logger.js';
 
 declare let browser: Browser;
 
@@ -47,7 +47,9 @@ function keyDownOnSearchElement(e: KeyboardEvent): void {
       break;
     case 'Enter':
       e.preventDefault();
-      info(component, 'opening "a" tab now');
+      const firstExpandedContainer = $(Selectors.containerElementsMatch, ConexElements.search.parentElement!)!;
+      debug(component, 'first matched container', firstExpandedContainer);
+      activateFirstVisibleContainerTab(firstExpandedContainer);
   }
 }
 
@@ -68,19 +70,25 @@ function downOnContainerElement(containerElement: Element): Element {
   }
 }
 
+function activateFirstVisibleContainerTab(containerElement: Element) {
+  const nextTabElement = $(Selectors.tabElementsMatch, containerElement);
+  debug(component, 'enter on container -- will open the first tab in that container', containerElement);
+  if (nextTabElement) {
+    debug(component, 'tab to be opened is', nextTabElement);
+    const tabId = htmlId2TabId(nextTabElement.id);
+    browser.tabs.update(tabId, { active: true });
+    window.close();
+  }
+}
+
 function keyDownOnContainerElement(e: KeyboardEvent): void {
   const containerElement: Element = e.target as Element;
   const key = e.key;
-  const nextTabElement = $(Selectors.tabElementsMatch, containerElement);
 
   switch (key) {
     case 'Enter':
       e.preventDefault();
-      debug(component, 'enter on container ... will open the first tab in that container', nextTabElement);
-      if (nextTabElement) {
-        const tabId = htmlId2TabId(nextTabElement.id);
-        browser.tabs.update(tabId, { active: true });
-      }
+      activateFirstVisibleContainerTab(containerElement);
       break;
     case 'ArrowDown':
     // @ts-ignore

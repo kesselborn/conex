@@ -46,7 +46,7 @@ describe(component, function () {
         },
       ]) as Array<Tab>;
 
-      await renderTabs(new Promise((resolve) => resolve(fakeTabs)));
+      await renderTabs(fakeTabs);
     }
   });
 

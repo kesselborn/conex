@@ -27,10 +27,10 @@ export async function renderMainPage(
 
   ConexElements.search.focus();
 
-  setTimeout(() => {
+  setTimeout(async () => {
     for (const container of [defaultContainer].concat(containers)) {
-      const tabs = browser.tabs.query({ cookieStoreId: container.cookieStoreId });
-      renderTabs(tabs);
+      const tabs = browser.tabs.query({ cookieStoreId: container.cookieStoreId })!;
+      renderTabs(await tabs);
     }
   }, 100);
 }

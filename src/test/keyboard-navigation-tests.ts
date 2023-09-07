@@ -38,9 +38,9 @@ describe(component, function () {
     };
 
     // @ts-ignore
-    await renderTabs(Promise.resolve(fakeTabs(fakeContainers[1].cookieStoreId)));
+    await renderTabs(fakeTabs(fakeContainers[1].cookieStoreId));
     // @ts-ignore
-    await renderTabs(Promise.resolve(fakeTabs(fakeContainers[3].cookieStoreId)));
+    await renderTabs(fakeTabs(fakeContainers[3].cookieStoreId));
 
     const searchTerm = 'tab0container';
     const searchInputField = $(`#${Selectors.searchId}`)! as HTMLInputElement;
@@ -116,7 +116,7 @@ describe(component, function () {
         // first container contains two tabs
         case 0: // containerElements[1]
           // @ts-ignore
-          await renderTabs(Promise.resolve(fakeTabs(fakeContainers[i].cookieStoreId)));
+          await renderTabs(fakeTabs(fakeContainers[i].cookieStoreId));
           $(`#${fakeContainers[i]!.cookieStoreId}`)!.classList.remove(Selectors.collapsedContainer);
           break;
         // second tab contains a tab that should be hidden (class == no-match)
@@ -125,7 +125,7 @@ describe(component, function () {
             const tabs = fakeTabs(fakeContainers[i]!.cookieStoreId);
 
             // @ts-ignore
-            await renderTabs(Promise.resolve(tabs));
+            await renderTabs(tabs);
             $(`#${tabId2HtmlId(tabs[0]!.id)}`)!.classList.add(Selectors.noMatch);
             $(`#${fakeContainers[i]!.cookieStoreId}`)!.classList.remove(Selectors.collapsedContainer);
           }
@@ -135,7 +135,7 @@ describe(component, function () {
           {
             const tabs = fakeTabs(fakeContainers[i]!.cookieStoreId);
             // @ts-ignore
-            await renderTabs(Promise.resolve(tabs));
+            await renderTabs(tabs);
             $(`#${container.cookieStoreId}`)!.classList.add(Selectors.noMatch);
             $(`#${tabId2HtmlId(tabs[0]!.id)}`)!.classList.add(Selectors.noMatch);
             $(`#${tabId2HtmlId(tabs[1]!.id)}`)!.classList.add(Selectors.noMatch);
@@ -145,7 +145,7 @@ describe(component, function () {
           {
             const tabs = fakeTabs(fakeContainers[i]!.cookieStoreId);
             // @ts-ignore
-            await renderTabs(Promise.resolve(tabs));
+            await renderTabs(tabs);
             $(`#${container.cookieStoreId}`)!.classList.add(Selectors.collapsedContainer);
           }
           break;
@@ -153,7 +153,7 @@ describe(component, function () {
           {
             const tabs = fakeTabs(fakeContainers[i]!.cookieStoreId);
             // @ts-ignore
-            await renderTabs(Promise.resolve(tabs));
+            await renderTabs(tabs);
             $(`#${tabId2HtmlId(tabs[1]!.id)}`)!.classList.add(Selectors.noMatch);
             $(`#${fakeContainers[i]!.cookieStoreId}`)!.classList.remove(Selectors.collapsedContainer);
           }
