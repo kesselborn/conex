@@ -22,14 +22,25 @@ describe(component, function () {
   });
 
   it('opens a new tab when pressing shift enter on container', async function () {
+    const testTab = (await browser.tabs.query({ active: true }))[0]!;
     const name = `${component}-2-${new Date().toString()}`;
     const container = await browser.contextualIdentities.create({ name: name, color: 'blue', icon: 'circle' });
     await renderMainPage([container]);
 
     const containerElement = $$(Selectors.containerElements)[1]!;
-    typeKey({ key: 'Enter', shiftKey: true }, containerElement!);
+    // if the container is empty, open a new tab
+    typeKey({ key: 'Enter', shiftKey: false }, containerElement!);
+    await browser.tabs.update(testTab.id, { active: true });
 
-    expect((await browser.tabs.query({ cookieStoreId: container.cookieStoreId })).length).to.equal(1);
+    // if container has tabs but Enter + Shift is pressed: open new tab
+    typeKey({ key: 'Enter', shiftKey: true }, containerElement!);
+    await browser.tabs.update(testTab.id, { active: true });
+
+    // if the container is not empty, just jump to the tab
+    typeKey({ key: 'Enter', shiftKey: false }, containerElement!);
+    await browser.tabs.update(testTab.id, { active: true });
+
+    expect((await browser.tabs.query({ cookieStoreId: container.cookieStoreId })).length).to.equal(2);
     await closeContainer(container.cookieStoreId);
   });
 });

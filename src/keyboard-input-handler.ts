@@ -81,16 +81,17 @@ function activateFirstVisibleContainerTab(containerElement: Element) {
   }
 }
 
-function keyDownOnContainerElement(e: KeyboardEvent): void {
+async function keyDownOnContainerElement(e: KeyboardEvent): Promise<void> {
   const containerElement: Element = e.target as Element;
+  const containerId = containerElement.id;
   const key = e.key;
 
   switch (key) {
     case 'Enter':
       e.preventDefault();
-      if (e.shiftKey) {
-        const containerId = containerElement.id;
-        browser.tabs.create({ cookieStoreId: containerId });
+      const tabsInContainer = await browser.tabs.query({ cookieStoreId: containerId });
+      if (e.shiftKey || tabsInContainer.length === 0) {
+        await browser.tabs.create({ cookieStoreId: containerId });
         window.close();
       } else {
         activateFirstVisibleContainerTab(containerElement);
