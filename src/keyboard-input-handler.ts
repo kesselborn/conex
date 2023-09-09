@@ -88,7 +88,13 @@ function keyDownOnContainerElement(e: KeyboardEvent): void {
   switch (key) {
     case 'Enter':
       e.preventDefault();
-      activateFirstVisibleContainerTab(containerElement);
+      if (e.shiftKey) {
+        const containerId = containerElement.id;
+        browser.tabs.create({ cookieStoreId: containerId });
+        window.close();
+      } else {
+        activateFirstVisibleContainerTab(containerElement);
+      }
       break;
     case 'ArrowDown':
     // @ts-ignore
