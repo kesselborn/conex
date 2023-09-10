@@ -20,5 +20,19 @@
         "example": "tab name"
       }
     }
+  },
+  "closeContainerConfirmationDialoge": {
+    "message": "Sind sie sicher, dass sie den Container $CONTAINER$ und seine $TABCNT$ tabs schließen möchten?",
+    "description": "confirmation dialog when a user wants to close a container",
+    "placeholders": {
+      "container": {
+        "content": "$1",
+        "example": "???"
+      },
+      "tabcnt": {
+        "content": "$2",
+        "example": "0"
+      }
+    }
   }
 }

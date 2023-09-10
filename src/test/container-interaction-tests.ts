@@ -1,8 +1,9 @@
 import { $$, closeContainer } from '../helper.js';
-import { expect, typeKey } from './helper.js';
+import { expect, timeoutResolver, typeKey } from './helper.js';
 import type { Browser } from 'webextension-polyfill';
 import { renderMainPage } from '../main-page.js';
 import { Selectors } from '../selectors.js';
+import { debug } from '../logger.js';
 
 declare let browser: Browser;
 
@@ -42,5 +43,99 @@ describe(component, function () {
 
     expect((await browser.tabs.query({ cookieStoreId: container.cookieStoreId })).length).to.equal(2);
     await closeContainer(container.cookieStoreId);
+  });
+
+  it('delete container on backspace: no confirmation on empty containers', async function () {
+    const name = `${component}-3-${new Date().toString()}`;
+    const container = await browser.contextualIdentities.create({ name: name, color: 'blue', icon: 'circle' });
+    const confirmFunction = window.confirm;
+
+    let confirmCalled = false;
+    window.confirm = function (_?: string) {
+      confirmCalled = true;
+      return true;
+    };
+
+    await renderMainPage([container]);
+
+    expect((await browser.tabs.query({ cookieStoreId: container.cookieStoreId })).length).to.equal(0);
+    expect((await browser.contextualIdentities.query({ name: container.name })).length, 1);
+
+    const containerElement = $$(Selectors.containerElements)[1]!;
+
+    // second try: simulate confirm === true
+    typeKey({ key: 'Backspace' }, containerElement!);
+    await timeoutResolver(100);
+    expect(
+      (await browser.tabs.query({ cookieStoreId: container.cookieStoreId })).length,
+      'tab count after confirm'
+    ).to.equal(0);
+    expect(
+      (await browser.contextualIdentities.query({ name: container.name })).length,
+      'container count after confirm'
+    ).to.equal(0);
+    expect(containerElement.classList.contains(Selectors.noMatch)).to.equal(true);
+    expect(confirmCalled).to.equal(false);
+    window.confirm = confirmFunction;
+  });
+
+  it('delete container on backspace', async function () {
+    const name = `${component}-3-${new Date().toString()}`;
+    const container = await browser.contextualIdentities.create({ name: name, color: 'blue', icon: 'circle' });
+    await browser.tabs.create({
+      active: false,
+      cookieStoreId: container.cookieStoreId,
+      url: `about:blank?${component}-3-1`,
+    });
+    await browser.tabs.create({
+      active: false,
+      cookieStoreId: container.cookieStoreId,
+      url: `about:blank?${component}-3-2`,
+    });
+    const confirmFunction = window.confirm;
+    let confirmMessage: string | undefined = '';
+
+    let confirm = false;
+    window.confirm = function (message?: string) {
+      debug(component, `fake confirm called with message '${message}'`);
+      confirmMessage = message;
+      return confirm;
+    };
+
+    await renderMainPage([container]);
+
+    expect((await browser.tabs.query({ cookieStoreId: container.cookieStoreId })).length).to.equal(2);
+    expect((await browser.contextualIdentities.query({ name: container.name })).length, 1);
+
+    const containerElement = $$(Selectors.containerElements)[1]!;
+
+    // first try: simulate confirm === false
+    confirm = false;
+    typeKey({ key: 'Backspace' }, containerElement!);
+    await timeoutResolver(100);
+    expect(
+      (await browser.tabs.query({ cookieStoreId: container.cookieStoreId })).length,
+      'tabs cnt after abort'
+    ).to.equal(2);
+    expect(
+      (await browser.contextualIdentities.query({ name: container.name })).length,
+      'container cnt after abort'
+    ).to.equal(1);
+
+    // second try: simulate confirm === true
+    confirm = true;
+    typeKey({ key: 'Backspace' }, containerElement!);
+    await timeoutResolver(100);
+    expect(
+      (await browser.tabs.query({ cookieStoreId: container.cookieStoreId })).length,
+      'tab count after confirm'
+    ).to.equal(0);
+    expect(
+      (await browser.contextualIdentities.query({ name: container.name })).length,
+      'container count after confirm'
+    ).to.equal(0);
+    expect(containerElement.classList.contains(Selectors.noMatch)).to.equal(true);
+    expect(confirmMessage).to.equal(`Are you sure you want to close ${container.name} and its 2 tabs?`);
+    window.confirm = confirmFunction;
   });
 });

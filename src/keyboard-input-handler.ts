@@ -1,4 +1,4 @@
-import { $, $$ } from './helper.js';
+import { $, $$, _, closeContainer } from './helper.js';
 import { htmlId2TabId, tabId2HtmlCloseTabId } from './tab-element.js';
 import { searchInContainer } from './search.js';
 import type { Browser } from 'webextension-polyfill';
@@ -89,12 +89,23 @@ async function keyDownOnContainerElement(e: KeyboardEvent): Promise<void> {
   switch (key) {
     case 'Enter':
       e.preventDefault();
-      const tabsInContainer = await browser.tabs.query({ cookieStoreId: containerId });
-      if (e.shiftKey || tabsInContainer.length === 0) {
-        await browser.tabs.create({ cookieStoreId: containerId });
-        window.close();
-      } else {
-        activateFirstVisibleContainerTab(containerElement);
+      {
+        const tabsInContainer = await browser.tabs.query({ cookieStoreId: containerId });
+        if (e.shiftKey || tabsInContainer.length === 0) {
+          await browser.tabs.create({ cookieStoreId: containerId });
+          window.close();
+        } else {
+          activateFirstVisibleContainerTab(containerElement);
+        }
+      }
+      break;
+    case 'Backspace':
+      const tabsInContainer = (await browser.tabs.query({ cookieStoreId: containerId })).length;
+      const containerName = $(Selectors.containerName, containerElement)?.innerText!;
+      if (tabsInContainer === 0 || confirm(_('closeContainerConfirmationDialoge', [containerName, tabsInContainer]))) {
+        focusNextVisibleContainerSibling(containerElement);
+        containerElement.classList.add(Selectors.noMatch);
+        await closeContainer(containerId);
       }
       break;
     case 'ArrowDown':
