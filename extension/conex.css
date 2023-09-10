@@ -19,6 +19,7 @@
     );
     --search-box-width: calc(var(--total-width) - var(--border-width-left-tab-element));
     --search-box-height: var(--row-height);
+    --highlight-color: #f0f0f0;
 }
 
 /* Remove the blue focus border */
@@ -124,7 +125,7 @@ ul {
 /* container element */
 ol > li {
     display: grid;
-    grid-template-columns: [start] var(--toggle-button-width) [container-name] auto [end];
+    grid-template-columns: [start] var(--toggle-button-width) [container-name] auto [closecontainer] var(--close-button-width) [end];
 }
 
 ol > li.empty .tabs-visibility::before {
@@ -170,17 +171,18 @@ ol > li > ul > li {
     opacity: 0.2;
 }
 
-ul > li .close {
+li .close {
     justify-content: center;
     display: none;
 }
 
-ul > li:hover .close {
+li:focus .close,
+li:hover .close {
     justify-content: center;
     display: inherit;
 }
 
-ul > li:hover .close:hover {
+li:hover .close:hover {
     justify-content: center;
     display: inherit;
     background-color: black;
@@ -271,7 +273,7 @@ h4 {
 h2 {
     font-size: 12px;
     font-weight: 100;
-    display: grid;
+    display: inline-grid;
     height: var(--row-height);
     align-content: center;
     padding-right: var(--tab-name-padding-right);
@@ -303,10 +305,9 @@ h4 {
 }
 
 /* highlight container element on hover / focus */
-
 ul > li:focus,
 ul > li:hover,
 ol > li:focus > label,
 ol > li:hover > label:hover {
-    background-color: #f0f0f0;
+    background-color: var(--highlight-color);
 }

@@ -7,6 +7,7 @@ import {
   tabId2HtmlOpenTabId,
 } from '../tab-element.js';
 import { expect } from './helper.js';
+import { containerId2HtmlCloseContainerId, htmlCloseContainerId2ContainerId } from '../container-element.js';
 
 const component = 'simple-unit-tests';
 
@@ -21,5 +22,11 @@ describe(component, function () {
 
   it('translate close tab html ids correctly', async function () {
     expect(6).to.equal(htmlCloseTabId2TabId(tabId2HtmlCloseTabId(6)));
+  });
+
+  it('translate close container html ids correctly', async function () {
+    expect('my-funny-container').to.equal(
+      htmlCloseContainerId2ContainerId(containerId2HtmlCloseContainerId('my-funny-container'))
+    );
   });
 });

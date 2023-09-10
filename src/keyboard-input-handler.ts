@@ -81,6 +81,17 @@ function activateFirstVisibleContainerTab(containerElement: Element) {
   }
 }
 
+export async function removeContainer(containerElement: Element) {
+  const containerId = containerElement.id;
+  const tabsInContainer = (await browser.tabs.query({ cookieStoreId: containerId })).length;
+  const containerName = $(Selectors.containerName, containerElement)?.innerText!;
+  if (tabsInContainer === 0 || confirm(_('closeContainerConfirmationDialoge', [containerName, tabsInContainer]))) {
+    focusNextVisibleContainerSibling(containerElement);
+    containerElement.classList.add(Selectors.noMatch);
+    await closeContainer(containerId);
+  }
+}
+
 async function keyDownOnContainerElement(e: KeyboardEvent): Promise<void> {
   const containerElement: Element = e.target as Element;
   const containerId = containerElement.id;
@@ -100,13 +111,7 @@ async function keyDownOnContainerElement(e: KeyboardEvent): Promise<void> {
       }
       break;
     case 'Backspace':
-      const tabsInContainer = (await browser.tabs.query({ cookieStoreId: containerId })).length;
-      const containerName = $(Selectors.containerName, containerElement)?.innerText!;
-      if (tabsInContainer === 0 || confirm(_('closeContainerConfirmationDialoge', [containerName, tabsInContainer]))) {
-        focusNextVisibleContainerSibling(containerElement);
-        containerElement.classList.add(Selectors.noMatch);
-        await closeContainer(containerId);
-      }
+      await removeContainer(containerElement);
       break;
     case 'ArrowDown':
     // @ts-ignore

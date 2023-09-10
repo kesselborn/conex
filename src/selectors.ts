@@ -5,6 +5,7 @@ declare let browser: Browser;
 
 export enum Selectors {
   closeTabName = 'close-tab',
+  closeContainerName = 'close-container',
   collapsedContainer = 'collapsed',
   emptyContainerClass = 'empty',
   openContainerName = 'open-container',

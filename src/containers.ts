@@ -5,6 +5,7 @@ import type { Browser } from 'webextension-polyfill';
 import { ContextualIdentities, Tabs } from 'webextension-polyfill';
 import { ConexElements, Selectors } from './selectors.js';
 import { debug, error } from './logger.js';
+import { removeContainer } from './keyboard-input-handler.js';
 import ContextualIdentity = ContextualIdentities.ContextualIdentity;
 import Tab = Tabs.Tab;
 
@@ -45,6 +46,13 @@ export async function formChange(e: Event): Promise<void> {
         browser.tabs.remove(tab.id!);
         tabElement.classList.add(Selectors.tabClosed);
       }
+      break;
+    }
+    case Selectors.closeContainerName: {
+      target.checked = false;
+      const containerElement = target.parentElement!; // this action always has a parent
+
+      await removeContainer(containerElement);
       break;
     }
   }
