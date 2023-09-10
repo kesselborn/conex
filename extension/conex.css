@@ -171,17 +171,18 @@ ol > li > ul > li {
     opacity: 0.2;
 }
 
-li .close {
+li > .close {
     justify-content: center;
-    display: none;
+    opacity: 0;
 }
 
-li:focus .close,
-li:hover .close {
+li:focus > .close,
+li:hover > .close {
     justify-content: center;
-    display: inherit;
+    opacity: 1;
 }
 
+li:focus .close:hover,
 li:hover .close:hover {
     justify-content: center;
     display: inherit;

@@ -36,10 +36,10 @@ export async function containerElement(container: ContextualIdentity): Promise<E
             <span class="container-cnt" id="c-${container.cookieStoreId}-cnt">(${(await tabs).length} tabs)</span>
         </h2>
       </label>
-    <input id="${containerId2HtmlCloseContainerId(container.cookieStoreId)}" type="radio" name="${
+      <input id="${containerId2HtmlCloseContainerId(container.cookieStoreId)}" type="radio" name="${
     Selectors.closeContainerName
   }" value="${container.cookieStoreId}"/>
-    <label for="${containerId2HtmlCloseContainerId(container.cookieStoreId)}" class="close" title="${_(
+      <label for="${containerId2HtmlCloseContainerId(container.cookieStoreId)}" class="close" title="${_(
     'closeWithDetails',
     ['container', container.name]
   )}">X</label>
