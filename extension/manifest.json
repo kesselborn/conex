@@ -34,8 +34,8 @@
   },
   "options_ui": {
     "page": "options-ui.html",
-    "browser_style": false,
-    "open_in_tab": true
+    "browser_style": true,
+    "open_in_tab": false
   },
   "background": {
     "scripts": [
