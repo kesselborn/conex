@@ -1,4 +1,11 @@
-import { ContainerRenderOptions, defaultContainer, formChange, renderContainers, renderTabs } from './containers.js';
+import {
+  ContainerRenderOptions,
+  ContextualIdentityEx,
+  defaultContainer,
+  formChange,
+  renderContainers,
+  renderTabs,
+} from './containers.js';
 import { Browser, ContextualIdentities } from 'webextension-polyfill';
 import { ConexElements, Selectors } from './selectors.js';
 import { keydown, keyup } from './keyboard-input-handler.js';
@@ -28,11 +35,13 @@ export async function renderMainPage(
   ConexElements.search.focus();
 
   setTimeout(async () => {
-    for (const container of [defaultContainer].concat(containers)) {
-      const tabs = Array.from(await browser.tabs.query({ cookieStoreId: container.cookieStoreId })!);
-      tabs.sort((a, b) => (b.lastAccessed || 0) - (a.lastAccessed || 0));
+    for (const container of [defaultContainer].concat(containers.map((c) => c as ContextualIdentityEx))) {
+      if (container.cookieStoreId !== 'bookmarks' && container.cookieStoreId !== 'history') {
+        const tabs = Array.from(await browser.tabs.query({ cookieStoreId: container.cookieStoreId })!);
+        tabs.sort((a, b) => (b.lastAccessed || 0) - (a.lastAccessed || 0));
 
-      renderTabs(await tabs);
+        renderTabs(await tabs);
+      }
     }
   }, 100);
 }

@@ -6,6 +6,7 @@ import { ContextualIdentities, Tabs } from 'webextension-polyfill';
 import { ConexElements, Selectors } from './selectors.js';
 import { debug, error } from './logger.js';
 import { removeContainer } from './keyboard-input-handler.js';
+import { bookmarkCnt } from './bookmarks.js';
 import ContextualIdentity = ContextualIdentities.ContextualIdentity;
 import Tab = Tabs.Tab;
 
@@ -58,31 +59,42 @@ export async function formChange(e: Event): Promise<void> {
   }
 }
 
-export const defaultContainer: ContextualIdentity = {
+export const defaultContainer: ContextualIdentityEx = {
   colorCode: ContextualIdentitiesColors.black,
   icon: 'circle',
   iconUrl: '',
   cookieStoreId: 'firefox-default',
   color: 'black',
   name: _('no container'),
+  hidden: false,
+  tabCnt: undefined,
 };
 
-export const bookmarkDummyContainer: ContextualIdentity = {
+export interface ContextualIdentityEx extends ContextualIdentity {
+  hidden: boolean;
+  tabCnt: string | undefined;
+}
+
+export const bookmarkDummyContainer: ContextualIdentityEx = {
   colorCode: ContextualIdentitiesColors.gold,
   icon: 'circle',
   iconUrl: '',
   cookieStoreId: 'bookmarks',
   color: 'gold',
   name: _('bookmarks'),
+  hidden: true,
+  tabCnt: '?',
 };
 
-export const historyDummyContainer: ContextualIdentity = {
+export const historyDummyContainer: ContextualIdentityEx = {
   colorCode: ContextualIdentitiesColors.white,
   icon: 'circle',
   iconUrl: '',
   cookieStoreId: 'history',
   color: 'white',
   name: _('history'),
+  hidden: true,
+  tabCnt: _('many'),
 };
 
 export class ContainerRenderOptions {
@@ -98,9 +110,10 @@ export async function renderContainers(
   const additionalContainers = [defaultContainer];
 
   if (options.bookmarks) {
+    bookmarkDummyContainer.tabCnt = `${await bookmarkCnt()}`;
     additionalContainers.push(bookmarkDummyContainer);
   }
-  containers = additionalContainers.concat(containers);
+  containers = additionalContainers.concat(containers.map((x) => x as ContextualIdentityEx));
 
   if (options.history) {
     containers.push(historyDummyContainer);
@@ -116,7 +129,7 @@ export async function renderContainers(
   }
 
   for (const container of containers) {
-    containerList.appendChild(await containerElement(container));
+    containerList.appendChild(await containerElement(container as ContextualIdentityEx));
   }
 
   if (ConexElements.containerList) {
@@ -139,10 +152,12 @@ export async function renderTabs(tabs: Array<Tab>) {
     return;
   }
 
+  // count
   $(Selectors.tabsCnt, containerElement)!.innerText = `(${(await tabs).length} tabs)`;
 
   for (const tab of await tabs) {
     if (!containerElements.has(cookieStoreId)) {
+      await $('ul', containerElement)?.remove();
       containerElements.set(cookieStoreId, containerElement.appendChild($e('ul')));
     }
 

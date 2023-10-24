@@ -4,33 +4,38 @@ import { clear, expect, fakeContainers } from './helper.js';
 import { Selectors } from '../selectors.js';
 import { Tabs } from 'webextension-polyfill';
 import { renderMainPage } from '../main-page.js';
+import { bookmarkCnt } from '../bookmarks.js';
 import Tab = Tabs.Tab;
 
 const component = 'container-rendering-tests';
 describe(component, function () {
   afterEach(clear);
 
-  const { color, cookieStoreId } = fakeContainers[0]!;
+  const { color, cookieStoreId: fakeContainer0CookieStoreId } = fakeContainers[0]!;
 
   it('should set the tab count correctly', async function () {
-    await renderMainPage(fakeContainers);
+    await renderMainPage(fakeContainers, {
+      bookmarks: true,
+      history: true,
+      order: ['container0', 'container1', 'history', 'bookmarks'],
+    });
     const containerElements = $$(Selectors.containerElements);
 
     const tabs = [
       {
-        cookieStoreId: cookieStoreId,
+        cookieStoreId: fakeContainer0CookieStoreId,
         id: color,
         title: `${color} tab`,
         url: `http://example.com/${color}`,
       },
       {
-        cookieStoreId: cookieStoreId,
+        cookieStoreId: fakeContainer0CookieStoreId,
         id: `${color}-2`,
         title: `${color} tab 2`,
         url: `http://example.com/${color}`,
       },
       {
-        cookieStoreId: cookieStoreId,
+        cookieStoreId: fakeContainer0CookieStoreId,
         id: `${color}-2`,
         title: `${color} tab 3`,
         url: `http://example.com/${color}`,
@@ -40,8 +45,21 @@ describe(component, function () {
     // @ts-ignore
     await renderTabs(tabs);
 
-    expect($('h2 span:nth-child(2)', containerElements[1])!.innerText).to.equal('(3 tabs)');
-    expect($('h2 span:nth-child(2)', containerElements[2])!.innerText).to.equal('(0 tabs)');
+    expect(
+      $('h2 span:nth-child(2)', containerElements[0])!.innerText,
+      'filled container count should be correct'
+    ).to.equal('(3 tabs)');
+    expect(
+      $('h2 span:nth-child(2)', containerElements[1])!.innerText,
+      'empty container count should be correct'
+    ).to.equal('(0 tabs)');
+    expect(
+      $('h2 span:nth-child(2)', containerElements[2])!.innerText,
+      'history count should just read "many"'
+    ).to.equal('(many tabs)');
+    expect($('h2 span:nth-child(2)', containerElements[3])!.innerText, 'bookmark count should be correct').to.equal(
+      `(${await bookmarkCnt()} tabs)`
+    );
   });
 
   it('should set class "empty" on empty containers', async function () {
@@ -50,13 +68,13 @@ describe(component, function () {
 
     const tabs = [
       {
-        cookieStoreId: cookieStoreId,
+        cookieStoreId: fakeContainer0CookieStoreId,
         id: color,
         title: `${color} tab`,
         url: `http://example.com/${color}`,
       },
       {
-        cookieStoreId: cookieStoreId,
+        cookieStoreId: fakeContainer0CookieStoreId,
         id: `${color}-2`,
         title: `${color} tab 2`,
         url: `http://example.com/${color}`,
@@ -77,7 +95,7 @@ describe(component, function () {
     // @ts-ignore
     const tabs = Array.from([
       {
-        cookieStoreId: cookieStoreId,
+        cookieStoreId: fakeContainer0CookieStoreId,
         id: color,
         title: `${color} tab`,
         url: `http://example.com/${color}`,

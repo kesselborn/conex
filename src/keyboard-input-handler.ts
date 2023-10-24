@@ -4,6 +4,9 @@ import { searchInContainer } from './search.js';
 import type { Browser } from 'webextension-polyfill';
 import { ConexElements, Selectors } from './selectors.js';
 import { debug } from './logger.js';
+import { readSettings } from './settings.js';
+import { renderTabs } from './containers.js';
+import { getBookmarksAsTabs } from './bookmarks.js';
 
 declare let browser: Browser;
 
@@ -54,7 +57,11 @@ function keyDownOnSearchElement(e: KeyboardEvent): void {
   }
 }
 
-export function search(value: string): void {
+export async function search(value: string): Promise<void> {
+  const settings = await readSettings();
+  if (settings.includeBookmarks && value) {
+    await renderTabs(await getBookmarksAsTabs(value));
+  }
   for (const containerElement of Array.from($$(Selectors.containerElements))) {
     searchInContainer(containerElement, value);
   }

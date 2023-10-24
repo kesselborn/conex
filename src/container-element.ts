@@ -1,7 +1,7 @@
-import { Browser, ContextualIdentities } from 'webextension-polyfill';
+import { Browser } from 'webextension-polyfill';
 import { Selectors } from './selectors.js';
 import { _ } from './helper.js';
-import ContextualIdentity = ContextualIdentities.ContextualIdentity;
+import { ContextualIdentityEx } from './containers.js';
 
 declare let browser: Browser;
 
@@ -13,9 +13,11 @@ export function containerId2HtmlCloseContainerId(containerId: string): string {
   return `x-${containerId}`;
 }
 
-export async function containerElement(container: ContextualIdentity): Promise<Element> {
+export async function containerElement(container: ContextualIdentityEx): Promise<Element> {
   const e = window.document.createElement('div');
-  const tabs = browser.tabs.query({ cookieStoreId: container.cookieStoreId });
+  const tabCnt = container.tabCnt
+    ? container.tabCnt
+    : (await browser.tabs.query({ cookieStoreId: container.cookieStoreId })).length;
 
   e.innerHTML = `
     <li tabindex="0"
@@ -33,7 +35,7 @@ export async function containerElement(container: ContextualIdentity): Promise<E
       <label for="c-${container.cookieStoreId}">
         <h2>
             <span>${container.name}</span>
-            <span class="container-cnt" id="c-${container.cookieStoreId}-cnt">(${(await tabs).length} tabs)</span>
+            <span class="container-cnt" id="c-${container.cookieStoreId}-cnt">(${tabCnt} tabs)</span>
         </h2>
       </label>
       <input id="${containerId2HtmlCloseContainerId(container.cookieStoreId)}" type="radio" name="${

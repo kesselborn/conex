@@ -50,5 +50,9 @@
         "example": "0"
       }
     }
+  },
+  "many": {
+    "message": "many",
+    "description": "history tab count is just many"
   }
 }

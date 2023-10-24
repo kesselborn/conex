@@ -54,7 +54,8 @@
     "tabs",
     "webNavigation",
     "webRequest",
-    "webRequestBlocking"
+    "webRequestBlocking",
+    "bookmarks"
   ],
   "optional_permissions": [
     "activeTab",
