@@ -1,10 +1,10 @@
-import { $, $$ } from '../helper.js';
+import { $, $$, _ } from '../helper.js';
 import { ContainerRenderOptions, defaultContainer, renderTabs } from '../containers.js';
 import { clear, expect, fakeContainers } from './helper.js';
-import { Selectors } from '../selectors.js';
+import { Ids, Selectors } from '../selectors.js';
 import { Tabs } from 'webextension-polyfill';
 import { renderMainPage } from '../main-page.js';
-import { bookmarkCnt } from '../bookmarks.js';
+import { getBookmarksAsTabs } from '../bookmarks.js';
 import Tab = Tabs.Tab;
 
 const component = 'container-rendering-tests';
@@ -17,7 +17,7 @@ describe(component, function () {
     await renderMainPage(fakeContainers, {
       bookmarks: true,
       history: true,
-      order: ['container0', 'container1', 'history', 'bookmarks'],
+      order: ['container0', 'container1', Ids.historyCookieStoreId, Ids.bookmarksCookieStoreId],
     });
     const containerElements = $$(Selectors.containerElements);
 
@@ -56,9 +56,9 @@ describe(component, function () {
     expect(
       $('h2 span:nth-child(2)', containerElements[2])!.innerText,
       'history count should just read "many"'
-    ).to.equal('(many tabs)');
+    ).to.equal(`(many ${_('history-label')})`);
     expect($('h2 span:nth-child(2)', containerElements[3])!.innerText, 'bookmark count should be correct').to.equal(
-      `(${await bookmarkCnt()} tabs)`
+      `(${(await getBookmarksAsTabs()).length} ${_('bookmarks')})`
     );
   });
 

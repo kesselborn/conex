@@ -38,5 +38,13 @@
   "many": {
     "message": "viele",
     "description": "history tab count is just many"
+  },
+  "tabs": {
+    "message": "Tabs",
+    "description": "label for tab count"
+  },
+  "history-label": {
+    "message": "Einträge",
+    "description": "label for tab count when history"
   }
 }

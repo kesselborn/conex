@@ -22,14 +22,14 @@ describe(component, function () {
     expect(tabCntAfter).to.equal(tabCntBefore);
   });
 
-  it('opens a new tab when pressing shift enter on container', async function () {
+  it('opens a new tab when pressing shift enter on container or enter on an empty container', async function () {
     const testTab = (await browser.tabs.query({ active: true }))[0]!;
     const name = `${component}-2-${new Date().toString()}`;
     const container = await browser.contextualIdentities.create({ name: name, color: 'blue', icon: 'circle' });
     await renderMainPage([container]);
 
     const containerElement = $$(Selectors.containerElements)[1]!;
-    // if the container is empty, open a new tab
+    // if the container is empty, open a new tab on enter
     typeKey({ key: 'Enter', shiftKey: false }, containerElement!);
     await browser.tabs.update(testTab.id, { active: true });
 
@@ -56,26 +56,32 @@ describe(component, function () {
       return true;
     };
 
-    await renderMainPage([container]);
+    await renderMainPage([container], { bookmarks: false, history: false, order: [container.cookieStoreId] });
 
-    expect((await browser.tabs.query({ cookieStoreId: container.cookieStoreId })).length).to.equal(0);
-    expect((await browser.contextualIdentities.query({ name: container.name })).length, 1);
-
-    const containerElement = $$(Selectors.containerElements)[1]!;
-
-    // second try: simulate confirm === true
-    typeKey({ key: 'Backspace' }, containerElement!);
-    await timeoutResolver(100);
     expect(
       (await browser.tabs.query({ cookieStoreId: container.cookieStoreId })).length,
-      'tab count after confirm'
+      'no tabs in container'
     ).to.equal(0);
     expect(
       (await browser.contextualIdentities.query({ name: container.name })).length,
-      'container count after confirm'
+      'container should exist'
+    ).to.equal(1);
+
+    const containerElement = $$(Selectors.containerElements)[0]!;
+
+    typeKey({ key: 'Backspace' }, containerElement);
+    await timeoutResolver(100);
+    console.log(containerElement);
+    expect(
+      (await browser.tabs.query({ cookieStoreId: container.cookieStoreId })).length,
+      'tab count after confirm should be 0'
     ).to.equal(0);
-    expect(containerElement.classList.contains(Selectors.noMatch)).to.equal(true);
-    expect(confirmCalled).to.equal(false);
+    expect(
+      (await browser.contextualIdentities.query({ name: container.name })).length,
+      'container should not exist anymore'
+    ).to.equal(0);
+    expect(containerElement.classList.contains(Selectors.noMatch), 'container element should be hidden').to.equal(true);
+    expect(confirmCalled, 'confirm should not have been called').to.equal(false);
     window.confirm = confirmFunction;
   });
 

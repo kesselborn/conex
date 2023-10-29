@@ -2,10 +2,11 @@ import {$, $$} from '../helper.js';
 import {renderTabs} from '../containers.js';
 import {clear, expect, fakeContainers, maxTabId, timeoutResolver, typeKey} from './helper.js';
 import {tabId2HtmlId} from '../tab-element.js';
-import {ConexElements, Selectors} from '../selectors.js';
+import {ConexElements, Ids, Selectors} from '../selectors.js';
 import {renderMainPage} from '../main-page.js';
 import {debug} from '../logger.js';
 import {search} from '../keyboard-input-handler.js';
+import {getBookmarksAsTabs} from '../bookmarks.js';
 
 // TODO: when typing, restart search
 const component = 'keyboard-navigation-tests';
@@ -14,7 +15,7 @@ describe(component, function () {
   afterEach(clear);
 
   it('hidden containers should not break downward navigation', async function () {
-    await renderMainPage(fakeContainers);
+    await renderMainPage(fakeContainers, { bookmarks: false, history: false, order: [] });
     const containerElements = $$(Selectors.containerElements);
 
     let tabIdCnt = 0;
@@ -47,6 +48,8 @@ describe(component, function () {
     searchInputField.value = searchTerm;
     search(searchTerm);
     searchInputField.focus();
+
+    await timeoutResolver(200);
 
     typeKey({ key: 'ArrowDown' }, document.activeElement!);
     expect((document.activeElement! as HTMLElement)!.id).to.equal(containerElements[2]!.id);
@@ -313,5 +316,29 @@ describe(component, function () {
     await timeoutResolver(100);
     expect(ConexElements.search.selectionStart).to.equal(0);
     expect(ConexElements.search.selectionEnd).to.equal(4);
+  });
+
+  // disabled: this is not how it works atm
+  xit('should fill bookmarks container with tabs if user moves down without searching', async function () {
+    await renderMainPage(fakeContainers, {
+      history: false,
+      order: [Ids.bookmarksCookieStoreId],
+      bookmarks: true,
+    });
+    expect(
+      $$(Selectors.tabElements, $(Selectors.containerElements)!)!.length,
+      'bookmarks container should have no tabs initially'
+    ).to.equal(0);
+    const searchInputField = $(`#${Selectors.searchId}`)! as HTMLInputElement;
+    searchInputField.focus();
+    const bookmarksCnt = (await getBookmarksAsTabs()).length;
+    expect(bookmarksCnt, 'our browser profile must have at least one bookmark to run this test').to.not.equal(0);
+    await timeoutResolver(200);
+    typeKey({ key: 'ArrowDown' }, document.activeElement!);
+    await timeoutResolver(300);
+    expect(
+      $$(Selectors.tabElements, $(Selectors.containerElements)!)!.length,
+      'bookmarks container should have at least one tab after navigating down'
+    ).to.equal(bookmarksCnt);
   });
 });

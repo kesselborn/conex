@@ -3,15 +3,16 @@
 // select first tab on enter
 // esc === clear
 
-import { clear, expect, fakeContainers } from './helper.js';
+import { clear, expect, fakeContainers, timeoutResolver } from './helper.js';
 import { renderTabs } from '../containers.js';
 import { $, $$ } from '../helper.js';
 import { searchInContainer } from '../search.js';
 import { Tabs } from 'webextension-polyfill';
 import { renderMainPage } from '../main-page.js';
-import { Selectors } from '../selectors.js';
+import { Ids, Selectors } from '../selectors.js';
 import { search } from '../keyboard-input-handler.js';
 import { debug } from '../logger.js';
+import { getBookmarksAsTabs } from '../bookmarks.js';
 import Tab = Tabs.Tab;
 
 const component = 'search-box-tests';
@@ -20,7 +21,20 @@ describe(component, function () {
   afterEach(async () => await clear());
 
   beforeEach(async () => {
-    await renderMainPage(fakeContainers);
+    await renderMainPage(fakeContainers, {
+      bookmarks: true,
+      history: true,
+      order: [
+        'firefox-default',
+        'container0',
+        'container1',
+        'container2',
+        'container3',
+        'container4',
+        Ids.bookmarksCookieStoreId,
+        Ids.historyCookieStoreId,
+      ],
+    });
     const firstFakeContainer = fakeContainers[0];
     const lastFakeContainer = fakeContainers[fakeContainers.length - 1];
 
@@ -49,14 +63,19 @@ describe(component, function () {
 
       await renderTabs(fakeTabs);
     }
+    await renderTabs(await getBookmarksAsTabs('XXX'));
   });
 
   it('resets container when search string is empty again', async function () {
     search('z');
     search('');
 
-    expect($$(Selectors.containerElementsNoMatch, $(Selectors.containerElements)!).length).to.equal(0);
-    expect($$('em[class*="match-"]')!.length).to.equal(0);
+    await timeoutResolver(100);
+    expect(
+      $$(Selectors.containerElementsNoMatch, $(Selectors.containerElements)!).length,
+      'no container is hidden due to not having mathing tabs'
+    ).to.equal(0);
+    expect($$('em[class*="match-"]')!.length, 'no highlighting markup in any tab or container').to.equal(0);
   });
 
   it('empty search string should reset the search', async function () {
@@ -67,6 +86,15 @@ describe(component, function () {
 
     expect($$(`.${Selectors.noMatch}`, firstContainer).length).to.equal(0);
     expect($$(Selectors.containerElementsNoMatch, $(Selectors.containerElements)!).length).to.equal(0);
+  });
+
+  it('should show all bookmarks when search is empty again', async function () {
+    const bCnt = (await getBookmarksAsTabs()).length;
+    const bookmarkContainer = $$(Selectors.containerElements)[6]!;
+    expect($$(Selectors.tabElementsMatch, bookmarkContainer)!.length).to.equal(0);
+    search('');
+    await timeoutResolver(200);
+    expect($$(Selectors.tabElementsMatch, bookmarkContainer)!.length).to.equal(bCnt);
   });
 
   it('simple search should work', async function () {

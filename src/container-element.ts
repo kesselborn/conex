@@ -1,5 +1,5 @@
 import { Browser } from 'webextension-polyfill';
-import { Selectors } from './selectors.js';
+import { Ids, Selectors } from './selectors.js';
 import { _ } from './helper.js';
 import { ContextualIdentityEx } from './containers.js';
 
@@ -11,6 +11,17 @@ export function htmlCloseContainerId2ContainerId(htmlId: string): string {
 
 export function containerId2HtmlCloseContainerId(containerId: string): string {
   return `x-${containerId}`;
+}
+
+export function countLabel(cookieStoreId: string): string {
+  switch (cookieStoreId) {
+    case Ids.bookmarksCookieStoreId:
+      return _('bookmarks');
+    case Ids.historyCookieStoreId:
+      return _('history-label');
+    default:
+      return _('tabs');
+  }
 }
 
 export async function containerElement(container: ContextualIdentityEx): Promise<Element> {
@@ -35,7 +46,9 @@ export async function containerElement(container: ContextualIdentityEx): Promise
       <label for="c-${container.cookieStoreId}">
         <h2>
             <span>${container.name}</span>
-            <span class="container-cnt" id="c-${container.cookieStoreId}-cnt">(${tabCnt} tabs)</span>
+            <span class="container-cnt" id="c-${container.cookieStoreId}-cnt">(${tabCnt} ${countLabel(
+    container.cookieStoreId
+  )})</span>
         </h2>
       </label>
       <input id="${containerId2HtmlCloseContainerId(container.cookieStoreId)}" type="radio" name="${

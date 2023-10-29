@@ -1,12 +1,12 @@
 import { $, $e, _, ContextualIdentitiesColors } from './helper.js';
 import { htmlId2TabId, tabElement } from './tab-element.js';
-import { containerElement } from './container-element.js';
+import { containerElement, countLabel } from './container-element.js';
 import type { Browser } from 'webextension-polyfill';
 import { ContextualIdentities, Tabs } from 'webextension-polyfill';
-import { ConexElements, Selectors } from './selectors.js';
+import { ConexElements, Ids, Selectors } from './selectors.js';
 import { debug, error } from './logger.js';
 import { removeContainer } from './keyboard-input-handler.js';
-import { bookmarkCnt } from './bookmarks.js';
+import { getBookmarksAsTabs } from './bookmarks.js';
 import ContextualIdentity = ContextualIdentities.ContextualIdentity;
 import Tab = Tabs.Tab;
 
@@ -79,7 +79,7 @@ export const bookmarkDummyContainer: ContextualIdentityEx = {
   colorCode: ContextualIdentitiesColors.gold,
   icon: 'circle',
   iconUrl: '',
-  cookieStoreId: 'bookmarks',
+  cookieStoreId: Ids.bookmarksCookieStoreId,
   color: 'gold',
   name: _('bookmarks'),
   hidden: true,
@@ -90,7 +90,7 @@ export const historyDummyContainer: ContextualIdentityEx = {
   colorCode: ContextualIdentitiesColors.white,
   icon: 'circle',
   iconUrl: '',
-  cookieStoreId: 'history',
+  cookieStoreId: Ids.historyCookieStoreId,
   color: 'white',
   name: _('history'),
   hidden: true,
@@ -110,7 +110,7 @@ export async function renderContainers(
   const additionalContainers = [defaultContainer];
 
   if (options.bookmarks) {
-    bookmarkDummyContainer.tabCnt = `${await bookmarkCnt()}`;
+    bookmarkDummyContainer.tabCnt = `${(await getBookmarksAsTabs()).length}`;
     additionalContainers.push(bookmarkDummyContainer);
   }
   containers = additionalContainers.concat(containers.map((x) => x as ContextualIdentityEx));
@@ -153,7 +153,7 @@ export async function renderTabs(tabs: Array<Tab>) {
   }
 
   // count
-  $(Selectors.tabsCnt, containerElement)!.innerText = `(${(await tabs).length} tabs)`;
+  $(Selectors.tabsCnt, containerElement)!.innerText = `(${(await tabs).length} ${countLabel(cookieStoreId)})`;
 
   for (const tab of await tabs) {
     if (!containerElements.has(cookieStoreId)) {

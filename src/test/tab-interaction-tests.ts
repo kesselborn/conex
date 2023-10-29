@@ -6,13 +6,14 @@ import { renderMainPage } from '../main-page.js';
 import { Selectors } from '../selectors.js';
 import { debug, info } from '../logger.js';
 import { renderTabs } from '../containers.js';
+import { search } from '../keyboard-input-handler.js';
 
 let newContainerId: string;
 let newTab: Tabs.Tab;
 let newTab2: Tabs.Tab;
 let testingTab: Tabs.Tab | undefined;
 
-let uniqUrlSearchString = `tab${Math.random()}`;
+let uniqUrlSearchString = `tab${Math.random()}`.replace('.', '');
 
 declare let browser: Browser;
 
@@ -42,7 +43,11 @@ describe(component, function () {
       url: `about:blank?id=${uniqUrlSearchString}`,
     });
 
-    await renderMainPage(await browser.contextualIdentities.query({}));
+    await renderMainPage(await browser.contextualIdentities.query({}), {
+      bookmarks: false,
+      history: false,
+      order: null,
+    });
     await renderTabs(await browser.tabs.query({ cookieStoreId: newContainerId }));
   });
 
@@ -53,19 +58,22 @@ describe(component, function () {
   });
 
   // test does not work but functionality is working ... handing over to future daniel
-  xit('should open the first tab of the first container when hitting enter on search box', async function () {
+  it('should open the first tab of the first container when hitting enter on search box', async function () {
     let activeTab = await browser.tabs.query({ active: true });
-    expect(`testing-tab-id-${activeTab[0]!.id}`).to.equal(`testing-tab-id-${testingTab!.id}`);
+    expect(`${activeTab[0]!.id}`, 'pre-check: active tab is the testing tab').to.equal(`${testingTab!.id}`);
 
-    ($(`#${Selectors.searchId}`)! as HTMLInputElement).value = uniqUrlSearchString;
-    typeKey({ key: 'Backspace' }, $(`#${Selectors.searchId}`)!);
-    await timeoutResolver(50);
-    typeKey({ key: 'Enter' }, $(`#${Selectors.searchId}`)!);
-    // let the event handling do its work
+    const searchElement = $(`#${Selectors.searchId}`)! as HTMLInputElement;
+    searchElement.value = uniqUrlSearchString;
+    search(uniqUrlSearchString);
     await timeoutResolver(100);
+    typeKey({ key: 'Enter' }, searchElement);
+    // let the event handling do its work
+    await timeoutResolver(200);
 
     activeTab = await browser.tabs.query({ active: true });
-    expect(`new-tab-id-${activeTab[0]!.id}`).to.equal(`new-tab-id-${newTab.id}`);
+    expect(`${activeTab[0]!.id}`, 'when pressing enter, the active tab is tab with the uniqUrlSearchString').to.equal(
+      `${newTab2.id}`
+    );
   });
 
   it('should switch tabs when clicking with mouse on the open-tab radio button', async function () {
@@ -109,17 +117,13 @@ describe(component, function () {
     expect(`new-tab-id-${activeTab[0]!.id}`).to.equal(`new-tab-id-${newTab.id}`);
   });
 
-  it('should open a new container tab when hitting enter on a container', async function () {});
-
   it('should close tab when hitting backspace on tab element', async function () {
-    let tab;
-    try {
-      tab = await browser.tabs.get(newTab.id!);
-    } catch (_) {}
+    let tab: Tabs.Tab | undefined = await browser.tabs.get(newTab.id!)!;
 
     // @ts-ignore
-    expect(tab.id).to.equal(newTab.id);
-    typeKey({ key: 'Backspace' }, $(`#${tabId2HtmlId(newTab.id!)}`)!);
+    const tabElementToBeDeleted = $(`#${tabId2HtmlId(newTab.id!)}`)!;
+    expect(tab.id, 'make sure we have the right tab').to.equal(newTab.id);
+    typeKey({ key: 'Backspace' }, tabElementToBeDeleted);
     // let the event handling do its work
     await timeoutResolver(200);
 
@@ -127,9 +131,12 @@ describe(component, function () {
     try {
       tab = await browser.tabs.get(newTab.id!);
     } catch (_) {}
-    expect(tab).to.be.undefined;
-    expect($(`#${tabId2HtmlId(newTab.id!)}`)!.classList.contains(Selectors.tabClosed)).to.be.true;
-    expect($(`#${tabId2HtmlId(newTab.id!)}`)!.dataset['url']).to.equal(newTab.url);
+    expect(tab, 'tab should not exist anymore').to.be.undefined;
+    expect(
+      tabElementToBeDeleted.classList.contains(Selectors.tabClosed),
+      'make sure tab element contains "tab-closed" style'
+    ).to.be.true;
+    expect(tabElementToBeDeleted.dataset['url'], 'tab url is saved in dataset-url').to.equal(newTab.url);
   });
 
   it('should jump to next item after closing tab', async function () {
@@ -143,18 +150,20 @@ describe(component, function () {
     } catch (_) {}
 
     // @ts-ignore
-    expect(tab.id).to.equal(newTab.id);
+    expect(tab.id, 'make sure we have the correct tab').to.equal(newTab.id);
     typeKey({ key: 'Backspace' }, $(`#${tabId2HtmlId(newTab.id!)}`)!);
     // let the event handling do its work
     await timeoutResolver(200);
     debug(component, document.activeElement);
-    expect(document.activeElement!.id).to.equal(tabId2HtmlId(newTab2.id!));
+    expect(document.activeElement!.id, 'should jump to the next tab when the other tab was closed').to.equal(
+      tabId2HtmlId(newTab2.id!)
+    );
 
     tab = undefined;
     try {
       tab = await browser.tabs.get(newTab.id!);
     } catch (_) {}
-    expect(tab).to.be.undefined;
+    expect(tab, 'tab should not exist anymore').to.be.undefined;
   });
 
   it('should close tab when clicking the close radio button', async function () {
@@ -164,8 +173,9 @@ describe(component, function () {
     } catch (_) {}
 
     // @ts-ignore
-    expect(tab.id).to.equal(newTab.id);
-    typeKey({ key: 'Backspace' }, $(`#${tabId2HtmlId(newTab.id!)}`)!);
+    expect(tab.id, 'we have the correct tab').to.equal(newTab.id);
+    const tabElementToBeDeleted = $(`#${tabId2HtmlId(newTab.id!)}`)!;
+    typeKey({ key: 'Backspace' }, tabElementToBeDeleted);
     // let the event handling do its work
     await timeoutResolver(200);
 
@@ -173,8 +183,8 @@ describe(component, function () {
     try {
       tab = await browser.tabs.get(newTab.id!);
     } catch (_) {}
-    expect(tab).to.be.undefined;
-    expect($(`#${tabId2HtmlId(newTab.id!)}`)!.classList.contains(Selectors.tabClosed)).to.be.true;
-    expect($(`#${tabId2HtmlId(newTab.id!)}`)!.dataset['url']).to.equal(newTab.url);
+    expect(tab, 'tab should not exist anymore').to.be.undefined;
+    expect(tabElementToBeDeleted.classList.contains(Selectors.tabClosed)).to.be.true;
+    expect(tabElementToBeDeleted.dataset['url']).to.equal(newTab.url);
   });
 });

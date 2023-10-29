@@ -27,6 +27,11 @@ export enum Selectors {
   tabElementsMatch = 'ul>li:not(.no-match)',
 }
 
+export enum Ids {
+  bookmarksCookieStoreId = 'bookmarks',
+  historyCookieStoreId = 'history',
+}
+
 export class ConexElements {
   static get search(): HTMLInputElement {
     return $(`#${Selectors.searchId}`)! as HTMLInputElement;

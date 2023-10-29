@@ -72,10 +72,10 @@ export async function maxTabId(): Promise<number> {
 
 export function typeKey(key: KeyboardEventInit, element: Element) {
   const keyDownEvent = new KeyboardEvent('keydown', key);
-  const keyUpEvent = new KeyboardEvent('keyup', key);
+  // const keyUpEvent = new KeyboardEvent('keyup', key);
 
   element.dispatchEvent(keyDownEvent);
-  element.dispatchEvent(keyUpEvent);
+  // element.dispatchEvent(keyUpEvent);
 }
 
 export async function clear() {
