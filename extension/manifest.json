@@ -55,12 +55,16 @@
     "webNavigation",
     "webRequest",
     "webRequestBlocking",
-    "bookmarks"
+    "activeTab",
+    "history",
+    "bookmarks",
+    "notifications",
+    "tabHide"
   ],
   "optional_permissions": [
     "activeTab",
-    "bookmarks",
     "history",
+    "bookmarks",
     "notifications",
     "tabHide"
   ]

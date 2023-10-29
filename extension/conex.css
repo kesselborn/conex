@@ -197,26 +197,32 @@ li:hover .close:hover {
 em {
     text-decoration: solid underline purple 2px;
     font-style: normal;
+    font-weight: bold;
 }
 
 em.match-1 {
     text-decoration-color: #37adff;
+    color: #37adff !important;
 }
 
 em.match-2 {
     text-decoration-color: #51cd00;
+    color: #51cd00 !important;
 }
 
 em.match-3 {
     text-decoration-color: #ff613d;
+    color: #ff613d !important;
 }
 
 em.match-4 {
     text-decoration-color: fuchsia;
+    color: fuchsia !important;
 }
 
 em.match-5 {
     text-decoration-color: darkorange;
+    color: darkorange !important;
 }
 
 .tab-center {

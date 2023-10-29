@@ -7,7 +7,7 @@ import { clear, expect, fakeContainers, timeoutResolver } from './helper.js';
 import { renderTabs } from '../containers.js';
 import { $, $$ } from '../helper.js';
 import { searchInContainer } from '../search.js';
-import { Tabs } from 'webextension-polyfill';
+import { Browser, Tabs } from 'webextension-polyfill';
 import { renderMainPage } from '../main-page.js';
 import { ClassSelectors, Ids, IdSelectors, Selectors } from '../constants.js';
 import { search } from '../keyboard-input-handler.js';
@@ -17,6 +17,8 @@ import Tab = Tabs.Tab;
 
 const component = 'search-box-tests';
 
+declare let browser: Browser;
+
 describe(component, function () {
   afterEach(async () => await clear());
 
@@ -25,14 +27,14 @@ describe(component, function () {
       bookmarks: true,
       history: true,
       order: [
-        'firefox-default',
-        'container0',
-        'container1',
-        'container2',
-        'container3',
-        'container4',
-        Ids.bookmarksCookieStoreId,
-        Ids.historyCookieStoreId,
+        'firefox-default', //0
+        'container0', // 1
+        'container1', // 2
+        'container2', // 3
+        'container3', // 4
+        'container4', // 5
+        Ids.bookmarksCookieStoreId, // 6
+        Ids.historyCookieStoreId, // 7
       ],
     });
     const firstFakeContainer = fakeContainers[0];
@@ -224,5 +226,18 @@ describe(component, function () {
       $('h4', $$(Selectors.tabElementsMatch, firstContainer)[0])!.innerHTML,
       'the url match should be highlighted'
     ).to.equal('https://news.<em class="match-1">ycombinator</em>.com');
+  });
+
+  it('should match history items', async function () {
+    const firstHistoryItemSearchToken = (await browser.history.search({ text: '', startTime: 0 }))[0]!.url!;
+    debug(component, 'first history search token', firstHistoryItemSearchToken);
+    const historyContainerElement = $$(Selectors.containerElements)[7]!;
+    expect(firstHistoryItemSearchToken, 'we need a searchable history token').to.not.equal('');
+    search(firstHistoryItemSearchToken);
+    await timeoutResolver(200);
+    expect(
+      $$(Selectors.tabElements, historyContainerElement).length,
+      'history container should have at least one match pseudo container'
+    ).to.not.equal(0);
   });
 });

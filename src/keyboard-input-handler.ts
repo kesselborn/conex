@@ -2,8 +2,12 @@ import { $, $$, _, closeContainer } from './helper.js';
 import { htmlId2TabId, tabId2HtmlCloseTabId } from './tab-element.js';
 import { searchInContainer } from './search.js';
 import type { Browser } from 'webextension-polyfill';
-import { ClassSelectors, ConexElements, Selectors } from './constants.js';
+import { ClassSelectors, ConexElements, Ids, Selectors } from './constants.js';
 import { debug } from './logger.js';
+import { readSettings } from './settings.js';
+import { ContextualIdentityEx, historyDummyContainer, renderTabs } from './containers.js';
+import { getHistoryAsTabs } from './history.js';
+import { containerElement } from './container-element.js';
 
 declare let browser: Browser;
 
@@ -26,12 +30,20 @@ export function keydown(e: KeyboardEvent): void {
   }
 }
 
+let firstCall = true;
+
 export function keyup(e: KeyboardEvent) {
+  // ignore the keyup event from the shortcut that triggers the browser action
+  if (firstCall && ConexElements.search.value === '') {
+    firstCall = false;
+    return;
+  }
   // only search, if search box is still focused (not the case if ArrowDown was handled in keydown)
   if (document.activeElement === ConexElements.search) {
     debug(component, 'keyup on search element', e);
-    search(ConexElements.search.value || '');
+    search(ConexElements.search.value);
   }
+  firstCall = false;
 }
 
 function keyDownOnSearchElement(e: KeyboardEvent): void {
@@ -55,6 +67,16 @@ function keyDownOnSearchElement(e: KeyboardEvent): void {
 }
 
 export async function search(value: string): Promise<void> {
+  const settings = await readSettings();
+  if (settings.includeHistory) {
+    if (value === '') {
+      ConexElements.container(Ids.historyCookieStoreId)!.replaceWith(
+        await containerElement(historyDummyContainer as ContextualIdentityEx)
+      );
+    } else {
+      await renderTabs(await getHistoryAsTabs(value));
+    }
+  }
   for (const containerElement of Array.from($$(Selectors.containerElements))) {
     searchInContainer(containerElement, value);
   }
