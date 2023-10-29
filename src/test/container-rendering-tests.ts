@@ -1,7 +1,7 @@
 import { $, $$, _ } from '../helper.js';
 import { ContainerRenderOptions, defaultContainer, renderTabs } from '../containers.js';
 import { clear, expect, fakeContainers } from './helper.js';
-import { Ids, Selectors } from '../selectors.js';
+import { Ids, Selectors } from '../constants.js';
 import { Tabs } from 'webextension-polyfill';
 import { renderMainPage } from '../main-page.js';
 import { getBookmarksAsTabs } from '../bookmarks.js';

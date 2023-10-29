@@ -1,7 +1,7 @@
 import { $e, _, ContextualIdentitiesColors } from '../helper.js';
 import type { Browser, ContextualIdentities } from 'webextension-polyfill';
 import { Tabs } from 'webextension-polyfill';
-import { ConexElements, Selectors } from '../selectors.js';
+import { ConexElements, Selectors } from '../constants.js';
 import Tab = Tabs.Tab;
 
 declare let browser: Browser;

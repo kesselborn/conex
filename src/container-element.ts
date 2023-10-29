@@ -1,5 +1,5 @@
 import { Browser } from 'webextension-polyfill';
-import { Ids, Selectors } from './selectors.js';
+import { Ids, Selectors } from './constants.js';
 import { _ } from './helper.js';
 import { ContextualIdentityEx } from './containers.js';
 

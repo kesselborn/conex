@@ -2,7 +2,7 @@ import { $, $$, $e, _, Contants } from '../helper.js';
 import { renderContainers, renderTabs } from '../containers.js';
 import { tabId2HtmlId } from '../tab-element.js';
 import { clear, expect, fakeContainers, renderMainPageStub } from './helper.js';
-import { Selectors } from '../selectors.js';
+import { Selectors } from '../constants.js';
 import { Tabs } from 'webextension-polyfill';
 import Tab = Tabs.Tab;
 

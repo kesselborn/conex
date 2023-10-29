@@ -9,7 +9,7 @@ import { $, $$ } from '../helper.js';
 import { searchInContainer } from '../search.js';
 import { Tabs } from 'webextension-polyfill';
 import { renderMainPage } from '../main-page.js';
-import { Ids, Selectors } from '../selectors.js';
+import { Ids, Selectors } from '../constants.js';
 import { search } from '../keyboard-input-handler.js';
 import { debug } from '../logger.js';
 import { getBookmarksAsTabs } from '../bookmarks.js';

@@ -2,7 +2,7 @@ import {$, $$} from '../helper.js';
 import {renderTabs} from '../containers.js';
 import {clear, expect, fakeContainers, maxTabId, timeoutResolver, typeKey} from './helper.js';
 import {tabId2HtmlId} from '../tab-element.js';
-import {ConexElements, Ids, Selectors} from '../selectors.js';
+import {ConexElements, Ids, Selectors} from '../constants.js';
 import {renderMainPage} from '../main-page.js';
 import {debug} from '../logger.js';
 import {search} from '../keyboard-input-handler.js';

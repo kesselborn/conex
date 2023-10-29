@@ -3,7 +3,7 @@ import { htmlId2TabId, tabElement } from './tab-element.js';
 import { containerElement, countLabel } from './container-element.js';
 import type { Browser } from 'webextension-polyfill';
 import { ContextualIdentities, Tabs } from 'webextension-polyfill';
-import { ConexElements, Ids, Selectors } from './selectors.js';
+import { ConexElements, Ids, Selectors } from './constants.js';
 import { debug, error } from './logger.js';
 import { removeContainer } from './keyboard-input-handler.js';
 import { getBookmarksAsTabs } from './bookmarks.js';

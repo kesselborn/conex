@@ -3,7 +3,7 @@ import { clear, expect, timeoutResolver, typeKey } from './helper.js';
 import { tabId2HtmlId, tabId2HtmlOpenTabId } from '../tab-element.js';
 import type { Browser, Tabs } from 'webextension-polyfill';
 import { renderMainPage } from '../main-page.js';
-import { Selectors } from '../selectors.js';
+import { Selectors } from '../constants.js';
 import { debug, info } from '../logger.js';
 import { renderTabs } from '../containers.js';
 import { search } from '../keyboard-input-handler.js';

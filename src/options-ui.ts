@@ -1,7 +1,7 @@
 import { $, $e } from './helper.js';
 import { Browser } from 'webextension-polyfill';
 import { debug, error, Level, loadSettings, persistLogLevel } from './logger.js';
-import { Selectors } from './selectors.js';
+import { Selectors } from './constants.js';
 import {
   changeAskContainerSetting,
   changeCloseMovedTabsSetting,

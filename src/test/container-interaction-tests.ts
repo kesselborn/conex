@@ -2,7 +2,7 @@ import { $, $$, closeContainer } from '../helper.js';
 import { expect, timeoutResolver, typeKey } from './helper.js';
 import type { Browser } from 'webextension-polyfill';
 import { renderMainPage } from '../main-page.js';
-import { Selectors } from '../selectors.js';
+import { Selectors } from '../constants.js';
 import { debug } from '../logger.js';
 
 declare let browser: Browser;

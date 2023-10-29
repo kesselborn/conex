@@ -1,6 +1,6 @@
 import { Tabs } from 'webextension-polyfill';
 import { _, Contants } from './helper.js';
-import { Selectors } from './selectors.js';
+import { Selectors } from './constants.js';
 
 export function tabId2HtmlId(id: number): string {
   return `t-${id}`;

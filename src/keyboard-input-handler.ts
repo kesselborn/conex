@@ -2,7 +2,7 @@ import { $, $$, _, closeContainer } from './helper.js';
 import { htmlId2TabId, tabId2HtmlCloseTabId } from './tab-element.js';
 import { searchInContainer } from './search.js';
 import type { Browser } from 'webextension-polyfill';
-import { ConexElements, Selectors } from './selectors.js';
+import { ConexElements, Selectors } from './constants.js';
 import { debug } from './logger.js';
 
 declare let browser: Browser;

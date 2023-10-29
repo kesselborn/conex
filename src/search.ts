@@ -1,5 +1,5 @@
 import { $, $$ } from './helper.js';
-import { Selectors } from './selectors.js';
+import { Selectors } from './constants.js';
 import { debug } from './logger.js';
 
 interface HighlightResult {

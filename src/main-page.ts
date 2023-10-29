@@ -7,7 +7,7 @@ import {
   renderTabs,
 } from './containers.js';
 import { Browser, ContextualIdentities } from 'webextension-polyfill';
-import { ConexElements, Selectors } from './selectors.js';
+import { ConexElements, Selectors } from './constants.js';
 import { keydown, keyup } from './keyboard-input-handler.js';
 import { $e, _ } from './helper.js';
 import { getBookmarksAsTabs } from './bookmarks.js';

@@ -1,5 +1,5 @@
 import { Browser, Tabs } from 'webextension-polyfill';
-import { Ids } from './selectors.js';
+import { Ids } from './constants.js';
 import Tab = Tabs.Tab;
 
 declare let browser: Browser;

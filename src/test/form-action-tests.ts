@@ -1,6 +1,6 @@
 import { $ } from '../helper.js';
 import { clear, expect, fakeContainers } from './helper.js';
-import { Selectors } from '../selectors.js';
+import { Selectors } from '../constants.js';
 import { renderMainPage } from '../main-page.js';
 
 const component = 'form-actions-tests';
