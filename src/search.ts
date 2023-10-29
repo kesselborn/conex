@@ -1,5 +1,5 @@
 import { $, $$ } from './helper.js';
-import { Selectors } from './constants.js';
+import { ClassSelectors, Selectors } from './constants.js';
 import { debug } from './logger.js';
 
 interface HighlightResult {
@@ -18,14 +18,20 @@ interface ResultToken {
 // searches all tabs of a container
 export function searchInContainer(containerElement: Element, searchString: string) {
   if (searchString === '') {
-    containerElement.classList.add(Selectors.collapsedContainer);
-    containerElement.classList.remove(Selectors.noMatch);
-    for (const element of Array.from($$('.' + Selectors.tabElementsNoMatch, containerElement))) {
-      element.classList.remove(Selectors.noMatch);
+    containerElement.classList.add(ClassSelectors.collapsedContainer);
+    containerElement.classList.remove(ClassSelectors.noMatch);
+    for (const element of Array.from($$(Selectors.tabElementsNoMatch, containerElement))) {
+      element.classList.remove(ClassSelectors.noMatch);
+    }
+    for (const element of Array.from($$(Selectors.tabElementsMatch, containerElement))) {
+      const title = $('h3', element)!;
+      const url = $('h4', element)!;
+      url.innerHTML = url.innerText;
+      title.innerHTML = title.innerText;
     }
     return;
   } else {
-    containerElement.classList.remove(Selectors.collapsedContainer);
+    containerElement.classList.remove(ClassSelectors.collapsedContainer);
   }
 
   const tabSearchTokens = [];
@@ -55,9 +61,9 @@ export function searchInContainer(containerElement: Element, searchString: strin
   containerTitle.innerHTML = `<span>${highlightedString}</span>`;
   if (containerScopingTokens.length > 0) {
     if (remainingSearchTokens.length === 0) {
-      (containerElement as HTMLElement).classList.remove(Selectors.noMatch);
+      (containerElement as HTMLElement).classList.remove(ClassSelectors.noMatch);
     } else {
-      (containerElement as HTMLElement).classList.add(Selectors.noMatch);
+      (containerElement as HTMLElement).classList.add(ClassSelectors.noMatch);
       return;
     }
   }
@@ -91,17 +97,17 @@ export function searchInContainer(containerElement: Element, searchString: strin
     }
     if (allTokensWereMatched) {
       debug(component, `************ we have a match, title: '${title.innerHTML}, url: '${url.innerHTML}'`);
-      tabElement.classList.remove(Selectors.noMatch);
+      tabElement.classList.remove(ClassSelectors.noMatch);
       containerHasTabWithMatch = true;
     } else {
-      tabElement.classList.add(Selectors.noMatch);
+      tabElement.classList.add(ClassSelectors.noMatch);
     }
   }
 
   if (containerHasTabWithMatch) {
-    (containerElement as HTMLElement).classList.remove(Selectors.noMatch);
+    (containerElement as HTMLElement).classList.remove(ClassSelectors.noMatch);
   } else {
-    (containerElement as HTMLElement).classList.add(Selectors.noMatch);
+    (containerElement as HTMLElement).classList.add(ClassSelectors.noMatch);
   }
 }
 

@@ -1,6 +1,6 @@
 import { Tabs } from 'webextension-polyfill';
 import { _, Contants } from './helper.js';
-import { Selectors } from './constants.js';
+import { InputNameSelectors } from './constants.js';
 
 export function tabId2HtmlId(id: number): string {
   return `t-${id}`;
@@ -46,7 +46,7 @@ export function tabElement(tab: Tabs.Tab): String {
   // x prefix: close tab
   let src = `
   <li tabindex="0" id="${tabId2HtmlId(tab.id!)}">
-    <input id="${tabId2HtmlOpenTabId(tab.id!)}" type="radio" name="${Selectors.openTabName}" value="${tab.id}"/>
+    <input id="${tabId2HtmlOpenTabId(tab.id!)}" type="radio" name="${InputNameSelectors.openTab}" value="${tab.id}"/>
     <label for="${tabId2HtmlOpenTabId(tab.id!)}" class="tab-center">
       <div class="images">`;
 
@@ -69,7 +69,7 @@ export function tabElement(tab: Tabs.Tab): String {
         <h4>${tab.url || ''}</h4>
       </div>
     </label>
-    <input id="${tabId2HtmlCloseTabId(tab.id!)}" type="radio" name="${Selectors.closeTabName}" value="${tab.id}"/>
+    <input id="${tabId2HtmlCloseTabId(tab.id!)}" type="radio" name="${InputNameSelectors.closeTab}" value="${tab.id}"/>
     <label for="${tabId2HtmlCloseTabId(tab.id!)}" class="close" title="${_('closeWithDetails', [
     'tab',
     tab.title,

@@ -1,7 +1,7 @@
 import { $e, _, ContextualIdentitiesColors } from '../helper.js';
 import type { Browser, ContextualIdentities } from 'webextension-polyfill';
 import { Tabs } from 'webextension-polyfill';
-import { ConexElements, Selectors } from '../constants.js';
+import { ConexElements, IdSelectors } from '../constants.js';
 import Tab = Tabs.Tab;
 
 declare let browser: Browser;
@@ -55,7 +55,7 @@ chai.config.includeStack = true;
 export const expect = chai.expect;
 
 export function renderMainPageStub() {
-  const searchField = $e('input', { id: Selectors.searchId, placeholder: _('searchBoxPlaceholder'), type: 'text' });
+  const searchField = $e('input', { id: IdSelectors.searchId, placeholder: _('searchBoxPlaceholder'), type: 'text' });
   const form = $e('form', {}, [searchField]);
   window.document.body.appendChild(form);
 }

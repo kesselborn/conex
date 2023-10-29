@@ -3,7 +3,7 @@ import { clear, expect, timeoutResolver, typeKey } from './helper.js';
 import { tabId2HtmlId, tabId2HtmlOpenTabId } from '../tab-element.js';
 import type { Browser, Tabs } from 'webextension-polyfill';
 import { renderMainPage } from '../main-page.js';
-import { Selectors } from '../constants.js';
+import { ClassSelectors, IdSelectors } from '../constants.js';
 import { debug, info } from '../logger.js';
 import { renderTabs } from '../containers.js';
 import { search } from '../keyboard-input-handler.js';
@@ -62,7 +62,7 @@ describe(component, function () {
     let activeTab = await browser.tabs.query({ active: true });
     expect(`${activeTab[0]!.id}`, 'pre-check: active tab is the testing tab').to.equal(`${testingTab!.id}`);
 
-    const searchElement = $(`#${Selectors.searchId}`)! as HTMLInputElement;
+    const searchElement = $(`#${IdSelectors.searchId}`)! as HTMLInputElement;
     searchElement.value = uniqUrlSearchString;
     search(uniqUrlSearchString);
     await timeoutResolver(100);
@@ -133,15 +133,15 @@ describe(component, function () {
     } catch (_) {}
     expect(tab, 'tab should not exist anymore').to.be.undefined;
     expect(
-      tabElementToBeDeleted.classList.contains(Selectors.tabClosed),
+      tabElementToBeDeleted.classList.contains(ClassSelectors.tabClosed),
       'make sure tab element contains "tab-closed" style'
     ).to.be.true;
     expect(tabElementToBeDeleted.dataset['url'], 'tab url is saved in dataset-url').to.equal(newTab.url);
   });
 
   it('should jump to next item after closing tab', async function () {
-    for (const e of Array.from($$(`.${Selectors.collapsedContainer}`)!)) {
-      e.classList.remove(Selectors.collapsedContainer);
+    for (const e of Array.from($$(`.${ClassSelectors.collapsedContainer}`)!)) {
+      e.classList.remove(ClassSelectors.collapsedContainer);
     }
     info(component, 'entering test:', 'should jump to next item after closing tab');
     let tab;
@@ -184,7 +184,7 @@ describe(component, function () {
       tab = await browser.tabs.get(newTab.id!);
     } catch (_) {}
     expect(tab, 'tab should not exist anymore').to.be.undefined;
-    expect(tabElementToBeDeleted.classList.contains(Selectors.tabClosed)).to.be.true;
+    expect(tabElementToBeDeleted.classList.contains(ClassSelectors.tabClosed)).to.be.true;
     expect(tabElementToBeDeleted.dataset['url']).to.equal(newTab.url);
   });
 });

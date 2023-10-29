@@ -2,7 +2,7 @@ import { $, $$, _, closeContainer } from './helper.js';
 import { htmlId2TabId, tabId2HtmlCloseTabId } from './tab-element.js';
 import { searchInContainer } from './search.js';
 import type { Browser } from 'webextension-polyfill';
-import { ConexElements, Selectors } from './constants.js';
+import { ClassSelectors, ConexElements, Selectors } from './constants.js';
 import { debug } from './logger.js';
 
 declare let browser: Browser;
@@ -27,10 +27,10 @@ export function keydown(e: KeyboardEvent): void {
 }
 
 export function keyup(e: KeyboardEvent) {
-  // only search, if search box is still focused (no the case if ArrowDown was handled in keydown)
+  // only search, if search box is still focused (not the case if ArrowDown was handled in keydown)
   if (document.activeElement === ConexElements.search) {
     debug(component, 'keyup on search element', e);
-    search(ConexElements.search.value);
+    search(ConexElements.search.value || '');
   }
 }
 
@@ -63,7 +63,7 @@ export async function search(value: string): Promise<void> {
 function downOnContainerElement(containerElement: Element): Element {
   const tabElement = $(Selectors.tabElementsMatch, containerElement);
 
-  if (tabElement && !containerElement.classList.contains(Selectors.collapsedContainer)) {
+  if (tabElement && !containerElement.classList.contains(ClassSelectors.collapsedContainer)) {
     tabElement.focus();
     return tabElement;
   } else {
@@ -89,7 +89,7 @@ export async function removeContainer(containerElement: Element) {
   const containerName = $(Selectors.containerName, containerElement)?.innerText!;
   if (tabsInContainer === 0 || confirm(_('closeContainerConfirmationDialoge', [containerName, tabsInContainer]))) {
     focusNextVisibleContainerSibling(containerElement);
-    containerElement.classList.add(Selectors.noMatch);
+    containerElement.classList.add(ClassSelectors.noMatch);
     await closeContainer(containerId);
   }
 }
@@ -131,7 +131,7 @@ async function keyDownOnContainerElement(e: KeyboardEvent): Promise<void> {
       const previousContainer = previousVisibleContainerSibling(containerElement);
       if (previousContainer) {
         const lastTabOfPreviousContainer = Array.from($$(Selectors.tabElementsMatch, previousContainer)).pop();
-        if (lastTabOfPreviousContainer && !previousContainer.classList.contains(Selectors.collapsedContainer)) {
+        if (lastTabOfPreviousContainer && !previousContainer.classList.contains(ClassSelectors.collapsedContainer)) {
           lastTabOfPreviousContainer.focus();
         } else {
           (previousContainer as HTMLElement).focus();
@@ -145,11 +145,11 @@ async function keyDownOnContainerElement(e: KeyboardEvent): Promise<void> {
       break;
     }
     case 'ArrowLeft':
-      containerElement.classList.add(Selectors.collapsedContainer);
+      containerElement.classList.add(ClassSelectors.collapsedContainer);
       focusNextVisibleContainerSibling(containerElement);
       break;
     case 'ArrowRight':
-      containerElement.classList.remove(Selectors.collapsedContainer);
+      containerElement.classList.remove(ClassSelectors.collapsedContainer);
       break;
   }
 }
@@ -183,7 +183,7 @@ function keyDownOnTabElement(e: KeyboardEvent): void {
       if (!e.shiftKey) {
         debug(component, 'searching for next tab to focus on');
         const tabId = tabElement.id;
-        const nextVisibleTabInContainer = $(`#${tabId} ~ :not(.${Selectors.noMatch}`, tabElement.parentElement!);
+        const nextVisibleTabInContainer = $(`#${tabId} ~ :not(.${ClassSelectors.noMatch}`, tabElement.parentElement!);
         if (nextVisibleTabInContainer) {
           debug(component, '  found tab', nextVisibleTabInContainer);
           nextVisibleTabInContainer.focus();
@@ -202,7 +202,7 @@ function keyDownOnTabElement(e: KeyboardEvent): void {
     case 'ArrowUp':
       while (curTabElement.previousElementSibling) {
         curTabElement = curTabElement.previousElementSibling;
-        if (!curTabElement.classList.contains(Selectors.noMatch)) {
+        if (!curTabElement.classList.contains(ClassSelectors.noMatch)) {
           (curTabElement as HTMLElement).focus();
           return;
         }
@@ -213,7 +213,7 @@ function keyDownOnTabElement(e: KeyboardEvent): void {
       break;
     case 'ArrowLeft': {
       const tabContainerElement = curTabElement.parentElement!.parentElement!;
-      tabContainerElement.classList.add(Selectors.collapsedContainer);
+      tabContainerElement.classList.add(ClassSelectors.collapsedContainer);
       tabContainerElement.focus();
       focusNextVisibleContainerSibling(tabContainerElement);
       break;
@@ -222,7 +222,7 @@ function keyDownOnTabElement(e: KeyboardEvent): void {
 }
 
 function focusNextVisibleContainerSibling(curContainerElement: Element): Element {
-  const nextVisibleContainerSibling = $(`#${curContainerElement.id} ~ :not(.${Selectors.noMatch})`);
+  const nextVisibleContainerSibling = $(`#${curContainerElement.id} ~ :not(.${ClassSelectors.noMatch})`);
   if (nextVisibleContainerSibling) {
     nextVisibleContainerSibling.focus();
   }
@@ -232,7 +232,7 @@ function focusNextVisibleContainerSibling(curContainerElement: Element): Element
 function previousVisibleContainerSibling(curContainerElement: Element): Element | void {
   while (curContainerElement.previousElementSibling) {
     curContainerElement = curContainerElement.previousElementSibling;
-    if (!curContainerElement.classList.contains(Selectors.noMatch)) {
+    if (!curContainerElement.classList.contains(ClassSelectors.noMatch)) {
       return curContainerElement;
     }
   }

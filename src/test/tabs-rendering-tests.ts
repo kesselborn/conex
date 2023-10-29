@@ -2,7 +2,7 @@ import { $, $$, $e, _, Contants } from '../helper.js';
 import { renderContainers, renderTabs } from '../containers.js';
 import { tabId2HtmlId } from '../tab-element.js';
 import { clear, expect, fakeContainers, renderMainPageStub } from './helper.js';
-import { Selectors } from '../constants.js';
+import { IdSelectors, InputNameSelectors, Selectors } from '../constants.js';
 import { Tabs } from 'webextension-polyfill';
 import Tab = Tabs.Tab;
 
@@ -14,7 +14,7 @@ describe(component, function () {
   it('should render tabs elements correctly', async function () {
     let tabCnt = 0;
 
-    const searchField = $e('input', { id: Selectors.searchId, placeholder: _('searchBoxPlaceholder'), type: 'text' });
+    const searchField = $e('input', { id: IdSelectors.searchId, placeholder: _('searchBoxPlaceholder'), type: 'text' });
     const form = $e('form', {}, [searchField]);
     window.document.body.appendChild(form);
 
@@ -37,8 +37,8 @@ describe(component, function () {
       ]) as Array<Tab>;
 
       await renderTabs(tabs);
-      expect($(`#${tabId2HtmlId(tabCnt - 2)} > input`)!.getAttribute('name')).to.equal(Selectors.openTabName);
-      expect($(`#${tabId2HtmlId(tabCnt - 1)} > input`)!.getAttribute('name')).to.equal(Selectors.openTabName);
+      expect($(`#${tabId2HtmlId(tabCnt - 2)} > input`)!.getAttribute('name')).to.equal(InputNameSelectors.openTab);
+      expect($(`#${tabId2HtmlId(tabCnt - 1)} > input`)!.getAttribute('name')).to.equal(InputNameSelectors.openTab);
     }
 
     expect($$(`form ${Selectors.tabElements}`).length).to.equal(tabCnt);
@@ -47,7 +47,7 @@ describe(component, function () {
   it('should render special favicons for specific tabs', async function () {
     let tabCnt = 0;
 
-    const searchField = $e('input', { id: Selectors.searchId, placeholder: _('searchBoxPlaceholder'), type: 'text' });
+    const searchField = $e('input', { id: IdSelectors.searchId, placeholder: _('searchBoxPlaceholder'), type: 'text' });
     const form = $e('form', {}, [searchField]);
     window.document.body.appendChild(form);
 

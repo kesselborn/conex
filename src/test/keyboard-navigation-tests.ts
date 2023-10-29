@@ -2,7 +2,7 @@ import {$, $$} from '../helper.js';
 import {renderTabs} from '../containers.js';
 import {clear, expect, fakeContainers, maxTabId, timeoutResolver, typeKey} from './helper.js';
 import {tabId2HtmlId} from '../tab-element.js';
-import {ConexElements, Ids, Selectors} from '../constants.js';
+import {ClassSelectors, ConexElements, Ids, IdSelectors, Selectors} from '../constants.js';
 import {renderMainPage} from '../main-page.js';
 import {debug} from '../logger.js';
 import {search} from '../keyboard-input-handler.js';
@@ -44,7 +44,7 @@ describe(component, function () {
     await renderTabs(fakeTabs(fakeContainers[3].cookieStoreId));
 
     const searchTerm = 'tab0container';
-    const searchInputField = $(`#${Selectors.searchId}`)! as HTMLInputElement;
+    const searchInputField = $(`#${IdSelectors.searchId}`)! as HTMLInputElement;
     searchInputField.value = searchTerm;
     search(searchTerm);
     searchInputField.focus();
@@ -120,7 +120,7 @@ describe(component, function () {
         case 0: // containerElements[1]
           // @ts-ignore
           await renderTabs(fakeTabs(fakeContainers[i].cookieStoreId));
-          $(`#${fakeContainers[i]!.cookieStoreId}`)!.classList.remove(Selectors.collapsedContainer);
+          $(`#${fakeContainers[i]!.cookieStoreId}`)!.classList.remove(ClassSelectors.collapsedContainer);
           break;
         // second tab contains a tab that should be hidden (class == no-match)
         case 1: // containerElements[2]
@@ -129,8 +129,8 @@ describe(component, function () {
 
             // @ts-ignore
             await renderTabs(tabs);
-            $(`#${tabId2HtmlId(tabs[0]!.id)}`)!.classList.add(Selectors.noMatch);
-            $(`#${fakeContainers[i]!.cookieStoreId}`)!.classList.remove(Selectors.collapsedContainer);
+            $(`#${tabId2HtmlId(tabs[0]!.id)}`)!.classList.add(ClassSelectors.noMatch);
+            $(`#${fakeContainers[i]!.cookieStoreId}`)!.classList.remove(ClassSelectors.collapsedContainer);
           }
           break;
         // third container only contains hidden tabs and is hidden as well (happens on search)
@@ -139,9 +139,9 @@ describe(component, function () {
             const tabs = fakeTabs(fakeContainers[i]!.cookieStoreId);
             // @ts-ignore
             await renderTabs(tabs);
-            $(`#${container.cookieStoreId}`)!.classList.add(Selectors.noMatch);
-            $(`#${tabId2HtmlId(tabs[0]!.id)}`)!.classList.add(Selectors.noMatch);
-            $(`#${tabId2HtmlId(tabs[1]!.id)}`)!.classList.add(Selectors.noMatch);
+            $(`#${container.cookieStoreId}`)!.classList.add(ClassSelectors.noMatch);
+            $(`#${tabId2HtmlId(tabs[0]!.id)}`)!.classList.add(ClassSelectors.noMatch);
+            $(`#${tabId2HtmlId(tabs[1]!.id)}`)!.classList.add(ClassSelectors.noMatch);
           }
           break;
         case 3: // containerElements[4]
@@ -149,7 +149,7 @@ describe(component, function () {
             const tabs = fakeTabs(fakeContainers[i]!.cookieStoreId);
             // @ts-ignore
             await renderTabs(tabs);
-            $(`#${container.cookieStoreId}`)!.classList.add(Selectors.collapsedContainer);
+            $(`#${container.cookieStoreId}`)!.classList.add(ClassSelectors.collapsedContainer);
           }
           break;
         case 4: // containerElements[5]
@@ -157,12 +157,12 @@ describe(component, function () {
             const tabs = fakeTabs(fakeContainers[i]!.cookieStoreId);
             // @ts-ignore
             await renderTabs(tabs);
-            $(`#${tabId2HtmlId(tabs[1]!.id)}`)!.classList.add(Selectors.noMatch);
-            $(`#${fakeContainers[i]!.cookieStoreId}`)!.classList.remove(Selectors.collapsedContainer);
+            $(`#${tabId2HtmlId(tabs[1]!.id)}`)!.classList.add(ClassSelectors.noMatch);
+            $(`#${fakeContainers[i]!.cookieStoreId}`)!.classList.remove(ClassSelectors.collapsedContainer);
           }
           break;
         case 5: // containerElements[6]
-          $(`#${container.cookieStoreId}`)!.classList.add(Selectors.noMatch);
+          $(`#${container.cookieStoreId}`)!.classList.add(ClassSelectors.noMatch);
           break;
       }
     }
@@ -232,14 +232,14 @@ describe(component, function () {
       typeKey(keys.down, document.activeElement!);
       expect(e2t(document.activeElement! as HTMLElement)).to.equal(e2t(containerElements[2]!));
 
-      // one arrow down:  we should now be on the _second_ tab (as the first one has class Selectors.noMatch) of the second container element
+      // one arrow down:  we should now be on the _second_ tab (as the first one has class ClassSelectors.noMatch) of the second container element
       // Test 5
       typeKey(keys.down, document.activeElement!);
       expect(e2t(document.activeElement! as HTMLElement)).to.equal(
         e2t($(`${Selectors.tabElements}:nth-child(2)`, containerElements[2]!)!)
       );
 
-      // one arrow down:  we should now be on the fourth container element as the third container element is hidden with Selectors.noMatch class
+      // one arrow down:  we should now be on the fourth container element as the third container element is hidden with ClassSelectors.noMatch class
       // Test 6
       typeKey(keys.down, document.activeElement!);
       expect(e2t(document.activeElement! as HTMLElement)).to.equal(e2t(containerElements[4]!));
@@ -329,7 +329,7 @@ describe(component, function () {
       $$(Selectors.tabElements, $(Selectors.containerElements)!)!.length,
       'bookmarks container should have no tabs initially'
     ).to.equal(0);
-    const searchInputField = $(`#${Selectors.searchId}`)! as HTMLInputElement;
+    const searchInputField = $(`#${IdSelectors.searchId}`)! as HTMLInputElement;
     searchInputField.focus();
     const bookmarksCnt = (await getBookmarksAsTabs()).length;
     expect(bookmarksCnt, 'our browser profile must have at least one bookmark to run this test').to.not.equal(0);

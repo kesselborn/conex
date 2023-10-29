@@ -3,7 +3,7 @@ import { htmlId2TabId, tabElement } from './tab-element.js';
 import { containerElement, countLabel } from './container-element.js';
 import type { Browser } from 'webextension-polyfill';
 import { ContextualIdentities, Tabs } from 'webextension-polyfill';
-import { ConexElements, Ids, Selectors } from './constants.js';
+import { ClassSelectors, ConexElements, Ids, InputNameSelectors, Selectors } from './constants.js';
 import { debug, error } from './logger.js';
 import { removeContainer } from './keyboard-input-handler.js';
 import { getBookmarksAsTabs } from './bookmarks.js';
@@ -23,20 +23,20 @@ export async function formChange(e: Event): Promise<void> {
 
   debug(component, 'form change', e, 'target:', target);
   switch (target.name) {
-    case Selectors.toggleTabsVisibilityName: {
+    case InputNameSelectors.toggleTabsVisibilityName: {
       target.checked = false;
       const containerElement = target.parentElement!; // this action always has a parent
-      containerElement.classList.toggle(Selectors.collapsedContainer);
+      containerElement.classList.toggle(ClassSelectors.collapsedContainer);
       break;
     }
-    case Selectors.openTabName: {
+    case InputNameSelectors.openTab: {
       target.checked = false;
       const tabElement = target.parentElement!;
       browser.tabs.update(htmlId2TabId(tabElement.id), { active: true });
       window.close();
       break;
     }
-    case Selectors.closeTabName: {
+    case InputNameSelectors.closeTab: {
       target.checked = false;
       const tabElement = target.parentElement!; // this action always has a parent
 
@@ -45,11 +45,11 @@ export async function formChange(e: Event): Promise<void> {
       if (tab) {
         tabElement.dataset['url'] = tab.url;
         browser.tabs.remove(tab.id!);
-        tabElement.classList.add(Selectors.tabClosed);
+        tabElement.classList.add(ClassSelectors.tabClosed);
       }
       break;
     }
-    case Selectors.closeContainerName: {
+    case InputNameSelectors.closeContainer: {
       target.checked = false;
       const containerElement = target.parentElement!; // this action always has a parent
 
@@ -157,12 +157,13 @@ export async function renderTabs(tabs: Array<Tab>) {
 
   for (const tab of await tabs) {
     if (!containerElements.has(cookieStoreId)) {
+      // eslint-disable-next-line no-void
       await $('ul', containerElement)?.remove();
       containerElements.set(cookieStoreId, containerElement.appendChild($e('ul')));
     }
 
     tabSrc += tabElement(tab);
-    containerElement.classList.remove(Selectors.emptyContainerClass);
+    containerElement.classList.remove(ClassSelectors.emptyContainer);
   }
 
   if (cookieStoreId) {

@@ -1,7 +1,7 @@
 import { $, $$, _ } from '../helper.js';
 import { ContainerRenderOptions, defaultContainer, renderTabs } from '../containers.js';
 import { clear, expect, fakeContainers } from './helper.js';
-import { Ids, Selectors } from '../constants.js';
+import { ClassSelectors, Ids, Selectors } from '../constants.js';
 import { Tabs } from 'webextension-polyfill';
 import { renderMainPage } from '../main-page.js';
 import { getBookmarksAsTabs } from '../bookmarks.js';
@@ -84,8 +84,8 @@ describe(component, function () {
     // @ts-ignore
     await renderTabs(tabs);
 
-    expect(containerElements[1]!.classList.contains(Selectors.emptyContainerClass)).to.be.false;
-    expect(containerElements[2]!.classList.contains(Selectors.emptyContainerClass)).to.be.true;
+    expect(containerElements[1]!.classList.contains(ClassSelectors.emptyContainer)).to.be.false;
+    expect(containerElements[2]!.classList.contains(ClassSelectors.emptyContainer)).to.be.true;
   });
 
   it('should set correct container color on containers', async function () {

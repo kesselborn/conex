@@ -1,5 +1,5 @@
 import { Browser } from 'webextension-polyfill';
-import { Ids, Selectors } from './constants.js';
+import { ClassSelectors, Ids, InputNameSelectors } from './constants.js';
 import { _ } from './helper.js';
 import { ContextualIdentityEx } from './containers.js';
 
@@ -32,16 +32,16 @@ export async function containerElement(container: ContextualIdentityEx): Promise
 
   e.innerHTML = `
     <li tabindex="0"
-        class="collapsed container-color-${container.color} ${Selectors.emptyContainerClass}"
+        class="collapsed container-color-${container.color} ${ClassSelectors.emptyContainer}"
         id="${container.cookieStoreId}">
       <input id="e-${container.cookieStoreId}"
              type="radio"
-             name="${Selectors.toggleTabsVisibilityName}"
+             name="${InputNameSelectors.toggleTabsVisibilityName}"
              value="${container.cookieStoreId}"/>
       <label for="e-${container.cookieStoreId}" class="tabs-visibility"></label>
       <input id="c-${container.cookieStoreId}"
              type="radio"
-             name="${Selectors.openContainerName}"
+             name="${InputNameSelectors.openContainer}"
              value="${container.cookieStoreId}"/>
       <label for="c-${container.cookieStoreId}">
         <h2>
@@ -52,7 +52,7 @@ export async function containerElement(container: ContextualIdentityEx): Promise
         </h2>
       </label>
       <input id="${containerId2HtmlCloseContainerId(container.cookieStoreId)}" type="radio" name="${
-    Selectors.closeContainerName
+    InputNameSelectors.closeContainer
   }" value="${container.cookieStoreId}"/>
       <label for="${containerId2HtmlCloseContainerId(container.cookieStoreId)}" class="close" title="${_(
     'closeWithDetails',

@@ -2,7 +2,7 @@ import { $, $$, closeContainer } from '../helper.js';
 import { expect, timeoutResolver, typeKey } from './helper.js';
 import type { Browser } from 'webextension-polyfill';
 import { renderMainPage } from '../main-page.js';
-import { Selectors } from '../constants.js';
+import { ClassSelectors, Selectors } from '../constants.js';
 import { debug } from '../logger.js';
 
 declare let browser: Browser;
@@ -80,7 +80,9 @@ describe(component, function () {
       (await browser.contextualIdentities.query({ name: container.name })).length,
       'container should not exist anymore'
     ).to.equal(0);
-    expect(containerElement.classList.contains(Selectors.noMatch), 'container element should be hidden').to.equal(true);
+    expect(containerElement.classList.contains(ClassSelectors.noMatch), 'container element should be hidden').to.equal(
+      true
+    );
     expect(confirmCalled, 'confirm should not have been called').to.equal(false);
     window.confirm = confirmFunction;
   });
@@ -140,7 +142,7 @@ describe(component, function () {
       (await browser.contextualIdentities.query({ name: container.name })).length,
       'container count after confirm'
     ).to.equal(0);
-    expect(containerElement.classList.contains(Selectors.noMatch)).to.equal(true);
+    expect(containerElement.classList.contains(ClassSelectors.noMatch)).to.equal(true);
     expect(confirmMessage).to.equal(`Are you sure you want to close ${container.name} and its 2 tabs?`);
     window.confirm = confirmFunction;
   });
@@ -188,7 +190,7 @@ describe(component, function () {
       (await browser.contextualIdentities.query({ name: container.name })).length,
       'container count after confirm'
     ).to.equal(0);
-    expect(containerElement.classList.contains(Selectors.noMatch)).to.equal(true);
+    expect(containerElement.classList.contains(ClassSelectors.noMatch)).to.equal(true);
     expect(confirmMessage).to.equal(`Are you sure you want to close ${container.name} and its 2 tabs?`);
     window.confirm = confirmFunction;
   });

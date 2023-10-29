@@ -2,10 +2,10 @@ import { $ } from '../helper.js';
 import { renderTabs } from '../containers.js';
 import { clear, expect, fakeContainers, maxTabId, typeKey } from './helper.js';
 import { tabId2HtmlId } from '../tab-element.js';
-import { Selectors } from '../constants.js';
 import { Tabs } from 'webextension-polyfill';
 import { renderMainPage } from '../main-page.js';
 import { debug, info } from '../logger.js';
+import { ClassSelectors } from '../constants.js';
 import Tab = Tabs.Tab;
 
 // TODO: when typing, restart search
@@ -49,24 +49,24 @@ describe(component, function () {
 
     // when collapsing on a container element, go to the next container element
     debug(component, '    1 arrow left');
-    firstFakeContainerElement.classList.remove(Selectors.collapsedContainer);
+    firstFakeContainerElement.classList.remove(ClassSelectors.collapsedContainer);
     firstFakeContainerElement.focus();
-    expect(document.activeElement!.classList.contains(Selectors.collapsedContainer)).to.be.false;
+    expect(document.activeElement!.classList.contains(ClassSelectors.collapsedContainer)).to.be.false;
     typeKey({ key: 'ArrowLeft' }, document.activeElement!);
-    expect(firstFakeContainerElement.classList.contains(Selectors.collapsedContainer)).to.be.true;
+    expect(firstFakeContainerElement.classList.contains(ClassSelectors.collapsedContainer)).to.be.true;
     expect(document.activeElement!).to.equal(firstFakeContainerElement.nextElementSibling);
 
     debug(component, '    2 arrow right');
     firstFakeContainerElement.focus();
     typeKey({ key: 'ArrowRight' }, document.activeElement!);
-    expect(document.activeElement!.classList.contains(Selectors.collapsedContainer)).to.be.false;
+    expect(document.activeElement!.classList.contains(ClassSelectors.collapsedContainer)).to.be.false;
     expect(document.activeElement!).to.equal(firstFakeContainerElement);
 
     // when collapsing on a tab element, jump to the next container element
     debug(component, '    3 arrow left');
     firstTabInFirstFakeContainerElement.focus();
     typeKey({ key: 'ArrowLeft' }, document.activeElement!);
-    expect(firstFakeContainerElement.classList.contains(Selectors.collapsedContainer)).to.be.true;
+    expect(firstFakeContainerElement.classList.contains(ClassSelectors.collapsedContainer)).to.be.true;
     expect(document.activeElement!).to.equal(firstFakeContainerElement.nextElementSibling);
 
     debug(component, '    4 arrow right');
@@ -76,7 +76,7 @@ describe(component, function () {
     tabInLastFakeContainerElement.focus();
     debug(component, '    5 arrow left');
     typeKey({ key: 'ArrowLeft' }, tabInLastFakeContainerElement);
-    expect(lastFakeContainerElement.classList.contains(Selectors.collapsedContainer)).to.be.true;
+    expect(lastFakeContainerElement.classList.contains(ClassSelectors.collapsedContainer)).to.be.true;
     expect(document.activeElement!).to.equal(lastFakeContainerElement);
   });
 });

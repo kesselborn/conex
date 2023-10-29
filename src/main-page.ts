@@ -7,7 +7,7 @@ import {
   renderTabs,
 } from './containers.js';
 import { Browser, ContextualIdentities } from 'webextension-polyfill';
-import { ConexElements, Selectors } from './constants.js';
+import { ConexElements, IdSelectors } from './constants.js';
 import { keydown, keyup } from './keyboard-input-handler.js';
 import { $e, _ } from './helper.js';
 import { getBookmarksAsTabs } from './bookmarks.js';
@@ -23,7 +23,7 @@ export async function renderMainPage(
     containers = await browser.contextualIdentities.query({});
   }
 
-  const searchField = $e('input', { id: Selectors.searchId, placeholder: _('searchBoxPlaceholder'), type: 'text' });
+  const searchField = $e('input', { id: IdSelectors.searchId, placeholder: _('searchBoxPlaceholder'), type: 'text' });
   const form = $e('form', {}, [searchField]);
   await window.document.body.appendChild(form);
 
