@@ -14,6 +14,16 @@ declare let browser: Browser;
 
 const component = 'containers';
 
+function isHistoryOrBookmarkItem(e: HTMLElement): boolean {
+  while (e.parentElement) {
+    e = e.parentElement;
+    if (e.id === Ids.historyCookieStoreId || e.id === Ids.bookmarksCookieStoreId) {
+      return true;
+    }
+  }
+  return false;
+}
+
 export async function formChange(e: Event): Promise<void> {
   if (!e.target || !(e.target instanceof HTMLInputElement)) {
     return;
@@ -32,7 +42,17 @@ export async function formChange(e: Event): Promise<void> {
     case InputNameSelectors.openTab: {
       target.checked = false;
       const tabElement = target.parentElement!;
-      browser.tabs.update(htmlId2TabId(tabElement.id), { active: true });
+      if (isHistoryOrBookmarkItem(tabElement)) {
+        debug(component, 'request to open history or bookmark item');
+        browser.tabs.create({
+          active: true,
+          url: tabElement.dataset['url'],
+        });
+      } else {
+        debug(component, 'request to switch to open tab');
+        const tabId = htmlId2TabId(tabElement.id);
+        browser.tabs.update(tabId, { active: true });
+      }
       window.close();
       break;
     }

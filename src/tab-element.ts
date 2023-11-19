@@ -45,7 +45,7 @@ export function tabElement(tab: Tabs.Tab): String {
   // ot prefix: open tab
   // x prefix: close tab
   let src = `
-  <li tabindex="0" id="${tabId2HtmlId(tab.id!)}">
+  <li tabindex="0" id="${tabId2HtmlId(tab.id!)}" data-url="${tab.url}">
     <input id="${tabId2HtmlOpenTabId(tab.id!)}" type="radio" name="${InputNameSelectors.openTab}" value="${tab.id}"/>
     <label for="${tabId2HtmlOpenTabId(tab.id!)}" class="tab-center">
       <div class="images">`;

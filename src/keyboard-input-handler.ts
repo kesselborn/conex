@@ -2,7 +2,7 @@ import { $, $$, _, closeContainer } from './helper.js';
 import { htmlId2TabId, tabId2HtmlCloseTabId } from './tab-element.js';
 import { searchInContainer } from './search.js';
 import type { Browser } from 'webextension-polyfill';
-import { ClassSelectors, ConexElements, Ids, Selectors } from './constants.js';
+import { ClassSelectors, ConexElements, Ids, InputNameSelectors, Selectors } from './constants.js';
 import { debug } from './logger.js';
 import { readSettings } from './settings.js';
 import { ContextualIdentityEx, historyDummyContainer, renderTabs } from './containers.js';
@@ -177,16 +177,14 @@ async function keyDownOnContainerElement(e: KeyboardEvent): Promise<void> {
 }
 
 function keyDownOnTabElement(e: KeyboardEvent): void {
-  const tabElement: Element = e.target! as HTMLElement;
+  const tabElement: HTMLElement = e.target! as HTMLElement;
   const key = e.key;
 
   let curTabElement = tabElement;
   switch (key) {
     case 'Enter': {
       e.preventDefault();
-      const tabId = htmlId2TabId(tabElement.id);
-      browser.tabs.update(tabId, { active: true });
-      window.close();
+      $(`input[name="${InputNameSelectors.openTab}"]`, tabElement)!.click();
       break;
     }
 
@@ -223,7 +221,7 @@ function keyDownOnTabElement(e: KeyboardEvent): void {
     // eslint-disable-next-line no-fallthrough
     case 'ArrowUp':
       while (curTabElement.previousElementSibling) {
-        curTabElement = curTabElement.previousElementSibling;
+        curTabElement = curTabElement.previousElementSibling as HTMLElement;
         if (!curTabElement.classList.contains(ClassSelectors.noMatch)) {
           (curTabElement as HTMLElement).focus();
           return;

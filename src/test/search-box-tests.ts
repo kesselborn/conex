@@ -13,6 +13,7 @@ import { ClassSelectors, Ids, IdSelectors, Selectors } from '../constants.js';
 import { search } from '../keyboard-input-handler.js';
 import { debug } from '../logger.js';
 import { getBookmarksAsTabs } from '../bookmarks.js';
+import { readSettings } from '../settings.js';
 import Tab = Tabs.Tab;
 
 const component = 'search-box-tests';
@@ -229,7 +230,8 @@ describe(component, function () {
   });
 
   it('should match history items', async function () {
-    const firstHistoryItemSearchToken = (await browser.history.search({ text: '', startTime: 0 }))[0]!.url!;
+    expect((await readSettings()).includeHistory, 'history support must be enabled for testing').to.equal(true);
+    const firstHistoryItemSearchToken = (await browser.history.search({ text: '', startTime: 0 }))[0]!.title!;
     debug(component, 'first history search token', firstHistoryItemSearchToken);
     const historyContainerElement = $$(Selectors.containerElements)[7]!;
     expect(firstHistoryItemSearchToken, 'we need a searchable history token').to.not.equal('');
@@ -237,7 +239,7 @@ describe(component, function () {
     await timeoutResolver(200);
     expect(
       $$(Selectors.tabElements, historyContainerElement).length,
-      'history container should have at least one match pseudo container'
+      `history container should have at least one match pseudo container (search term: '${firstHistoryItemSearchToken}')`
     ).to.not.equal(0);
   });
 });
