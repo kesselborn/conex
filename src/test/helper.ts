@@ -6,6 +6,9 @@ import Tab = Tabs.Tab;
 
 declare let browser: Browser;
 
+const waiterIterations = 15;
+const iterationLength = 50; // ms
+
 export const fakeContainers: Array<ContextualIdentities.ContextualIdentity> = [
   {
     cookieStoreId: 'container0',
@@ -54,6 +57,24 @@ chai.config.includeStack = true;
 // @ts-ignore
 export const expect = chai.expect;
 
+export async function waitForFocus(e: HTMLInputElement): Promise<boolean> {
+  let focused = false;
+  const listenerFn = function (_event: Event) {
+    e.removeEventListener('focus', listenerFn);
+    focused = true;
+  };
+
+  e.addEventListener('focus', listenerFn);
+  for (let i = 0; i < waiterIterations; i++) {
+    await timeoutResolver(iterationLength);
+    if (focused) {
+      return true;
+    }
+  }
+  e.removeEventListener('focus', listenerFn);
+  throw new Error(`element with id ${e.id} never received focus`);
+}
+
 export async function waitForTabToBeActive(id: number): Promise<boolean> {
   let tabBecameActive = false;
   const listenerFn = function (info: Tabs.OnActivatedActiveInfoType) {
@@ -63,14 +84,14 @@ export async function waitForTabToBeActive(id: number): Promise<boolean> {
     }
   };
   browser.tabs.onActivated.addListener(listenerFn);
-  for (let i = 0; i < 10; i++) {
-    await timeoutResolver(50);
+  for (let i = 0; i < waiterIterations; i++) {
+    await timeoutResolver(iterationLength);
     if (tabBecameActive) {
       return true;
     }
   }
   browser.tabs.onActivated.removeListener(listenerFn);
-  throw `tab with id ${id} never became active`;
+  throw new Error(`tab with id ${id} never became active`);
 }
 
 export async function waitForContainerToBeClosed(cookieStoreId: string): Promise<boolean> {
@@ -82,14 +103,14 @@ export async function waitForContainerToBeClosed(cookieStoreId: string): Promise
     }
   };
   browser.contextualIdentities.onRemoved.addListener(listenerFn);
-  for (let i = 0; i < 10; i++) {
-    await timeoutResolver(50);
+  for (let i = 0; i < waiterIterations; i++) {
+    await timeoutResolver(iterationLength);
     if (containerClosed) {
       return true;
     }
   }
   browser.contextualIdentities.onRemoved.removeListener(listenerFn);
-  throw `container with id ${cookieStoreId} was never removed`;
+  throw new Error(`container with id ${cookieStoreId} was never removed`);
 }
 
 export async function waitForTabToBeClosed(id: number): Promise<boolean> {
@@ -101,14 +122,14 @@ export async function waitForTabToBeClosed(id: number): Promise<boolean> {
     }
   };
   browser.tabs.onRemoved.addListener(listenerFn);
-  for (let i = 0; i < 10; i++) {
-    await timeoutResolver(50);
+  for (let i = 0; i < waiterIterations; i++) {
+    await timeoutResolver(iterationLength);
     if (tabClosed) {
       return true;
     }
   }
   browser.tabs.onRemoved.removeListener(listenerFn);
-  throw `tab with id ${id} was never removed`;
+  throw new Error(`tab with id ${id} was never removed`);
 }
 
 export async function waitForTabToAppear(url: string): Promise<number> {
@@ -122,15 +143,15 @@ export async function waitForTabToAppear(url: string): Promise<number> {
     }
   };
   browser.tabs.onUpdated.addListener(listenerFn);
-  for (let i = 0; i < 10; i++) {
-    await timeoutResolver(50);
+  for (let i = 0; i < waiterIterations; i++) {
+    await timeoutResolver(iterationLength);
     if (tabCreated) {
       return tabId;
     }
   }
 
   browser.tabs.onUpdated.removeListener(listenerFn);
-  throw `no tab with url ${url} created`;
+  throw new Error(`no tab with url ${url} created`);
 }
 
 export function renderMainPageStub() {

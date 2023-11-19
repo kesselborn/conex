@@ -179,7 +179,7 @@ describe(component, function () {
       const tabCnt = (await browser.tabs.query({})).length;
       const historyTab = $$(Selectors.tabElements, historyContainer)[1]!;
 
-      historyTab.dataset['url'] += '-conex-history-opener-test-mouse';
+      historyTab.dataset['url'] += '?conex-history-opener-test-mouse';
 
       const newTabWaiter = waitForTabToAppear(historyTab.dataset['url']!);
       $(`input[name="${InputNameSelectors.openTab}"]`, historyTab)!.click();
@@ -196,11 +196,10 @@ describe(component, function () {
     it('should open new tab when hitting enter on a history item', async function () {
       // hack the new container to be the history container
       $(`#${newContainerId}`)!.id = Ids.historyCookieStoreId;
-      const historyContainer = $(`#${Ids.historyCookieStoreId}`)!;
 
       const tabCnt = (await browser.tabs.query({})).length;
-      const historyTab = $$(Selectors.tabElements, historyContainer)[1]!;
-      historyTab.dataset['url'] += '-conex-history-opener-test-keyboard';
+      const historyTab = $(`#${tabId2HtmlId(newTab2.id!)}`)!;
+      historyTab.dataset['url'] += '?conex-history-opener-test-keyboard';
 
       const newTabWaiter = waitForTabToAppear(historyTab.dataset['url']!);
       typeKey({ key: 'Enter' }, historyTab);
@@ -229,7 +228,7 @@ describe(component, function () {
 
       const tabCnt = (await browser.tabs.query({})).length;
       const bookmarkTab = $$(Selectors.tabElements, bookmarkContainer)[1]!;
-      bookmarkTab.dataset['url'] += '-conex-bookmark-opener-test-mouse';
+      bookmarkTab.dataset['url'] += '?conex-bookmark-opener-test-mouse';
 
       const newTabWaiter = waitForTabToAppear(bookmarkTab.dataset['url']!);
 
@@ -254,7 +253,7 @@ describe(component, function () {
       const tabCnt = (await browser.tabs.query({})).length;
 
       const bookmarkTab = $$(Selectors.tabElements, bookmarkContainer)[1]!;
-      bookmarkTab.dataset['url'] += '-conex-bookmark-opener-test-keyboard';
+      bookmarkTab.dataset['url'] += '?conex-bookmark-opener-test-keyboard';
 
       const newTabWaiter = waitForTabToAppear(bookmarkTab.dataset['url']!);
       typeKey({ key: 'Enter' }, bookmarkTab);

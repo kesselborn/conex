@@ -3,7 +3,7 @@
 // select first tab on enter
 // esc === clear
 
-import { clear, expect, fakeContainers, timeoutResolver } from './helper.js';
+import { clear, expect, fakeContainers } from './helper.js';
 import { renderTabs } from '../containers.js';
 import { $, $$ } from '../helper.js';
 import { searchInContainer } from '../search.js';
@@ -74,11 +74,9 @@ describe(component, function () {
     const searchElement = $(`#${IdSelectors.searchId}`)! as HTMLInputElement;
 
     searchElement.value = 'Reddit';
-    await timeoutResolver(200);
     expect($$('em[class*="match-"]')!.length, 'Reddit tabs should be highlighted').to.not.equal(0);
 
     searchElement.value = '';
-    await timeoutResolver(200);
 
     expect(
       $$(Selectors.containerElementsNoMatch, $(Selectors.containerElements)!).length,
@@ -100,8 +98,7 @@ describe(component, function () {
   it('should show all bookmarks when search is empty again', async function () {
     const bCnt = (await getBookmarksAsTabs()).length;
     const bookmarkContainer = $$(Selectors.containerElements)[6]!;
-    search('');
-    await timeoutResolver(200);
+    await search('');
     expect($$(Selectors.tabElementsMatch, bookmarkContainer)!.length).to.equal(bCnt);
   });
 
@@ -235,8 +232,8 @@ describe(component, function () {
     debug(component, 'first history search token', firstHistoryItemSearchToken);
     const historyContainerElement = $$(Selectors.containerElements)[7]!;
     expect(firstHistoryItemSearchToken, 'we need a searchable history token').to.not.equal('');
-    search(firstHistoryItemSearchToken);
-    await timeoutResolver(200);
+    await search(firstHistoryItemSearchToken);
+
     expect(
       $$(Selectors.tabElements, historyContainerElement).length,
       `history container should have at least one match pseudo container (search term: '${firstHistoryItemSearchToken}')`

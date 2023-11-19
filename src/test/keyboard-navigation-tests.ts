@@ -1,6 +1,6 @@
 import {$, $$} from '../helper.js';
 import {renderTabs} from '../containers.js';
-import {clear, expect, fakeContainers, maxTabId, timeoutResolver, typeKey} from './helper.js';
+import {clear, expect, fakeContainers, maxTabId, timeoutResolver, typeKey, waitForFocus} from './helper.js';
 import {tabId2HtmlId} from '../tab-element.js';
 import {ClassSelectors, ConexElements, Ids, IdSelectors, Selectors} from '../constants.js';
 import {renderMainPage} from '../main-page.js';
@@ -47,9 +47,11 @@ describe(component, function () {
     const searchInputField = $(`#${IdSelectors.searchId}`)! as HTMLInputElement;
     searchInputField.value = searchTerm;
     search(searchTerm);
-    searchInputField.focus();
 
-    await timeoutResolver(200);
+    searchInputField.blur();
+    const focusWaiter = waitForFocus(searchInputField);
+    searchInputField.focus();
+    expect(await focusWaiter, 'search element should receive focus').to.not.throw;
 
     typeKey({ key: 'ArrowDown' }, document.activeElement!);
     expect((document.activeElement! as HTMLElement)!.id).to.equal(containerElements[2]!.id);
@@ -309,11 +311,11 @@ describe(component, function () {
     await renderMainPage(fakeContainers);
     ConexElements.search.value = 'fake';
     $(Selectors.containerElements)!.focus();
-    // containerElements[0].focus();
     typeKey({ key: 'ArrowUp' }, document.activeElement!);
     expect(document.activeElement!).to.equal(ConexElements.search);
 
-    await timeoutResolver(100);
+    await timeoutResolver(0);
+
     expect(ConexElements.search.selectionStart).to.equal(0);
     expect(ConexElements.search.selectionEnd).to.equal(4);
   });
@@ -330,12 +332,15 @@ describe(component, function () {
       'bookmarks container should have no tabs initially'
     ).to.equal(0);
     const searchInputField = $(`#${IdSelectors.searchId}`)! as HTMLInputElement;
-    searchInputField.focus();
     const bookmarksCnt = (await getBookmarksAsTabs()).length;
     expect(bookmarksCnt, 'our browser profile must have at least one bookmark to run this test').to.not.equal(0);
-    await timeoutResolver(200);
+
+    searchInputField.blur();
+    const focusWaiter = waitForFocus(searchInputField);
+    searchInputField.focus();
+    expect(await focusWaiter, 'search element should receive focus').to.not.throw;
+
     typeKey({ key: 'ArrowDown' }, document.activeElement!);
-    await timeoutResolver(300);
     expect(
       $$(Selectors.tabElements, $(Selectors.containerElements)!)!.length,
       'bookmarks container should have at least one tab after navigating down'
