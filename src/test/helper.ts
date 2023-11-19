@@ -54,6 +54,66 @@ chai.config.includeStack = true;
 // @ts-ignore
 export const expect = chai.expect;
 
+export async function waitForTabIdToBeActive(id: number): Promise<boolean> {
+  let tabBecameActive = false;
+  const listenerFn = function (info: Tabs.OnActivatedActiveInfoType) {
+    if (info.tabId === id) {
+      browser.tabs.onActivated.removeListener(listenerFn);
+      tabBecameActive = true;
+    }
+  };
+  browser.tabs.onActivated.addListener(listenerFn);
+  for (let i = 0; i < 10; i++) {
+    await timeoutResolver(50);
+    if (tabBecameActive) {
+      return true;
+    }
+  }
+  browser.tabs.onActivated.removeListener(listenerFn);
+  throw `tab with id ${id} never became active`;
+}
+
+export async function waitForTabIdToBeClosed(id: number): Promise<boolean> {
+  let tabClosed = false;
+  const listenerFn = function (tabId: number, _info: Tabs.OnRemovedRemoveInfoType) {
+    if (tabId === id) {
+      browser.tabs.onRemoved.removeListener(listenerFn);
+      tabClosed = true;
+    }
+  };
+  browser.tabs.onRemoved.addListener(listenerFn);
+  for (let i = 0; i < 10; i++) {
+    await timeoutResolver(50);
+    if (tabClosed) {
+      return true;
+    }
+  }
+  browser.tabs.onRemoved.removeListener(listenerFn);
+  throw `tab with id ${id} was never removed`;
+}
+
+export async function waitForTabToAppear(url: string): Promise<number> {
+  let tabCreated = false;
+  let tabId = 0;
+  const listenerFn = function (_tabId: number, info: Tabs.OnUpdatedChangeInfoType, tab: Tabs.Tab) {
+    if (tab.url === url && (info.status === 'loading' || info.status === 'compliete')) {
+      browser.tabs.onUpdated.removeListener(listenerFn);
+      tabCreated = true;
+      tabId = tab.id!;
+    }
+  };
+  browser.tabs.onUpdated.addListener(listenerFn);
+  for (let i = 0; i < 10; i++) {
+    await timeoutResolver(50);
+    if (tabCreated) {
+      return tabId;
+    }
+  }
+
+  browser.tabs.onUpdated.removeListener(listenerFn);
+  throw `no tab with url ${url} created`;
+}
+
 export function renderMainPageStub() {
   const searchField = $e('input', { id: IdSelectors.searchId, placeholder: _('searchBoxPlaceholder'), type: 'text' });
   const form = $e('form', {}, [searchField]);

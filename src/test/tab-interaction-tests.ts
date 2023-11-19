@@ -1,5 +1,12 @@
 import { $, $$, closeContainer } from '../helper.js';
-import { clear, expect, timeoutResolver, typeKey } from './helper.js';
+import {
+  clear,
+  expect,
+  typeKey,
+  waitForTabIdToBeActive,
+  waitForTabIdToBeClosed,
+  waitForTabToAppear,
+} from './helper.js';
 import { tabId2HtmlId, tabId2HtmlOpenTabId } from '../tab-element.js';
 import type { Browser, Tabs } from 'webextension-polyfill';
 import { renderMainPage } from '../main-page.js';
@@ -19,28 +26,6 @@ let uniqUrlSearchString = `tab${Math.random()}`.replace('.', '');
 declare let browser: Browser;
 
 let component = 'tab-interaction-tests-';
-
-async function waitForTabToAppear(url: string): Promise<number> {
-  let tabCreated = false;
-  let tabId = 0;
-  const listenerFn = function (_tabId: number, info: Tabs.OnUpdatedChangeInfoType, tab: Tabs.Tab) {
-    if (tab.url === url && (info.status === 'loading' || info.status === 'compliete')) {
-      browser.tabs.onUpdated.removeListener(listenerFn);
-      tabCreated = true;
-      tabId = tab.id!;
-    }
-  };
-  browser.tabs.onUpdated.addListener(listenerFn);
-  for (let i = 0; i < 10; i++) {
-    await timeoutResolver(50);
-    if (tabCreated) {
-      return tabId;
-    }
-  }
-
-  browser.tabs.onUpdated.removeListener(listenerFn);
-  throw `no tab with url ${url} created`;
-}
 
 describe(component, function () {
   before(async function () {
@@ -88,11 +73,8 @@ describe(component, function () {
 
       const searchElement = $(`#${IdSelectors.searchId}`)! as HTMLInputElement;
       searchElement.value = uniqUrlSearchString;
-      search(uniqUrlSearchString);
-      await timeoutResolver(100);
+      await search(uniqUrlSearchString);
       typeKey({ key: 'Enter' }, searchElement);
-      // let the event handling do its work
-      await timeoutResolver(200);
 
       activeTab = await browser.tabs.query({ active: true });
       expect(`${activeTab[0]!.id}`, 'when pressing enter, the active tab is tab with the uniqUrlSearchString').to.equal(
@@ -104,24 +86,19 @@ describe(component, function () {
       let activeTab = await browser.tabs.query({ active: true });
       expect(`testing-tab-id-${activeTab[0]!.id}`).to.equal(`testing-tab-id-${testingTab!.id}`);
 
+      const tabActiveWaiter = waitForTabIdToBeActive(newTab.id!);
       $(`#${tabId2HtmlOpenTabId(newTab.id!)}`)!.click();
-      // let the event handling do its work
-      await timeoutResolver(100);
 
-      activeTab = await browser.tabs.query({ active: true });
-      expect(`new-tab-id-${activeTab[0]!.id}`).to.equal(`new-tab-id-${newTab.id}`);
+      expect(await tabActiveWaiter, 'tab should become active').to.not.throw;
     });
 
     it('should switch tabs when hitting enter on tab element', async function () {
       let activeTab = await browser.tabs.query({ active: true });
       expect(`testing-tab-id-${activeTab[0]!.id}`).to.equal(`testing-tab-id-${testingTab!.id}`);
 
+      const tabActiveWaiter = waitForTabIdToBeActive(newTab.id!);
       typeKey({ key: 'Enter' }, $(`#${tabId2HtmlId(newTab.id!)}`)!);
-      // let the event handling do its work
-      await timeoutResolver(100);
-
-      activeTab = await browser.tabs.query({ active: true });
-      expect(`new-tab-id-${activeTab[0]!.id}`).to.equal(`new-tab-id-${newTab.id}`);
+      expect(await tabActiveWaiter, 'tab should become active').to.not.throw;
     });
 
     it('should switch to first tab in container when hitting enter on container', async function () {
@@ -132,13 +109,9 @@ describe(component, function () {
       const tabElement = $(`#${tabId2HtmlId(newTab.id!)}`)!;
       const containerElement = tabElement.parentElement!.parentElement!;
 
+      const tabActiveWaiter = waitForTabIdToBeActive(newTab.id!);
       typeKey({ key: 'Enter' }, containerElement);
-
-      // let the event handling do its work
-      await timeoutResolver(200);
-
-      activeTab = await browser.tabs.query({ active: true });
-      expect(`new-tab-id-${activeTab[0]!.id}`).to.equal(`new-tab-id-${newTab.id}`);
+      expect(await tabActiveWaiter, 'tab should become active').to.not.throw;
     });
 
     it('should close tab when hitting backspace on tab element', async function () {
@@ -147,15 +120,12 @@ describe(component, function () {
       // @ts-ignore
       const tabElementToBeDeleted = $(`#${tabId2HtmlId(newTab.id!)}`)!;
       expect(tab.id, 'make sure we have the right tab').to.equal(newTab.id);
-      typeKey({ key: 'Backspace' }, tabElementToBeDeleted);
-      // let the event handling do its work
-      await timeoutResolver(200);
 
-      tab = undefined;
-      try {
-        tab = await browser.tabs.get(newTab.id!);
-      } catch (_) {}
-      expect(tab, 'tab should not exist anymore').to.be.undefined;
+      const tabClosedWaiter = waitForTabIdToBeClosed(newTab.id!);
+      typeKey({ key: 'Backspace' }, tabElementToBeDeleted);
+
+      expect(await tabClosedWaiter, 'tab should be removed').to.not.throw;
+
       expect(
         tabElementToBeDeleted.classList.contains(ClassSelectors.tabClosed),
         'make sure tab element contains "tab-closed" style'
@@ -175,19 +145,13 @@ describe(component, function () {
 
       // @ts-ignore
       expect(tab.id, 'make sure we have the correct tab').to.equal(newTab.id);
+      const tabClosedWaiter = waitForTabIdToBeClosed(newTab.id!);
       typeKey({ key: 'Backspace' }, $(`#${tabId2HtmlId(newTab.id!)}`)!);
-      // let the event handling do its work
-      await timeoutResolver(200);
-      debug(component, document.activeElement);
+      expect(await tabClosedWaiter, 'tab should be removed').to.not.throw;
+
       expect(document.activeElement!.id, 'should jump to the next tab when the other tab was closed').to.equal(
         tabId2HtmlId(newTab2.id!)
       );
-
-      tab = undefined;
-      try {
-        tab = await browser.tabs.get(newTab.id!);
-      } catch (_) {}
-      expect(tab, 'tab should not exist anymore').to.be.undefined;
     });
 
     it('should close tab when clicking the close radio button', async function () {
@@ -199,15 +163,11 @@ describe(component, function () {
       // @ts-ignore
       expect(tab.id, 'we have the correct tab').to.equal(newTab.id);
       const tabElementToBeDeleted = $(`#${tabId2HtmlId(newTab.id!)}`)!;
-      typeKey({ key: 'Backspace' }, tabElementToBeDeleted);
-      // let the event handling do its work
-      await timeoutResolver(200);
 
-      tab = undefined;
-      try {
-        tab = await browser.tabs.get(newTab.id!);
-      } catch (_) {}
-      expect(tab, 'tab should not exist anymore').to.be.undefined;
+      const tabClosedWaiter = waitForTabIdToBeClosed(newTab.id!);
+      typeKey({ key: 'Backspace' }, tabElementToBeDeleted);
+      expect(await tabClosedWaiter, 'tab should be removed').to.not.throw;
+
       expect(tabElementToBeDeleted.classList.contains(ClassSelectors.tabClosed)).to.be.true;
       expect(tabElementToBeDeleted.dataset['url']).to.equal(newTab.url);
     });
@@ -299,6 +259,7 @@ describe(component, function () {
       const bookmarkContainer = $(`#${Ids.bookmarksCookieStoreId}`)!;
 
       const tabCnt = (await browser.tabs.query({})).length;
+
       const bookmarkTab = $$(Selectors.tabElements, bookmarkContainer)[1]!;
       bookmarkTab.dataset['url'] += '-conex-bookmark-opener-test-keyboard';
 
