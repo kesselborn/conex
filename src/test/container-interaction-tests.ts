@@ -1,5 +1,5 @@
 import { $, $$, closeContainer } from '../helper.js';
-import { expect, timeoutResolver, typeKey } from './helper.js';
+import { expect, typeKey, waitForContainerToBeClosed } from './helper.js';
 import type { Browser } from 'webextension-polyfill';
 import { renderMainPage } from '../main-page.js';
 import { ClassSelectors, Selectors } from '../constants.js';
@@ -69,20 +69,19 @@ describe(component, function () {
 
     const containerElement = $$(Selectors.containerElements)[0]!;
 
+    const containerRemovedWaiter = waitForContainerToBeClosed(container.cookieStoreId);
     typeKey({ key: 'Backspace' }, containerElement);
-    await timeoutResolver(100);
-    console.log(containerElement);
+    expect(await containerRemovedWaiter, 'container should be closed').to.not.throw;
+
     expect(
       (await browser.tabs.query({ cookieStoreId: container.cookieStoreId })).length,
       'tab count after confirm should be 0'
     ).to.equal(0);
-    expect(
-      (await browser.contextualIdentities.query({ name: container.name })).length,
-      'container should not exist anymore'
-    ).to.equal(0);
+
     expect(containerElement.classList.contains(ClassSelectors.noMatch), 'container element should be hidden').to.equal(
       true
     );
+
     expect(confirmCalled, 'confirm should not have been called').to.equal(false);
     window.confirm = confirmFunction;
   });
@@ -119,8 +118,14 @@ describe(component, function () {
 
     // first try: simulate confirm === false
     confirm = false;
+
+    let containerRemovedWaiter = waitForContainerToBeClosed(container.cookieStoreId);
     typeKey({ key: 'Backspace' }, containerElement!);
-    await timeoutResolver(100);
+    try {
+      await containerRemovedWaiter;
+      expect(true, 'this should never be reached').to.be.false;
+    } catch (_) {}
+
     expect(
       (await browser.tabs.query({ cookieStoreId: container.cookieStoreId })).length,
       'tabs cnt after abort'
@@ -132,16 +137,15 @@ describe(component, function () {
 
     // second try: simulate confirm === true
     confirm = true;
+    containerRemovedWaiter = waitForContainerToBeClosed(container.cookieStoreId);
     typeKey({ key: 'Backspace' }, containerElement!);
-    await timeoutResolver(100);
-    expect(
-      (await browser.tabs.query({ cookieStoreId: container.cookieStoreId })).length,
-      'tab count after confirm'
-    ).to.equal(0);
+    await expect(await containerRemovedWaiter, 'container should be closed').to.not.throw;
+
     expect(
       (await browser.contextualIdentities.query({ name: container.name })).length,
       'container count after confirm'
     ).to.equal(0);
+
     expect(containerElement.classList.contains(ClassSelectors.noMatch)).to.equal(true);
     expect(confirmMessage).to.equal(`Are you sure you want to close ${container.name} and its 2 tabs?`);
     window.confirm = confirmFunction;
@@ -180,15 +184,14 @@ describe(component, function () {
     confirm = true;
 
     const closeButton = $('.close', containerElement)! as HTMLInputElement;
+
+    const containerRemovedWaiter = waitForContainerToBeClosed(container.cookieStoreId);
     closeButton.click();
-    await timeoutResolver(100);
+    expect(await containerRemovedWaiter, 'container should be closed').to.not.throw;
+
     expect(
       (await browser.tabs.query({ cookieStoreId: container.cookieStoreId })).length,
       'tab count after confirm'
-    ).to.equal(0);
-    expect(
-      (await browser.contextualIdentities.query({ name: container.name })).length,
-      'container count after confirm'
     ).to.equal(0);
     expect(containerElement.classList.contains(ClassSelectors.noMatch)).to.equal(true);
     expect(confirmMessage).to.equal(`Are you sure you want to close ${container.name} and its 2 tabs?`);

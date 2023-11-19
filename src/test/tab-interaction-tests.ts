@@ -1,12 +1,5 @@
 import { $, $$, closeContainer } from '../helper.js';
-import {
-  clear,
-  expect,
-  typeKey,
-  waitForTabIdToBeActive,
-  waitForTabIdToBeClosed,
-  waitForTabToAppear,
-} from './helper.js';
+import { clear, expect, typeKey, waitForTabToAppear, waitForTabToBeActive, waitForTabToBeClosed } from './helper.js';
 import { tabId2HtmlId, tabId2HtmlOpenTabId } from '../tab-element.js';
 import type { Browser, Tabs } from 'webextension-polyfill';
 import { renderMainPage } from '../main-page.js';
@@ -86,7 +79,7 @@ describe(component, function () {
       let activeTab = await browser.tabs.query({ active: true });
       expect(`testing-tab-id-${activeTab[0]!.id}`).to.equal(`testing-tab-id-${testingTab!.id}`);
 
-      const tabActiveWaiter = waitForTabIdToBeActive(newTab.id!);
+      const tabActiveWaiter = waitForTabToBeActive(newTab.id!);
       $(`#${tabId2HtmlOpenTabId(newTab.id!)}`)!.click();
 
       expect(await tabActiveWaiter, 'tab should become active').to.not.throw;
@@ -96,7 +89,7 @@ describe(component, function () {
       let activeTab = await browser.tabs.query({ active: true });
       expect(`testing-tab-id-${activeTab[0]!.id}`).to.equal(`testing-tab-id-${testingTab!.id}`);
 
-      const tabActiveWaiter = waitForTabIdToBeActive(newTab.id!);
+      const tabActiveWaiter = waitForTabToBeActive(newTab.id!);
       typeKey({ key: 'Enter' }, $(`#${tabId2HtmlId(newTab.id!)}`)!);
       expect(await tabActiveWaiter, 'tab should become active').to.not.throw;
     });
@@ -109,7 +102,7 @@ describe(component, function () {
       const tabElement = $(`#${tabId2HtmlId(newTab.id!)}`)!;
       const containerElement = tabElement.parentElement!.parentElement!;
 
-      const tabActiveWaiter = waitForTabIdToBeActive(newTab.id!);
+      const tabActiveWaiter = waitForTabToBeActive(newTab.id!);
       typeKey({ key: 'Enter' }, containerElement);
       expect(await tabActiveWaiter, 'tab should become active').to.not.throw;
     });
@@ -121,7 +114,7 @@ describe(component, function () {
       const tabElementToBeDeleted = $(`#${tabId2HtmlId(newTab.id!)}`)!;
       expect(tab.id, 'make sure we have the right tab').to.equal(newTab.id);
 
-      const tabClosedWaiter = waitForTabIdToBeClosed(newTab.id!);
+      const tabClosedWaiter = waitForTabToBeClosed(newTab.id!);
       typeKey({ key: 'Backspace' }, tabElementToBeDeleted);
 
       expect(await tabClosedWaiter, 'tab should be removed').to.not.throw;
@@ -145,7 +138,7 @@ describe(component, function () {
 
       // @ts-ignore
       expect(tab.id, 'make sure we have the correct tab').to.equal(newTab.id);
-      const tabClosedWaiter = waitForTabIdToBeClosed(newTab.id!);
+      const tabClosedWaiter = waitForTabToBeClosed(newTab.id!);
       typeKey({ key: 'Backspace' }, $(`#${tabId2HtmlId(newTab.id!)}`)!);
       expect(await tabClosedWaiter, 'tab should be removed').to.not.throw;
 
@@ -164,7 +157,7 @@ describe(component, function () {
       expect(tab.id, 'we have the correct tab').to.equal(newTab.id);
       const tabElementToBeDeleted = $(`#${tabId2HtmlId(newTab.id!)}`)!;
 
-      const tabClosedWaiter = waitForTabIdToBeClosed(newTab.id!);
+      const tabClosedWaiter = waitForTabToBeClosed(newTab.id!);
       typeKey({ key: 'Backspace' }, tabElementToBeDeleted);
       expect(await tabClosedWaiter, 'tab should be removed').to.not.throw;
 

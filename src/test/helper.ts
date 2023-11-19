@@ -54,7 +54,7 @@ chai.config.includeStack = true;
 // @ts-ignore
 export const expect = chai.expect;
 
-export async function waitForTabIdToBeActive(id: number): Promise<boolean> {
+export async function waitForTabToBeActive(id: number): Promise<boolean> {
   let tabBecameActive = false;
   const listenerFn = function (info: Tabs.OnActivatedActiveInfoType) {
     if (info.tabId === id) {
@@ -73,7 +73,26 @@ export async function waitForTabIdToBeActive(id: number): Promise<boolean> {
   throw `tab with id ${id} never became active`;
 }
 
-export async function waitForTabIdToBeClosed(id: number): Promise<boolean> {
+export async function waitForContainerToBeClosed(cookieStoreId: string): Promise<boolean> {
+  let containerClosed = false;
+  const listenerFn = function (info: ContextualIdentities.OnRemovedChangeInfoType) {
+    if (info.contextualIdentity.cookieStoreId === cookieStoreId) {
+      browser.contextualIdentities.onRemoved.removeListener(listenerFn);
+      containerClosed = true;
+    }
+  };
+  browser.contextualIdentities.onRemoved.addListener(listenerFn);
+  for (let i = 0; i < 10; i++) {
+    await timeoutResolver(50);
+    if (containerClosed) {
+      return true;
+    }
+  }
+  browser.contextualIdentities.onRemoved.removeListener(listenerFn);
+  throw `container with id ${cookieStoreId} was never removed`;
+}
+
+export async function waitForTabToBeClosed(id: number): Promise<boolean> {
   let tabClosed = false;
   const listenerFn = function (tabId: number, _info: Tabs.OnRemovedRemoveInfoType) {
     if (tabId === id) {
