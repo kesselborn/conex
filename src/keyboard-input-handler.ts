@@ -1,4 +1,4 @@
-import { $, $$, _, closeContainer } from './helper.js';
+import { $, $$ } from './helper.js';
 import { htmlId2TabId, tabId2HtmlCloseTabId } from './tab-element.js';
 import { searchInContainer } from './search.js';
 import type { Browser } from 'webextension-polyfill';
@@ -8,7 +8,7 @@ import { readSettings } from './settings.js';
 import { ContextualIdentityEx, historyDummyContainer, renderTabs } from './containers.js';
 import { getHistoryAsTabs } from './history.js';
 import { containerElement } from './container-element.js';
-import { openTab } from './form-action.js';
+import { openTab, removeContainer } from './form-action.js';
 
 declare let browser: Browser;
 
@@ -105,18 +105,6 @@ function activateFirstVisibleContainerTab(containerElement: Element) {
   }
 }
 
-export async function removeContainer(containerElement: Element) {
-  const containerId = containerElement.id;
-  const tabsInContainer = (await browser.tabs.query({ cookieStoreId: containerId })).length;
-  // eslint-disable-next-line no-void
-  const containerName = $(Selectors.containerName, containerElement)?.innerText!;
-  if (tabsInContainer === 0 || confirm(_('closeContainerConfirmationDialoge', [containerName, tabsInContainer]))) {
-    focusNextVisibleContainerSibling(containerElement);
-    containerElement.classList.add(ClassSelectors.noMatch);
-    await closeContainer(containerId);
-  }
-}
-
 async function keyDownOnContainerElement(e: KeyboardEvent): Promise<void> {
   const containerElement: Element = e.target as Element;
   const containerId = containerElement.id;
@@ -127,6 +115,8 @@ async function keyDownOnContainerElement(e: KeyboardEvent): Promise<void> {
       e.preventDefault();
       {
         const tabsInContainer = await browser.tabs.query({ cookieStoreId: containerId });
+
+        // create new tab in container if container is empty
         if (e.shiftKey || tabsInContainer.length === 0) {
           await browser.tabs.create({ cookieStoreId: containerId });
           window.close();
@@ -242,7 +232,7 @@ function keyDownOnTabElement(e: KeyboardEvent): void {
   }
 }
 
-function focusNextVisibleContainerSibling(curContainerElement: Element): Element {
+export function focusNextVisibleContainerSibling(curContainerElement: Element): Element {
   const nextVisibleContainerSibling = $(`#${curContainerElement.id} ~ :not(.${ClassSelectors.noMatch})`);
   if (nextVisibleContainerSibling) {
     nextVisibleContainerSibling.focus();

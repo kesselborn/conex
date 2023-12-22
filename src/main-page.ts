@@ -24,7 +24,7 @@ export async function renderMainPage(
   }
 
   const searchField = $e('input', { id: IdSelectors.searchId, placeholder: _('searchBoxPlaceholder'), type: 'text' });
-  const form = $e('form', {}, [searchField]);
+  const form = $e('form', { id: 'browser-action' }, [searchField]);
   await window.document.body.appendChild(form);
 
   await renderContainers(containers, options);

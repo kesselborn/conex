@@ -1,8 +1,9 @@
-import { ClassSelectors, Ids, InputNameSelectors } from './constants.js';
+import { ClassSelectors, Ids, InputNameSelectors, Selectors } from './constants.js';
 import { debug } from './logger.js';
 import { htmlId2TabId } from './tab-element.js';
-import { removeContainer } from './keyboard-input-handler.js';
 import { Browser } from 'webextension-polyfill';
+import { $, _, closeContainer } from './helper.js';
+import { focusNextVisibleContainerSibling } from './keyboard-input-handler.js';
 
 const component = 'form-action';
 declare let browser: Browser;
@@ -17,20 +18,26 @@ function isHistoryOrBookmarkItem(e: HTMLElement): boolean {
   return false;
 }
 
-export function openTab(tabElement: HTMLElement) {
-  debug(component, 'tab to be opened is', tabElement);
-  if (isHistoryOrBookmarkItem(tabElement)) {
-    debug(component, 'request to open history or bookmark item');
-    browser.tabs.create({
-      active: true,
-      url: tabElement.dataset['url'],
-    });
-  } else {
-    debug(component, 'request to switch to open tab');
-    const tabId = htmlId2TabId(tabElement.id);
-    browser.tabs.update(tabId, { active: true });
+export async function closeTab(tabElement: HTMLElement) {
+  // save url, so we can undo the closing
+  const tab = await browser.tabs.get(htmlId2TabId(tabElement.id))!;
+  if (tab) {
+    tabElement.dataset['url'] = tab.url;
+    browser.tabs.remove(tab.id!);
+    tabElement.classList.add(ClassSelectors.tabClosed);
   }
-  window.close();
+}
+
+export async function removeContainer(containerElement: Element) {
+  const containerId = containerElement.id;
+  const tabsInContainer = (await browser.tabs.query({ cookieStoreId: containerId })).length;
+  // eslint-disable-next-line no-void
+  const containerName = $(Selectors.containerName, containerElement)?.innerText!;
+  if (tabsInContainer === 0 || confirm(_('closeContainerConfirmationDialoge', [containerName, tabsInContainer]))) {
+    focusNextVisibleContainerSibling(containerElement);
+    containerElement.classList.add(ClassSelectors.noMatch);
+    await closeContainer(containerId);
+  }
 }
 
 export async function formChange(e: Event): Promise<void> {
@@ -57,14 +64,7 @@ export async function formChange(e: Event): Promise<void> {
     case InputNameSelectors.closeTab: {
       target.checked = false;
       const tabElement = target.parentElement!; // this action always has a parent
-
-      // save url, so we can undo the closing
-      const tab = await browser.tabs.get(htmlId2TabId(tabElement.id))!;
-      if (tab) {
-        tabElement.dataset['url'] = tab.url;
-        browser.tabs.remove(tab.id!);
-        tabElement.classList.add(ClassSelectors.tabClosed);
-      }
+      await closeTab(tabElement);
       break;
     }
     case InputNameSelectors.closeContainer: {
@@ -75,4 +75,20 @@ export async function formChange(e: Event): Promise<void> {
       break;
     }
   }
+}
+
+export function openTab(tabElement: HTMLElement) {
+  debug(component, 'tab to be opened is', tabElement);
+  if (isHistoryOrBookmarkItem(tabElement)) {
+    debug(component, 'request to open history or bookmark item');
+    browser.tabs.create({
+      active: true,
+      url: tabElement.dataset['url'],
+    });
+  } else {
+    debug(component, 'request to switch to open tab');
+    const tabId = htmlId2TabId(tabElement.id);
+    browser.tabs.update(tabId, { active: true });
+  }
+  window.close();
 }

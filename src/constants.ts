@@ -47,7 +47,7 @@ export class ConexElements {
   }
 
   static get form(): HTMLElement {
-    return $('form')!;
+    return $('#browser-action')!;
   }
 
   static get containerList(): HTMLElement | null {
