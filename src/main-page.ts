@@ -2,7 +2,6 @@ import {
   ContainerRenderOptions,
   ContextualIdentityEx,
   defaultContainer,
-  formChange,
   renderContainers,
   renderTabs,
 } from './containers.js';
@@ -11,6 +10,7 @@ import { ConexElements, IdSelectors } from './constants.js';
 import { keydown, keyup } from './keyboard-input-handler.js';
 import { $e, _ } from './helper.js';
 import { getBookmarksAsTabs } from './bookmarks.js';
+import { formChange } from './form-action.js';
 import ContextualIdentity = ContextualIdentities.ContextualIdentity;
 
 declare let browser: Browser;

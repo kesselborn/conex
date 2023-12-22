@@ -1,11 +1,10 @@
 import { $, $e, _, ContextualIdentitiesColors } from './helper.js';
-import { htmlId2TabId, tabElement } from './tab-element.js';
+import { tabElement } from './tab-element.js';
 import { containerElement, countLabel } from './container-element.js';
 import type { Browser } from 'webextension-polyfill';
 import { ContextualIdentities, Tabs } from 'webextension-polyfill';
-import { ClassSelectors, ConexElements, Ids, InputNameSelectors, Selectors } from './constants.js';
-import { debug, error } from './logger.js';
-import { removeContainer } from './keyboard-input-handler.js';
+import { ClassSelectors, ConexElements, Ids, Selectors } from './constants.js';
+import { error } from './logger.js';
 import { getBookmarksAsTabs } from './bookmarks.js';
 import ContextualIdentity = ContextualIdentities.ContextualIdentity;
 import Tab = Tabs.Tab;
@@ -13,71 +12,6 @@ import Tab = Tabs.Tab;
 declare let browser: Browser;
 
 const component = 'containers';
-
-function isHistoryOrBookmarkItem(e: HTMLElement): boolean {
-  while (e.parentElement) {
-    e = e.parentElement;
-    if (e.id === Ids.historyCookieStoreId || e.id === Ids.bookmarksCookieStoreId) {
-      return true;
-    }
-  }
-  return false;
-}
-
-export async function formChange(e: Event): Promise<void> {
-  if (!e.target || !(e.target instanceof HTMLInputElement)) {
-    return;
-  }
-
-  const target = e.target as HTMLInputElement;
-
-  debug(component, 'form change', e, 'target:', target);
-  switch (target.name) {
-    case InputNameSelectors.toggleTabsVisibilityName: {
-      target.checked = false;
-      const containerElement = target.parentElement!; // this action always has a parent
-      containerElement.classList.toggle(ClassSelectors.collapsedContainer);
-      break;
-    }
-    case InputNameSelectors.openTab: {
-      target.checked = false;
-      const tabElement = target.parentElement!;
-      if (isHistoryOrBookmarkItem(tabElement)) {
-        debug(component, 'request to open history or bookmark item');
-        browser.tabs.create({
-          active: true,
-          url: tabElement.dataset['url'],
-        });
-      } else {
-        debug(component, 'request to switch to open tab');
-        const tabId = htmlId2TabId(tabElement.id);
-        browser.tabs.update(tabId, { active: true });
-      }
-      window.close();
-      break;
-    }
-    case InputNameSelectors.closeTab: {
-      target.checked = false;
-      const tabElement = target.parentElement!; // this action always has a parent
-
-      // save url, so we can undo the closing
-      const tab = await browser.tabs.get(htmlId2TabId(tabElement.id))!;
-      if (tab) {
-        tabElement.dataset['url'] = tab.url;
-        browser.tabs.remove(tab.id!);
-        tabElement.classList.add(ClassSelectors.tabClosed);
-      }
-      break;
-    }
-    case InputNameSelectors.closeContainer: {
-      target.checked = false;
-      const containerElement = target.parentElement!; // this action always has a parent
-
-      await removeContainer(containerElement);
-      break;
-    }
-  }
-}
 
 export const defaultContainer: ContextualIdentityEx = {
   colorCode: ContextualIdentitiesColors.black,

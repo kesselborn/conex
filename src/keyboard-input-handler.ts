@@ -8,6 +8,7 @@ import { readSettings } from './settings.js';
 import { ContextualIdentityEx, historyDummyContainer, renderTabs } from './containers.js';
 import { getHistoryAsTabs } from './history.js';
 import { containerElement } from './container-element.js';
+import { openTab } from './form-action.js';
 
 declare let browser: Browser;
 
@@ -100,8 +101,7 @@ function activateFirstVisibleContainerTab(containerElement: Element) {
   const nextTabElement = $(Selectors.tabElementsMatch, containerElement);
   debug(component, 'enter on container -- will open the first tab in that container', containerElement);
   if (nextTabElement) {
-    debug(component, 'tab to be opened is', nextTabElement);
-    $(`input[name="${InputNameSelectors.openTab}"]`, nextTabElement)!.click();
+    openTab(nextTabElement);
   }
 }
 
