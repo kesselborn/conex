@@ -30,6 +30,7 @@ export enum Selectors {
   containerName = 'h2 span:nth-child(1)',
   settingsForm = 'form#settings',
   tabElements = 'ul>li',
+  tabTitle = 'h3',
   tabElementsMatch = 'ul>li:not(.no-match)',
   tabElementsNoMatch = 'ul>li.no-match',
   tabsCnt = 'h2 span:nth-child(2)',

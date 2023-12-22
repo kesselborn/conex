@@ -3,7 +3,7 @@ import { htmlId2TabId, tabId2HtmlCloseTabId } from './tab-element.js';
 import { searchInContainer } from './search.js';
 import type { Browser } from 'webextension-polyfill';
 import { ClassSelectors, ConexElements, Ids, InputNameSelectors, Selectors } from './constants.js';
-import { debug } from './logger.js';
+import { debug, error } from './logger.js';
 import { readSettings } from './settings.js';
 import { ContextualIdentityEx, historyDummyContainer, renderTabs } from './containers.js';
 import { getHistoryAsTabs } from './history.js';
@@ -60,6 +60,9 @@ function keyDownOnSearchElement(e: KeyboardEvent): void {
     case 'Enter': {
       e.preventDefault();
       const firstExpandedContainer = $(Selectors.containerElementsMatch, ConexElements.search.parentElement!)!;
+      if (!firstExpandedContainer) {
+        error(component, 'did not find any container that had a match');
+      }
       debug(component, 'first matched container', firstExpandedContainer);
       activateFirstVisibleContainerTab(firstExpandedContainer);
     }
@@ -98,9 +101,7 @@ function activateFirstVisibleContainerTab(containerElement: Element) {
   debug(component, 'enter on container -- will open the first tab in that container', containerElement);
   if (nextTabElement) {
     debug(component, 'tab to be opened is', nextTabElement);
-    const tabId = htmlId2TabId(nextTabElement.id);
-    browser.tabs.update(tabId, { active: true });
-    window.close();
+    $(`input[name="${InputNameSelectors.openTab}"]`, nextTabElement)!.click();
   }
 }
 

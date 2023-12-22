@@ -212,6 +212,34 @@ describe(component, function () {
       expect(activeTab.url, 'the current tab is the history item tab').to.equal(historyTab.dataset['url']);
       await browser.tabs.remove(await newTabWaiter);
     });
+
+    it('should open the first tab of the history container when hitting enter on search box', async function () {
+      // hack the new container to be the history container
+      $(`#${newContainerId}`)!.id = Ids.historyCookieStoreId;
+
+      const tabCnt = (await browser.tabs.query({})).length;
+      const historyTab = $(`#${tabId2HtmlId(newTab2.id!)}`)!;
+      const searchString = 'conex-history-opener-test-keyboard-on-search-field';
+      historyTab.dataset['url'] += `?${searchString}`;
+      ($(Selectors.tabTitle, historyTab)! as HTMLElement).innerText = historyTab.dataset['url']!;
+
+      const newTabWaiter = waitForTabToAppear(historyTab.dataset['url']!);
+
+      const searchElement = $(`#${IdSelectors.searchId}`)! as HTMLInputElement;
+      console.log(searchElement);
+      searchElement.value = historyTab.dataset['url']!;
+      await search(historyTab.dataset['url']!);
+      typeKey({ key: 'Enter' }, searchElement);
+
+      expect(await newTabWaiter, 'new tab should be created').to.not.throw;
+
+      const tabCntNew = (await browser.tabs.query({})).length;
+      expect(tabCntNew, 'expect click on history item to open a new tab').to.equal(tabCnt + 1);
+
+      const activeTab = (await browser.tabs.query({ active: true }))[0]!;
+      expect(activeTab.url, 'the current tab is the history item tab').to.equal(historyTab.dataset['url']);
+      await browser.tabs.remove(await newTabWaiter);
+    });
   });
 
   describe('bookmark tabs', function () {
@@ -264,6 +292,35 @@ describe(component, function () {
 
       const activeTab = (await browser.tabs.query({ active: true }))[0]!;
       expect(activeTab.url, 'the current tab is the bookmark item tab').to.equal(bookmarkTab.dataset['url']);
+      await browser.tabs.remove(await newTabWaiter);
+    });
+
+    it('should open the first tab of the bookmarks container when hitting enter on search box', async function () {
+      // hack the new container to be the bookmark container
+      $(`#${newContainerId}`)!.id = Ids.bookmarksCookieStoreId;
+      const bookmarkContainer = $(`#${Ids.bookmarksCookieStoreId}`)!;
+
+      const tabCnt = (await browser.tabs.query({})).length;
+      const bookmarkTab = $$(Selectors.tabElements, bookmarkContainer)[1]!;
+      const searchString = 'conex-history-bookmark-opener-test-keyboard-on-search-field';
+      bookmarkTab.dataset['url'] += `?${searchString}`;
+      ($(Selectors.tabTitle, bookmarkTab)! as HTMLElement).innerText = bookmarkTab.dataset['url']!;
+
+      const newTabWaiter = waitForTabToAppear(bookmarkTab.dataset['url']!);
+
+      const searchElement = $(`#${IdSelectors.searchId}`)! as HTMLInputElement;
+      console.log(searchElement);
+      searchElement.value = bookmarkTab.dataset['url']!;
+      await search(bookmarkTab.dataset['url']!);
+      typeKey({ key: 'Enter' }, searchElement);
+
+      expect(await newTabWaiter, 'new tab should be created').to.not.throw;
+
+      const tabCntNew = (await browser.tabs.query({})).length;
+      expect(tabCntNew, 'expect click on history item to open a new tab').to.equal(tabCnt + 1);
+
+      const activeTab = (await browser.tabs.query({ active: true }))[0]!;
+      expect(activeTab.url, 'the current tab is the history item tab').to.equal(bookmarkTab.dataset['url']);
       await browser.tabs.remove(await newTabWaiter);
     });
   });
