@@ -11,6 +11,14 @@
     "message": "history",
     "description": "name of the history container element in the exention popup"
   },
+  "commandNewContainer": {
+    "message": "Create new container",
+    "description": "Description of the keyboard shortcut for creating a new container"
+  },
+  "commandExecuteAction": {
+    "message": "Open search popup",
+    "description": "Description of the keyboard shortcut for opening the search popup (action)"
+  },
   "extensionDescription": {
     "message": "A tabgroup'esque successor for Firefox Quantum",
     "description": "Description of the extension."

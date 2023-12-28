@@ -1,71 +1,71 @@
 {
-  "manifest_version": 2,
-  "author": "kesselborn",
-  "default_locale": "en",
-  "description": "A tab manager",
-  "homepage_url": "https://github.com/kesselborn/conex",
-  "name": "Conex (preview)",
-  "version": "0.9.14",
-  "browser_action": {
+  "manifest_version": 3,
+  "action": {
     "default_title": "Conex",
-    "browser_style": false,
     "default_popup": "browser-action.html",
-    "default_icon": {
-      "48": "icons/icon_48.png"
-    }
+    "default_icon": "./icons/icon.svg"
   },
-  "applications": {
+  "author": "Daniel Bornkessel",
+  "background": {
+    "type": "module",
+    "scripts": [
+      "background.js"
+    ]
+  },
+  "browser_specific_settings": {
     "gecko": {
       "strict_min_version": "60.0a1",
       "update_url": "https://raw.githubusercontent.com/kesselborn/conex/master/versions.json"
     }
   },
   "commands": {
-    "_execute_browser_action": {
+    "_execute_action": {
       "suggested_key": {
-        "default": "MacCtrl+Space"
-      }
+        "default": "Ctrl+Space",
+        "mac": "MacCtrl+Space"
+      },
+      "description": "__MSG_commandExecuteAction__"
     },
     "new-container": {
       "suggested_key": {
         "default": "Alt+Shift+N"
-      }
+      },
+      "description": "__MSG_commandNewContainer__"
     }
   },
+  "default_locale": "en",
+  "description": "__MSG_extensionDescription__",
+  "developer": {
+    "name": "Daniel Kesselborn",
+    "url": "https://github.com/kesselborn/conex"
+  },
+  "homepage_url": "https://github.com/kesselborn/conex",
+  "name": "Conex (preview)",
+  "version": "0.42.0",
   "options_ui": {
     "page": "options-ui.html",
-    "browser_style": true,
     "open_in_tab": false
   },
-  "background": {
-    "scripts": [
-      "background.js"
-    ]
-  },
   "icons": {
-    "48": "icons/icon_48.png"
+    "48": "icons/icon.svg",
+    "96": "icons/icon.svg"
   },
+  "incognito": "spanning",
   "permissions": [
-    "<all_urls>",
     "contextualIdentities",
     "cookies",
-    "menus",
     "storage",
-    "tabs",
-    "webNavigation",
-    "webRequest",
-    "webRequestBlocking",
-    "activeTab",
-    "history",
-    "bookmarks",
-    "notifications",
-    "tabHide"
+    "tabs"
   ],
   "optional_permissions": [
+    "<all_urls>",
     "activeTab",
-    "history",
     "bookmarks",
+    "history",
     "notifications",
-    "tabHide"
+    "tabHide",
+    "webNavigation",
+    "webRequest",
+    "webRequestBlocking"
   ]
 }

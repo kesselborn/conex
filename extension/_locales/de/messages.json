@@ -1,4 +1,12 @@
 {
+  "commandExecuteAction": {
+    "message": "Suche öffnen",
+    "description": "Description of the keyboard shortcut for opening the search popup (action)"
+  },
+  "commandNewContainer": {
+    "message": "Neuen Container erstellen",
+    "description": "Description of the keyboard shortcut for creating a new container"
+  },
   "extensionDescription": {
     "message": "Ein Tabgroup-ähnlicher Nachfolger für Firefox Quantum ähnliche Erweiterungen",
     "description": "Description of the extension."
