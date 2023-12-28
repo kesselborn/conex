@@ -19,7 +19,7 @@ export const defaultContainer: ContextualIdentityEx = {
   iconUrl: '',
   cookieStoreId: 'firefox-default',
   color: 'black',
-  name: _('no container'),
+  name: _('no-container'),
   hidden: false,
   tabCnt: undefined,
 };

@@ -1,5 +1,5 @@
 {
-  "no container": {
+  "no-container": {
     "message": "no container",
     "description": "name of the default container element in the extension popup"
   },
