@@ -46,6 +46,17 @@ function newSelectionBox(component: string): Element {
   ]);
 }
 
+async function syncUIWithSettings() {
+  // set debug options
+  const settings = await readSettings();
+  ($('#hide-tabs') as HTMLInputElement).checked = settings.hideTabs;
+  ($('#create-thumbnails') as HTMLInputElement).checked = settings.createThumbnails;
+  ($('#include-bookmarks') as HTMLInputElement).checked = settings.includeBookmarks;
+  ($('#include-history') as HTMLInputElement).checked = settings.includeHistory;
+  ($('#ask-target-container') as HTMLInputElement).checked = settings.askContainer;
+  ($('#close-reopened-container') as HTMLInputElement).checked = settings.closeMovedTabs;
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   let secretCnt: number = 0;
   showHideDebugUI();
@@ -58,15 +69,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   const logSettings = await loadSettings();
-
-  // set debug options
-  const settings = await readSettings();
-  ($('#hide-tabs') as HTMLInputElement).checked = settings.hideTabs;
-  ($('#create-thumbnails') as HTMLInputElement).checked = settings.createThumbnails;
-  ($('#include-bookmarks') as HTMLInputElement).checked = settings.includeBookmarks;
-  ($('#include-history') as HTMLInputElement).checked = settings.includeHistory;
-  ($('#ask-target-container') as HTMLInputElement).checked = settings.askContainer;
-  ($('#close-reopened-container') as HTMLInputElement).checked = settings.closeMovedTabs;
+  await syncUIWithSettings();
 
   const selectorContainer = $('#debug-level-selector')!;
   // prefill logging selection boxes
@@ -90,8 +93,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     persistLogLevel(selectedComponent, value as Level);
   });
 
-  // eslint-disable-next-line no-void
-  $(Selectors.settingsForm)?.addEventListener('change', async (e: Event) => {
+  $(Selectors.settingsForm)!.addEventListener('change', async (e: Event) => {
     const optionSwitch = e.target! as HTMLInputElement;
     const optionName = optionSwitch.id;
     const optionValue = optionSwitch.checked;
@@ -118,7 +120,22 @@ document.addEventListener('DOMContentLoaded', async () => {
       default:
         error(component, `invalid setting with name ${optionName} was changed`);
     }
-
-    return;
   });
+  // const containers = await browser.contextualIdentities.query({});
+  // await renderContainers(containers, { bookmarks: true, history: false, order: [] });
+  return;
+});
+
+browser.permissions.onRemoved.addListener(async (permissions) => {
+  debug(component, 'remove permission called');
+  if (permissions.permissions!.includes('bookmarks')) {
+    await changeIncludeBookmarksSetting(false);
+  }
+  if (permissions.permissions!.includes('history')) {
+    await changeIncludeHistorySetting(false);
+  }
+  if (permissions.permissions!.includes('tabHide')) {
+    await changeHideTabsSetting(false);
+  }
+  syncUIWithSettings();
 });

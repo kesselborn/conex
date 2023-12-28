@@ -1,5 +1,6 @@
-import { Browser } from 'webextension-polyfill';
-import { debug } from './logger.js';
+import { Browser, Manifest } from 'webextension-polyfill';
+import { debug, info } from './logger.js';
+import OptionalPermission = Manifest.OptionalPermission;
 
 export interface Settings {
   askContainer: boolean;
@@ -24,6 +25,19 @@ export async function readSettings(): Promise<Settings> {
 export async function writeSettings(settings: Settings): Promise<void> {
   debug(component, 'changing settings: ', settings);
   return await browser.storage.local.set({ settings: settings });
+}
+
+function changeOptionalPermissions(value: boolean, permissions: Manifest.OptionalPermission[]) {
+  if (value) {
+    info(component, 'removing bookmark permissions');
+    //
+    // THIS CALL MUST HAPPEN BEFORE ANY AWAIT!!! SEE https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions
+    //
+    browser.permissions.request({ permissions });
+  } else {
+    info(component, 'requesting bookmark permissions');
+    browser.permissions.remove({ permissions });
+  }
 }
 
 export async function changeAskContainerSetting(value: boolean) {
@@ -51,18 +65,28 @@ export async function changeDebugViewSetting(value: boolean) {
 }
 
 export async function changeHideTabsSetting(value: boolean) {
+  const permissions = ['tabHide'] as OptionalPermission[];
+  changeOptionalPermissions(value, permissions);
+
   const settings = await readSettings();
   settings.hideTabs = value;
   writeSettings(settings);
 }
 
 export async function changeIncludeBookmarksSetting(value: boolean) {
+  const permissions = ['bookmarks'] as OptionalPermission[];
+  changeOptionalPermissions(value, permissions);
+
   const settings = await readSettings();
   settings.includeBookmarks = value;
+
   writeSettings(settings);
 }
 
 export async function changeIncludeHistorySetting(value: boolean) {
+  const permissions = ['history'] as OptionalPermission[];
+  changeOptionalPermissions(value, permissions);
+
   const settings = await readSettings();
   settings.includeHistory = value;
   writeSettings(settings);

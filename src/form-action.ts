@@ -31,8 +31,7 @@ export async function closeTab(tabElement: HTMLElement) {
 export async function removeContainer(containerElement: Element) {
   const containerId = containerElement.id;
   const tabsInContainer = (await browser.tabs.query({ cookieStoreId: containerId })).length;
-  // eslint-disable-next-line no-void
-  const containerName = $(Selectors.containerName, containerElement)?.innerText!;
+  const containerName = $(Selectors.containerName, containerElement)!.innerText!;
   if (tabsInContainer === 0 || confirm(_('closeContainerConfirmationDialoge', [containerName, tabsInContainer]))) {
     focusNextVisibleContainerSibling(containerElement);
     containerElement.classList.add(ClassSelectors.noMatch);
