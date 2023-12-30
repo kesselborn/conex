@@ -76,7 +76,12 @@ export async function formChange(e: Event): Promise<void> {
   }
 }
 
-export function openTab(tabElement: HTMLElement) {
+export async function openTabId(tabId: number) {
+  const tab = await browser.tabs.update(tabId, { active: true });
+  await browser.windows.update(tab.windowId!, { focused: true });
+}
+
+export async function openTab(tabElement: HTMLElement) {
   debug(component, 'tab to be opened is', tabElement);
   if (isHistoryOrBookmarkItem(tabElement)) {
     debug(component, 'request to open history or bookmark item');
@@ -87,7 +92,7 @@ export function openTab(tabElement: HTMLElement) {
   } else {
     debug(component, 'request to switch to open tab');
     const tabId = htmlId2TabId(tabElement.id);
-    browser.tabs.update(tabId, { active: true });
+    await openTabId(tabId);
   }
   window.close();
 }

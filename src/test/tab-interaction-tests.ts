@@ -8,6 +8,7 @@ import { debug, info } from '../logger.js';
 import { renderTabs } from '../containers.js';
 import { search } from '../keyboard-input-handler.js';
 import { readSettings } from '../settings.js';
+import { openTabId } from '../form-action.js';
 
 let newContainerId: string;
 let newTab: Tabs.Tab;
@@ -19,6 +20,34 @@ let uniqUrlSearchString = `tab${Math.random()}`.replace('.', '');
 declare let browser: Browser;
 
 let component = 'tab-interaction-tests-';
+
+describe(`${component} (window focus handling)`, function () {
+  before(async function () {
+    testingTab = (await browser.tabs.query({ active: true }))[0];
+  });
+
+  afterEach(async function () {
+    const tab = await browser.tabs.update(testingTab!.id, { active: true });
+    await browser.windows.update(tab!.windowId!, { focused: true });
+  });
+
+  it('should focus window of tab to be opened', async function () {
+    let currentlyActiveWindow = await browser.windows.getLastFocused();
+    const newWindow = await browser.windows.create({ allowScriptsToClose: true });
+    const tabInNewWindow = (await browser.tabs.query({ windowId: newWindow.id }))![0]!;
+
+    await browser.windows.update(currentlyActiveWindow.id!, { focused: true });
+
+    currentlyActiveWindow = await browser.windows.getLastFocused();
+    expect(currentlyActiveWindow.id, "new window shouldn't be focused").to.not.equal(newWindow.id);
+
+    await openTabId(tabInNewWindow.id!);
+
+    currentlyActiveWindow = await browser.windows.getLastFocused();
+    expect(currentlyActiveWindow.id, 'new window should now be focused').to.equal(newWindow.id);
+    await browser.windows.remove(currentlyActiveWindow.id!);
+  });
+});
 
 describe(component, function () {
   before(async function () {
