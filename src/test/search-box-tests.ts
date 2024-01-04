@@ -228,10 +228,11 @@ describe(component, function () {
 
   it('should match history items', async function () {
     expect((await readSettings()).includeHistory, 'history support must be enabled for testing').to.equal(true);
-    const firstHistoryItemSearchToken = (await browser.history.search({ text: '', startTime: 0 }))[0]!.title!;
+    const firstHistoryItemSearchToken = (await browser.history.search({ text: 'conex', startTime: 0 }))[0]!.title!;
     debug(component, 'first history search token', firstHistoryItemSearchToken);
     const historyContainerElement = $$(Selectors.containerElements)[7]!;
     expect(firstHistoryItemSearchToken, 'we need a searchable history token').to.not.equal('');
+    expect(firstHistoryItemSearchToken, 'we need a searchable history token').to.not.be.null;
     await search(firstHistoryItemSearchToken);
 
     expect(
