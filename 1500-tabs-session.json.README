@@ -4,6 +4,13 @@ to be used with https://addons.mozilla.org/en-US/firefox/addon/tab-session-manag
 
 You probably have to adjust the link. Go to https://uroulette.com, click on the button that takes you to a random site and look in the console, which link it calls
 
-Enable tree and set the delay between each tab to 2000ms, otherwise most tabs won't load ... it'll roughly take 1h to open all tabs.
+Enable tree and set the delay between each tab to 2000ms and Popup / Add to current window, otherwise most tabs won't load
 
-Recreate the session, observer how your laptop dies, quit Firefox and re-open the session
+Import the session file by loading a session in the settings screen.
+
+Unload conex to avoid constantly showing / hiding containers.
+
+Recreate the session ... make sure to have the setting "Open previous windows and tabs" enabled in Firefox ... if you don't see your tabs, try recreate all windows in the history menu
+
+
+REPEAT 3 TIMES -- CLOSE BROWSER BETWEEN
