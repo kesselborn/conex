@@ -1,5 +1,6 @@
 import { Browser, Manifest } from 'webextension-polyfill';
 import { debug, info } from './logger.js';
+import { showHideTabs } from './background.js';
 import OptionalPermission = Manifest.OptionalPermission;
 
 export interface Settings {
@@ -71,6 +72,11 @@ export async function changeHideTabsSetting(value: boolean) {
   const settings = await readSettings();
   settings.hideTabs = value;
   writeSettings(settings);
+  if (!value) {
+    browser.tabs.show((await browser.tabs.query({}))!.map((tab) => tab.id!));
+  } else {
+    showHideTabs((await browser.tabs.query({ active: true }))[0]!);
+  }
 }
 
 export async function changeIncludeBookmarksSetting(value: boolean) {

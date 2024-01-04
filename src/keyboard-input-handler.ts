@@ -8,7 +8,7 @@ import { readSettings } from './settings.js';
 import { ContextualIdentityEx, historyDummyContainer, renderTabs } from './containers.js';
 import { getHistoryAsTabs } from './history.js';
 import { containerElement } from './container-element.js';
-import { openTab, removeContainer } from './form-action.js';
+import { openTab, removeContainer } from './mouse-handler.js';
 
 declare let browser: Browser;
 

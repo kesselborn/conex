@@ -5,7 +5,7 @@ import { Browser } from 'webextension-polyfill';
 import { $, _, closeContainer } from './helper.js';
 import { focusNextVisibleContainerSibling } from './keyboard-input-handler.js';
 
-const component = 'form-action';
+const component = 'mouse-handler';
 declare let browser: Browser;
 
 function isHistoryOrBookmarkItem(e: HTMLElement): boolean {
@@ -73,12 +73,27 @@ export async function formChange(e: Event): Promise<void> {
       await removeContainer(containerElement);
       break;
     }
+    case InputNameSelectors.openContainer: {
+      target.checked = false;
+      const containerElement = target.parentElement!; // this action always has a parent
+      const cookieStoreId = containerElement.id;
+
+      debug(component, `opening a new tab in ${cookieStoreId}`);
+
+      browser.tabs.create({
+        active: true,
+        cookieStoreId,
+      });
+
+      window.close();
+      break;
+    }
   }
 }
 
 export async function openTabId(tabId: number) {
-  const tab = await browser.tabs.update(tabId, { active: true });
-  await browser.windows.update(tab.windowId!, { focused: true });
+  const newlyActiveTab = await browser.tabs.update(tabId, { active: true });
+  await browser.windows.update(newlyActiveTab.windowId!, { focused: true });
 }
 
 export async function openTab(tabElement: HTMLElement) {

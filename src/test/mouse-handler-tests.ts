@@ -3,7 +3,7 @@ import { clear, expect, fakeContainers } from './helper.js';
 import { ClassSelectors, InputNameSelectors } from '../constants.js';
 import { renderMainPage } from '../main-page.js';
 
-const component = 'form-actions-tests';
+const component = 'mouse-handler-tests';
 
 describe(component, function () {
   afterEach(clear);

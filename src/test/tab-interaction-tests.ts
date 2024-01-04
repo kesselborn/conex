@@ -8,7 +8,8 @@ import { debug, info } from '../logger.js';
 import { renderTabs } from '../containers.js';
 import { search } from '../keyboard-input-handler.js';
 import { readSettings } from '../settings.js';
-import { openTabId } from '../form-action.js';
+import { openTabId } from '../mouse-handler.js';
+import { showHideTabs } from '../background.js';
 
 let newContainerId: string;
 let newTab: Tabs.Tab;
@@ -112,6 +113,58 @@ describe(component, function () {
       $(`#${tabId2HtmlOpenTabId(newTab.id!)}`)!.click();
 
       expect(await tabActiveWaiter, 'tab should become active').to.not.throw;
+    });
+
+    it('should hide all tabs that are not belonging to the currently active tab', async function () {
+      expect((await readSettings()).hideTabs, 'HIDE TABS OPTIONS NEEDS TO BE ACTIVE FOR TESTS').to.be.true;
+
+      let activeTab = await browser.tabs.query({ active: true });
+      expect(`testing-tab-id-${activeTab[0]!.id}`).to.equal(`testing-tab-id-${testingTab!.id}`);
+
+      const tabActiveWaiter = waitForTabToBeActive(newTab.id!);
+      $(`#${tabId2HtmlOpenTabId(newTab.id!)}`)!.click();
+
+      expect(await tabActiveWaiter, 'tab should become active').to.not.throw;
+
+      expect(
+        (
+          await browser.tabs.query({
+            cookieStoreId: newContainerId,
+            pinned: false, // pinned tabs are not hidden
+            hidden: true,
+          })
+        ).length,
+        'all tabs of the new container should be visible'
+      ).to.equal(0);
+
+      expect(
+        (
+          await browser.tabs.query({
+            pinned: false,
+            hidden: false,
+          })
+        ).length,
+        'all visible tabs should be of the new container'
+      ).to.equal((await browser.tabs.query({ cookieStoreId: newContainerId })).length);
+    });
+
+    it('should _not_ hide all tabs that are not belonging to the currently active tab if the active tab is pinned', async function () {
+      expect((await readSettings()).hideTabs, 'HIDE TABS OPTIONS NEEDS TO BE ACTIVE FOR TESTS').to.be.true;
+
+      const pinnedTab = await browser.tabs.update(newTab.id, { pinned: true });
+
+      await showHideTabs(testingTab!);
+      await showHideTabs(pinnedTab);
+
+      expect(
+        JSON.stringify(
+          await browser.tabs.query({
+            cookieStoreId: newContainerId,
+            hidden: false,
+          })
+        ),
+        'only the pinned tab should be visible'
+      ).to.equal(JSON.stringify(await browser.tabs.query({ cookieStoreId: newContainerId, pinned: true })));
     });
 
     it('should switch tabs when hitting enter on tab element', async function () {

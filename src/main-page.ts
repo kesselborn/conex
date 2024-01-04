@@ -10,7 +10,7 @@ import { ConexElements, IdSelectors } from './constants.js';
 import { keydown, keyup } from './keyboard-input-handler.js';
 import { $e, _ } from './helper.js';
 import { getBookmarksAsTabs } from './bookmarks.js';
-import { formChange } from './form-action.js';
+import { formChange } from './mouse-handler.js';
 import ContextualIdentity = ContextualIdentities.ContextualIdentity;
 
 declare let browser: Browser;
