@@ -54,6 +54,7 @@ export const historyDummyContainer: ContextualIdentityEx = {
 export class ContainerRenderOptions {
   bookmarks: boolean = false;
   history: boolean = false;
+  tabs: boolean = true;
   order: Array<string> | null = null;
 }
 
@@ -67,7 +68,7 @@ export async function renderContainers(
     bookmarkDummyContainer.tabCnt = `${(await getBookmarksAsTabs()).length}`;
     additionalContainers.push(bookmarkDummyContainer);
   }
-  containers = additionalContainers.concat(containers.map((x) => x as ContextualIdentityEx));
+  containers = containers.concat(additionalContainers);
 
   if (options.history) {
     containers.push(historyDummyContainer);
@@ -102,17 +103,17 @@ export async function renderTabs(tabs: Array<Tab>) {
   let cookieStoreId = tabs[0]!.cookieStoreId!;
   const containerElement = ConexElements.container(cookieStoreId);
   if (!containerElement) {
-    error(component, `container element for cookieStoreId=${cookieStoreId} not found`);
+    await error(component, `container element for cookieStoreId=${cookieStoreId} not found`);
     return;
   }
 
   // count
-  $(Selectors.tabsCnt, containerElement)!.innerText = `(${(await tabs).length} ${countLabel(cookieStoreId)})`;
+  $(Selectors.tabsCnt, containerElement)!.innerText = `(${tabs.length} ${countLabel(cookieStoreId)})`;
 
-  for (const tab of await tabs) {
+  for (const tab of tabs) {
     if (!containerElements.has(cookieStoreId)) {
       // eslint-disable-next-line no-void
-      await $('ul', containerElement)?.remove();
+      $('ul', containerElement)?.remove();
       containerElements.set(cookieStoreId, containerElement.appendChild($e('ul')));
     }
 

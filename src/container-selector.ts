@@ -2,21 +2,18 @@ import type { Browser } from 'webextension-polyfill';
 import { renderMainPage } from './main-page.js';
 import { debug } from './logger.js';
 import { ContainerRenderOptions } from './containers.js';
-import { readSettings } from './settings.js';
 
 declare let browser: Browser;
 
-const component = 'browser-action';
+const component = 'container-selector';
 
 document.addEventListener('DOMContentLoaded', async () => {
-  debug(component, 'browser-action dom content loaded');
-
-  const settings = await readSettings();
+  debug(component, 'dom content loaded');
 
   const containerRenderOptions = {
-    bookmarks: settings.includeBookmarks,
-    history: settings.includeHistory,
-    tabs: true,
+    bookmarks: false,
+    history: false,
+    tabs: false,
   } as ContainerRenderOptions;
 
   setTimeout(() => renderMainPage([], containerRenderOptions), 0);

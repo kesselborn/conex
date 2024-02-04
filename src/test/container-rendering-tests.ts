@@ -17,6 +17,7 @@ describe(component, function () {
     await renderMainPage(fakeContainers, {
       bookmarks: true,
       history: true,
+      tabs: true,
       order: ['container0', 'container1', Ids.historyCookieStoreId, Ids.bookmarksCookieStoreId],
     });
     const containerElements = $$(Selectors.containerElements);

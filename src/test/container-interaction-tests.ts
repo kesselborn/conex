@@ -56,7 +56,12 @@ describe(component, function () {
       return true;
     };
 
-    await renderMainPage([container], { bookmarks: false, history: false, order: [container.cookieStoreId] });
+    await renderMainPage([container], {
+      bookmarks: false,
+      history: false,
+      order: [container.cookieStoreId],
+      tabs: true,
+    });
 
     expect(
       (await browser.tabs.query({ cookieStoreId: container.cookieStoreId })).length,

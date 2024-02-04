@@ -1,12 +1,12 @@
-import {$, $$} from '../helper.js';
-import {renderTabs} from '../containers.js';
-import {clear, expect, fakeContainers, maxTabId, timeoutResolver, typeKey, waitForFocus} from './helper.js';
-import {tabId2HtmlId} from '../tab-element.js';
-import {ClassSelectors, ConexElements, Ids, IdSelectors, Selectors} from '../constants.js';
-import {renderMainPage} from '../main-page.js';
-import {debug} from '../logger.js';
-import {search} from '../keyboard-input-handler.js';
-import {getBookmarksAsTabs} from '../bookmarks.js';
+import { $, $$ } from '../helper.js';
+import { renderTabs } from '../containers.js';
+import { clear, expect, fakeContainers, maxTabId, timeoutResolver, typeKey, waitForFocus } from './helper.js';
+import { tabId2HtmlId } from '../tab-element.js';
+import { ClassSelectors, ConexElements, Ids, IdSelectors, Selectors } from '../constants.js';
+import { renderMainPage } from '../main-page.js';
+import { debug } from '../logger.js';
+import { search } from '../keyboard-input-handler.js';
+import { getBookmarksAsTabs } from '../bookmarks.js';
 
 // TODO: when typing, restart search
 const component = 'keyboard-navigation-tests';
@@ -15,7 +15,7 @@ describe(component, function () {
   afterEach(clear);
 
   it('hidden containers should not break downward navigation', async function () {
-    await renderMainPage(fakeContainers, { bookmarks: false, history: false, order: [] });
+    await renderMainPage(fakeContainers, { bookmarks: false, history: false, order: [], tabs: true });
     const containerElements = $$(Selectors.containerElements);
 
     let tabIdCnt = 0;
@@ -27,13 +27,13 @@ describe(component, function () {
           cookieStoreId: cookieStoreId,
           id: tabIdOffset + tabIdCnt++,
           title: `tab0${cookieStoreId}`,
-          url: `http://example.com/${cookieStoreId}`,
+          url: `https://example.com/${cookieStoreId}`,
         },
         {
           cookieStoreId: cookieStoreId,
           id: tabIdOffset + tabIdCnt++,
           title: `tab1${cookieStoreId}`,
-          url: `http://example.com/${cookieStoreId}`,
+          url: `https://example.com/${cookieStoreId}`,
         },
       ];
     };
@@ -46,7 +46,7 @@ describe(component, function () {
     const searchTerm = 'tab0container';
     const searchInputField = $(`#${IdSelectors.searchId}`)! as HTMLInputElement;
     searchInputField.value = searchTerm;
-    search(searchTerm);
+    await search(searchTerm);
 
     searchInputField.blur();
     const focusWaiter = waitForFocus(searchInputField);
@@ -70,24 +70,28 @@ describe(component, function () {
   });
 
   it('should react on down and up arrow keys for empty container elements correctly', async function () {
-    debug(component, 'entering test:', 'should react on down and up arrow keys for empty container elements correctly');
+    await debug(
+      component,
+      'entering test:',
+      'should react on down and up arrow keys for empty container elements correctly'
+    );
     await renderMainPage(fakeContainers);
     const containerElements = $$(Selectors.containerElements);
 
     containerElements[0]!.focus();
-    debug(component, '    arrow up;');
+    await debug(component, '    arrow up;');
     typeKey({ key: 'ArrowUp' }, document.activeElement!);
     expect(document.activeElement!).to.equal(ConexElements.search);
 
-    debug(component, '    arrow down;');
+    await debug(component, '    arrow down;');
     typeKey({ key: 'ArrowDown' }, document.activeElement!);
     expect(document.activeElement!).to.equal(containerElements[0]);
 
-    debug(component, '    arrow down;');
+    await debug(component, '    arrow down;');
     typeKey({ key: 'ArrowDown' }, document.activeElement!);
     expect(document.activeElement!).to.equal(containerElements[1]);
 
-    debug(component, '    arrow up;');
+    await debug(component, '    arrow up;');
     typeKey({ key: 'ArrowUp' }, document.activeElement!);
     expect(document.activeElement!).to.equal(containerElements[0]);
   });
@@ -104,13 +108,13 @@ describe(component, function () {
           cookieStoreId: cookieStoreId,
           id: tabIdOffset + tabIdCnt++,
           title: `tab 0 / fake ${cookieStoreId}`,
-          url: `http://example.com/${cookieStoreId}`,
+          url: `https://example.com/${cookieStoreId}`,
         },
         {
           cookieStoreId: cookieStoreId,
           id: tabIdOffset + tabIdCnt++,
           title: `tab 1 / fake ${cookieStoreId}`,
-          url: `http://example.com/${cookieStoreId}`,
+          url: `https://example.com/${cookieStoreId}`,
         },
       ];
     };
@@ -122,7 +126,7 @@ describe(component, function () {
         case 0: // containerElements[1]
           // @ts-ignore
           await renderTabs(fakeTabs(fakeContainers[i].cookieStoreId));
-          $(`#${fakeContainers[i]!.cookieStoreId}`)!.classList.remove(ClassSelectors.collapsedContainer);
+          $('#' + fakeContainers[i]!.cookieStoreId)!.classList.remove(ClassSelectors.collapsedContainer);
           break;
         // second tab contains a tab that should be hidden (class == no-match)
         case 1: // containerElements[2]
@@ -164,7 +168,7 @@ describe(component, function () {
           }
           break;
         case 5: // containerElements[6]
-          $(`#${container.cookieStoreId}`)!.classList.add(ClassSelectors.noMatch);
+          $('#' + container.cookieStoreId)!.classList.add(ClassSelectors.noMatch);
           break;
       }
     }
@@ -326,6 +330,7 @@ describe(component, function () {
       history: false,
       order: [Ids.bookmarksCookieStoreId],
       bookmarks: true,
+      tabs: true,
     });
     expect(
       $$(Selectors.tabElements, $(Selectors.containerElements)!)!.length,

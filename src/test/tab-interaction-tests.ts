@@ -77,6 +77,7 @@ describe(component, function () {
     await renderMainPage(await browser.contextualIdentities.query({}), {
       bookmarks: false,
       history: false,
+      tabs: true,
       order: null,
     });
     await renderTabs(await browser.tabs.query({ cookieStoreId: newContainerId }));

@@ -37,6 +37,7 @@ describe(component, function () {
         Ids.bookmarksCookieStoreId, // 6
         Ids.historyCookieStoreId, // 7
       ],
+      tabs: true,
     });
     const firstFakeContainer = fakeContainers[0];
     const lastFakeContainer = fakeContainers[fakeContainers.length - 1];
