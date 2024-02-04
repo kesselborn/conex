@@ -62,28 +62,27 @@ export async function renderContainers(
   containers: Array<ContextualIdentity>,
   options: ContainerRenderOptions = new ContainerRenderOptions()
 ): Promise<void> {
-  const additionalContainers = [defaultContainer];
+  let finalContainerList = [defaultContainer, ...containers.map((x) => x as ContextualIdentityEx)];
 
   if (options.bookmarks) {
     bookmarkDummyContainer.tabCnt = `${(await getBookmarksAsTabs()).length}`;
-    additionalContainers.push(bookmarkDummyContainer);
+    finalContainerList.push(bookmarkDummyContainer);
   }
-  containers = containers.concat(additionalContainers);
 
   if (options.history) {
-    containers.push(historyDummyContainer);
+    finalContainerList.push(historyDummyContainer);
   }
   const containerList = $e('ol');
 
   if (options.order) {
-    const cookieStoreIds = containers.map((c) => c.cookieStoreId);
+    const cookieStoreIds = finalContainerList.map((c) => c.cookieStoreId);
     const orderedCookieStoreIds = options.order.concat(cookieStoreIds);
-    containers = containers.sort(
+    finalContainerList = finalContainerList.sort(
       (a, b) => orderedCookieStoreIds.indexOf(a.cookieStoreId) - orderedCookieStoreIds.indexOf(b.cookieStoreId)
     );
   }
 
-  for (const container of containers) {
+  for (const container of finalContainerList) {
     containerList.appendChild(await containerElement(container as ContextualIdentityEx));
   }
 

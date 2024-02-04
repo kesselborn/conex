@@ -72,7 +72,7 @@ export async function waitForFocus(e: HTMLInputElement): Promise<boolean> {
     }
   }
   e.removeEventListener('focus', listenerFn);
-  throw new Error(`element with id ${e.id} never received focus`);
+  throw new Error(`element with id ${e.id} never received focus.`);
 }
 
 export async function waitForTabToBeActive(id: number): Promise<boolean> {
