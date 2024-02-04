@@ -354,3 +354,35 @@ ol > li:hover > label:hover {
 ul > li {
     border-bottom: 1px solid var(--highlight-color);
 }
+
+/*********************** container-selector ************************/
+.container-selector {
+    width: 100vw; /* Sets the body width to 100% of the viewport width */
+    display: grid;
+    place-items: center;
+}
+
+.container-selector h2 {
+    font-size: larger;
+    margin-left: 1em;
+    place-items: center;
+    place-content: center;
+    display: grid;
+}
+
+.container-selector .no-container-match {
+    display: none;
+}
+
+.container-selector .container-cnt, .container-selector .close {
+    display: none;
+}
+
+.container-selector ol > li .tabs-visibility::before {
+    content: '';
+}
+
+.container-selector ol > li {
+    display: grid;
+    grid-template-columns: [start] 0px [container-name] auto [closecontainer] 0px [end];
+}

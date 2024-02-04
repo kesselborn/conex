@@ -15,6 +15,7 @@ export enum ClassSelectors {
   collapsedContainer = 'collapsed',
   emptyContainer = 'empty',
   noMatch = 'no-match',
+  noMatchContainer = 'no-container-match',
   tabClosed = 'closed',
 }
 

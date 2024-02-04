@@ -1,4 +1,4 @@
-import { $, $e } from './helper.js';
+import { $, $e, _ } from './helper.js';
 import { Browser } from 'webextension-polyfill';
 import { debug, error, Level, loadSettings, persistLogLevel } from './logger.js';
 import { Selectors } from './constants.js';
@@ -136,6 +136,7 @@ browser.permissions.onRemoved.addListener(async (permissions) => {
   }
   if (permissions.permissions!.includes('tabHide')) {
     await changeHideTabsSetting(false);
+    alert(_('show-all-tabs-alert'));
   }
   syncUIWithSettings();
 });

@@ -17,7 +17,8 @@ interface ResultToken {
 
 // searches all tabs of a container
 export function searchInContainer(containerElement: Element, searchString: string) {
-  if (searchString === '') {
+  containerElement.classList.remove(ClassSelectors.noMatchContainer);
+  if (searchString === '' || searchString.trim() === '>') {
     containerElement.classList.add(ClassSelectors.collapsedContainer);
     containerElement.classList.remove(ClassSelectors.noMatch);
     for (const element of Array.from($$(Selectors.tabElementsNoMatch, containerElement))) {
@@ -58,6 +59,11 @@ export function searchInContainer(containerElement: Element, searchString: strin
     containerTitle.innerText,
     containerScopingTokens
   );
+
+  if (highlightedString === containerTitle.innerText) {
+    containerElement.classList.add(ClassSelectors.noMatchContainer);
+  }
+
   containerTitle.innerHTML = `<span>${highlightedString}</span>`;
   if (containerScopingTokens.length > 0) {
     if (remainingSearchTokens.length === 0) {

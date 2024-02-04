@@ -43,8 +43,9 @@ export async function renderMainPage(
       if (container.cookieStoreId !== 'history') {
         const tabs = Array.from(await browser.tabs.query({ cookieStoreId: container.cookieStoreId })!);
         tabs.sort((a, b) => (b.lastAccessed || 0) - (a.lastAccessed || 0));
-
-        renderTabs(await tabs);
+        if (options.tabs) {
+          renderTabs(await tabs);
+        }
       }
     }
   }, 200);

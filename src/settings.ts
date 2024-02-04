@@ -28,16 +28,16 @@ export async function writeSettings(settings: Settings): Promise<void> {
   return await browser.storage.local.set({ settings: settings });
 }
 
-function changeOptionalPermissions(value: boolean, permissions: Manifest.OptionalPermission[]) {
+async function changeOptionalPermissions(value: boolean, permissions: Manifest.OptionalPermission[]) {
   if (value) {
     info(component, 'removing bookmark permissions');
     //
     // THIS CALL MUST HAPPEN BEFORE ANY AWAIT!!! SEE https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions
     //
-    browser.permissions.request({ permissions });
+    await browser.permissions.request({ permissions });
   } else {
     info(component, 'requesting bookmark permissions');
-    browser.permissions.remove({ permissions });
+    await browser.permissions.remove({ permissions });
   }
 }
 
@@ -67,15 +67,15 @@ export async function changeDebugViewSetting(value: boolean) {
 
 export async function changeHideTabsSetting(value: boolean) {
   const permissions = ['tabHide'] as OptionalPermission[];
-  changeOptionalPermissions(value, permissions);
+  await changeOptionalPermissions(value, permissions);
 
   const settings = await readSettings();
   settings.hideTabs = value;
   writeSettings(settings);
-  if (!value) {
-    browser.tabs.show((await browser.tabs.query({}))!.map((tab) => tab.id!));
-  } else {
-    showHideTabs((await browser.tabs.query({ active: true }))[0]!);
+  if (value) {
+    const activeTab = (await browser.tabs.query({ active: true }))[0]!;
+    debug(component, `showing all tabs from ${activeTab.cookieStoreId}`);
+    await showHideTabs(activeTab);
   }
 }
 

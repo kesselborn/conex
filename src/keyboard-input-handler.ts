@@ -72,7 +72,7 @@ function keyDownOnSearchElement(e: KeyboardEvent): void {
 
 export async function search(value: string): Promise<void> {
   const settings = await readSettings();
-  if (settings.includeHistory) {
+  if (settings.includeHistory && $('#history')) {
     if (value === '') {
       ConexElements.container(Ids.historyCookieStoreId)!.replaceWith(
         await containerElement(historyDummyContainer as ContextualIdentityEx)
