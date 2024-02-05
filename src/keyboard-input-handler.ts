@@ -18,15 +18,15 @@ export function keydown(e: KeyboardEvent): void {
   const targetElement = e.target as Element;
 
   if (targetElement === ConexElements.search) {
-    debug(component, `keydown on search element (key: ${e.key})`, e);
+    debug(component, `keydown on search element (key: ${e.key})`, e).then();
     return keyDownOnSearchElement(e);
   }
   if (isContainerElement(targetElement)) {
-    debug(component, `keydown on container element (key: ${e.key})`, e);
-    keyDownOnContainerElement(e);
+    debug(component, `keydown on container element (key: ${e.key})`, e).then();
+    keyDownOnContainerElement(e).then();
   }
   if (isTabElement(targetElement)) {
-    debug(component, `keydown on tab element (key: ${e.key})`, e);
+    debug(component, `keydown on tab element (key: ${e.key})`, e).then();
     keyDownOnTabElement(e);
   }
 }
@@ -41,8 +41,8 @@ export function keyup(e: KeyboardEvent) {
   }
   // only search, if search box is still focused (not the case if ArrowDown was handled in keydown)
   if (document.activeElement === ConexElements.search) {
-    debug(component, 'keyup on search element', e);
-    search(ConexElements.search.value);
+    debug(component, 'keyup on search element', e).then();
+    search(ConexElements.search.value).then();
   }
   firstCall = false;
 }
@@ -62,9 +62,9 @@ function keyDownOnSearchElement(e: KeyboardEvent): void {
       e.preventDefault();
       const firstExpandedContainer = $(Selectors.containerElementsMatch, ConexElements.search.parentElement!)!;
       if (!firstExpandedContainer) {
-        error(component, 'did not find any container that had a match');
+        error(component, 'did not find any container that had a match').then();
       }
-      debug(component, 'first matched container', firstExpandedContainer);
+      debug(component, 'first matched container', firstExpandedContainer).then();
       activateFirstVisibleContainerTab(firstExpandedContainer);
     }
   }
@@ -99,9 +99,9 @@ function downOnContainerElement(containerElement: Element): Element {
 
 function activateFirstVisibleContainerTab(containerElement: Element) {
   const nextTabElement = $(Selectors.tabElementsMatch, containerElement);
-  debug(component, 'enter on container -- will open the first tab in that container', containerElement);
+  debug(component, 'enter on container -- will open the first tab in that container', containerElement).then();
   if (nextTabElement) {
-    openTab(nextTabElement);
+    openTab(nextTabElement).then();
   }
 }
 
@@ -192,17 +192,17 @@ function keyDownOnTabElement(e: KeyboardEvent): void {
       e.preventDefault();
       // FALLTHROUGH ON PURPOSE: if the shiftKey is pressed, fall through to 'ArrowUp'
       if (!e.shiftKey) {
-        debug(component, 'searching for next tab to focus on');
+        debug(component, 'searching for next tab to focus on').then();
         const tabId = tabElement.id;
         const nextVisibleTabInContainer = $(`#${tabId} ~ :not(.${ClassSelectors.noMatch}`, tabElement.parentElement!);
         if (nextVisibleTabInContainer) {
-          debug(component, '  found tab', nextVisibleTabInContainer);
+          debug(component, '  found tab', nextVisibleTabInContainer).then();
           nextVisibleTabInContainer.focus();
           return;
         }
 
         const tabsContainer = curTabElement.parentElement!.parentElement as Element;
-        debug(component, '  no more visible containers in container', tabsContainer);
+        debug(component, '  no more visible containers in container', tabsContainer).then();
 
         // no more tabs within this container group ... focus next container element if there is one
         focusNextVisibleContainerSibling(tabsContainer);

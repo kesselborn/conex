@@ -59,7 +59,7 @@ async function syncUIWithSettings() {
 
 document.addEventListener('DOMContentLoaded', async () => {
   let secretCnt: number = 0;
-  showHideDebugUI();
+  await showHideDebugUI();
 
   $('#secret')!.addEventListener('click', async () => {
     secretCnt += 1;
@@ -81,23 +81,23 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (option) option.setAttribute('selected', 'selected');
 
-    debug(component, `adding selection box for component ${key}`);
+    await debug(component, `adding selection box for component ${key}`);
 
-    await selectorContainer.appendChild(selectionBox);
+    selectorContainer.appendChild(selectionBox);
   }
 
   selectorContainer.addEventListener('click', async (e) => {
     const value = (e.target as HTMLOptionElement).value;
     const selectedComponent = ((e.target as HTMLOptionElement).parentNode as HTMLSelectElement).name;
-    debug(component, `log-level adjustment: component ${selectedComponent}=${value}`);
-    persistLogLevel(selectedComponent, value as Level);
+    await debug(component, `log-level adjustment: component ${selectedComponent}=${value}`);
+    await persistLogLevel(selectedComponent, value as Level);
   });
 
   $(Selectors.settingsForm)!.addEventListener('change', async (e: Event) => {
     const optionSwitch = e.target! as HTMLInputElement;
     const optionName = optionSwitch.id;
     const optionValue = optionSwitch.checked;
-    debug(component, `${optionName} settings changed to ${optionValue}`);
+    await debug(component, `${optionName} settings changed to ${optionValue}`);
     switch (optionName) {
       case 'hide-tabs':
         await changeHideTabsSetting(optionValue);
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         await changeCloseMovedTabsSetting(optionValue);
         break;
       default:
-        error(component, `invalid setting with name ${optionName} was changed`);
+        await error(component, `invalid setting with name ${optionName} was changed`);
     }
   });
   // const containers = await browser.contextualIdentities.query({});
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 browser.permissions.onRemoved.addListener(async (permissions) => {
-  debug(component, 'remove permission called');
+  await debug(component, 'remove permission called');
   if (permissions.permissions!.includes('bookmarks')) {
     await changeIncludeBookmarksSetting(false);
   }
@@ -138,5 +138,5 @@ browser.permissions.onRemoved.addListener(async (permissions) => {
     await changeHideTabsSetting(false);
     alert(_('show-all-tabs-alert'));
   }
-  syncUIWithSettings();
+  await syncUIWithSettings();
 });

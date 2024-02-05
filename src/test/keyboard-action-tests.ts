@@ -15,7 +15,7 @@ describe(component, function () {
   afterEach(clear);
 
   it('should react on collapse / un-collapse keys', async function () {
-    info(component, 'entering test:', 'should react on collapse / un-collapse keys');
+    await info(component, 'entering test:', 'should react on collapse / un-collapse keys');
     await renderMainPage(fakeContainers);
     const firstFakeContainer = fakeContainers[0]!;
     const lastFakeContainer = fakeContainers[fakeContainers.length - 1]!;
@@ -29,13 +29,13 @@ describe(component, function () {
           cookieStoreId: container.cookieStoreId,
           id: tabIdOffset + cnt++,
           title: `tab 0 / fake ${container.cookieStoreId}`,
-          url: `http://example.com/${container.color}`,
+          url: `https://example.com/${container.color}`,
         },
         {
           cookieStoreId: container.cookieStoreId,
           id: tabIdOffset + cnt++,
           title: `tab 1 / fake ${container.cookieStoreId}`,
-          url: `http://example.com/${container.color}`,
+          url: `https://example.com/${container.color}`,
         },
       ]) as Array<Tab>;
 
@@ -48,7 +48,7 @@ describe(component, function () {
     const tabInLastFakeContainerElement = $(`#${tabId2HtmlId(tabIdOffset + 3)}`)!;
 
     // when collapsing on a container element, go to the next container element
-    debug(component, '    1 arrow left');
+    await debug(component, '    1 arrow left');
     firstFakeContainerElement.classList.remove(ClassSelectors.collapsedContainer);
     firstFakeContainerElement.focus();
     expect(document.activeElement!.classList.contains(ClassSelectors.collapsedContainer)).to.be.false;
@@ -56,25 +56,25 @@ describe(component, function () {
     expect(firstFakeContainerElement.classList.contains(ClassSelectors.collapsedContainer)).to.be.true;
     expect(document.activeElement!).to.equal(firstFakeContainerElement.nextElementSibling);
 
-    debug(component, '    2 arrow right');
+    await debug(component, '    2 arrow right');
     firstFakeContainerElement.focus();
     typeKey({ key: 'ArrowRight' }, document.activeElement!);
     expect(document.activeElement!.classList.contains(ClassSelectors.collapsedContainer)).to.be.false;
     expect(document.activeElement!).to.equal(firstFakeContainerElement);
 
     // when collapsing on a tab element, jump to the next container element
-    debug(component, '    3 arrow left');
+    await debug(component, '    3 arrow left');
     firstTabInFirstFakeContainerElement.focus();
     typeKey({ key: 'ArrowLeft' }, document.activeElement!);
     expect(firstFakeContainerElement.classList.contains(ClassSelectors.collapsedContainer)).to.be.true;
     expect(document.activeElement!).to.equal(firstFakeContainerElement.nextElementSibling);
 
-    debug(component, '    4 arrow right');
+    await debug(component, '    4 arrow right');
     typeKey({ key: 'ArrowRight' }, document.activeElement!);
 
     // when collapsing on a tab element of the _last_ container element, jump to the current container element
     tabInLastFakeContainerElement.focus();
-    debug(component, '    5 arrow left');
+    await debug(component, '    5 arrow left');
     typeKey({ key: 'ArrowLeft' }, tabInLastFakeContainerElement);
     expect(lastFakeContainerElement.classList.contains(ClassSelectors.collapsedContainer)).to.be.true;
     expect(document.activeElement!).to.equal(lastFakeContainerElement);

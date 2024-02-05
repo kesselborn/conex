@@ -130,7 +130,7 @@ describe(component, function () {
     );
 
     searchInContainer(lastContainer, searchTerm);
-    debug(component, lastContainer);
+    await debug(component, lastContainer);
     expect(lastContainer.classList.contains(ClassSelectors.noMatch), 'matching container is not a nomatch').to.equal(
       false
     );
@@ -235,7 +235,7 @@ describe(component, function () {
       'we need a history item with the word conex to execute these tests'
     ).to.not.equal(0);
     const firstHistoryItemSearchToken = historySearchResult[0]!.title!;
-    debug(component, 'first history search token', firstHistoryItemSearchToken);
+    await debug(component, 'first history search token', firstHistoryItemSearchToken);
     const historyContainerElement = $$(Selectors.containerElements)[7]!;
     expect(firstHistoryItemSearchToken, 'we need a searchable history token').to.not.equal('');
     expect(firstHistoryItemSearchToken, 'we need a searchable history token').to.not.be.null;

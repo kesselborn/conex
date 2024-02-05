@@ -1,7 +1,6 @@
 import { $ } from './helper.js';
-import { Browser } from 'webextension-polyfill';
 
-declare let browser: Browser;
+// declare let browser: Browser;
 
 export enum InputNameSelectors {
   closeContainer = 'close-container',
@@ -24,7 +23,7 @@ export enum IdSelectors {
 }
 
 export enum Selectors {
-  // no variable substitution in enums .. remember to adjust all values if you change one
+  // no variable substitution in enums ... remember to adjust all values if you change one
   containerElements = 'ol>li',
   containerElementsMatch = `ol>li:not(.no-match)`,
   containerElementsNoMatch = `ol>li.no-match`,

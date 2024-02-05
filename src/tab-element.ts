@@ -52,13 +52,13 @@ export function tabElement(tab: Tabs.Tab): String {
 
   if (thumbnail) {
     src += `
-        <img class="favicon" src="${favicon || ''}"/>
-        <img class="thumbnail" src="${favicon || ''}"/>
+        <img alt="favicon" class="favicon" src="${favicon || ''}"/>
+        <img alt="thumbnail" class="thumbnail" src="${favicon || ''}"/>
         `;
   } else {
     src += `
-        <img class="favicon-only" src="${favicon || ''}"/>
-        <img class="thumbnail" src=""/>
+        <img alt="favicon" class="favicon-only" src="${favicon || ''}"/>
+        <img alt="thumbnail" class="thumbnail" src=""/>
         `;
   }
 

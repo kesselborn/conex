@@ -20,12 +20,15 @@ function isHistoryOrBookmarkItem(e: HTMLElement): boolean {
 
 export async function closeTab(tabElement: HTMLElement) {
   // save url, so we can undo the closing
-  const tab = await browser.tabs.get(htmlId2TabId(tabElement.id))!;
+  const tab = (await browser.tabs.get(htmlId2TabId(tabElement.id)))!;
+  const waiters: Promise<void>[] = [];
   if (tab) {
     tabElement.dataset['url'] = tab.url;
-    browser.tabs.remove(tab.id!);
+    waiters.push(browser.tabs.remove(tab.id!));
     tabElement.classList.add(ClassSelectors.tabClosed);
   }
+
+  await Promise.all(waiters);
 }
 
 export async function removeContainer(containerElement: Element) {
@@ -46,7 +49,7 @@ export async function formChange(e: Event): Promise<void> {
 
   const target = e.target as HTMLInputElement;
 
-  debug(component, 'form change', e, 'target:', target);
+  debug(component, 'form change', e, 'target:', target).then();
   switch (target.name) {
     case InputNameSelectors.toggleTabsVisibilityName: {
       target.checked = false;
@@ -57,7 +60,7 @@ export async function formChange(e: Event): Promise<void> {
     case InputNameSelectors.openTab: {
       target.checked = false;
       const tabElement = target.parentElement!;
-      openTab(tabElement);
+      await openTab(tabElement);
       break;
     }
     case InputNameSelectors.closeTab: {
@@ -78,14 +81,15 @@ export async function formChange(e: Event): Promise<void> {
       const containerElement = target.parentElement!; // this action always has a parent
       const cookieStoreId = containerElement.id;
 
-      debug(component, `opening a new tab in ${cookieStoreId}`);
+      debug(component, `opening a new tab in ${cookieStoreId}`).then();
 
-      browser.tabs.create({
+      const waiter = browser.tabs.create({
         active: true,
         cookieStoreId,
       });
 
       window.close();
+      await waiter;
       break;
     }
   }
@@ -97,15 +101,15 @@ export async function openTabId(tabId: number) {
 }
 
 export async function openTab(tabElement: HTMLElement) {
-  debug(component, 'tab to be opened is', tabElement);
+  await debug(component, 'tab to be opened is', tabElement);
   if (isHistoryOrBookmarkItem(tabElement)) {
-    debug(component, 'request to open history or bookmark item');
-    browser.tabs.create({
+    await debug(component, 'request to open history or bookmark item');
+    await browser.tabs.create({
       active: true,
       url: tabElement.dataset['url'],
     });
   } else {
-    debug(component, 'request to switch to open tab');
+    await debug(component, 'request to switch to open tab');
     const tabId = htmlId2TabId(tabElement.id);
     await openTabId(tabId);
   }

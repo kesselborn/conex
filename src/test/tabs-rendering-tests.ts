@@ -14,11 +14,15 @@ describe(component, function () {
   it('should render tabs elements correctly', async function () {
     let tabCnt = 0;
 
-    const searchField = $e('input', { id: IdSelectors.searchId, placeholder: _('searchBoxPlaceholder'), type: 'text' });
+    const searchField = $e('input', {
+      id: IdSelectors.searchId,
+      placeholder: _('searchBoxPlaceholder'),
+      type: 'text',
+    });
     const form = $e('form', {}, [searchField]);
     window.document.body.appendChild(form);
 
-    await renderMainPageStub();
+    renderMainPageStub();
     await renderContainers(fakeContainers);
     for (const container of fakeContainers) {
       const tabs = Array.from([
@@ -26,13 +30,13 @@ describe(component, function () {
           cookieStoreId: container.cookieStoreId,
           id: tabCnt++,
           title: `${container.color} tab`,
-          url: `http://example.com/${container.color}`,
+          url: `https://example.com/${container.color}`,
         },
         {
           cookieStoreId: container.cookieStoreId,
           id: tabCnt++,
           title: `${container.color} tab 2`,
-          url: `http://example.com/${container.color}`,
+          url: `https://example.com/${container.color}`,
         },
       ]) as Array<Tab>;
 
@@ -47,7 +51,11 @@ describe(component, function () {
   it('should render special favicons for specific tabs', async function () {
     let tabCnt = 0;
 
-    const searchField = $e('input', { id: IdSelectors.searchId, placeholder: _('searchBoxPlaceholder'), type: 'text' });
+    const searchField = $e('input', {
+      id: IdSelectors.searchId,
+      placeholder: _('searchBoxPlaceholder'),
+      type: 'text',
+    });
     const form = $e('form', {}, [searchField]);
     window.document.body.appendChild(form);
 

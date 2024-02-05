@@ -1,15 +1,12 @@
 import { $, $e, _, ContextualIdentitiesColors } from './helper.js';
 import { tabElement } from './tab-element.js';
 import { containerElement, countLabel } from './container-element.js';
-import type { Browser } from 'webextension-polyfill';
 import { ContextualIdentities, Tabs } from 'webextension-polyfill';
 import { ClassSelectors, ConexElements, Ids, Selectors } from './constants.js';
 import { error } from './logger.js';
 import { getBookmarksAsTabs } from './bookmarks.js';
 import ContextualIdentity = ContextualIdentities.ContextualIdentity;
 import Tab = Tabs.Tab;
-
-declare let browser: Browser;
 
 const component = 'containers';
 

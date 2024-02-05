@@ -105,9 +105,10 @@ describe(component, function () {
       url: `about:blank?${component}-3-2`,
     });
     const confirmFunction = window.confirm;
+    let confirm = false;
+
     let confirmMessage: string | undefined = '';
 
-    let confirm = false;
     window.confirm = function (message?: string) {
       debug(component, `fake confirm called with message '${message}'`);
       confirmMessage = message;
@@ -117,7 +118,7 @@ describe(component, function () {
     await renderMainPage([container]);
 
     expect((await browser.tabs.query({ cookieStoreId: container.cookieStoreId })).length).to.equal(2);
-    expect((await browser.contextualIdentities.query({ name: container.name })).length, 1);
+    expect((await browser.contextualIdentities.query({ name: container.name })).length).to.equal(1);
 
     const containerElement = $$(Selectors.containerElements)[1]!;
 
@@ -144,7 +145,7 @@ describe(component, function () {
     confirm = true;
     containerRemovedWaiter = waitForContainerToBeClosed(container.cookieStoreId);
     typeKey({ key: 'Backspace' }, containerElement!);
-    await expect(await containerRemovedWaiter, 'container should be closed').to.not.throw;
+    expect(await containerRemovedWaiter, 'container should be closed').to.not.throw;
 
     expect(
       (await browser.contextualIdentities.query({ name: container.name })).length,
@@ -170,9 +171,10 @@ describe(component, function () {
       url: `about:blank?${component}-4-2`,
     });
     const confirmFunction = window.confirm;
+    let confirm = false;
+
     let confirmMessage: string | undefined = '';
 
-    let confirm = false;
     window.confirm = function (message?: string) {
       debug(component, `fake confirm called with message '${message}'`);
       confirmMessage = message;
@@ -182,7 +184,7 @@ describe(component, function () {
     await renderMainPage([container]);
 
     expect((await browser.tabs.query({ cookieStoreId: container.cookieStoreId })).length).to.equal(2);
-    expect((await browser.contextualIdentities.query({ name: container.name })).length, 1);
+    expect((await browser.contextualIdentities.query({ name: container.name })).length).to.equal(1);
 
     const containerElement = $$(Selectors.containerElements)[1]!;
 

@@ -25,7 +25,7 @@ export async function renderMainPage(
 
   const searchField = $e('input', { id: IdSelectors.searchId, placeholder: _('searchBoxPlaceholder'), type: 'text' });
   const form = $e('form', { id: 'browser-action' }, [searchField]);
-  await window.document.body.appendChild(form);
+  window.document.body.appendChild(form);
 
   await renderContainers(containers, options);
 
@@ -35,18 +35,20 @@ export async function renderMainPage(
 
   ConexElements.search.focus();
 
+  const waiters: Promise<void>[] = [];
   setTimeout(async () => {
     if (options.bookmarks) {
-      renderTabs(await getBookmarksAsTabs());
+      waiters.push(renderTabs(await getBookmarksAsTabs()));
     }
     for (const container of [defaultContainer].concat(containers.map((c) => c as ContextualIdentityEx))) {
       if (container.cookieStoreId !== 'history') {
-        const tabs = Array.from(await browser.tabs.query({ cookieStoreId: container.cookieStoreId })!);
+        const tabs = Array.from((await browser.tabs.query({ cookieStoreId: container.cookieStoreId }))!);
         tabs.sort((a, b) => (b.lastAccessed || 0) - (a.lastAccessed || 0));
         if (options.tabs) {
-          renderTabs(await tabs);
+          waiters.push(renderTabs(tabs));
         }
       }
     }
   }, 200);
+  await Promise.all(waiters);
 }

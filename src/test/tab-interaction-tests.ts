@@ -100,6 +100,8 @@ describe(component, function () {
       await search(uniqUrlSearchString);
       typeKey({ key: 'Enter' }, searchElement);
 
+      await waitForTabToBeActive(newTab2.id!);
+
       activeTab = await browser.tabs.query({ active: true });
       expect(`${activeTab[0]!.id}`, 'when pressing enter, the active tab is tab with the uniqUrlSearchString').to.equal(
         `${newTab2.id}`
@@ -180,7 +182,7 @@ describe(component, function () {
     it('should switch to first tab in container when hitting enter on container', async function () {
       let activeTab = await browser.tabs.query({ active: true });
       expect(`testing-tab-id-${activeTab[0]!.id}`).to.equal(`testing-tab-id-${testingTab!.id}`);
-      debug(component, `active & testing tab id: ${testingTab!.id}; new tab id: ${newTab.id}`);
+      await debug(component, `active & testing tab id: ${testingTab!.id}; new tab id: ${newTab.id}`);
 
       const tabElement = $(`#${tabId2HtmlId(newTab.id!)}`)!;
       const containerElement = tabElement.parentElement!.parentElement!;
@@ -191,7 +193,7 @@ describe(component, function () {
     });
 
     it('should close tab when hitting backspace on tab element', async function () {
-      let tab: Tabs.Tab | undefined = await browser.tabs.get(newTab.id!)!;
+      let tab: Tabs.Tab | undefined = (await browser.tabs.get(newTab.id!))!;
 
       // @ts-ignore
       const tabElementToBeDeleted = $(`#${tabId2HtmlId(newTab.id!)}`)!;
@@ -213,7 +215,7 @@ describe(component, function () {
       for (const e of Array.from($$(`.${ClassSelectors.collapsedContainer}`)!)) {
         e.classList.remove(ClassSelectors.collapsedContainer);
       }
-      info(component, 'entering test:', 'should jump to next item after closing tab');
+      await info(component, 'entering test:', 'should jump to next item after closing tab');
       let tab;
       try {
         tab = await browser.tabs.get(newTab.id!);

@@ -102,7 +102,7 @@ export function searchInContainer(containerElement: Element, searchString: strin
       }
     }
     if (allTokensWereMatched) {
-      debug(component, `************ we have a match, title: '${title.innerHTML}, url: '${url.innerHTML}'`);
+      debug(component, `************ we have a match, title: '${title.innerHTML}, url: '${url.innerHTML}'`).then();
       tabElement.classList.remove(ClassSelectors.noMatch);
       containerHasTabWithMatch = true;
     } else {
@@ -121,20 +121,23 @@ export function searchInContainer(containerElement: Element, searchString: strin
 export function hilightSearchMatch(originalString: string, searchTokens: string[]): HighlightResult {
   // we initialize the searchResults with one token (the complete searchTerm), that (up to now) has not matched any searchToken
   let resultTokens = Array.from([{ isMatch: false, tokenValue: originalString, matchNo: 0 } as ResultToken]);
-  debug(component, `############ doing a highlight search on '${originalString}' for search string '${searchTokens}'`);
+  debug(
+    component,
+    `############ doing a highlight search on '${originalString}' for search string '${searchTokens}'`
+  ).then();
 
   let searchTokenCnt = 0;
   const nonMatchedTokens: string[] = [];
   for (const searchToken of searchTokens) {
     searchTokenCnt++;
-    debug(component, `    search token: '${searchToken}'`);
+    debug(component, `    search token: '${searchToken}'`).then();
 
     let searchTokenMatched = false;
     let resultTokensWithCurrentSearchToken: ResultToken[] = [];
     for (const resultToken of resultTokens) {
       const { tokenValue } = resultToken;
 
-      debug(component, `      searching '${searchToken}' in '${tokenValue}'`);
+      debug(component, `      searching '${searchToken}' in '${tokenValue}'`).then();
       const indexOfMatch = tokenValue.toLowerCase().indexOf(searchToken.toLowerCase());
       if (indexOfMatch === -1 /* no match */) {
         resultTokensWithCurrentSearchToken.push(resultToken);
@@ -170,7 +173,7 @@ export function hilightSearchMatch(originalString: string, searchTokens: string[
 
     resultTokens = resultTokensWithCurrentSearchToken;
     if (searchTokenMatched) {
-      debug(component, '      ++++++ a token matched ... current results:', resultTokens);
+      debug(component, '      ++++++ a token matched ... current results:', resultTokens).then();
     } else {
       // make sure, that the searchToken does not match the original string ... if we have the originalString
       // 'Welcome' and the search tokens 'We', 'lc' and 'Welcome' it would return that the string does not match
@@ -178,7 +181,11 @@ export function hilightSearchMatch(originalString: string, searchTokens: string[
       if (!originalString.toLowerCase().includes(searchToken)) {
         nonMatchedTokens.push(searchToken);
       } else {
-        debug(component, '      ////// no match in the current token but in the overall original string', resultTokens);
+        debug(
+          component,
+          '      ////// no match in the current token but in the overall original string',
+          resultTokens
+        ).then();
       }
     }
   }

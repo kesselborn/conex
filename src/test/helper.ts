@@ -136,7 +136,7 @@ export async function waitForTabToAppear(url: string): Promise<number> {
   let tabCreated = false;
   let tabId = 0;
   const listenerFn = function (_tabId: number, info: Tabs.OnUpdatedChangeInfoType, tab: Tabs.Tab) {
-    if (tab.url === url && (info.status === 'loading' || info.status === 'compliete')) {
+    if (tab.url === url && (info.status === 'loading' || info.status === 'complete')) {
       browser.tabs.onUpdated.removeListener(listenerFn);
       tabCreated = true;
       tabId = tab.id!;

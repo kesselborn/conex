@@ -27,19 +27,19 @@ describe(component, function () {
         cookieStoreId: fakeContainer0CookieStoreId,
         id: color,
         title: `${color} tab`,
-        url: `http://example.com/${color}`,
+        url: `https://example.com/${color}`,
       },
       {
         cookieStoreId: fakeContainer0CookieStoreId,
         id: `${color}-2`,
         title: `${color} tab 2`,
-        url: `http://example.com/${color}`,
+        url: `https://example.com/${color}`,
       },
       {
         cookieStoreId: fakeContainer0CookieStoreId,
         id: `${color}-2`,
         title: `${color} tab 3`,
-        url: `http://example.com/${color}`,
+        url: `https://example.com/${color}`,
       },
     ];
 
@@ -72,13 +72,13 @@ describe(component, function () {
         cookieStoreId: fakeContainer0CookieStoreId,
         id: color,
         title: `${color} tab`,
-        url: `http://example.com/${color}`,
+        url: `https://example.com/${color}`,
       },
       {
         cookieStoreId: fakeContainer0CookieStoreId,
         id: `${color}-2`,
         title: `${color} tab 2`,
-        url: `http://example.com/${color}`,
+        url: `https://example.com/${color}`,
       },
     ];
 
@@ -99,7 +99,7 @@ describe(component, function () {
         cookieStoreId: fakeContainer0CookieStoreId,
         id: color,
         title: `${color} tab`,
-        url: `http://example.com/${color}`,
+        url: `https://example.com/${color}`,
       },
     ]) as Array<Tab>;
 
