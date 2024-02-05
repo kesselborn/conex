@@ -19,6 +19,11 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "outDir": "./extension",
+    "paths": {
+      "undici-types": [
+        "./node_modules/undici-types/index.d.ts"
+      ]
+    },
     "strictBindCallApply": true,
     "strictFunctionTypes": true,
     "strictNullChecks": true,
