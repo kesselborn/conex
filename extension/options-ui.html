@@ -10,6 +10,10 @@
         * {
             font-size-adjust: 0.4;
         }
+
+        fieldset > ul li {
+            list-style-type: none;
+        }
     </style>
 </head>
 
@@ -18,35 +22,45 @@
     <h4>Options</h4>
     <form id="settings">
         <fieldset>
-            <label for="hide-tabs">
-                <input type="checkbox" id="hide-tabs" name="hide-tabs" role="switch">
-                only show tabs of the current container
-            </label>
-            <br/>
-            <label for="create-thumbnails">
-                <input type="checkbox" id="create-thumbnails" name="create-thumbnails" role="switch">
-                create tab thumbnails (careful: this can cause performance issues)
-            </label>
-            <br/>
-            <label for="include-bookmarks">
-                <input type="checkbox" id="include-bookmarks" name="include-bookmarks" role="switch">
-                include bookmarks when searching
-            </label>
-            <br/>
-            <label for="include-history">
-                <input type="checkbox" id="include-history" name="include-history" role="switch">
-                include history in search
-            </label>
-            <br/>
-            <label for="ask-target-container">
-                <input type="checkbox" id="ask-target-container" name="ask-target-container" role="switch">
-                ask in which container to open external links instead of always using the current container
-            </label>
-            <br/>
-            <label for="close-reopened-container">
-                <input type="checkbox" id="close-reopened-container" name="close-reopened-container" role="switch">
-                close tabs that are re-opened in another container
-            </label>
+            <ul>
+                <li>
+                    <label for="hide-tabs">
+                        <input type="checkbox" id="hide-tabs" name="hide-tabs" role="switch">
+                        only show tabs of the current container
+                    </label>
+                </li>
+                <li>
+                    <label for="create-thumbnails">
+                        <input type="checkbox" id="create-thumbnails" name="create-thumbnails" role="switch">
+                        create tab thumbnails (careful: this can cause performance issues)
+                    </label>
+                </li>
+                <li>
+                    <label for="include-bookmarks">
+                        <input type="checkbox" id="include-bookmarks" name="include-bookmarks" role="switch">
+                        include bookmarks when searching
+                    </label>
+                </li>
+                <li>
+                    <label for="include-history">
+                        <input type="checkbox" id="include-history" name="include-history" role="switch">
+                        include history in search
+                    </label>
+                </li>
+                <li>
+                    <label for="ask-target-container">
+                        <input type="checkbox" id="ask-target-container" name="ask-target-container" role="switch">
+                        ask in which container to open external links instead of always using the current container
+                    </label>
+                </li>
+                <li>
+                    <label for="close-reopened-container">
+                        <input type="checkbox" id="close-reopened-container" name="close-reopened-container"
+                               role="switch">
+                        close tabs that are re-opened in another container
+                    </label>
+                </li>
+            </ul>
         </fieldset>
     </form>
     <h4 id="secret">Keyboard Shortcuts</h4>
