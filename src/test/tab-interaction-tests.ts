@@ -9,7 +9,8 @@ import { renderTabs } from '../containers.js';
 import { search } from '../keyboard-input-handler.js';
 import { readSettings } from '../settings.js';
 import { openTabId } from '../mouse-handler.js';
-import { showHideTabs } from '../background.js';
+
+import { showHideTabs } from '../tab-management.js';
 
 let newContainerId: string;
 let newTab: Tabs.Tab;
@@ -156,8 +157,8 @@ describe(component, function () {
 
       const pinnedTab = await browser.tabs.update(newTab.id, { pinned: true });
 
-      await showHideTabs(testingTab!);
-      await showHideTabs(pinnedTab);
+      await showHideTabs(testingTab!, undefined);
+      await showHideTabs(pinnedTab, undefined);
 
       expect(
         JSON.stringify(

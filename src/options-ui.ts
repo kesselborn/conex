@@ -10,6 +10,7 @@ import {
   changeHideTabsSetting,
   changeIncludeBookmarksSetting,
   changeIncludeHistorySetting,
+  openTabInSameContainer,
   readSettings,
 } from './settings.js';
 
@@ -49,6 +50,7 @@ function newSelectionBox(component: string): Element {
 async function syncUIWithSettings() {
   // set debug options
   const settings = await readSettings();
+  ($('#open-tab-in-same-container') as HTMLInputElement).checked = settings.openTabInSameContainer;
   ($('#hide-tabs') as HTMLInputElement).checked = settings.hideTabs;
   ($('#create-thumbnails') as HTMLInputElement).checked = settings.createThumbnails;
   ($('#include-bookmarks') as HTMLInputElement).checked = settings.includeBookmarks;
@@ -99,6 +101,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const optionValue = optionSwitch.checked;
     await debug(component, `${optionName} settings changed to ${optionValue}`);
     switch (optionName) {
+      case 'open-tab-in-same-container':
+        await openTabInSameContainer(optionValue);
+        break;
       case 'hide-tabs':
         await changeHideTabsSetting(optionValue);
         break;

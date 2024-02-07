@@ -14,7 +14,7 @@ export const defaultContainer: ContextualIdentityEx = {
   colorCode: ContextualIdentitiesColors.black,
   icon: 'circle',
   iconUrl: '',
-  cookieStoreId: 'firefox-default',
+  cookieStoreId: Ids.defaultCookieStoreId,
   color: 'black',
   name: _('no-container'),
   hidden: false,

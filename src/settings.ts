@@ -1,6 +1,6 @@
 import { Browser, Manifest } from 'webextension-polyfill';
 import { debug, info } from './logger.js';
-import { showHideTabs } from './background.js';
+import { showHideTabs } from './tab-management.js';
 import OptionalPermission = Manifest.OptionalPermission;
 
 export interface Settings {
@@ -11,6 +11,7 @@ export interface Settings {
   hideTabs: boolean;
   includeBookmarks: boolean;
   includeHistory: boolean;
+  openTabInSameContainer: boolean;
 }
 
 declare let browser: Browser;
@@ -30,13 +31,14 @@ export async function writeSettings(settings: Settings): Promise<void> {
 
 async function changeOptionalPermissions(value: boolean, permissions: Manifest.OptionalPermission[]) {
   if (value) {
-    await info(component, 'removing bookmark permissions');
+    info(component, `removing ${permissions.join(', ')} permissions`).then();
     //
     // THIS CALL MUST HAPPEN BEFORE ANY AWAIT!!! SEE https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions
     //
     await browser.permissions.request({ permissions });
   } else {
-    await info(component, 'requesting bookmark permissions');
+    // TODO: check what to remove
+    await info(component, 'REMOVING PERMISSIONS');
     await browser.permissions.remove({ permissions });
   }
 }
@@ -65,8 +67,18 @@ export async function changeDebugViewSetting(value: boolean) {
   await writeSettings(settings);
 }
 
+export async function openTabInSameContainer(value: boolean) {
+  // tabs is necessary but in the non-optional permissions
+  // const permissions = ['tabs'] as OptionalPermission[];
+  // await changeOptionalPermissions(value, permissions);
+
+  const settings = await readSettings();
+  settings.openTabInSameContainer = value;
+  await writeSettings(settings);
+}
+
 export async function changeHideTabsSetting(value: boolean) {
-  const permissions = ['tabHide'] as OptionalPermission[];
+  const permissions = ['tabHide', 'tabs'] as OptionalPermission[];
   await changeOptionalPermissions(value, permissions);
 
   const settings = await readSettings();
@@ -75,7 +87,7 @@ export async function changeHideTabsSetting(value: boolean) {
   if (value) {
     const activeTab = (await browser.tabs.query({ active: true }))[0]!;
     await debug(component, `showing all tabs from ${activeTab.cookieStoreId}`);
-    await showHideTabs(activeTab);
+    await showHideTabs(activeTab, undefined);
   }
 }
 

@@ -1,4 +1,4 @@
-import { $ } from './helper.js';
+import { $ } from './helper.js'; // declare let browser: Browser;
 
 // declare let browser: Browser;
 
@@ -39,6 +39,8 @@ export enum Selectors {
 export enum Ids {
   bookmarksCookieStoreId = 'bookmarks',
   historyCookieStoreId = 'history',
+  defaultCookieStoreId = 'firefox-default',
+  privateCookieStorePrefix = 'firefox-private',
 }
 
 export class ConexElements {
