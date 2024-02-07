@@ -61,6 +61,7 @@
     "<all_urls>",
     "activeTab",
     "bookmarks",
+    "browserSettings",
     "history",
     "notifications",
     "tabHide",

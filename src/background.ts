@@ -49,12 +49,13 @@ async function openTabInSameContainer(newTab: Tabs.Tab): Promise<void> {
   newTabs.add(newTab.id);
   const openInSameContainerOption = (await readSettings()).openTabInSameContainer;
   if (openInSameContainerOption) {
+    const newTabUrl = (await browser.browserSettings.newTabPageOverride.get({})).value as string;
     debug(
       component,
-      `checking whether to open in same container; newTab.id: ${newTab.id}, newTab.url: ${newTab.url}, newTab.openerTabId: ${newTab.openerTabId}, newTab.cookieStoreId: ${newTab.cookieStoreId}, openTabInSameContainerOption: ${openInSameContainerOption}`
+      `checking whether to open in same container; newTabUrl from settings: ${newTabUrl}, newTab.id: ${newTab.id}, newTab.url: ${newTab.url}, newTab.openerTabId: ${newTab.openerTabId}, newTab.cookieStoreId: ${newTab.cookieStoreId}, openTabInSameContainerOption: ${openInSameContainerOption}`
     ).then();
     if (
-      newTab.url === 'about:newtab' &&
+      newTab.url === newTabUrl &&
       newTab.openerTabId === undefined &&
       newTab.cookieStoreId === Ids.defaultCookieStoreId &&
       openInSameContainerOption

@@ -67,10 +67,9 @@ export async function changeDebugViewSetting(value: boolean) {
   await writeSettings(settings);
 }
 
-export async function openTabInSameContainer(value: boolean) {
-  // tabs is necessary but in the non-optional permissions
-  // const permissions = ['tabs'] as OptionalPermission[];
-  // await changeOptionalPermissions(value, permissions);
+export async function changeOpenTabInSameContainer(value: boolean) {
+  const permissions = ['browserSettings'] as OptionalPermission[];
+  await changeOptionalPermissions(value, permissions);
 
   const settings = await readSettings();
   settings.openTabInSameContainer = value;
@@ -78,7 +77,7 @@ export async function openTabInSameContainer(value: boolean) {
 }
 
 export async function changeHideTabsSetting(value: boolean) {
-  const permissions = ['tabHide', 'tabs'] as OptionalPermission[];
+  const permissions = ['tabHide'] as OptionalPermission[];
   await changeOptionalPermissions(value, permissions);
 
   const settings = await readSettings();

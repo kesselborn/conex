@@ -10,7 +10,7 @@ import {
   changeHideTabsSetting,
   changeIncludeBookmarksSetting,
   changeIncludeHistorySetting,
-  openTabInSameContainer,
+  changeOpenTabInSameContainer,
   readSettings,
 } from './settings.js';
 
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await debug(component, `${optionName} settings changed to ${optionValue}`);
     switch (optionName) {
       case 'open-tab-in-same-container':
-        await openTabInSameContainer(optionValue);
+        await changeOpenTabInSameContainer(optionValue);
         break;
       case 'hide-tabs':
         await changeHideTabsSetting(optionValue);
@@ -133,6 +133,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 browser.permissions.onRemoved.addListener(async (permissions) => {
   await debug(component, 'remove permission called');
+  if (permissions.permissions!.includes('browserSettings')) {
+    await changeOpenTabInSameContainer(false);
+  }
   if (permissions.permissions!.includes('bookmarks')) {
     await changeIncludeBookmarksSetting(false);
   }
