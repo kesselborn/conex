@@ -15,21 +15,34 @@ interface ResultToken {
   tokenValue: string;
 }
 
+function resetSearchHighlighting(containerElement: Element) {
+  containerElement.classList.add(ClassSelectors.collapsedContainer);
+  containerElement.classList.remove(ClassSelectors.noMatch);
+  for (const element of Array.from($$(Selectors.tabElementsNoMatch, containerElement))) {
+    element.classList.remove(ClassSelectors.noMatch);
+  }
+  for (const element of Array.from($$(Selectors.tabElementsMatch, containerElement))) {
+    const title = $('h3', element)!;
+    const url = $('h4', element)!;
+    url.innerHTML = url.innerText;
+    title.innerHTML = title.innerText;
+  }
+  for (const element of Array.from($$(Selectors.containerWithMatchingTabElements))) {
+    const title = $('h2 > span', element)!;
+    title.innerHTML = title.innerText;
+  }
+}
+
 // searches all tabs of a container
 export function searchInContainer(containerElement: Element, searchString: string) {
+  if ($(Selectors.isContainerSelectorContext)) {
+    // on the selector page, handle all search term as if they are searching for containers
+    searchString = '>' + searchString.split(' ').join(' >');
+  }
+
   containerElement.classList.remove(ClassSelectors.noMatchContainer);
   if (searchString === '' || searchString.trim() === '>') {
-    containerElement.classList.add(ClassSelectors.collapsedContainer);
-    containerElement.classList.remove(ClassSelectors.noMatch);
-    for (const element of Array.from($$(Selectors.tabElementsNoMatch, containerElement))) {
-      element.classList.remove(ClassSelectors.noMatch);
-    }
-    for (const element of Array.from($$(Selectors.tabElementsMatch, containerElement))) {
-      const title = $('h3', element)!;
-      const url = $('h4', element)!;
-      url.innerHTML = url.innerText;
-      title.innerHTML = title.innerText;
-    }
+    resetSearchHighlighting(containerElement);
     return;
   } else {
     containerElement.classList.remove(ClassSelectors.collapsedContainer);

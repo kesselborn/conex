@@ -26,6 +26,7 @@ describe(component, function () {
   beforeEach(async () => {
     await renderMainPage(fakeContainers, {
       bookmarks: true,
+      newTabUrl: undefined,
       history: true,
       order: [
         'firefox-default', //0
@@ -80,7 +81,7 @@ describe(component, function () {
     searchElement.value = '';
 
     expect(
-      $$(Selectors.containerElementsNoMatch, $(Selectors.containerElements)!).length,
+      $$(Selectors.containerWithoutMatchingTabElements, $(Selectors.containerElements)!).length,
       'no container is hidden due to not having mathing tabs'
     ).to.equal(0);
     expect($$('em[class*="match-"]')!.length, 'no highlighting markup in any tab or container').to.equal(0);
@@ -93,7 +94,7 @@ describe(component, function () {
     searchInContainer(firstContainer, searchTerm);
 
     expect($$(`.${ClassSelectors.noMatch}`, firstContainer).length).to.equal(0);
-    expect($$(Selectors.containerElementsNoMatch, $(Selectors.containerElements)!).length).to.equal(0);
+    expect($$(Selectors.containerWithoutMatchingTabElements, $(Selectors.containerElements)!).length).to.equal(0);
   });
 
   it('should show all bookmarks when search is empty again', async function () {

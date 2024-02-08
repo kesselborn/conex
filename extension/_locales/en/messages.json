@@ -1,4 +1,8 @@
 {
+  "container-selector-h1": {
+    "message": "Select container for",
+    "description": "header shown on the container selection page"
+  },
   "show-all-tabs-alert": {
     "message": "Due to a technical problem it might be possible, that already hidden tabs keep hidden when deactivating this setting. In order to see all tabs, disable and enable this addon.",
     "description": "alert describing how to show all tabs again"

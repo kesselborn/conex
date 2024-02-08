@@ -8,7 +8,7 @@ import {
 import { Browser, ContextualIdentities } from 'webextension-polyfill';
 import { ConexElements, IdSelectors } from './constants.js';
 import { keydown, keyup } from './keyboard-input-handler.js';
-import { $e, _ } from './helper.js';
+import { $e, _, timeoutResolver } from './helper.js';
 import { getBookmarksAsTabs } from './bookmarks.js';
 import { formChange } from './mouse-handler.js';
 import ContextualIdentity = ContextualIdentities.ContextualIdentity;
@@ -36,19 +36,19 @@ export async function renderMainPage(
   ConexElements.search.focus();
 
   const waiters: Promise<void>[] = [];
-  setTimeout(async () => {
-    if (options.bookmarks) {
-      waiters.push(renderTabs(await getBookmarksAsTabs()));
-    }
-    for (const container of [defaultContainer].concat(containers.map((c) => c as ContextualIdentityEx))) {
-      if (container.cookieStoreId !== 'history') {
-        const tabs = Array.from((await browser.tabs.query({ cookieStoreId: container.cookieStoreId }))!);
-        tabs.sort((a, b) => (b.lastAccessed || 0) - (a.lastAccessed || 0));
-        if (options.tabs) {
-          waiters.push(renderTabs(tabs));
-        }
+  await timeoutResolver(200);
+
+  if (options.bookmarks) {
+    waiters.push(renderTabs(await getBookmarksAsTabs()));
+  }
+  for (const container of [defaultContainer].concat(containers.map((c) => c as ContextualIdentityEx))) {
+    if (container.cookieStoreId !== 'history') {
+      const tabs = Array.from((await browser.tabs.query({ cookieStoreId: container.cookieStoreId }))!);
+      tabs.sort((a, b) => (b.lastAccessed || 0) - (a.lastAccessed || 0));
+      if (options.tabs) {
+        waiters.push(renderTabs(tabs));
       }
     }
-  }, 200);
+  }
   await Promise.all(waiters);
 }

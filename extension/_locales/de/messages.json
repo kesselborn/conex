@@ -1,4 +1,8 @@
 {
+  "container-selector-h1": {
+    "message": "Container wählen für",
+    "description": "header shown on the container selection page"
+  },
   "show-all-tabs-alert": {
     "message": "Aufgrund eines technischen Problems kann es vorkommen, dass bereits ausgeblendete Tabs weiterhin verborgen bleiben, wenn diese Einstellung deaktiviert wird. Um alle Tabs zu sehen, deaktivieren und aktivieren Sie dieses Addon.",
     "description": "alert describing how to show all tabs again"

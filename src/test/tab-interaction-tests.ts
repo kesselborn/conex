@@ -78,6 +78,7 @@ describe(component, function () {
     await renderMainPage(await browser.contextualIdentities.query({}), {
       bookmarks: false,
       history: false,
+      newTabUrl: undefined,
       tabs: true,
       order: null,
     });
@@ -123,7 +124,7 @@ describe(component, function () {
       expect((await readSettings()).hideTabs, 'HIDE TABS OPTIONS NEEDS TO BE ACTIVE FOR TESTS').to.be.true;
 
       let activeTab = await browser.tabs.query({ active: true });
-      expect(`testing-tab-id-${activeTab[0]!.id}`).to.equal(`testing-tab-id-${testingTab!.id}`);
+      expect(activeTab[0]!.id).to.equal(testingTab!.id);
 
       const tabActiveWaiter = waitForTabToBeActive(newTab.id!);
       $(`#${tabId2HtmlOpenTabId(newTab.id!)}`)!.click();

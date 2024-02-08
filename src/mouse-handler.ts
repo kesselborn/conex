@@ -1,9 +1,10 @@
 import { ClassSelectors, Ids, InputNameSelectors, Selectors } from './constants.js';
 import { debug } from './logger.js';
 import { htmlId2TabId } from './tab-element.js';
-import { Browser } from 'webextension-polyfill';
+import { Browser, Tabs } from 'webextension-polyfill';
 import { $, _, closeContainer } from './helper.js';
 import { focusNextVisibleContainerSibling } from './keyboard-input-handler.js';
+import CreateCreatePropertiesType = Tabs.CreateCreatePropertiesType;
 
 const component = 'mouse-handler';
 declare let browser: Browser;
@@ -83,10 +84,16 @@ export async function formChange(e: Event): Promise<void> {
 
       debug(component, `opening a new tab in ${cookieStoreId}`).then();
 
-      const waiter = browser.tabs.create({
+      const createOptions: CreateCreatePropertiesType = {
         active: true,
         cookieStoreId,
-      });
+      };
+
+      if (containerElement.dataset['newtabUrl']) {
+        createOptions.url = containerElement.dataset['newtabUrl'];
+      }
+
+      const waiter = browser.tabs.create(createOptions);
 
       window.close();
       await waiter;
