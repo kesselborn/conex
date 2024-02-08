@@ -55,12 +55,19 @@ function keyDownOnSearchElement(e: KeyboardEvent): void {
     case 'Tab':
       e.preventDefault();
       if (!e.shiftKey) {
-        $(Selectors.containerElementsMatch, ConexElements.search.parentElement!)!.focus();
+        if ($(Selectors.isContainerSelectorContext)) {
+          $(Selectors.containerNameMatch, ConexElements.search.parentElement!)!.focus();
+        } else {
+          $(Selectors.containerWithMatchingTabElements, ConexElements.search.parentElement!)!.focus();
+        }
       }
       break;
     case 'Enter': {
       e.preventDefault();
-      const firstExpandedContainer = $(Selectors.containerElementsMatch, ConexElements.search.parentElement!)!;
+      const firstExpandedContainer = $(
+        Selectors.containerWithMatchingTabElements,
+        ConexElements.search.parentElement!
+      )!;
       if (!firstExpandedContainer) {
         error(component, 'did not find any container that had a match').then();
       }
@@ -117,8 +124,9 @@ async function keyDownOnContainerElement(e: KeyboardEvent): Promise<void> {
         const tabsInContainer = await browser.tabs.query({ cookieStoreId: containerId });
 
         // create new tab in container if container is empty
-        if (e.shiftKey || tabsInContainer.length === 0) {
-          await browser.tabs.create({ cookieStoreId: containerId });
+        if (e.shiftKey || tabsInContainer.length === 0 || $(Selectors.isContainerSelectorContext)) {
+          // eslint-disable-next-line no-void
+          $(`input[name=${InputNameSelectors.openContainer}`, containerElement)?.click();
           window.close();
         } else {
           activateFirstVisibleContainerTab(containerElement);
@@ -233,7 +241,12 @@ function keyDownOnTabElement(e: KeyboardEvent): void {
 }
 
 export function focusNextVisibleContainerSibling(curContainerElement: Element): Element {
-  const nextVisibleContainerSibling = $(`#${curContainerElement.id} ~ :not(.${ClassSelectors.noMatch})`);
+  let nextVisibleContainerSibling;
+  if ($(Selectors.isContainerSelectorContext)) {
+    nextVisibleContainerSibling = $(`#${curContainerElement.id} ~ :not(.${ClassSelectors.noMatchContainer})`);
+  } else {
+    nextVisibleContainerSibling = $(`#${curContainerElement.id} ~ :not(.${ClassSelectors.noMatch})`);
+  }
   if (nextVisibleContainerSibling) {
     nextVisibleContainerSibling.focus();
   }
@@ -243,8 +256,14 @@ export function focusNextVisibleContainerSibling(curContainerElement: Element): 
 function previousVisibleContainerSibling(curContainerElement: Element): Element | void {
   while (curContainerElement.previousElementSibling) {
     curContainerElement = curContainerElement.previousElementSibling;
-    if (!curContainerElement.classList.contains(ClassSelectors.noMatch)) {
-      return curContainerElement;
+    if ($(Selectors.isContainerSelectorContext)) {
+      if (!curContainerElement.classList.contains(ClassSelectors.noMatchContainer)) {
+        return curContainerElement;
+      }
+    } else {
+      if (!curContainerElement.classList.contains(ClassSelectors.noMatch)) {
+        return curContainerElement;
+      }
     }
   }
 }

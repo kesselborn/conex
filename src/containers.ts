@@ -53,6 +53,7 @@ export class ContainerRenderOptions {
   history: boolean = false;
   tabs: boolean = true;
   order: Array<string> | null = null;
+  newTabUrl: string | undefined = undefined;
 }
 
 export async function renderContainers(
@@ -80,7 +81,7 @@ export async function renderContainers(
   }
 
   for (const container of finalContainerList) {
-    containerList.appendChild(await containerElement(container as ContextualIdentityEx));
+    containerList.appendChild(await containerElement(container as ContextualIdentityEx, options.newTabUrl));
   }
 
   if (ConexElements.containerList) {

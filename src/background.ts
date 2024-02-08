@@ -72,6 +72,9 @@ async function openTabInSameContainer(newTab: Tabs.Tab): Promise<void> {
         );
         await Promise.all(waiters);
       }
+    } else {
+      lastCookieStoreId = newTab.cookieStoreId!;
+      await showHideTabs(newTab);
     }
     newTabs.delete(newTab.id);
   } else {

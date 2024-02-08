@@ -24,7 +24,10 @@ export function countLabel(cookieStoreId: string): string {
   }
 }
 
-export async function containerElement(container: ContextualIdentityEx): Promise<Element> {
+export async function containerElement(
+  container: ContextualIdentityEx,
+  newTabUrl: string | undefined = undefined
+): Promise<Element> {
   const e = window.document.createElement('div');
   const tabCnt = container.tabCnt
     ? container.tabCnt
@@ -33,6 +36,7 @@ export async function containerElement(container: ContextualIdentityEx): Promise
   e.innerHTML = `
     <li tabindex="0"
         class="collapsed container-color-${container.color} ${ClassSelectors.emptyContainer}"
+        ${newTabUrl ? 'data-newtab-url="' + newTabUrl + '"' : ''}
         id="${container.cookieStoreId}">
       <input id="e-${container.cookieStoreId}"
              type="radio"

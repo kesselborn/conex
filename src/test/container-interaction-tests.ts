@@ -22,6 +22,7 @@ describe(component, function () {
     expect(tabCntAfter).to.equal(tabCntBefore);
   });
 
+  // deactivated: this functionality is dropped for now
   it('opens a new tab when pressing shift enter on container or enter on an empty container', async function () {
     const testTab = (await browser.tabs.query({ active: true }))[0]!;
     const name = `${component}-2-${new Date().toString()}`;
@@ -61,6 +62,7 @@ describe(component, function () {
       history: false,
       order: [container.cookieStoreId],
       tabs: true,
+      newTabUrl: undefined,
     });
 
     expect(

@@ -110,3 +110,11 @@ export async function closeContainer(containerId: string) {
   await Promise.all(tabClosings);
   await browser.contextualIdentities.remove(containerId);
 }
+
+export function timeoutResolver(ms: number = 0) {
+  return new Promise((resolve) => {
+    setTimeout(function () {
+      resolve(true);
+    }, ms);
+  });
+}

@@ -1,4 +1,4 @@
-import { $e, _, ContextualIdentitiesColors } from '../helper.js';
+import { $e, _, ContextualIdentitiesColors, timeoutResolver } from '../helper.js';
 import type { Browser, ContextualIdentities } from 'webextension-polyfill';
 import { Tabs } from 'webextension-polyfill';
 import { ConexElements, IdSelectors } from '../constants.js';
@@ -175,19 +175,10 @@ export function typeKey(key: KeyboardEventInit, element: Element) {
   // const keyUpEvent = new KeyboardEvent('keyup', key);
 
   element.dispatchEvent(keyDownEvent);
-  // element.dispatchEvent(keyUpEvent);
 }
 
 export async function clear() {
   if (ConexElements.form) {
     ConexElements.form.remove();
   }
-}
-
-export function timeoutResolver(ms: number) {
-  return new Promise((resolve) => {
-    setTimeout(function () {
-      resolve(true);
-    }, ms);
-  });
 }

@@ -25,8 +25,9 @@ export enum IdSelectors {
 export enum Selectors {
   // no variable substitution in enums ... remember to adjust all values if you change one
   containerElements = 'ol>li',
-  containerElementsMatch = `ol>li:not(.no-match)`,
-  containerElementsNoMatch = `ol>li.no-match`,
+  containerNameMatch = 'ol>li:not(.no-container-match)',
+  containerWithMatchingTabElements = `ol>li:not(.no-match)`,
+  containerWithoutMatchingTabElements = `ol>li.no-match`,
   containerName = 'h2 span:nth-child(1)',
   settingsForm = 'form#settings',
   tabElements = 'ul>li',
@@ -34,6 +35,7 @@ export enum Selectors {
   tabElementsMatch = 'ul>li:not(.no-match)',
   tabElementsNoMatch = 'ul>li.no-match',
   tabsCnt = 'h2 span:nth-child(2)',
+  isContainerSelectorContext = 'body.container-selector',
 }
 
 export enum Ids {

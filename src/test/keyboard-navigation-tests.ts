@@ -1,6 +1,6 @@
-import { $, $$ } from '../helper.js';
+import { $, $$, timeoutResolver } from '../helper.js';
 import { renderTabs } from '../containers.js';
-import { clear, expect, fakeContainers, maxTabId, timeoutResolver, typeKey, waitForFocus } from './helper.js';
+import { clear, expect, fakeContainers, maxTabId, typeKey, waitForFocus } from './helper.js';
 import { tabId2HtmlId } from '../tab-element.js';
 import { ClassSelectors, ConexElements, Ids, IdSelectors, Selectors } from '../constants.js';
 import { renderMainPage } from '../main-page.js';
@@ -15,7 +15,13 @@ describe(component, function () {
   afterEach(clear);
 
   it('hidden containers should not break downward navigation', async function () {
-    await renderMainPage(fakeContainers, { bookmarks: false, history: false, order: [], tabs: true });
+    await renderMainPage(fakeContainers, {
+      newTabUrl: undefined,
+      bookmarks: false,
+      history: false,
+      order: [],
+      tabs: true,
+    });
     const containerElements = $$(Selectors.containerElements);
 
     let tabIdCnt = 0;
@@ -330,6 +336,7 @@ describe(component, function () {
       history: false,
       order: [Ids.bookmarksCookieStoreId],
       bookmarks: true,
+      newTabUrl: undefined,
       tabs: true,
     });
     expect(

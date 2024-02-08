@@ -15,6 +15,7 @@ describe(component, function () {
 
   it('should set the tab count correctly', async function () {
     await renderMainPage(fakeContainers, {
+      newTabUrl: undefined,
       bookmarks: true,
       history: true,
       tabs: true,
