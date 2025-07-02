@@ -4,7 +4,7 @@
   "description": "A tabgroup'esque successor for Firefox Quantum (FirefoxBeta and FirefoxNightly only at the moment)",
   "homepage_url": "https://github.com/kesselborn/conex",
   "name": "Conex (preview)",
-  "version": "0.9.14",
+  "version": "0.9.14-bugfix-2",
   "browser_action": {
     "default_title": "Conex",
     "browser_style": false,
@@ -13,7 +13,7 @@
       "48": "icons/icon_48.png"
     }
   },
-  "applications": {
+  "browser_specific_settings": {
     "gecko": {
       "strict_min_version": "60.0a1",
       "update_url": "https://raw.githubusercontent.com/kesselborn/conex/master/versions.json"

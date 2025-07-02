@@ -457,6 +457,14 @@ const setupSectionListeners = function() {
     const deleteContainerHandler = function(e, force) {
       const cookieStoreId = e.target.dataset.cookieStore;
       const name = e.target.dataset.name;
+      
+      // Validate cookieStoreId before querying tabs
+      if (!cookieStoreId || cookieStoreId === '' || cookieStoreId === 'undefined') {
+        console.error('Invalid cookieStoreId in deleteContainerHandler:', cookieStoreId);
+        alert('Error: Could not identify the container. Please try again.');
+        return;
+      }
+      
       browser.tabs.query({cookieStoreId: cookieStoreId}).then(tabs => {
         if(tabs.length > 0 && !force) {
           e.target.parentElement.classList.add('confirming');
@@ -465,6 +473,9 @@ const setupSectionListeners = function() {
         } else {
           deleteContainer(cookieStoreId, name);
         }
+      }).catch(error => {
+        console.error('Error querying tabs for container:', cookieStoreId, error);
+        alert('Error: Could not query container tabs. Please try again.');
       });
     };
 
@@ -482,13 +493,54 @@ const setupSectionListeners = function() {
 
     const deleteContainerWithTabs = async function(dataset) {
       const cookieStoreId = dataset.cookieStore;
+      
+      // Critical fix: Validate cookieStoreId to prevent closing all tabs
+      if (!cookieStoreId || cookieStoreId === '' || cookieStoreId === 'undefined') {
+        console.error('Invalid cookieStoreId detected:', cookieStoreId, 'dataset:', dataset);
+        console.error('Aborting container deletion to prevent closing all tabs');
+        return;
+      }
+      
       const containerTabs = await browser.tabs.query({cookieStoreId: cookieStoreId});
+      
+      // Additional safety check: Verify we're only getting tabs from the intended container
+      const allTabs = await browser.tabs.query({});
+      if (containerTabs.length === allTabs.length) {
+        console.error('Warning: Query returned all tabs instead of container tabs. Aborting deletion.');
+        console.error('cookieStoreId:', cookieStoreId, 'containerTabs count:', containerTabs.length, 'allTabs count:', allTabs.length);
+        return;
+      }
+      
+      console.log(`Deleting ${containerTabs.length} tabs from container ${cookieStoreId}`);
       await browser.tabs.remove(containerTabs.map(x => x.id));
       deleteContainer(cookieStoreId, dataset.name);
     }
 
     $1('.yes', section).addEventListener('click', e => {
-      deleteContainerWithTabs(e.target.parentElement.parentElement.dataset);
+      const sectionElement = e.target.parentElement.parentElement;
+      const dataset = sectionElement.dataset;
+      
+      // Validate that we have the correct DOM element and dataset
+      if (!dataset || !dataset.cookieStore) {
+        console.error('Failed to get container dataset from DOM element:', sectionElement);
+        console.error('Available dataset properties:', Object.keys(dataset || {}));
+        
+        // Try to find the section element by traversing up the DOM
+        let currentElement = e.target;
+        while (currentElement && !currentElement.classList.contains('section')) {
+          currentElement = currentElement.parentElement;
+        }
+        
+        if (currentElement && currentElement.dataset && currentElement.dataset.cookieStore) {
+          console.log('Found section element via DOM traversal:', currentElement);
+          deleteContainerWithTabs(currentElement.dataset);
+        } else {
+          console.error('Could not find valid section element with cookieStore data');
+          alert('Error: Could not identify the container to delete. Please try again.');
+        }
+      } else {
+        deleteContainerWithTabs(dataset);
+      }
     });
 
     $1('.name', section).addEventListener('click', _ => {
