@@ -10,15 +10,15 @@ export async function getBookmarksAsTabs(searchTerm: string = ' '): Promise<Arra
     .filter((b) => b.type === 'bookmark')
     .map(
       (b) =>
-        ({
-          active: false,
-          cookieStoreId: Ids.bookmarksCookieStoreId,
-          highlighted: false,
-          incognito: false,
-          index: 0,
-          pinned: false,
-          title: b.title,
-          url: b.url,
-        } as Tab)
+      ({
+        active: false,
+        cookieStoreId: Ids.bookmarksCookieStoreId,
+        highlighted: false,
+        incognito: false,
+        index: 0,
+        pinned: false,
+        title: b.title,
+        url: b.url,
+      } as Tab)
     );
 }

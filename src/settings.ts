@@ -29,25 +29,20 @@ export async function writeSettings(settings: Settings): Promise<void> {
   return await browser.storage.local.set({ settings: settings });
 }
 
-async function changeOptionalPermissions(value: boolean, permissions: Manifest.OptionalPermission[]) {
+async function changeOptionalPermissions(value: boolean, permissions: Manifest.OptionalPermission[], origins: Manifest.MatchPattern[] | undefined = undefined) {
   if (value) {
     info(component, `removing ${permissions.join(', ')} permissions`).then();
     //
     // THIS CALL MUST HAPPEN BEFORE ANY AWAIT!!! SEE https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions
     //
-    await browser.permissions.request({ permissions });
+    await browser.permissions.request({ permissions, origins });
   } else {
-    // TODO: check what to remove
+    // TODO: check whether permissions are still needed by other options
     await info(component, 'REMOVING PERMISSIONS');
-    await browser.permissions.remove({ permissions });
+    await browser.permissions.remove({ permissions, origins });
   }
 }
 
-export async function changeAskContainerSetting(value: boolean) {
-  const settings = await readSettings();
-  settings.closeMovedTabs = value;
-  await writeSettings(settings);
-}
 
 export async function changeCloseMovedTabsSetting(value: boolean) {
   const settings = await readSettings();
@@ -64,6 +59,15 @@ export async function changeCreateThumbnailsSetting(value: boolean) {
 export async function changeDebugViewSetting(value: boolean) {
   const settings = await readSettings();
   settings.debugView = value;
+  await writeSettings(settings);
+}
+
+export async function changeAskContainerSetting(value: boolean) {
+  const permissions = ['webRequest', 'webRequestBlocking'] as OptionalPermission[];
+  await changeOptionalPermissions(value, permissions, ["<all_urls>"] as Manifest.MatchPattern[]);
+
+  const settings = await readSettings();
+  settings.askContainer = value;
   await writeSettings(settings);
 }
 
@@ -89,6 +93,7 @@ export async function changeHideTabsSetting(value: boolean) {
     await showHideTabs(activeTab, undefined);
   }
 }
+
 
 export async function changeIncludeBookmarksSetting(value: boolean) {
   const permissions = ['bookmarks'] as OptionalPermission[];
