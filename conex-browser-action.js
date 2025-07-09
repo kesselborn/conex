@@ -474,7 +474,6 @@ const setupSectionListeners = function() {
         }
       }).catch(error => {
         console.error('Error querying tabs for container:', cookieStoreId, error);
-        alert('Error: Could not query container tabs. Please try again.');
       });
     };
 
