@@ -511,7 +511,7 @@ const setupSectionListeners = function() {
         return;
       }
       
-      console.log(`Deleting ${containerTabs.length} tabs from container ${cookieStoreId}`);
+      console.debug(`Deleting ${containerTabs.length} tabs from container ${cookieStoreId}`);
       await browser.tabs.remove(containerTabs.map(x => x.id));
       deleteContainer(cookieStoreId, dataset.name);
     }
