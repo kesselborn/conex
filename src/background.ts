@@ -1,4 +1,4 @@
-import { WebRequest, Browser, Tabs } from 'webextension-polyfill';
+import { Browser, Tabs } from 'webextension-polyfill';
 import { Ids } from './constants.js';
 import { debug, info } from './logger.js';
 import { readSettings } from './settings.js';
@@ -94,55 +94,55 @@ browser.windows.onFocusChanged.addListener(async (windowId) => {
   }
 });
 
-async function showContainerSelectionOnNewTabs(
-  requestDetails: WebRequest.OnBeforeRequestDetailsType
-): Promise<WebRequest.BlockingResponse> {
-  debug(component, 'checking whether to open container selector');
-
-  const settings = await readSettings();
-  if (requestDetails.tabId < 0) {
-    debug(component, '    nope: tabId is < 0');
-    return { cancel: false };
-  }
-
-  const tab = browser.tabs.get(requestDetails.tabId);
-
-  if (
-    (!requestDetails.originUrl || requestDetails.originUrl === browser.runtime.getURL('')) &&
-    newTabs.has(requestDetails.tabId) &&
-    requestDetails.url.startsWith('http')
-  ) {
-    if (settings.askContainer) {
-      const redirectUrl = browser.runtime.getURL(`container-selector.html?url=${requestDetails.url}`)
-      debug(component, `is new tab ... will redirecting to ${redirectUrl}`, newTabs.has(requestDetails.tabId), requestDetails, await tab);
-      return { redirectUrl };
-    } else {
-      debug(component, 're-opening tab in ', lastCookieStoreId, await tab);
-      browser.tabs.create({
-        active: (await tab).active,
-        openerTabId: Number(requestDetails.tabId),
-        cookieStoreId: lastCookieStoreId,
-        url: requestDetails.url,
-      });
-      browser.tabs.remove(Number(requestDetails.tabId));
-
-      return { cancel: true };
-    }
-  } else {
-    return { cancel: false };
-  }
-}
+// async function showContainerSelectionOnNewTabs(
+//   requestDetails: WebRequest.OnBeforeRequestDetailsType
+// ): Promise<WebRequest.BlockingResponse> {
+//   debug(component, 'checking whether to open container selector');
+// 
+//   const settings = await readSettings();
+//   if (requestDetails.tabId < 0) {
+//     debug(component, '    nope: tabId is < 0');
+//     return { cancel: false };
+//   }
+// 
+//   const tab = browser.tabs.get(requestDetails.tabId);
+// 
+//   if (
+//     (!requestDetails.originUrl || requestDetails.originUrl === browser.runtime.getURL('')) &&
+//     newTabs.has(requestDetails.tabId) &&
+//     requestDetails.url.startsWith('http')
+//   ) {
+//     if (settings.askContainer) {
+//       const redirectUrl = browser.runtime.getURL(`container-selector.html?url=${requestDetails.url}`)
+//       debug(component, `is new tab ... will redirecting to ${redirectUrl}`, newTabs.has(requestDetails.tabId), requestDetails, await tab);
+//       return { redirectUrl };
+//     } else {
+//       debug(component, 're-opening tab in ', lastCookieStoreId, await tab);
+//       browser.tabs.create({
+//         active: (await tab).active,
+//         openerTabId: Number(requestDetails.tabId),
+//         cookieStoreId: lastCookieStoreId,
+//         url: requestDetails.url,
+//       });
+//       browser.tabs.remove(Number(requestDetails.tabId));
+// 
+//       return { cancel: true };
+//     }
+//   } else {
+//     return { cancel: false };
+//   }
+// }
 
 
 async function setupRequestInterceptor() {
   const settings = await readSettings();
   if (typeof browser.webRequest == 'object' && settings.askContainer) {
     info(component, 'set up request interceptor');
-    browser.webRequest.onBeforeRequest.addListener(
-      showContainerSelectionOnNewTabs,
-      { urls: ['<all_urls>'], types: ['main_frame'] },
-      ['blocking']
-    );
+    //  browser.webRequest.onBeforeRequest.addListener(
+    //    showContainerSelectionOnNewTabs,
+    //    { urls: ['<all_urls>'], types: ['main_frame'] },
+    //    ['blocking']
+    //  );
   }
 
 }

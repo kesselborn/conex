@@ -1,4 +1,4 @@
-import { $, $$, closeContainer, timeoutResolver } from '../helper.js';
+import { $, $$, closeContainer } from '../helper.js';
 import { clear, expect, typeKey, waitForTabToAppear, waitForTabToBeActive, waitForTabToBeClosed } from './helper.js';
 import { tabId2HtmlId, tabId2HtmlOpenTabId } from '../tab-element.js';
 import type { Browser, Tabs } from 'webextension-polyfill';
@@ -142,7 +142,6 @@ describe(component, function () {
         'all tabs of the new container should be visible'
       ).to.equal(0);
 
-      await timeoutResolver(1000);
       expect(
         (
           await browser.tabs.query({
@@ -335,7 +334,7 @@ describe(component, function () {
       expect((await readSettings()).includeHistory, 'bookmark support must be enabled for testing').to.equal(true);
     });
 
-    afterEach(async function () {});
+    afterEach(async function () { });
 
     it('should open new tab when clicking with mouse on the open-tab radio button in a bookmark item', async function () {
       // hack the new container to be the bookmark container
@@ -410,6 +409,6 @@ describe(component, function () {
       const activeTab = (await browser.tabs.query({ active: true }))[0]!;
       expect(activeTab.url, 'the current tab is the history item tab').to.equal(bookmarkTab.dataset['url']);
       await browser.tabs.remove(await newTabWaiter);
-    });
+        });
   });
 });

@@ -2,6 +2,7 @@
 ## bugs:
 - bug: if tab in different window, focus that window first
 - when deleting currently active tab, browser action loses focus (switch tab first)
+- open browser action, go to bookmarks container try to go down a few bookmarks ... it stops at the second
 
 ## not tested
 - results sorted in least recently accesseD
@@ -19,14 +20,15 @@
 - [x] do not change show/hide on pinned tabs
 - [ ] implement build process for beta releases
 - [x] focus tab's window
-- [ ] click on container === open new tab
-    - [ ] fix: for "no container", it does not work ... test the fix as well
+- [x] click on container === open new tab
+    - [x] fix: for "no container", it does not work ... test the fix as well
     - [ ] test for click on container === open new tab
 - [ ] enter on collapsed container: open new tab instead of jumping to the first tab
     - [ ] test for this shice
 
 ## feature
 - [ ] use service workers for show / hide ... but: https://stackoverflow.com/questions/47492436/can-extensions-make-use-of-service-workers
+- [ ] shift + enter in search field: open new tab in top-most container
 - [ ] container order is implemented ... make use of it
 - [ ] ? omit the current tab of the results
 - [x] match == all search terms are matched in URL or TITLE
