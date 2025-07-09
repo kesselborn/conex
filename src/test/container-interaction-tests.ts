@@ -132,7 +132,7 @@ describe(component, function () {
     try {
       await containerRemovedWaiter;
       expect(true, 'this should never be reached').to.be.false;
-    } catch (_) {}
+    } catch (_) { }
 
     expect(
       (await browser.tabs.query({ cookieStoreId: container.cookieStoreId })).length,

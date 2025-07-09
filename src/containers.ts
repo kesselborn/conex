@@ -84,6 +84,8 @@ export async function renderContainers(
     containerList.appendChild(await containerElement(container as ContextualIdentityEx, options.newTabUrl));
   }
 
+  console.debug(component, `containerList: ${ConexElements.containerList}`)
+
   if (ConexElements.containerList) {
     ConexElements.containerList.replaceWith(containerList);
   } else {

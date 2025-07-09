@@ -3,8 +3,10 @@ import { closeContainer } from '../helper.js';
 import type { Browser, Tabs } from 'webextension-polyfill';
 import { readSettings, writeSettings } from '../settings.js';
 import { Ids } from '../constants.js';
+import { debug } from '../logger.js';
 
 const component = 'container-selector-tests';
+debug(component, '👋').then();
 
 declare let browser: Browser;
 
@@ -55,6 +57,9 @@ describe(component, function () {
       settings.openTabInSameContainer = true;
       await writeSettings(settings);
 
+      await debug(component, `newTabUrl: ${newTabUrl}, newTab.id: ${newTab.id}, newTab.url: ${newTab.url}`);
+
+
       const tabCntNewContainerBefore = (await browser.tabs.query({ cookieStoreId: newContainerId })).length;
       const tabCntDefaultContainerBefore = (await browser.tabs.query({ cookieStoreId: Ids.defaultCookieStoreId }))
         .length;
@@ -77,7 +82,7 @@ describe(component, function () {
       );
       try {
         await browser.tabs.remove(newTabId);
-      } catch (_) {}
+      } catch (_) { }
     });
 
     it('should open tab in default container if open-in-same-container is deactivated', async function () {
