@@ -461,7 +461,6 @@ const setupSectionListeners = function() {
       // Validate cookieStoreId before querying tabs
       if (!cookieStoreId || cookieStoreId === '' || cookieStoreId === 'undefined') {
         console.error('Invalid cookieStoreId in deleteContainerHandler:', cookieStoreId);
-        alert('Error: Could not identify the container. Please try again.');
         return;
       }
       
