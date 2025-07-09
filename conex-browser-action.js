@@ -507,30 +507,7 @@ const setupSectionListeners = function() {
     }
 
     $1('.yes', section).addEventListener('click', e => {
-      const sectionElement = e.target.parentElement.parentElement;
-      const dataset = sectionElement.dataset;
-      
-      // Validate that we have the correct DOM element and dataset
-      if (!dataset || !dataset.cookieStore) {
-        console.error('Failed to get container dataset from DOM element:', sectionElement);
-        console.error('Available dataset properties:', Object.keys(dataset || {}));
-        
-        // Try to find the section element by traversing up the DOM
-        let currentElement = e.target;
-        while (currentElement && !currentElement.classList.contains('section')) {
-          currentElement = currentElement.parentElement;
-        }
-        
-        if (currentElement && currentElement.dataset && currentElement.dataset.cookieStore) {
-          console.log('Found section element via DOM traversal:', currentElement);
-          deleteContainerWithTabs(currentElement.dataset);
-        } else {
-          console.error('Could not find valid section element with cookieStore data');
-          alert('Error: Could not identify the container to delete. Please try again.');
-        }
-      } else {
-        deleteContainerWithTabs(dataset);
-      }
+       deleteContainerWithTabs(e.target.parentElement.parentElement.dataset);
     });
 
     $1('.name', section).addEventListener('click', _ => {
