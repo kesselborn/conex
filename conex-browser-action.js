@@ -503,14 +503,6 @@ const setupSectionListeners = function() {
       
       const containerTabs = await browser.tabs.query({cookieStoreId: cookieStoreId});
       
-      // Additional safety check: Verify we're only getting tabs from the intended container
-      const allTabs = await browser.tabs.query({});
-      if (containerTabs.length === allTabs.length) {
-        console.error('Warning: Query returned all tabs instead of container tabs. Aborting deletion.');
-        console.error('cookieStoreId:', cookieStoreId, 'containerTabs count:', containerTabs.length, 'allTabs count:', allTabs.length);
-        return;
-      }
-      
       console.debug(`Deleting ${containerTabs.length} tabs from container ${cookieStoreId}`);
       await browser.tabs.remove(containerTabs.map(x => x.id));
       deleteContainer(cookieStoreId, dataset.name);
