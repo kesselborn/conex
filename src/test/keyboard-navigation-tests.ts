@@ -330,7 +330,7 @@ describe(component, function () {
     expect(ConexElements.search.selectionEnd).to.equal(4);
   });
 
-  // disabled: this is not how it works atm
+  // TODO: disabled: THIS IS NOT HOW IT WORKS ATM
   xit('should fill bookmarks container with tabs if user moves down without searching', async function () {
     await renderMainPage(fakeContainers, {
       history: false,

@@ -1,0 +1,40 @@
+# TODO: Todo list is here
+## bugs:
+- bug: if tab in different window, focus that window first
+- when deleting currently active tab, browser action loses focus (switch tab first)
+
+## not tested
+- results sorted in least recently accesseD
+
+## for beta
+- [x] implement tab-hiding
+- [x] implement container selection
+- [ ]   test container selection
+- [x] open bookmarks or history items via container-selector
+- [ ]   test open bookmarks or history items via container-selector
+- [ ] implement new container
+- [ ] when closing tab, jump to last opened tab regardless of the container
+- [ ] implement: close tab after move
+- [x] overwrite new tab to open in same container
+- [x] do not change show/hide on pinned tabs
+- [ ] implement build process for beta releases
+- [x] focus tab's window
+- [ ] click on container === open new tab
+    - [ ] fix: for "no container", it does not work ... test the fix as well
+    - [ ] test for click on container === open new tab
+- [ ] enter on collapsed container: open new tab instead of jumping to the first tab
+    - [ ] test for this shice
+
+## feature
+- [ ] use service workers for show / hide ... but: https://stackoverflow.com/questions/47492436/can-extensions-make-use-of-service-workers
+- [ ] container order is implemented ... make use of it
+- [ ] ? omit the current tab of the results
+- [x] match == all search terms are matched in URL or TITLE
+- [x] different highlighting in container and tabs
+- [x] HISTORY
+- [ ] pin domains to container
+- [ ] permissions dialog
+- [ ] package properly
+- [ ] search when no hit
+- [ ] delete bookmark on delete
+- [x] open bookmark / history

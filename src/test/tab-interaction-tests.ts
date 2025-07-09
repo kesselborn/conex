@@ -1,4 +1,4 @@
-import { $, $$, closeContainer } from '../helper.js';
+import { $, $$, closeContainer, timeoutResolver } from '../helper.js';
 import { clear, expect, typeKey, waitForTabToAppear, waitForTabToBeActive, waitForTabToBeClosed } from './helper.js';
 import { tabId2HtmlId, tabId2HtmlOpenTabId } from '../tab-element.js';
 import type { Browser, Tabs } from 'webextension-polyfill';
@@ -142,6 +142,7 @@ describe(component, function () {
         'all tabs of the new container should be visible'
       ).to.equal(0);
 
+      await timeoutResolver(1000);
       expect(
         (
           await browser.tabs.query({

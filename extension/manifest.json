@@ -68,5 +68,15 @@
     "webNavigation",
     "webRequest",
     "webRequestBlocking"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "container-selector.html"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
   ]
 }

@@ -111,9 +111,10 @@ export async function openTab(tabElement: HTMLElement) {
   await debug(component, 'tab to be opened is', tabElement);
   if (isHistoryOrBookmarkItem(tabElement)) {
     await debug(component, 'request to open history or bookmark item');
+    const url = browser.runtime.getURL(`container-selector.html?url=${tabElement.dataset['url']}`)
     await browser.tabs.create({
       active: true,
-      url: tabElement.dataset['url'],
+      url
     });
   } else {
     await debug(component, 'request to switch to open tab');

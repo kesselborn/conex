@@ -1,6 +1,6 @@
-import { debug } from './logger.js';
-import { Browser, Tabs } from 'webextension-polyfill';
+import { WebRequest, Browser, Tabs } from 'webextension-polyfill';
 import { Ids } from './constants.js';
+import { debug, info } from './logger.js';
 import { readSettings } from './settings.js';
 import { showHideTabs } from './tab-management.js';
 
@@ -45,7 +45,7 @@ async function showHideTabsCallback(activeInfo: OnActivatedActiveInfoType) {
   }
 }
 
-async function openTabInSameContainer(newTab: Tabs.Tab): Promise<void> {
+async function openNewTabInSameContainer(newTab: Tabs.Tab): Promise<void> {
   newTabs.add(newTab.id);
   const openInSameContainerOption = (await readSettings()).openTabInSameContainer;
   if (openInSameContainerOption) {
@@ -82,7 +82,7 @@ async function openTabInSameContainer(newTab: Tabs.Tab): Promise<void> {
   }
 }
 
-browser.tabs.onCreated.addListener(openTabInSameContainer);
+browser.tabs.onCreated.addListener(openNewTabInSameContainer);
 browser.tabs.onActivated.addListener(showHideTabsCallback);
 browser.tabs.onActivated.addListener(setLastCookieStoreId);
 browser.tabs.onUpdated.addListener((tabId) => newTabs.delete(tabId));
@@ -94,13 +94,74 @@ browser.windows.onFocusChanged.addListener(async (windowId) => {
   }
 });
 
+async function showContainerSelectionOnNewTabs(
+  requestDetails: WebRequest.OnBeforeRequestDetailsType
+): Promise<WebRequest.BlockingResponse> {
+  debug(component, 'checking whether to open container selector');
 
+  const settings = await readSettings();
+  if (requestDetails.tabId < 0) {
+    debug(component, '    nope: tabId is < 0');
+    return { cancel: false };
+  }
+
+  const tab = browser.tabs.get(requestDetails.tabId);
+
+  if (
+    (!requestDetails.originUrl || requestDetails.originUrl === browser.runtime.getURL('')) &&
+    newTabs.has(requestDetails.tabId) &&
+    requestDetails.url.startsWith('http')
+  ) {
+    if (settings.askContainer) {
+      const redirectUrl = browser.runtime.getURL(`container-selector.html?url=${requestDetails.url}`)
+      debug(component, `is new tab ... will redirecting to ${redirectUrl}`, newTabs.has(requestDetails.tabId), requestDetails, await tab);
+      return { redirectUrl };
+    } else {
+      debug(component, 're-opening tab in ', lastCookieStoreId, await tab);
+      browser.tabs.create({
+        active: (await tab).active,
+        openerTabId: Number(requestDetails.tabId),
+        cookieStoreId: lastCookieStoreId,
+        url: requestDetails.url,
+      });
+      browser.tabs.remove(Number(requestDetails.tabId));
+
+      return { cancel: true };
+    }
+  } else {
+    return { cancel: false };
+  }
+}
+
+
+async function setupRequestInterceptor() {
+  const settings = await readSettings();
+  if (typeof browser.webRequest == 'object' && settings.askContainer) {
+    info(component, 'set up request interceptor');
+    browser.webRequest.onBeforeRequest.addListener(
+      showContainerSelectionOnNewTabs,
+      { urls: ['<all_urls>'], types: ['main_frame'] },
+      ['blocking']
+    );
+  }
+
+}
+setupRequestInterceptor();
+browser.storage.onChanged.addListener((_change, area) => {
+  if (area === "local") {
+    setupRequestInterceptor();
+  }
+})
+
+
+// TODO: test somehow?
 // external link detector
-// browser.tabs.onCreated.addListener(tab => {
-//   if(tab.url == 'about:blank' && tab.openerTabId == undefined && tab.cookieStoreId == defaultCookieStoreId) {
-//     newTabs.add(tab.id);
-//   }
-// });
+browser.tabs.onCreated.addListener(tab => {
+  if (tab.url === 'about:blank' && tab.openerTabId === undefined && tab.cookieStoreId === Ids.defaultCookieStoreId) {
+    debug(component, "link detector executed!");
+    newTabs.add(tab.id);
+  }
+});
 
 // const closeIfReopened = async function(tab) {
 //   if(!settings['close-reopened-tabs']) {
@@ -152,4 +213,3 @@ browser.windows.onFocusChanged.addListener(async (windowId) => {
 //     openInDifferentContainer(lastCookieStoreId, tab);
 //   }
 // });
-

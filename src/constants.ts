@@ -1,6 +1,7 @@
 import { $ } from './helper.js'; // declare let browser: Browser;
 
 // declare let browser: Browser;
+export const logSettingsKey = "log-settings";
 
 export enum InputNameSelectors {
   closeContainer = 'close-container',
