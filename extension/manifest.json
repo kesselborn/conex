@@ -14,8 +14,9 @@
   },
   "browser_specific_settings": {
     "gecko": {
+      "id": "conex@bornkessel.com",
       "strict_min_version": "60.0a1",
-      "update_url": "https://raw.githubusercontent.com/kesselborn/conex/master/versions.json"
+      "update_url": "https://raw.githubusercontent.com/kesselborn/conex/main/versions.json"
     }
   },
   "commands": {
@@ -41,7 +42,7 @@
   },
   "homepage_url": "https://github.com/kesselborn/conex",
   "name": "Conex (preview)",
-  "version": "0.42.0",
+  "version": "0.10.0",
   "options_ui": {
     "page": "options-ui.html",
     "open_in_tab": false
