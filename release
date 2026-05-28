@@ -29,6 +29,9 @@ if [ -z "${PROD_ONLY}" ]; then
   git commit -m "Bump to version ${next_version}" extension/manifest.json versions.json
   git tag v${next_version}
 
+  tempdir=$(mktemp -d)
+  LOCAL_ASSET=${tempdir}/conex-${next_version}-an+fx.xpi
+
   # create signed addon
   #docker run -v ${PWD}:${PWD} -w ${PWD} -e HOME=${PWD} web-ext
   (
@@ -37,8 +40,9 @@ if [ -z "${PROD_ONLY}" ]; then
       --api-secret ${WEB_EXT_API_SECRET:?"please set WEB_EXT_API_SECRET"} \
       --channel unlisted \
       --source-dir ./extension/ \
-      --artifacts-dir /tmp
+      --artifacts-dir ${tempdir}
   )
+  cp ${tempdir}/*.xpi $LOCAL_ASSET
 
   read -n1 -p "release this shit to shithub (y/n)? "
 
@@ -51,7 +55,6 @@ if [ -z "${PROD_ONLY}" ]; then
   ################ github release upload
   AUTH="Authorization: token ${GITHUB_TOKEN:?please set GITHUB_TOKEN env var}"
   VERSION=v${next_version}
-  LOCAL_ASSET=/tmp/conex-${next_version}-an+fx.xpi
 
   repo=$(git remote get-url origin | cut -d: -f2 | sed 's/\.git$//g')
 
@@ -60,7 +63,7 @@ if [ -z "${PROD_ONLY}" ]; then
   vi ${release_notes_file} || true
   (
     set -x
-    cat release_notes_file | pbcopy
+    cat ${release_notes_file} | pbcopy
   )
   release_notes=$(cat ${release_notes_file} | while read l; do echo -n "$l\\n"; done)
   release_body="{\"tag_name\":\"${VERSION}\",\"name\":\"${VERSION}\",\"body\":\"${release_notes}\",\"draft\":false,\"prerelease\":false}"

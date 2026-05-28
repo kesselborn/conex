@@ -1,5 +1,6 @@
 /node_modules
 /extension/*.js
+/extension/.amo-upload-uuid
 /extension/test/*.js
 !/extension/test/chai.js
 !/extension/test/mocha.js
