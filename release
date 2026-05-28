@@ -1,5 +1,6 @@
 #!/bin/bash -e
 ${DEBUG:+set -x}
+git checkout main
 # (export VERSION=0.0.15; git reset --hard HEAD^; git tag -d v${VERSION}; git push origin :v${VERSION}; git push -f)
 if [ -z "${PROD_ONLY}" ]; then
   if git status | grep modified; then
@@ -36,7 +37,7 @@ if [ -z "${PROD_ONLY}" ]; then
   #docker run -v ${PWD}:${PWD} -w ${PWD} -e HOME=${PWD} web-ext
   (
     set -x
-    web-ext sign --api-key ${WEB_EXT_API_KEY:?"please set WEB_EXT_API_KEY"} \
+    time web-ext sign --api-key ${WEB_EXT_API_KEY:?"please set WEB_EXT_API_KEY"} \
       --api-secret ${WEB_EXT_API_SECRET:?"please set WEB_EXT_API_SECRET"} \
       --channel unlisted \
       --source-dir ./extension/ \
