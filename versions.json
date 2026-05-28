@@ -1,7 +1,13 @@
 {
   "addons": {
     "{conex@bornkessel.com}": {
-      "updated": []
+      "updated": [],
+      "updates": [
+        {
+          "version": "0.10.0",
+          "update_link": "https://github.com/kesselborn/conex/releases/download/v0.10.0/conex-0.10.0-an.fx.xpi"
+        }
+      ]
     },
     "{cad4f60e-e46e-4d66-8c11-e09194d4df7d}": {
       "updates": [
