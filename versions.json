@@ -10,6 +10,10 @@
         {
           "version": "0.10.3",
           "update_link": "https://github.com/kesselborn/conex/releases/download/v0.10.3/conex-0.10.3.xpi"
+        },
+        {
+          "version": "0.10.5",
+          "update_link": "https://github.com/kesselborn/conex/releases/download/v0.10.5/conex-0.10.5.xpi"
         }
       ]
     },
