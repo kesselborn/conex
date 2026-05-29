@@ -1,5 +1,8 @@
 #!/bin/bash -e
 ${DEBUG:+set -x}
+if [ -z "$SKIP_LINT" ]; then
+  web-ext lint -s ./extension/
+fi
 git checkout main
 # (export VERSION=0.0.15; git reset --hard HEAD^; git tag -d v${VERSION}; git push origin :v${VERSION}; git push -f)
 if [ -z "${PROD_ONLY}" ]; then

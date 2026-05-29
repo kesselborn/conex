@@ -50,18 +50,11 @@ export async function containerElement(
       <label for="c-${container.cookieStoreId}">
         <h2>
             <span>${container.name}</span>
-            <span class="container-cnt" id="c-${container.cookieStoreId}-cnt">(${tabCnt} ${countLabel(
-    container.cookieStoreId
-  )})</span>
+            <span class="container-cnt" id="c-${container.cookieStoreId}-cnt">(${tabCnt} ${countLabel(container.cookieStoreId)})</span>
         </h2>
       </label>
-      <input id="${containerId2HtmlCloseContainerId(container.cookieStoreId)}" type="radio" name="${
-    InputNameSelectors.closeContainer
-  }" value="${container.cookieStoreId}"/>
-      <label for="${containerId2HtmlCloseContainerId(container.cookieStoreId)}" class="close" title="${_(
-    'closeWithDetails',
-    ['container', container.name]
-  )}">X</label>
+      <input id="${containerId2HtmlCloseContainerId(container.cookieStoreId)}" type="radio" name="${InputNameSelectors.closeContainer}" value="${container.cookieStoreId}"/>
+      <label for="${containerId2HtmlCloseContainerId(container.cookieStoreId)}" class="close" title="${_('closeWithDetails', ['container', container.name])}">X</label>
     </li>`;
 
   return e.firstElementChild!;
