@@ -19,7 +19,7 @@
 - [x] overwrite new tab to open in same container
 - [x] do not change show/hide on pinned tabs
 - [ ] implement build process for beta releases
-- [x] focus tab's window
+- [ ] focus tab's window
 - [x] click on container === open new tab
     - [x] fix: for "no container", it does not work ... test the fix as well
     - [ ] test for click on container === open new tab
