@@ -26,7 +26,7 @@ if [ -z "${PROD_ONLY}" ]; then
   sed -i "" -e "s/: \"${current_version}\"/: \"${next_version}\"/" extension/manifest.json
 
   # add new release to versions.json
-  jq ".addons.\"{conex@bornkessel.com}\".updates += [{\"version\":\"${next_version}\", \"update_link\": \"https://github.com/kesselborn/conex/releases/download/v${next_version}/conex-${next_version}.xpi\"}]" versions.json >next_versions.json
+  jq ".addons.\"conex@bornkessel.com\".updates += [{\"version\":\"${next_version}\", \"update_link\": \"https://github.com/kesselborn/conex/releases/download/v${next_version}/conex-${next_version}.xpi\"}]" versions.json >next_versions.json
   mv next_versions.json versions.json
 
   # commit version bumps and create new tag
