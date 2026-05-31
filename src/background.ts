@@ -1,4 +1,4 @@
-import { Browser, Tabs } from 'webextension-polyfill';
+import { Browser, Tabs, WebRequest } from 'webextension-polyfill';
 import { Ids } from './constants.js';
 import { debug, info } from './logger.js';
 import { readSettings } from './settings.js';
@@ -23,6 +23,46 @@ let lastCookieStoreId = Ids.defaultCookieStoreId as string;
 // unnecessarily
 const newTabs = new Set();
 
+// URLs the selector just dispatched; bypassed by webRequest once.
+const dispatchedFromSelector = new Map<string, number>();
+const dispatchedFromSelectorTtlMs = 10_000;
+
+function normalizeUrl(u: string): string {
+  try {
+    return new URL(u).href;
+  } catch {
+    return u;
+  }
+}
+
+// Marking and tabs.create must happen in the same JS turn so webRequest sees
+// the URL in the map; selector-side sendMessage→tabs.create is racy.
+browser.runtime.onMessage.addListener((msg: unknown) => {
+  if (
+    msg &&
+    typeof msg === 'object' &&
+    (msg as { type?: unknown }).type === 'openInContainerFromSelector' &&
+    typeof (msg as { url?: unknown }).url === 'string' &&
+    typeof (msg as { cookieStoreId?: unknown }).cookieStoreId === 'string'
+  ) {
+    const m = msg as { url: string; cookieStoreId: string; windowId?: number };
+    const normalized = normalizeUrl(m.url);
+    dispatchedFromSelector.set(normalized, Date.now());
+    debug(component, `openInContainerFromSelector ${normalized} -> ${m.cookieStoreId}`).then();
+
+    const createOptions: Tabs.CreateCreatePropertiesType = {
+      active: true,
+      cookieStoreId: m.cookieStoreId,
+      url: m.url,
+    };
+    if (typeof m.windowId === 'number') {
+      createOptions.windowId = m.windowId;
+    }
+    return browser.tabs.create(createOptions).then(() => ({ ok: true }));
+  }
+  return Promise.resolve();
+});
+
 async function setLastCookieStoreId(activeInfo: OnActivatedActiveInfoType) {
   if (!newTabs.has(activeInfo.tabId)) {
     const tab = await browser.tabs.get(activeInfo.tabId);
@@ -45,6 +85,83 @@ async function showHideTabsCallback(activeInfo: OnActivatedActiveInfoType) {
   }
 }
 
+// Heuristic: no originUrl + no openerTabId + default container = external open.
+// Same approach as temporary-containers / MAC.
+async function showContainerSelectionOnExternalLinks(
+  requestDetails: WebRequest.OnBeforeRequestDetailsType
+): Promise<WebRequest.BlockingResponse> {
+  debug(component, `external link check: tabId: ${requestDetails.tabId}, originUrl: ${requestDetails.originUrl}, url: ${requestDetails.url}`);
+
+  if (requestDetails.tabId < 0) {
+    debug(component, '    nope: tabId is < 0');
+    return { cancel: false };
+  }
+
+  if (!requestDetails.url.startsWith('http')) {
+    debug(component, '    nope: not an http(s) url');
+    return { cancel: false };
+  }
+
+  // Bypass + burn entries dispatched by the selector.
+  const requestUrlNormalized = normalizeUrl(requestDetails.url);
+  const dispatchedAt = dispatchedFromSelector.get(requestUrlNormalized);
+  if (dispatchedAt !== undefined && Date.now() - dispatchedAt < dispatchedFromSelectorTtlMs) {
+    dispatchedFromSelector.delete(requestUrlNormalized);
+    debug(component, `    nope: dispatched from container-selector (${requestUrlNormalized})`);
+    return { cancel: false };
+  }
+  for (const [url, ts] of dispatchedFromSelector) {
+    if (Date.now() - ts >= dispatchedFromSelectorTtlMs) dispatchedFromSelector.delete(url);
+  }
+
+  if (requestDetails.originUrl && requestDetails.originUrl !== browser.runtime.getURL('')) {
+    debug(component, `    nope: originUrl is set (${requestDetails.originUrl})`);
+    return { cancel: false };
+  }
+
+  // tabs.get is reliable; tabs.onCreated is racy with this event.
+  let tab: Tabs.Tab;
+  try {
+    tab = await browser.tabs.get(requestDetails.tabId);
+  } catch (e) {
+    debug(component, '    nope: tabs.get failed', e);
+    return { cancel: false };
+  }
+
+  if (
+    tab.cookieStoreId &&
+    tab.cookieStoreId !== Ids.defaultCookieStoreId &&
+    !tab.cookieStoreId.startsWith(Ids.privateCookieStorePrefix)
+  ) {
+    debug(component, `    nope: tab already in non-default container ${tab.cookieStoreId}`);
+    return { cancel: false };
+  }
+
+  if (tab.openerTabId !== undefined) {
+    debug(component, `    nope: tab has openerTabId ${tab.openerTabId}`);
+    return { cancel: false };
+  }
+
+  const settings = await readSettings();
+  if (settings.askContainer) {
+    const redirectUrl = browser.runtime.getURL(
+      `container-selector.html?url=${encodeURIComponent(requestDetails.url)}`
+    );
+    debug(component, `    yes: redirecting to ${redirectUrl}`, requestDetails, tab);
+    return { redirectUrl };
+  } else {
+    debug(component, '    re-opening tab in', lastCookieStoreId, tab);
+    browser.tabs.create({
+      active: tab.active,
+      cookieStoreId: lastCookieStoreId,
+      url: requestDetails.url,
+    });
+    browser.tabs.remove(requestDetails.tabId);
+    return { cancel: true };
+  }
+}
+
+// TODO: test with askContainer option true / false
 async function openNewTabInSameContainer(newTab: Tabs.Tab): Promise<void> {
   newTabs.add(newTab.id);
   const openInSameContainerOption = (await readSettings()).openTabInSameContainer;
@@ -52,17 +169,18 @@ async function openNewTabInSameContainer(newTab: Tabs.Tab): Promise<void> {
     const newTabUrl = (await browser.browserSettings.newTabPageOverride.get({})).value as string;
     debug(
       component,
-      `checking whether to open in same container; newTabUrl from settings: ${newTabUrl}, newTab.id: ${newTab.id}, newTab.url: ${newTab.url}, newTab.openerTabId: ${newTab.openerTabId}, newTab.cookieStoreId: ${newTab.cookieStoreId}, openTabInSameContainerOption: ${openInSameContainerOption}`
+      `same container check: newTabUrl from settings: ${newTabUrl}, newTab.id: ${newTab.id}, newTab.url: ${newTab.url}, newTab.openerTabId: ${newTab.openerTabId}, newTab.cookieStoreId: ${newTab.cookieStoreId}, openTabInSameContainerOption: ${openInSameContainerOption}`
     ).then();
     if (
+      openInSameContainerOption &&
       newTab.url === newTabUrl &&
       newTab.openerTabId === undefined &&
-      newTab.cookieStoreId === Ids.defaultCookieStoreId &&
-      openInSameContainerOption
+      newTab.cookieStoreId === Ids.defaultCookieStoreId
     ) {
-      debug(component, `last cookieStoreID is: ${lastCookieStoreId}`).then();
+      debug(component, `    last cookieStoreID is: ${lastCookieStoreId}`).then();
       const waiters: Promise<void | Tabs.Tab>[] = [];
       if (newTab.cookieStoreId !== lastCookieStoreId) {
+        debug(component, `    opening tab in last used container`).then();
         waiters.push(browser.tabs.remove(newTab.id!));
         waiters.push(
           browser.tabs.create({
@@ -82,7 +200,6 @@ async function openNewTabInSameContainer(newTab: Tabs.Tab): Promise<void> {
   }
 }
 
-browser.tabs.onCreated.addListener(openNewTabInSameContainer);
 browser.tabs.onActivated.addListener(showHideTabsCallback);
 browser.tabs.onActivated.addListener(setLastCookieStoreId);
 browser.tabs.onUpdated.addListener((tabId) => newTabs.delete(tabId));
@@ -94,74 +211,44 @@ browser.windows.onFocusChanged.addListener(async (windowId) => {
   }
 });
 
-// async function showContainerSelectionOnNewTabs(
-//   requestDetails: WebRequest.OnBeforeRequestDetailsType
-// ): Promise<WebRequest.BlockingResponse> {
-//   debug(component, 'checking whether to open container selector');
-// 
-//   const settings = await readSettings();
-//   if (requestDetails.tabId < 0) {
-//     debug(component, '    nope: tabId is < 0');
-//     return { cancel: false };
-//   }
-// 
-//   const tab = browser.tabs.get(requestDetails.tabId);
-// 
-//   if (
-//     (!requestDetails.originUrl || requestDetails.originUrl === browser.runtime.getURL('')) &&
-//     newTabs.has(requestDetails.tabId) &&
-//     requestDetails.url.startsWith('http')
-//   ) {
-//     if (settings.askContainer) {
-//       const redirectUrl = browser.runtime.getURL(`container-selector.html?url=${requestDetails.url}`)
-//       debug(component, `is new tab ... will redirecting to ${redirectUrl}`, newTabs.has(requestDetails.tabId), requestDetails, await tab);
-//       return { redirectUrl };
-//     } else {
-//       debug(component, 're-opening tab in ', lastCookieStoreId, await tab);
-//       browser.tabs.create({
-//         active: (await tab).active,
-//         openerTabId: Number(requestDetails.tabId),
-//         cookieStoreId: lastCookieStoreId,
-//         url: requestDetails.url,
-//       });
-//       browser.tabs.remove(Number(requestDetails.tabId));
-// 
-//       return { cancel: true };
-//     }
-//   } else {
-//     return { cancel: false };
-//   }
-// }
-
 
 async function setupRequestInterceptor() {
   const settings = await readSettings();
   if (typeof browser.webRequest == 'object' && settings.askContainer) {
     info(component, 'set up request interceptor');
-    //  browser.webRequest.onBeforeRequest.addListener(
-    //    showContainerSelectionOnNewTabs,
-    //    { urls: ['<all_urls>'], types: ['main_frame'] },
-    //    ['blocking']
-    //  );
+    browser.webRequest.onBeforeRequest.addListener(
+      showContainerSelectionOnExternalLinks,
+      { urls: ['<all_urls>'], types: ['main_frame'] },
+      ['blocking']
+    );
   }
 
+  if (!(await readSettings()).askContainer) {
+    browser.tabs.onCreated.addListener(openNewTabInSameContainer);
+  }
 }
 setupRequestInterceptor();
-browser.storage.onChanged.addListener((_change, area) => {
-  if (area === "local") {
-    setupRequestInterceptor();
-  }
-})
+// browser.storage.onChanged.addListener((_change, area) => {
+//   if (area === "local") {
+//     setupRequestInterceptor();
+//   }
+// })
 
+
+// async function newEmptyTabDetector(tab: Tabs.Tab) {
+//   const newTabUrl = (await browser.browserSettings.newTabPageOverride.get({})).value as string;
+//   debug(component, `new tab detector: tab.url: ${tab.url}, new tab url: ${newTabUrl}, tab.Id: ${tab.Id}, tab.openerTabId: ${tab.openerTabId}, tab.cookieStoreId: ${tab.cookieStoreId}`);
+//   if (tab.url === newTabUrl && tab.openerTabId === undefined && tab.cookieStoreId === Ids.defaultCookieStoreId) {
+//     debug(component, "    yep: it's a new tab");
+//     newTabs.add(tab.id);
+//     openNewTabInSameContainer(tab)
+//   } else {
+//     debug(component, "    not a new tab!");
+//   }
+// }
 
 // TODO: test somehow?
-// external link detector
-browser.tabs.onCreated.addListener(tab => {
-  if (tab.url === 'about:blank' && tab.openerTabId === undefined && tab.cookieStoreId === Ids.defaultCookieStoreId) {
-    debug(component, "link detector executed!");
-    newTabs.add(tab.id);
-  }
-});
+browser.tabs.onCreated.addListener(openNewTabInSameContainer)
 
 // const closeIfReopened = async function(tab) {
 //   if(!settings['close-reopened-tabs']) {

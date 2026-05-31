@@ -93,10 +93,29 @@ export async function formChange(e: Event): Promise<void> {
         createOptions.url = containerElement.dataset['newtabUrl'];
       }
 
-      const waiter = browser.tabs.create(createOptions);
+      // window.close() works for the popup but not for the selector tab.
+      const inContainerSelector = $(Selectors.isContainerSelectorContext) !== null;
+      const selectorTab = inContainerSelector ? await browser.tabs.getCurrent() : undefined;
 
-      window.close();
-      await waiter;
+      if (createOptions.url && inContainerSelector) {
+        // Background must own tabs.create so the bypass-marker and the
+        // navigation happen in the same JS turn.
+        const windowId = selectorTab ? selectorTab.windowId : undefined;
+        await browser.runtime.sendMessage({
+          type: 'openInContainerFromSelector',
+          url: createOptions.url,
+          cookieStoreId,
+          windowId,
+        });
+      } else {
+        await browser.tabs.create(createOptions);
+      }
+
+      if (selectorTab && selectorTab.id !== undefined) {
+        await browser.tabs.remove(selectorTab.id);
+      } else {
+        window.close();
+      }
       break;
     }
   }
@@ -111,7 +130,8 @@ export async function openTab(tabElement: HTMLElement) {
   await debug(component, 'tab to be opened is', tabElement);
   if (isHistoryOrBookmarkItem(tabElement)) {
     await debug(component, 'request to open history or bookmark item');
-    const url = browser.runtime.getURL(`container-selector.html?url=${tabElement.dataset['url']}`)
+    const rawUrl = tabElement.dataset['url'] || '';
+    const url = browser.runtime.getURL(`container-selector.html?url=${encodeURIComponent(rawUrl)}`)
     await browser.tabs.create({
       active: true,
       url
