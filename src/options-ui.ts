@@ -92,7 +92,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const value = (e.target as HTMLOptionElement).value;
     const selectedComponent = ((e.target as HTMLOptionElement).parentNode as HTMLSelectElement).name;
     await debug(component, `log-level adjustment: component ${selectedComponent}=${value}`);
-    await persistLogLevel(selectedComponent, value as Level);
+    const syncAll = ($('#sync-debug-levels') as HTMLInputElement).checked;
+    const targets = syncAll ? Object.keys(logSettings) : [selectedComponent];
+    for (const c of targets) {
+      await persistLogLevel(c, value as Level);
+      const sel = selectorContainer.querySelector(`select[name="${c}"]`) as HTMLSelectElement | null;
+      if (sel) sel.value = value;
+    }
   });
 
   $(Selectors.settingsForm)!.addEventListener('change', async (e: Event) => {
