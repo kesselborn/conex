@@ -31,14 +31,14 @@ export async function writeSettings(settings: Settings): Promise<void> {
 
 async function changeOptionalPermissions(value: boolean, permissions: Manifest.OptionalPermission[], origins: Manifest.MatchPattern[] | undefined = undefined) {
   if (value) {
-    info(component, `removing ${permissions.join(', ')} permissions`).then();
+    info(component, `adding ${permissions.join(', ')} permissions`).then();
     //
     // THIS CALL MUST HAPPEN BEFORE ANY AWAIT!!! SEE https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/User_actions
     //
     await browser.permissions.request({ permissions, origins });
   } else {
     // TODO: check whether permissions are still needed by other options
-    await info(component, 'REMOVING PERMISSIONS');
+    await info(component, `removing ${permissions.join(', ')} permissions`).then();
     await browser.permissions.remove({ permissions, origins });
   }
 }

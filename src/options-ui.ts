@@ -75,7 +75,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const selectorContainer = $('#debug-level-selector')!;
   // prefill logging selection boxes
-  for (const key in logSettings) {
+
+  Object.keys(logSettings)?.sort().forEach(key => {
     const value = logSettings[key];
 
     const selectionBox = newSelectionBox(key);
@@ -83,10 +84,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (option) option.setAttribute('selected', 'selected');
 
-    await debug(component, `adding selection box for component ${key}`);
+    debug(component, `adding selection box for component ${key}`);
 
     selectorContainer.appendChild(selectionBox);
-  }
+  })
 
   selectorContainer.addEventListener('click', async (e) => {
     const value = (e.target as HTMLOptionElement).value;
