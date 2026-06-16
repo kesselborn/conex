@@ -1,6 +1,6 @@
 import { WebRequest, Browser, Tabs } from 'webextension-polyfill';
 import { Ids } from './constants.js';
-import { await debug, info } from './logger.js';
+import { debug, info } from './logger.js';
 import { readSettings } from './settings.js';
 import { showHideTabs } from './tab-management.js';
 
@@ -31,7 +31,7 @@ async function setLastCookieStoreId(activeInfo: OnActivatedActiveInfoType) {
       tab.cookieStoreId !== lastCookieStoreId &&
       !tab.cookieStoreId!.startsWith(Ids.privateCookieStorePrefix)
     ) {
-      awaitawait debug(component, `cookieStoreId changed from ${lastCookieStoreId} -> ${tab.cookieStoreId}`);
+      await debug(component, `cookieStoreId changed from ${lastCookieStoreId} -> ${tab.cookieStoreId}`);
       lastCookieStoreId = tab.cookieStoreId!;
     }
   }
