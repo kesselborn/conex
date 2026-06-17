@@ -47,7 +47,7 @@
   },
   "homepage_url": "https://github.com/kesselborn/conex",
   "name": "Conex (preview)",
-  "version": "0.10.12",
+  "version": "0.10.13",
   "options_ui": {
     "page": "options-ui.html",
     "open_in_tab": false
