@@ -1,5 +1,6 @@
 #!/bin/bash -e
 ${DEBUG:+set -x}
+npx tsc
 if [ -z "$SKIP_LINT" ]; then
   web-ext lint -s ./extension/
 fi
