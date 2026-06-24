@@ -6,6 +6,7 @@ export enum ContextualIdentitiesColors {
   orange = '#ff9f00',
   blue = '#37adff',
   turquoise = '#00c79a',
+  cyan = '#00c79a',
   green = '#51cd00',
   yellow = '#ffcb00',
   red = '#ff613d',
@@ -13,6 +14,8 @@ export enum ContextualIdentitiesColors {
   purple = '#af51f5',
   gold = '#daa520',
   black = '#000000',
+  gray = '#dddddd',
+  toolbar = '#dddddd',
   white = '#ffffff',
 }
 

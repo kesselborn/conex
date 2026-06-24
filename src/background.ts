@@ -95,6 +95,12 @@ async function showContainerSelectionOnNewTabs(
   requestDetails: WebRequest.OnBeforeRequestDetailsType
 ): Promise<WebRequest.BlockingResponse> {
   await debug(component, 'checking whether to open container selector; requestDetails: ', requestDetails);
+  await debug(component, `checking whether to open container selector
+                                     requestDetails.tabId: ${requestDetails.tabId}
+                                     requestDetails.originUrl: ${requestDetails.originUrl}
+                                     requestDetails.url: ${requestDetails.url}
+                                     newTabs.has(requestDetails.tabId): ${newTabs.has(requestDetails.tabId)}
+                                     requestDetails object:`, requestDetails);
 
   const settings = await readSettings();
   if (requestDetails.tabId < 0) {

@@ -2,15 +2,13 @@
 ./node_modules/.bin/tsc || exit 1
 npm run lint
 
-problematicImports=$(grep -r "import.*\/" src/|grep -v "\.js['\"];")
+problematicImports=$(grep -r "import.*\/" src/ | grep -v "\.js['\"];")
 
-if [ -n "${problematicImports}" ]
-then
+if [ -n "${problematicImports}" ]; then
   printf "Fix this import(s) as it will blow up in your face: %s (add '.js' extensions)" "${problematicImports}"
-    exit 1
+  exit 1
 fi
 
-
-printf "%d tests should be successful" $(grep -ir ' it(' src/|grep -v 'test/mocha.js'|wc -l)
+printf "%d tests should be successful" $(grep -ir ' it(' src/ | grep -v 'test/mocha.js' | wc -l)
 
 sleep 2

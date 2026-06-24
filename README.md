@@ -1,5 +1,3 @@
-#
-
 # Note: WIP FOR THE NEXT VERSION
 
 ## Developer notes:
@@ -7,10 +5,13 @@
 ### Enable debug ui
 
 - open `about:addons` and browse to `Conex / Preferences`.
-- on the preferences tab, click 10 times on the **Conex Preferences** header at the very top and click on the link that
+- on the preferences tab, click 5 times on the  **Keyboard Shortcuts** header and click on the button that
   appears
+- set either all components to debug level or select specific components
+- open Tools / Browser Tools / Browser Console
+- in the Filter field, type "conex" to exclusively filter for conex messages
 
-Structure:
+### Structure:
 
 - one global form that includes all elements
 - on root level: ordered list (`ol`) where each list item (`li`) represents a container that

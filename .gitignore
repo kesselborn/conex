@@ -1,3 +1,4 @@
+/*.log
 /node_modules
 /extension/*.js
 /extension/.amo-upload-uuid
